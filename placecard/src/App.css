@@ -2,7 +2,6 @@ body, html, input, button {
   font-family: 'Lato';
 }
 
-
 body {
   text-align: center;
   margin: 0;
@@ -18,4 +17,15 @@ button {
 button:hover {
   filter: brightness(90%);
   box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+}
+
+.title {
+  letter-spacing: 2px;
+  font-size: 42px;
+  margin: 20px auto 6px auto;
+}
+
+.subtitle {
+  font-size: 16px;
+  margin: 12px auto 24px auto;
 }

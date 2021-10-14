@@ -9,13 +9,13 @@ import {
 function App() {
   document.title = 'Placecard';
   return (
-    <>
-    <Header></Header>
-    <Router>
-    <Home></Home>
-    </Router>
-    <Footer></Footer>
-    </>
+    <body>
+      <Header></Header>
+      <Router>
+      <Home></Home>
+      </Router>
+      <Footer></Footer>
+    </body>
   );
 }
 
