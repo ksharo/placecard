@@ -1,11 +1,11 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { Header } from './components/shared/header';
 
 function App() {
   document.title = 'Placecard';
   return (
     <>
+    <Header></Header>
     </>
   );
 }
