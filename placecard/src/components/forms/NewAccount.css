@@ -1,0 +1,18 @@
+.vertical-form {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: 100%;
+  }
+  
+  .vertical-form label {
+    display: flex;
+    flex-direction: column;
+    width: 15%;
+    min-width: 180px;
+    margin: auto auto 10px auto;
+  }
+
+  .vertical-form input {
+      border: 1px solid black;
+  }
