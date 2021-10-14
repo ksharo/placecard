@@ -1,13 +1,19 @@
 import './App.css';
-import { Footer } from './components/shared/footer';
-import { Header } from './components/shared/header';
+import { Home } from './components/home/Home';
+import { Footer } from './components/shared/Footer';
+import { Header } from './components/shared/Header';
+import {
+  BrowserRouter as Router
+} from "react-router-dom";
 
 function App() {
   document.title = 'Placecard';
   return (
     <>
     <Header></Header>
-    <h1>Content</h1>
+    <Router>
+    <Home></Home>
+    </Router>
     <Footer></Footer>
     </>
   );
