@@ -1,4 +1,4 @@
-import './NewAccount.css'
+import './Forms.css'
 import {
     Link
   } from "react-router-dom";
@@ -7,8 +7,8 @@ import {
 export function NewAccount() {
     return (
     <>
-        <h1>Welcome to Placecard!</h1>
-        <p>Let's get started with some basic information:</p>
+        <h1 className='title'>Welcome to Placecard!</h1>
+        <p className='subtitle'>Let's get started with some basic information:</p>
         
         <form className='vertical-form'>
             <label>First Name
