@@ -31,12 +31,3 @@ input {
   margin: 2px;
   border: none;
 }
-
-.rectangleButton {
-  padding: 0px 25px 0px 25px;
-  height: 80%;
-  align-self: center;
-  margin: 5px 20px 5px 15px;
-  font-size: 24px;
-  letter-spacing: 1px;
-}

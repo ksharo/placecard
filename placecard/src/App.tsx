@@ -1,21 +1,33 @@
 import './App.css';
+/* Import Other Components */
 import { Home } from './components/home/Home';
+/* Import Form Components */
+import { NewAccount } from './components/forms/NewAccount';
+import { CreateEvent } from './components/forms/CreateEvent';
+/* Import Shared Components */
 import { Footer } from './components/shared/Footer';
 import { Header } from './components/shared/Header';
 import {
-  BrowserRouter as Router
+  BrowserRouter as Router, 
+  Route, 
+  Switch,
 } from "react-router-dom";
+
 
 function App() {
   document.title = 'Placecard';
   return (
-    <body>
-      <Header></Header>
-      <Router>
-      <Home></Home>
-      </Router>
-      <Footer></Footer>
-    </body>
+    <Router>
+      <body>
+        <Header/>
+        <Switch>
+          <Route exact path='/' component={ Home }/>
+          <Route exact path='/newAccount' component={ NewAccount }/>
+          <Route exact path='/createEvent' component={ CreateEvent }/>
+        </Switch>
+        <Footer/>
+      </body>
+    </Router>
   );
 }
 
