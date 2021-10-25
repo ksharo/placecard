@@ -8,10 +8,11 @@ import { CreateEvent } from './components/forms/CreateEvent';
 import { Footer } from './components/shared/Footer';
 import { Header } from './components/shared/Header';
 import {
-  BrowserRouter as Router, 
-  Route, 
+  BrowserRouter as Router,
+  Route,
   Switch,
 } from "react-router-dom";
+import { GuestList } from './components/guestList/GuestList';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route exact path='/' component={ Home }/>
           <Route exact path='/newAccount' component={ NewAccount }/>
           <Route exact path='/createEvent' component={ CreateEvent }/>
+          <Route exact path='/uploadGuestList' component={ GuestList }/>
         </Switch>
         <Footer/>
       </body>
