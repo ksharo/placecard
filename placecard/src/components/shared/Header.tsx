@@ -1,4 +1,4 @@
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import logo from '../../assets/logo.png';
 import './HeadFoot.css';
 import { ProfileMenu } from './ProfileMenu';
