@@ -1,0 +1,12 @@
+.boxes {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 90%;
+}
+
+#addEventBtn {
+    margin: 20px auto 20px auto;
+    padding: 10px 0px 10px 0px;
+    width: 90%;
+}
