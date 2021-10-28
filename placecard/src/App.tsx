@@ -13,6 +13,7 @@ import {
   Route, 
   Switch,
 } from "react-router-dom";
+import { UserDashboard } from './components/dashboards/UserDashboard';
 import { NotFound } from './components/shared/NotFound';
 
 
@@ -26,6 +27,7 @@ function App() {
           <Route exact path='/' component={ Home }/>
           <Route exact path='/newAccount' component={ NewAccount }/>
           <Route exact path='/createEvent' component={ CreateEvent }/>
+          <Route exact path='/userHome' component={ UserDashboard }/>
           <Route path="/404" component={ NotFound }/>
           <Redirect to="/404"/>
         </Switch>

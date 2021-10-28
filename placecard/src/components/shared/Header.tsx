@@ -1,4 +1,4 @@
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import logo from '../../assets/logo.png';
 import './HeadFoot.css';
 
@@ -16,7 +16,9 @@ export function Header() {
             <input className="borderless" type='text' id='username' placeholder='Username'></input>
             <input className="borderless" type='password' id='password' placeholder='Password'></input>
           </section>
-          <button className='rectangleButton'>Log In</button>
+          <Link to='/userHome' className='rectangleButton'>
+                    Log In
+          </Link>
         </section>
       </header>
     );
