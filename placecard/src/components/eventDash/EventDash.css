@@ -1,0 +1,56 @@
+#edit-cards {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.dashCard {
+    width: 30%;
+    margin: 10px auto 0px auto;
+    grid-template-rows: [main] 80% [btn] 20%;
+    grid-template-columns: [c] 100%;
+    display: grid;
+    height: 350px;
+}
+
+.summary p{
+    text-align: left;
+    font-size: 16px;
+}
+
+.summary {
+    margin: 10px 10px 10px 16px;
+    grid-row: main;
+    grid-column: c;
+}
+
+.editButton {
+    display: block;
+    padding: 10px 15px 10px 15px;
+    margin: auto;
+    font-size: 16px;
+    letter-spacing: 1px;
+    background-color: rgb(225, 225, 225);
+    color: black;
+    font-style: normal;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    cursor: default;
+    width: 30%;
+    min-width: 140px;
+    grid-row: btn;
+    grid-column: c;
+}
+  
+  .editButton:hover {
+    filter: brightness(90%);
+    box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+  }
+
+.verticalBtns {
+    display: flex;
+    flex-directon: row;
+}
