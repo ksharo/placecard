@@ -1,5 +1,7 @@
 import { useHistory } from "react-router-dom";
 import logo from '../../assets/logo.png';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 import './HeadFoot.css';
 
 export function Header() {
@@ -13,10 +15,10 @@ export function Header() {
         <img className='logo' onClick={handleClick} src={logo} alt='Logo'></img>
         <section id='login'>
           <section className='loginUserInput'>
-            <input className="borderless" type='text' id='username' placeholder='Username'></input>
-            <input className="borderless" type='password' id='password' placeholder='Password'></input>
+            <TextField  className='input' size='small' type='text' variant='standard' id='username' label='Username'></TextField>
+            <TextField className='input' size='small' type='password' variant='standard' id='password' label='Password'></TextField>
           </section>
-          <button className='rectangleButton'>Log In</button>
+          <Button color='secondary' size='medium' variant='outlined'>Log In</Button>
         </section>
       </header>
     );

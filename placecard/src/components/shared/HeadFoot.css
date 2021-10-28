@@ -19,15 +19,5 @@
 .loginUserInput {
   display: flex;
   flex-direction: column;
-  align-self: center;
 }
 
-#username {
-  margin-bottom: 3px;
-}
-
-input {
-  padding: 5px 3px;
-  margin: 2px;
-  border: none;
-}

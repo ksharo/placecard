@@ -36,7 +36,13 @@ button:hover {
   margin: 12px auto 24px auto;
 }
 
-.rectangleButton {
+/* .rectangleButton {
+  height: 80%;
+  align-self: center;
+  margin: 5px 20px 5px 15px;
+} */
+
+/* .rectangleButton {
   display: block;
   padding: 0px 25px 0px 25px;
   height: 80%;
@@ -52,7 +58,7 @@ button:hover {
   border: none;
   box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
   cursor: default;
-}
+} */
 
 .rectangleButton:hover {
   filter: brightness(90%);
