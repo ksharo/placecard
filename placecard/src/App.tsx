@@ -12,6 +12,7 @@ import {
   Route, 
   Switch,
 } from "react-router-dom";
+import { EventDashboard } from './components/eventDash/EventDashboard';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Switch>
           <Route exact path='/' component={ Home }/>
           <Route exact path='/newAccount' component={ NewAccount }/>
+          <Route exact path='/eventDash' component={ EventDashboard }/>
           <Route exact path='/createEvent' component={ CreateEvent }/>
         </Switch>
         <Footer/>
