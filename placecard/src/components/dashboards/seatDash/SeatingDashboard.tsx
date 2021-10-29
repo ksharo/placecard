@@ -69,7 +69,7 @@ export function SeatingDashboard() {
             <Grid item xs={9}>
                 <Card>
                     <AppBar className='tableTitle' position='static' color='inherit'>
-                        <Toolbar className='toolbar'>
+                        <Toolbar className='toolbar tableTitle'>
                             <section className='verticalContainer'>
                                 <Button size='small'>Lock All</Button>
                                 <Button size='small'>Clear All</Button>
