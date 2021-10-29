@@ -1,0 +1,41 @@
+.seatStat {
+    color: rgb(75, 75, 75);
+    font-size: 28px;
+    margin: 0px;
+}
+
+.statLabel {
+    margin: 0px;
+    color: rgb(75, 75, 75);
+}
+
+.titleBar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.header {
+    margin: 20px 24px auto 24px;
+}
+
+.titleBar h1 {
+    font-size: 32px;
+    margin: 0;
+}
+
+.guestTable button{
+    box-shadow: none;
+    color: white;
+    margin-left: 10px;
+}
+
+.tableTitle {
+    background-color: rgb(75, 75, 75);
+    color: white;
+    font-size: 24px;
+}
+
+.dashBody {
+    padding: 0px 24px 0px 24px;
+}

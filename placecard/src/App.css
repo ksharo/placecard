@@ -65,3 +65,8 @@ button:hover {
   margin: 10px auto 50px auto;
   padding: 10px;
 }
+
+.verticalContainer {
+  display: flex;
+  flex-direction: column;
+}
