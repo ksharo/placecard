@@ -24,6 +24,18 @@
     margin: 0;
 }
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+.guestTable::-webkit-scrollbar {
+    display: none;
+  }
+
+.guestTable {
+    max-height: 700px;
+    overflow: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
 .guestTable button{
     box-shadow: none;
     color: white;
@@ -38,4 +50,42 @@
 
 .dashBody {
     padding: 0px 24px 0px 24px;
+}
+
+.tableHeader {
+    background-color: black !important;
+    color: white !important;
+}
+
+.tableHeader button {
+    color: white;
+}
+
+.tableBox {
+    margin: 6px;
+}
+
+.seatingChart::-webkit-scrollbar {
+    display: none;
+  }
+.seatingChart {
+    max-height: 700px;
+    overflow: scroll !important;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.seat {
+    list-style: none;
+    text-align: left;
+    list-style-type: none;
+    border-bottom: 1px solid black;
+    padding: 3px 8px 1px 12px;
+    display: flex;
+    justify-content: space-between;
+}
+
+ul {
+    margin: 0px;
+    padding: 0px;
 }

@@ -9,6 +9,7 @@ import { AiFillEdit } from 'react-icons/ai';
 import { useState } from "react";
 import { IoIosSave } from "react-icons/io";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { MdLock, MdLockOpen } from 'react-icons/md';
 
 export function SeatingDashboard() {
     const name = 'Wedding';
@@ -19,13 +20,23 @@ export function SeatingDashboard() {
     const tables = Math.ceil(seats / perTable);
     const seated = 3;
 
-    const [editing, toggleEditing] = useState([false, true])
-    const [tableList, changeName] = useState(['Table1', 'table2']);
+    const [editing, toggleEditing] = useState([false, true, false, false, false])
+    const [tableList, changeName] = useState(['Table1', 'table2', 'table3', 'hi', 'testThis']);
     const [tablesData, editTablesData] = useState([["apple", "adam", "arkansas"], ["chips"]])
     const rows: GridRowsProp = [
-        { id: 1, col1: 'Hello', col2: 'World' },
-        { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
-        { id: 3, col1: 'MUI', col2: 'is Amazing' },
+        { id: 1, col1: 'Bob', col2: '1', col3: <select/>},
+        { id: 2, col1: 'Larry', col2: '1' },
+        { id: 3, col1: 'Junior', col2: '3' },
+    ];
+
+    const columns: GridColDef[] = [
+        { field: 'col1', headerName: 'Guests', headerAlign: 'center'},
+        { field: 'col2', headerName: 'Party Size', headerAlign: 'center'},
+        { field: 'col3', headerName: 'Table', renderCell: () => {
+            return (<select>
+                    
+                </select>)
+        }, headerAlign: 'center'},
     ];
 
     const updateState = (ind: number, ed: any[], item: any, updater: any) => {
@@ -43,12 +54,12 @@ export function SeatingDashboard() {
     };
 
     const empty = (result: any) => {
-        const { destination, source, draggableId} = result;
+        const { destination, source, draggableId } = result;
         console.log(destination);
         console.log(source);
         console.log(draggableId)
 
-        if (!destination  ||  (destination.droppableId === source.droppableId  &&  destination.index === source.index)) {
+        if (!destination || (destination.droppableId === source.droppableId && destination.index === source.index)) {
             return;
         }
 
@@ -72,9 +83,6 @@ export function SeatingDashboard() {
         editTablesData(newState)
     };
 
-    const columns: GridColDef[] = [
-        { field: 'col1', headerName: 'Guests', width: 300, headerAlign: 'center', headerClassName: 'tableTitle' },
-    ];
     return (
         <>
             <section className='header'>
@@ -109,15 +117,22 @@ export function SeatingDashboard() {
                 </Grid>
             </Grid>
 
-            <Grid className='dashBody' container spacing={6}>
-                <Grid item xs={3}>
-                    <div className='guestTable' style={{ height: 500, width: '100%' }}>
-                        <DataGrid rows={rows} columns={columns} hideFooter={true} />
-                    </div>
+            <Grid className='dashBody' container spacing={6} columns={{xs:1, sm:2, md:12}}>
+                <Grid item xs={1} sm={1} md={4}>
+                    <Card>
+                        <AppBar className='tableTitle' position='static' color='inherit'>
+                            <Toolbar className='toolbar tableTitle'>
+                                <Typography variant='h5'>Guests</Typography>
+                            </Toolbar>
+                        </AppBar>
+                        <div className='guestTable' style={{ height: 500, width: '100%' }}>
+                            <DataGrid rows={rows} columns={columns} hideFooter={true} />
+                        </div>
+                    </Card>
                 </Grid>
 
-                <Grid item xs={9}>
-                    <Card>
+                <Grid item xs={1} sm={1} md={8}>
+                    <Card className='seatingChart'>
                         <AppBar className='tableTitle' position='static' color='inherit'>
                             <Toolbar className='toolbar tableTitle'>
                                 <section className='verticalContainer'>
@@ -128,47 +143,58 @@ export function SeatingDashboard() {
                                 <Button variant='contained' size='medium'>Generate New Plan</Button>
                             </Toolbar>
                         </AppBar>
-                        {tableList.map((el, ind) =>
-                            <DragDropContext onDragEnd={empty}>
-                                <Card>
-                                    <AppBar position='static' color='inherit'>
-                                        <Toolbar>
-                                            {editing[ind] ?
-                                                <><input id={'tableName' + ind} defaultValue={el} />
-                                                    <IconButton onClick={(e) => { updateState(ind, tableList, getNewName(ind), changeName); updateState(ind, editing, !editing[ind], toggleEditing) }}>
-                                                        <IoIosSave />
-                                                    </IconButton></>
-                                                :
-                                                <><Typography variant='h6'> {el} </Typography>
-                                                    <IconButton onClick={() => updateState(ind, editing, !editing[ind], toggleEditing)}>
-                                                        <AiFillEdit />
-                                                    </IconButton></>}
-                                            <Button variant='text' size='small'>Clear</Button>
-                                        </Toolbar>
-                                    </AppBar>
-                                    <Droppable droppableId={ind.toString()}>
-                                        {(provided) => (
-                                            <div {...provided.droppableProps} ref={provided.innerRef}>
-                                                {[...Array(perTable)].map((i, ind) =>
-                                                    <Draggable draggableId={ind.toString()} index={ind}>
-                                                        {(provided, snapshot) => (
-                                                            <div
-                                                                ref={provided.innerRef}
-                                                                {...provided.draggableProps}
-                                                                {...provided.dragHandleProps}
-                                                            >
-                                                                <span>{ind} {i}</span>
-                                                            </div>
-                                                        )}
-                                                    </Draggable>)}
-                                                {provided.placeholder}
-                                            </div>
-                                        )}
+                        <Grid container spacing={{xs:1, md: 2, lg: 4}} columns={{ xs: 1, md: 2, lg: 3 }}>
+                            {tableList.map((el, ind) =>
+                                <Grid item xs={1} md={1} lg={1}>
+                                    <DragDropContext onDragEnd={empty}>
+                                        <Card className='tableBox'>
+                                            <AppBar position='static' className='tableHeader'>
+                                                <Toolbar>
+                                                    {editing[ind] ?
+                                                        <><input id={'tableName' + ind} defaultValue={el} />
+                                                            <IconButton onClick={(e) => { updateState(ind, tableList, getNewName(ind), changeName); updateState(ind, editing, !editing[ind], toggleEditing) }}>
+                                                                <IoIosSave />
+                                                            </IconButton></>
+                                                        :
+                                                        <><Typography variant='h6'> {el} </Typography>
+                                                            <IconButton onClick={() => updateState(ind, editing, !editing[ind], toggleEditing)}>
+                                                                <AiFillEdit />
+                                                            </IconButton></>}
+                                                    <Button variant='text' size='small'>Clear</Button>
+                                                </Toolbar>
+                                            </AppBar>
+                                            <Droppable droppableId={ind.toString()}>
+                                                {(provided) => (
+                                                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                                                        <ul>
+                                                            {[...Array(perTable)].map((i, ind) =>
+                                                                <Draggable draggableId={ind.toString()} index={ind}>
+                                                                    {(provided, snapshot) => (
+                                                                        <div
+                                                                            ref={provided.innerRef}
+                                                                            {...provided.draggableProps}
+                                                                            {...provided.dragHandleProps}
+                                                                        >
+                                                                            <li className='seat'>
+                                                                                {ind} {i}
+                                                                                <MdLock />
+                                                                                {/* <MdLockOpen /> */}
+                                                                            </li>
+                                                                        </div>
+                                                                    )}
 
-                                    </Droppable>
-                                </Card>
-                            </DragDropContext>
-                        )}
+                                                                </Draggable>)}
+                                                            {provided.placeholder}
+                                                        </ul>
+                                                    </div>
+                                                )}
+
+                                            </Droppable>
+                                        </Card>
+                                    </DragDropContext>
+                                </Grid>
+                            )}
+                        </Grid>
                     </Card>
                 </Grid>
             </Grid>
