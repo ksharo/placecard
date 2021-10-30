@@ -89,3 +89,20 @@ ul {
     margin: 0px;
     padding: 0px;
 }
+
+.MuiDataGrid-root .MuiDataGrid-cell:focus, .MuiDataGrid-root .MuiDataGrid-cell:focus-within {
+    outline: none !important;
+}
+
+.centeredCell {
+    text-align: center !important;
+    justify-content: center !important;
+}
+
+.nameCell {
+    margin-left: 7px;
+}
+
+.centeredContent {
+    justify-content: center;
+}

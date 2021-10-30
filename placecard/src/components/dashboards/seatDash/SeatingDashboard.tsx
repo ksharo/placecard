@@ -30,13 +30,16 @@ export function SeatingDashboard() {
     ];
 
     const columns: GridColDef[] = [
-        { field: 'col1', headerName: 'Guests', headerAlign: 'center'},
-        { field: 'col2', headerName: 'Party Size', headerAlign: 'center'},
+        { field: 'col1', headerName: 'Name', headerAlign: 'left', cellClassName: 'nameCell', flex: 6},
+        { field: 'col2', headerName: 'Party Size', headerAlign: 'center', cellClassName: 'centeredCell', flex: 3},
         { field: 'col3', headerName: 'Table', renderCell: () => {
-            return (<select>
-                    
+           return (<select>
+                    <option selected disabled>No Table</option>
+                    {tableList.map( (name) => 
+                            <option value={name}>{name}</option>
+                    )}
                 </select>)
-        }, headerAlign: 'center'},
+        }, headerAlign: 'center',  cellClassName: 'centeredCell', flex: 4},
     ];
 
     const updateState = (ind: number, ed: any[], item: any, updater: any) => {
@@ -121,12 +124,12 @@ export function SeatingDashboard() {
                 <Grid item xs={1} sm={1} md={4}>
                     <Card>
                         <AppBar className='tableTitle' position='static' color='inherit'>
-                            <Toolbar className='toolbar tableTitle'>
+                            <Toolbar className='toolbar tableTitle centeredContent'>
                                 <Typography variant='h5'>Guests</Typography>
                             </Toolbar>
                         </AppBar>
                         <div className='guestTable' style={{ height: 500, width: '100%' }}>
-                            <DataGrid rows={rows} columns={columns} hideFooter={true} />
+                            <DataGrid rows={rows} columns={columns} hideFooter={true} disableSelectionOnClick={true} />
                         </div>
                     </Card>
                 </Grid>
