@@ -21,6 +21,7 @@ export function SeatingDashboard() {
 
     const [editing, toggleEditing] = useState([false, true])
     const [tableList, changeName] = useState(['Table1', 'table2']);
+    const [tablesData, editTablesData] = useState([["apple", "adam", "arkansas"], ["chips"]])
     const rows: GridRowsProp = [
         { id: 1, col1: 'Hello', col2: 'World' },
         { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
@@ -41,7 +42,35 @@ export function SeatingDashboard() {
         return '';
     };
 
-    const empty = () => { };
+    const empty = (result: any) => {
+        const { destination, source, draggableId} = result;
+        console.log(destination);
+        console.log(source);
+        console.log(draggableId)
+
+        if (!destination  ||  (destination.droppableId === source.droppableId  &&  destination.index === source.index)) {
+            return;
+        }
+
+        console.log(tablesData)
+        console.log(tablesData[destination.droppableId])
+
+        const newIds = Array.from(tablesData[destination.droppableId])
+        newIds.splice(source.index, 1);
+        newIds.splice(destination.index, 0, destination.droppableId)
+
+        const newColumn = {
+            ...tablesData[destination.droppableId],
+            taskIds: newIds
+        }
+
+        const newState = {
+            ...tablesData,
+            columns: newColumn
+        }
+
+        editTablesData(newState)
+    };
 
     const columns: GridColDef[] = [
         { field: 'col1', headerName: 'Guests', width: 300, headerAlign: 'center', headerClassName: 'tableTitle' },
@@ -128,12 +157,14 @@ export function SeatingDashboard() {
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
                                                             >
-                                                                <p>{ind}</p>
+                                                                <span>{ind} {i}</span>
                                                             </div>
                                                         )}
                                                     </Draggable>)}
+                                                {provided.placeholder}
                                             </div>
                                         )}
+
                                     </Droppable>
                                 </Card>
                             </DragDropContext>
