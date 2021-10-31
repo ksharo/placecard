@@ -8,14 +8,15 @@ import { CreateEvent } from './components/forms/CreateEvent';
 import { Footer } from './components/shared/Footer';
 import { Header } from './components/shared/Header';
 import {
-  BrowserRouter as Router, 
-  Redirect, 
-  Route, 
+  BrowserRouter as Router,
+  Redirect,
+  Route,
   Switch,
 } from "react-router-dom";
 import { EventDashboard } from './components/eventDash/EventDashboard';
 import { UserDashboard } from './components/dashboards/UserDashboard';
 import { NotFound } from './components/shared/NotFound';
+import { GuestList } from './components/guestList/GuestList';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route exact path='/eventDash' component={ EventDashboard }/>
           <Route exact path='/createEvent' component={ CreateEvent }/>
           <Route exact path='/userHome' component={ UserDashboard }/>
+          <Route exact path='/uploadGuestList' component={ GuestList }/>
           <Route path="/404" component={ NotFound }/>
           <Redirect to="/404"/>
         </Switch>
