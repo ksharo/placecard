@@ -11,6 +11,8 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  position: relative;
+  min-height: 100vh;
 }
 
 button {
@@ -74,4 +76,14 @@ button:hover {
 
 .verticalContainer button {
   margin: 2px;
+}
+
+.horizontalContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.content {
+  padding-bottom: 70px;
 }

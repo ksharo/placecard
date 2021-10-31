@@ -1,0 +1,60 @@
+.tinyButton {
+    padding: 8px 16px 8px 16px;
+    margin: 10px;
+}
+
+.lowSub {
+    margin-top: 70px;
+    padding: 0px 70px 0px 70px;
+}
+
+.lowButtons {
+    margin: 200px 70px 0px 70px;
+}
+
+.guestConfirmation {
+    max-width: 1000px;
+    margin: auto;
+}
+
+.textInput {
+    margin-top: 10px !important;
+}
+
+.survey {
+    margin: 20px 50px 20px 50px !important;
+    overflow: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.survey::-webkit-scrollbar {
+    display: none;
+  }
+
+.MuiDataGrid-row {
+    margin: 0px !important;
+}
+
+.surveyPt1 .MuiDataGrid-root, .surveyPt1 .MuiDataGrid-cell--withRenderer{
+    border: none !important;
+}
+
+.nameField {
+    width: 100%;
+}
+
+.ageField {
+    width: 100%;
+    text-align: center;
+}
+
+.centeredCheck {
+    justify-content: center !important;
+}
+
+.surveyPt1, .surveyPt2 {
+    max-width: 1400px;
+    margin: auto;
+}
