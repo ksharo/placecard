@@ -43,7 +43,7 @@ input {
   box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
 }
 
-#userName {
+#fullName {
   background-color: grey;
   color: white;
 }

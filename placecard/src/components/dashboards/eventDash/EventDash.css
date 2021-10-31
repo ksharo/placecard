@@ -49,8 +49,3 @@
     filter: brightness(90%);
     box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
   }
-
-.verticalBtns {
-    display: flex;
-    flex-directon: row;
-}

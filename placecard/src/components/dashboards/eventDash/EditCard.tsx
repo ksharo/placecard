@@ -12,7 +12,7 @@ export function EditCard(props: {numSent: string; numRec: string}) {
                 <p>Surveys Sent: {props.numSent} </p>
                 <p>Surveys Taken: {props.numRec}/{props.numSent} ({percRec}%)</p>
             </section>
-            <section className='verticalBtns'>
+            <section className='verticalContainer'>
                 <Link to='/editGuestList' className='editButton'>
                         Edit/View Guest List
                 </Link>

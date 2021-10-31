@@ -13,9 +13,10 @@ import {
   Route, 
   Switch,
 } from "react-router-dom";
-import { EventDashboard } from './components/eventDash/EventDashboard';
-import { UserDashboard } from './components/dashboards/UserDashboard';
+import { EventDashboard } from './components/dashboards/eventDash/EventDashboard';
+import { UserDashboard } from './components/dashboards/userDash/UserDashboard';
 import { NotFound } from './components/shared/NotFound';
+import { SeatingDashboard } from './components/dashboards/seatDash/SeatingDashboard';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route exact path='/eventDash' component={ EventDashboard }/>
           <Route exact path='/createEvent' component={ CreateEvent }/>
           <Route exact path='/userHome' component={ UserDashboard }/>
+          <Route exact path='/seatDash' component={ SeatingDashboard }/>
           <Route path="/404" component={ NotFound }/>
           <Redirect to="/404"/>
         </Switch>
