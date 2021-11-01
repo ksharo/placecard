@@ -13,10 +13,15 @@ import {
   Route,
   Switch,
 } from "react-router-dom";
-import { EventDashboard } from './components/eventDash/EventDashboard';
-import { UserDashboard } from './components/dashboards/UserDashboard';
+import { EventDashboard } from './components/dashboards/eventDash/EventDashboard';
+import { UserDashboard } from './components/dashboards/userDash/UserDashboard';
 import { NotFound } from './components/shared/NotFound';
 import { GuestList } from './components/guestList/GuestList';
+import { SeatingDashboard } from './components/dashboards/seatDash/SeatingDashboard';
+import { GuestConfirmation } from './components/guestPages/GuestConfirmation';
+import { SurveyPt1 } from './components/guestPages/SurveyPt1';
+import { SurveyPt2 } from './components/guestPages/SurveyPt2';
+import { SurveyConf } from './components/confirmationPages/SurveyConf';
 
 
 function App() {
@@ -24,6 +29,7 @@ function App() {
   return (
     <Router>
       <body>
+        <section className='content'>
         <Header/>
         <Switch>
           <Route exact path='/' component={ Home }/>
@@ -32,9 +38,15 @@ function App() {
           <Route exact path='/createEvent' component={ CreateEvent }/>
           <Route exact path='/userHome' component={ UserDashboard }/>
           <Route exact path='/uploadGuestList' component={ GuestList }/>
+          <Route exact path='/seatDash' component={ SeatingDashboard }/>
+          <Route exact path='/beginSurvey' component={ GuestConfirmation }/>
+          <Route exact path='/surveyPt1' component={ SurveyPt1 }/>
+          <Route exact path='/surveyPt2' component={ SurveyPt2 }/>
+          <Route exact path='/doneSurvey' component={ SurveyConf }/>
           <Route path="/404" component={ NotFound }/>
           <Redirect to="/404"/>
         </Switch>
+        </section>
         <Footer/>
       </body>
     </Router>

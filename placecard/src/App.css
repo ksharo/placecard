@@ -1,5 +1,5 @@
 body, html, input, button {
-  font-family: 'Lato';
+  font-family: 'Lato', sans-serif;
 }
 
 body {
@@ -11,18 +11,21 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  position: relative;
+  min-height: 100vh;
 }
 
 button {
   border-radius: 4px;
   border: none;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+  /* box-shadow: 2px 2px 6px rgba(0,0,0,0.1); */
   padding: 2px 6px;
+  text-transform: none !important;
 }
   
 button:hover {
   filter: brightness(90%);
-  box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+  /* box-shadow: 4px 4px 8px rgba(0,0,0,0.3); */
 }
 
 .title {
@@ -64,4 +67,23 @@ button:hover {
   min-width: 240px;
   margin: 10px auto 50px auto;
   padding: 10px;
+}
+
+.verticalContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.verticalContainer button {
+  margin: 2px;
+}
+
+.horizontalContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.content {
+  padding-bottom: 70px;
 }
