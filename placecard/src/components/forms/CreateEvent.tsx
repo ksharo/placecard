@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './Forms.css'
 export function CreateEvent(){
     return (
@@ -23,7 +24,7 @@ export function CreateEvent(){
             <input type="number" value="10"/>
             </label>
         </form>
-        <button className='rectangleButton smallerButton'>Create!</button>
+        <Link to='/uploadGuestList' className='rectangleButton smallerButton'>Create!</Link>
     </>
     );
 }
