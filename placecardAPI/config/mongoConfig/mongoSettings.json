@@ -1,6 +1,6 @@
 {
     "mongoConfig": {
         "dbUrl": "mongodb://localhost:27017",
-        "database": "placecardAPI"
+        "database": "placecardAPI_db"
     }
 }

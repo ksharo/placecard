@@ -1,7 +1,14 @@
 const { MongoClient } = require('mongodb');
+const { isUndefined } = require('lodash');
 const mongoSettings = require('./mongoSettings');
 const mongoConfig = mongoSettings.mongoConfig;
 
-MongoClient.connect(mongoConfig.dbUrl, (err, client) => {
-    
-});
+let connection = undefined;
+let db = undefined;
+
+module.exports = async() => {
+    if (isUndefined(connection)) {
+        connection = await MongoClient.connect(mongoConfig.dbUrl, { useNewUrlParser: true, useUnifiedTopology: true });
+        db = await connection.db(mongoConfig.database);
+    }
+}
