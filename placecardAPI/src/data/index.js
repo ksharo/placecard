@@ -1,4 +1,4 @@
-const eventsData = require('./Events');
+const eventsData = require('./Event');
 
 module.exports = {
     events: eventsData
