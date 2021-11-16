@@ -54,19 +54,6 @@ async function createEvent(newEventObject) {
 
 // }
 
-// async function main() {
-//     const testSchema = {
-//         event_name: "Simon's event",
-//         tables: [],
-//         event_time: 1,
-//         attendees_per_table: 10,
-//         expected_number_of_attendees: 50
-//     };
-//     const response = validateSchema(EventSchema, testSchema, SCHEMA_TYPES.EVENT)
-//     console.log("Validation response: ", response);
-// }
-// main();
-
 module.exports = {
     getEvent,
     createEvent

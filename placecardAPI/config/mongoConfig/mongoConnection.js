@@ -1,7 +1,6 @@
 const { MongoClient } = require('mongodb');
 const { isUndefined } = require('lodash');
-const mongoSettings = require('./mongoSettings');
-const mongoConfig = mongoSettings.mongoConfig;
+const { mongoConfig } = require('./mongoSettings');
 
 let connection = undefined;
 let db = undefined;
@@ -11,4 +10,5 @@ module.exports = async() => {
         connection = await MongoClient.connect(mongoConfig.dbUrl, { useNewUrlParser: true, useUnifiedTopology: true });
         db = await connection.db(mongoConfig.database);
     }
+    return db;
 }
