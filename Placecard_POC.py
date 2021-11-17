@@ -199,7 +199,42 @@ def perfectTable(table, partyID, parties, dislikes, likes, perTable):
     return False
 
 
+def checkWrongPlacements(seatingChart, likes, dislikes):
+    ''' Searches through the seating chart to find how many
+        tables have disliked individuals at them. Also counts
+        the number of likes. '''
+    wrongPerTable = {}
+    wrong = {}
+    right = {}
+    total = 0
+    sat = 0
+    for x in seatingChart:
+        wrongPerTable[x] = 0
+        for party1 in seatingChart[x]:
+            right[party1] = 0
+            wrong[party1] = 0
+            sat += 1
+            for party2 in seatingChart[x]:
+                if party2 in dislikes[party1]:
+                    wrongPerTable[x] += 1
+                    wrong[party1] += 1
+                    total += 1
+                if party2 in likes[party1]:
+                    right[party1] += 1
+    return (sat, total, wrongPerTable, wrong, right)
+
+
 if __name__ == '__main__':
     seatingChart = generateChart(parties, likes, dislikes, 10, tableNames)
     for x in seatingChart:
         print(x, seatingChart[x])
+    (totalSat, totalWrong, wrongPerTable, wrong, right) = checkWrongPlacements(seatingChart, likes, dislikes)
+    print("Total Sat:", totalSat)
+    print("Total Seating Errors:", totalWrong)
+    for x in wrongPerTable:
+        print(x, wrongPerTable[x])
+    # for x in right:
+    #     print(x, ":", right[x], "/", len(likes[x]))
+    # print("********************************************************************************************************")
+    # for x in wrong:
+    #     print(x, ":", wrong[x], "/", len(dislikes[x]))
