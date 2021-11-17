@@ -1,5 +1,31 @@
 import random
+import csv
 
+file = open('SCS.csv')
+csvReader = csv.reader(file, delimiter=',')
+header = next(csvReader)
+
+for x in range(0, len(header)):
+    header[x] = header[x].replace("Do you want to sit next to this person? Ignore your own name and know that you are not required to say \"no\" for those you don't know, though you may choose to, if you wish. Note that if you leave a name without an answer, this means you are indifferent to sitting with this person. We will seat you first with those you answer \"yes\" for, then those who you are indifferent towards, and we will try our best to keep you from sitting with those for whom you answer \"no\". Choose as many for each answer as you want. The more you answer, the greater the chance of us seating you correctly! Don't know anyone? Leave it blank!", '')
+    header[x] = header[x].replace(' [', '').replace(']', '')
+
+partyDict = {}
+likesDict = {}
+dislikesDict = {}
+
+# initialize dictionaries
+for x in header[1:]:
+    partyDict[x] = 1
+    likesDict[x] = []
+    dislikesDict[x] = []
+
+for line in csvReader:
+    party = line[0]
+    for x in range(1, len(line)):
+        if line[x] == 'Yes' and party != header[x]:
+            likesDict[party].append(header[x])
+        if line[x] == 'No' and party != header[x]:
+            dislikesDict[party].append(header[x])
 '''
     Author: Kaitlyn Sharo
     Date: 11/11/2021
@@ -12,11 +38,15 @@ import random
 ##likes = {'a': ['g', 'd', 'f'], 'b': ['g'], 'c': ['e', 'b'], 'd': ['e', 'c', 'f', 'b', 'g'], 'e': ['c', 'd'], 'f':['e', 'd', 'b'], 'g':[]}
 ##dislikes = {'a': ['c', 'b'], 'b': ['e', 'c', 'a', 'd'], 'c': ['g', 'a', 'd', 'f'], 'd': ['a'], 'e': ['g'], 'f': ['g', 'c', 'a'], 'g':[]}
 
-parties = {'a': 2, 'b': 1, 'c': 2, 'd': 3, 'e': 2, 'f': 2, 'g': 5, 'h': 2, 'i': 2, 'j': 4, 'k': 3, 'l': 3, 'm': 3, 'n': 5, 'o': 2, 'p': 1, 'q': 2}
-likes = {'a': ['f', 'k', 'g', 'c', 'm'], 'b': ['q', 'm', 'k', 'd'], 'c': ['q', 'f'], 'd': ['k', 'b', 'h', 'e', 'n'], 'e': ['g', 'i', 'j', 'c'], 'f': ['g', 'e', 'm', 'h'], 'g': ['e'], 'h': ['f', 'e', 'o', 'd', 'i'], 'i': ['a', 'k', 'b', 'j', 'd'], 'j': ['f', 'g', 'e', 'l', 'd'], 'k': ['f', 'b', 'g', 'e', 'd'], 'l': ['g', 'e'], 'm': ['a', 'k', 'h'], 'n': ['d', 'f', 'j'], 'o': ['n'], 'p': ['k', 'g', 'h', 'd', 'i'], 'q':['k','c','d']}
-dislikes = {'a': ['o'], 'b': ['a', 'j', 'n', 'h'], 'c': ['d', 'o'], 'd': ['p', 'c'], 'e': ['f', 'a', 'h'], 'f': ['q', 'o', 'i', 'b'], 'g': ['j'], 'h': ['g', 'j'], 'i': ['g', 'e', 'h'], 'j': ['p', 'o', 'n', 'm', 'i'], 'k': ['q', 'a', 'c', 'h'], 'l': ['p', 'h'], 'm': ['q', 'n'], 'n': ['b', 'c'], 'o': ['m', 'i', 'j'], 'p': ['q', 'l', 'c', 'b'], 'q':['a']}
+# parties = {'a': 2, 'b': 1, 'c': 2, 'd': 3, 'e': 2, 'f': 2, 'g': 5, 'h': 2, 'i': 2, 'j': 4, 'k': 3, 'l': 3, 'm': 3, 'n': 5, 'o': 2, 'p': 1, 'q': 2}
+# likes = {'a': ['f', 'k', 'g', 'c', 'm'], 'b': ['q', 'm', 'k', 'd'], 'c': ['q', 'f'], 'd': ['k', 'b', 'h', 'e', 'n'], 'e': ['g', 'i', 'j', 'c'], 'f': ['g', 'e', 'm', 'h'], 'g': ['e'], 'h': ['f', 'e', 'o', 'd', 'i'], 'i': ['a', 'k', 'b', 'j', 'd'], 'j': ['f', 'g', 'e', 'l', 'd'], 'k': ['f', 'b', 'g', 'e', 'd'], 'l': ['g', 'e'], 'm': ['a', 'k', 'h'], 'n': ['d', 'f', 'j'], 'o': ['n'], 'p': ['k', 'g', 'h', 'd', 'i'], 'q':['k','c','d']}
+# dislikes = {'a': ['o'], 'b': ['a', 'j', 'n', 'h'], 'c': ['d', 'o'], 'd': ['p', 'c'], 'e': ['f', 'a', 'h'], 'f': ['q', 'o', 'i', 'b'], 'g': ['j'], 'h': ['g', 'j'], 'i': ['g', 'e', 'h'], 'j': ['p', 'o', 'n', 'm', 'i'], 'k': ['q', 'a', 'c', 'h'], 'l': ['p', 'h'], 'm': ['q', 'n'], 'n': ['b', 'c'], 'o': ['m', 'i', 'j'], 'p': ['q', 'l', 'c', 'b'], 'q':['a']}
 
-tableNames = ['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5']
+parties = partyDict
+likes = likesDict
+dislikes = dislikesDict
+
+tableNames = ['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5', 'Table 6', 'Table 7', 'Table 8', 'Table 9', 'Table 10']
 
 def generateChart(parties, likes, dislikes, perTable, tableNames):
     ''' Generates the seating chart based on the given information '''
@@ -64,6 +94,7 @@ def generateChart(parties, likes, dislikes, perTable, tableNames):
                         if tableFits(seatingChart[t], x, parties, perTable):
                             # good match! let's seat this party :)
                             for _ in range(0, parties[x]):
+                                print(x, "seated", parties[x])
                                 seatingChart[t].append(x)
                             seatedParties[x] = t
 
@@ -113,9 +144,15 @@ def seatParty(partyID, parties, likes, dislikes, tableNames, perTable, seatingCh
                 # found a table that fits: consolation prize
                 for s in range(0, parties[partyID]):
                     seatingChart[t].append(partyID)
-                    found = True
-                    table = t
-                    break
+                found = True
+                table = t
+                print(partyID, "sat at table", t)
+                for x in seatingChart[t]:
+                    if x in dislikes[partyID]:
+                        print(partyID, "does not like", x, "at table", t)
+                    if partyID in dislikes[x]:
+                        print(partyID, "is not liked by", x, "at table", t)
+                break
 
     # add code later for a party who doesn't fit (sizewise) at any table!
     while not found:
@@ -135,7 +172,7 @@ def fineTable(table, partyID, parties, dislikes, perTable):
     ''' Checks the table to make sure nobody dislikes partyID.
     Returns false if the condition fails, true otherwise '''
     # check that the party can fit at the table
-    if not tableFits:
+    if not tableFits(table, partyID, parties, perTable):
         return False
     
     # check if anyone at the table dislikes partyID
@@ -163,4 +200,7 @@ def perfectTable(table, partyID, parties, dislikes, likes, perTable):
 
 
 if __name__ == '__main__':
-    print(generateChart(parties, likes, dislikes, 10, tableNames))
+    seatingChart = generateChart(parties, likes, dislikes, 10, tableNames)
+    print(likes['Sophia Zuo'])
+    for x in seatingChart:
+        print(x, seatingChart[x])
