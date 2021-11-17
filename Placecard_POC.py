@@ -46,7 +46,7 @@ parties = partyDict
 likes = likesDict
 dislikes = dislikesDict
 
-tableNames = ['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5', 'Table 6', 'Table 7', 'Table 8', 'Table 9', 'Table 10']
+tableNames = ['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5', 'Table 6', 'Table 7', 'Table 8', 'Table 9', 'Table 10', 'Table 11']
 
 def generateChart(parties, likes, dislikes, perTable, tableNames):
     ''' Generates the seating chart based on the given information '''
@@ -94,7 +94,6 @@ def generateChart(parties, likes, dislikes, perTable, tableNames):
                         if tableFits(seatingChart[t], x, parties, perTable):
                             # good match! let's seat this party :)
                             for _ in range(0, parties[x]):
-                                print(x, "seated", parties[x])
                                 seatingChart[t].append(x)
                             seatedParties[x] = t
 
@@ -112,26 +111,27 @@ def seatParty(partyID, parties, likes, dislikes, tableNames, perTable, seatingCh
     for t in tableNames:
         if perfectTable(seatingChart[t], partyID, parties, dislikes, likes, perTable):
             # found one! sit the party here, accounting for size
-            for s in range(0, parties[partyID]):
+            for _ in range(0, parties[partyID]):
                 seatingChart[t].append(partyID)
             found = True
             table = t
             break
     # look for a good table
-    for t in tableNames:
-        if goodTable(seatingChart[t], partyID, parties, dislikes, likes, perTable):
-            # found one! sit the party here, accounting for size
-            for s in range(0, parties[partyID]):
-                seatingChart[t].append(partyID)
-            found = True
-            table = t
-            break
+    if not found:
+        for t in tableNames:
+            if goodTable(seatingChart[t], partyID, parties, dislikes, likes, perTable):
+                # found one! sit the party here, accounting for size
+                for _ in range(0, parties[partyID]):
+                    seatingChart[t].append(partyID)
+                found = True
+                table = t
+                break
     # good table not found, look for a 'fine' one
     if not found:
         for t in tableNames:
             if fineTable(seatingChart[t], partyID, parties, dislikes, perTable):
                 # found one! sit the party here, accounting for size
-                for s in range(0, parties[partyID]):
+                for _ in range(0, parties[partyID]):
                     seatingChart[t].append(partyID)
                 found = True
                 table = t
@@ -142,7 +142,7 @@ def seatParty(partyID, parties, likes, dislikes, tableNames, perTable, seatingCh
         for t in tableNames:
             if tableFits(seatingChart[t], partyID, parties, perTable):
                 # found a table that fits: consolation prize
-                for s in range(0, parties[partyID]):
+                for _ in range(0, parties[partyID]):
                     seatingChart[t].append(partyID)
                 found = True
                 table = t
@@ -159,7 +159,7 @@ def seatParty(partyID, parties, likes, dislikes, tableNames, perTable, seatingCh
         print("ERRORRRRRRRR")
         found = True  
 
-    return (seatingChart, t)
+    return (seatingChart, table)
 
 def tableFits(table, partyID, parties, perTable):
     # check if the party can fit at the table
@@ -201,6 +201,5 @@ def perfectTable(table, partyID, parties, dislikes, likes, perTable):
 
 if __name__ == '__main__':
     seatingChart = generateChart(parties, likes, dislikes, 10, tableNames)
-    print(likes['Sophia Zuo'])
     for x in seatingChart:
         print(x, seatingChart[x])
