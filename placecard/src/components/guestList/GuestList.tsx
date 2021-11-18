@@ -1,7 +1,7 @@
 import { GuestListTable } from "./GuestListTable"
 import { DataGrid } from '@mui/x-data-grid';
 import { useState } from "react";
-import { Button, Checkbox, Input } from "@mui/material";
+import { Button, Checkbox, Input, TextField } from "@mui/material";
 
 
 export function GuestList(){
@@ -17,7 +17,7 @@ export function GuestList(){
 			headerName: 'Name of Individual/Party',
 			flex: 3,
 			renderCell: () => {
-				return <Input fullWidth={true}/>
+				return <TextField fullWidth={true} inputProps={{autoComplete: "disabled"}}/>
 			},
 		},
 		{
@@ -25,7 +25,7 @@ export function GuestList(){
 			headerName: 'Email',
 			flex: 3,
 			renderCell: () => {
-				return <Input type="email" fullWidth={true}/>
+				return <TextField type="email" fullWidth={true} inputProps={{autoComplete: "disabled"}}/>
 			},
 		},
 		{
@@ -33,7 +33,7 @@ export function GuestList(){
 			headerName: 'Phone',
 			flex: 3,
 			renderCell: () => {
-				return <Input type="phone" fullWidth={true}/>
+				return <TextField type="phone" fullWidth={true} inputProps={{autoComplete: "disabled"}}/>
 			},
 		},
 		{
@@ -41,7 +41,7 @@ export function GuestList(){
 			headerName: '# in Party',
 			flex: 1,
 			renderCell: () => {
-				return <Input type="number" fullWidth={true}/>
+				return <TextField type="number" fullWidth={true} inputProps={{autoComplete: "disabled"}}/>
 			},
 		},
 		{
@@ -73,6 +73,8 @@ export function GuestList(){
 		},
 	])
 
+	let i = 3
+
 	return(
 		<>
 			<section>
@@ -103,14 +105,15 @@ export function GuestList(){
 				/>
 			</section>
 
-			<Button variant="outlined" onClick={() => {editRows([...rows, {
-				id: 3,
+			<Button variant="outlined" onClick={() => {console.log(i); editRows([...rows, {
+				id: i++,
 				individualOrPartyName: "J",
 				email: "c",
 				phone: "d",
 				numberInParty: "e",
 				vip: "l"
-			}])}}>
+			}]);
+			i = i +1}}>
 				Add New Guest
 			</Button>
 
