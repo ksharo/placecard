@@ -4,6 +4,7 @@ import { Home } from './components/home/Home';
 /* Import Form Components */
 import { NewAccount } from './components/forms/NewAccount';
 import { CreateEvent } from './components/forms/CreateEvent';
+import { EditEvent } from './components/forms/EditEvent';
 /* Import Shared Components */
 import { Footer } from './components/shared/Footer';
 import { Header } from './components/shared/Header';
@@ -36,6 +37,7 @@ function App() {
           <Route exact path='/newAccount' component={ NewAccount }/>
           <Route exact path='/eventDash' component={ EventDashboard }/>
           <Route exact path='/createEvent' component={ CreateEvent }/>
+          <Route exact path='/editEvent' component={ EditEvent }/>
           <Route exact path='/userHome' component={ UserDashboard }/>
           <Route exact path='/uploadGuestList' component={ GuestList }/>
           <Route exact path='/seatDash' component={ SeatingDashboard }/>
