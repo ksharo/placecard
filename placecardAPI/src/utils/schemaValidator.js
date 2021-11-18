@@ -1,20 +1,22 @@
+const { response } = require("express");
 const Joi = require("joi");
 const { isUndefined } = require("lodash");
+const { SCHEMA_TO_ERROR } = require("./schemaTypes");
 
-const SCHEMA_TYPES = {
-    EVENT: "Event",
-    GUEST: "Guest"
-};
-
-function validateSchema(schema, input, type) {
+function validateSchema(schema, input, schemaType) {
     const response = schema.validate(input);
     if (!isUndefined(response.error)) {
-        response.error.schemaType = type;
+        const errorDetails = response.error.details[0]
+        const customError = {
+            message: errorDetails.message,
+            errorType: SCHEMA_TO_ERROR[schemaType],
+            type: errorDetails.type
+        };
+        response.error = customError;
     }
     return response;
 }
 
 module.exports = {
-    SCHEMA_TYPES,
     validateSchema
 };

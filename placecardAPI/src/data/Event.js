@@ -4,7 +4,8 @@ const { events } = require("../../config/mongoConfig/mongoCollections");
 const mongoUtils = require("../utils/mongoDocument");
 const { INVALID_EVENT_ID, NO_EVENT_FOUND, EVENT_UNDEFINED, generateInsertError, enerateNotFoundMessage } = require("../utils/errorMessages");
 const EventSchema = require("./schema/EventSchema");
-const { validateSchema, SCHEMA_TYPES } = require("../utils/schemaValidator");
+const { SCHEMA_TYPES } = require("../utils/schemaTypes")
+const { validateSchema } = require("../utils/schemaValidator");
 
 async function getEvent(eventId) {
     if (_.isUndefined(eventId)) {
@@ -24,7 +25,7 @@ async function getEvent(eventId) {
     return mongoUtils.convertIdToString(event);
 }
 
-// TODO: Maybe we should move data validation into middleware functions for POST and PUT routes
+// TODO: Maybe we should move data validation into middleware functions for POST and PUT routes rather than doing it everywhere and repeating code
 async function createEvent(newEventObject) {
     if (_.isUndefined(newEventObject)) {
         throw new Error(EVENT_UNDEFINED);
@@ -40,7 +41,7 @@ async function createEvent(newEventObject) {
     const insertInfo = await eventCollection.insertOne(newEventObject);
 
     if (insertInfo.insertedCount === 0) {
-        throw new Error(generateInsertError(newEventObject, SCHEMA_TYPES.EVENT));
+        throw new Error(generateInsertError(newEventObject));
     }
     const newId = insertInfo.insertedId.toString();
     return await this.getEvent(newId);

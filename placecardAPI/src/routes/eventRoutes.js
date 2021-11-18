@@ -4,7 +4,8 @@ const router = express.Router();
 const { events } = require("../data");
 const { EVENT_UNDEFINED, generateErrorMessage } = require('../utils/errorMessages');
 const EventSchema = require("../data/schema/EventSchema");
-const { validateSchema, SCHEMA_TYPES } = require("../utils/schemaValidator");
+const { SCHEMA_TYPES } = require("../utils/schemaTypes");
+const { validateSchema } = require("../utils/schemaValidator");
 
 async function eventGetRoute(req, res) {
     try {
@@ -32,8 +33,6 @@ async function eventPostRoute(req, res) {
         const createdEvent = await events.createEvent(newEvent);
         return res.json(createdEvent);
     } catch(e) {
-        console.log("reached an error");
-        console.log(e);
         return res.status(500).json(e);
     } 
 }

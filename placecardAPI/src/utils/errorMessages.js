@@ -3,6 +3,11 @@ const NO_EVENT_FOUND = "No event found for";
 const EVENT_UNDEFINED = "Input event is undefined";
 const INSERT_ERROR  = "An insert error occurred while trying to create an";
 
+const ERROR_TYPES = {
+    INVALID_EVENT: "InvalidEventInput",
+    INVALID_GUEST: "InvalidGuestInput"
+};
+
 function generateInsertError(input, type) {
     return `${INSERT_ERROR} ${type}: ${input}`;
 }
@@ -19,6 +24,7 @@ module.exports = {
     INVALID_EVENT_ID,
     NO_EVENT_FOUND,
     EVENT_UNDEFINED,
+    ERROR_TYPES,
     generateNotFoundMessage,
     generateInsertError,
     generateErrorMessage
