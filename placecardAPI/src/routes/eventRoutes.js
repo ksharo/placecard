@@ -2,42 +2,64 @@ const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
 const { events } = require("../data");
-const { EVENT_UNDEFINED, generateErrorMessage } = require('../utils/errorMessages');
+const { INVALID_EVENT_ID, EVENT_UNDEFINED_MESSAGE, EVENT_EMPTY_MESSAGE } = require('../constants/errorMessages');
+const { generateErrorMessage } = require("../utils/errors");
 const EventSchema = require("../data/schema/EventSchema");
-const { SCHEMA_TYPES } = require("../utils/schemaTypes");
+const { SCHEMA_TYPES } = require("../constants/schemaTypes");
 const { validateSchema } = require("../utils/schemaValidator");
+const { checkPrecondition } = require("../utils/preconditions");
+const statusCodes = require("../constants/statusCodes");
 
-async function eventGetRoute(req, res) {
+router.get("/:eventId", async (req, res) => {
+    let eventId = req.params.eventId.trim();
+    try { 
+        checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID);    
+    } catch (e) {
+        console.log(e);
+        const error = {
+            error: e.message
+        };
+        return res.status(statusCodes.BAD_REQUEST).json(error);
+    }
+
     try {
-        const event = await events.getEvent(req.params.eventId);
+        const event = await events.getEvent(eventId);
         return res.json(event);
     } catch (e) {
         const error = {
-            errorMessage: generateErrorMessage(e)
+            error: generateErrorMessage(e)
         };
-        return res.status(404).json(error);
+        return res.status(statusCodes.NOT_FOUND).json(error);
     }
-}
+});
 
-async function eventPostRoute(req, res) {
+router.post("/newEvent", async (req, res) => {
     const newEvent = req.body;
-    if (_.isUndefined(newEvent)) {
-        throw new Error(EVENT_UNDEFINED);
+    
+    try {
+        checkPrecondition(newEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
+        checkPrecondition(newEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
+    } catch (e) {
+        const error = {
+            error: e.message
+        };
+        return res.status(statusCodes.BAD_REQUEST).json(error);
     }
 
     const validatorResponse = validateSchema(EventSchema, newEvent, SCHEMA_TYPES.EVENT);
     if (!_.isUndefined(validatorResponse.error)) {
-        return res.status(400).json(validatorResponse.error);
+        return res.status(statusCodes.BAD_REQUEST).json(validatorResponse.error);
     }
+
     try {
         const createdEvent = await events.createEvent(newEvent);
         return res.json(createdEvent);
     } catch(e) {
-        return res.status(500).json(e);
+        const error = {
+            error: e.message
+        };
+        return res.status(statusCodes.INTERNAL_SERVER).json(error);
     } 
-}
-
-router.get("/:eventId", eventGetRoute);
-router.post("/:newEvent", eventPostRoute);
+});
 
 module.exports = router;

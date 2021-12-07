@@ -1,5 +1,5 @@
 const { schema } = require("../data/schema/EventSchema");
-const { ERROR_TYPES } = require("./errorMessages");
+const ERROR_TYPES = require("./errorTypes");
 
 const SCHEMA_TYPES = {
     EVENT: "Event",
