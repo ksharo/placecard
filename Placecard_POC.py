@@ -1,7 +1,9 @@
 import random
 import csv
+import time
+import json
 
-file = open('SCS.csv')
+file = open('SCS3.csv')
 csvReader = csv.reader(file, delimiter=',')
 header = next(csvReader)
 
@@ -58,16 +60,14 @@ likes = likesDict
 dislikes = dislikesDict
 superLikes = superLikesDict
 
-tableNames = ['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5', 'Table 6', 'Table 7', 'Table 8', 'Table 9', 'Table 10', 'Table 11']
+tableNames = ['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5', 'Table 6', 'Table 7', 'Table 8', 'Table 9', 'Table 10']
 
 
-def generateChart2(parties, superLikes, likes, dislikes, perTable, tableNames):
-    '''Some new ideas on how to generate the seating chart'''
-
-    # initialize the seating chart with each table name pointing to
-    # an empty list that will eventually be filled with the people sitting
-    # at that table
+def generateChart3(parties, superLikes, likes, dislikes, perTable, tableNames):
+    '''A third iteration of the seating chart. yay'''
+    seatedParties = {}
     seatingChart = {}
+    badNames = [] # list of individuals who could not be sat happily in the previous iteration
     for x in tableNames:
         seatingChart[x] = []
 
@@ -80,154 +80,443 @@ def generateChart2(parties, superLikes, likes, dislikes, perTable, tableNames):
     # and dislikes
     dislikedBy = mutualDicts(dislikes)
 
-    # keep track of parties that are already seated
-    seatedParties = {}
+    # randomize the parties
+    partyNames = list(parties.keys())
+    # random.shuffle(partyNames)
+    leastLoves = sorted(partyNames, key = lambda k: len(superLikes[k]), reverse = False)
+    noResponse = []
+    sortedParties = []
+    for x in leastLoves:
+        if len(superLikes[x]) + len(likes[x]) + len(dislikes[x]) == 0:
+            noResponse.append(x)
+        else:
+            sortedParties.append(x)
+    for x in noResponse:
+        sortedParties.append(x)
 
-    # find those who are disliked by the greatest amount of people
-    partyNames = list(dislikedBy.keys())
-    mostDisliked = sorted(partyNames, key = lambda k: len(dislikedBy[k]), reverse = True)
-
-    # start by seating those who are disliked the most
-    for x in mostDisliked:
-        if x not in seatedParties:
-            # randomize the order in which the tables will be checked
-            random.shuffle(tableNames)
-            # try to seat this individual with those who like them
-            possibleTables = {} # keeps track of table name and number of loved/liked/disliked people in each table option
-            badTables = {}
-            emptyTables = []
-            unfitTables = []
-            for t in tableNames:
-                if t not in possibleTables:
-                    # if the table is already there, ignore, otherwise count
-                    if len(seatingChart[t]) == 0:
-                        emptyTables.append(t)
-                    else:
-                        count = countTable(seatingChart[t], x, lovedBy, likedBy, dislikes, parties, perTable)
-                        if count[2] > 0:
-                            badTables[t] = count
-                        elif count[0] == -1:
-                            # ignore this table! can't fit the party!
-                            unfitTables.append(t)
-                        else:
-                            possibleTables[t] = count
-            # look through possible tables to see what is best
-            bestTable = (-1, '')
-            if len(possibleTables) == 0:
-                if len(emptyTables) == 0:
-                    print('No good table found! Skipping... (' + x + ")")
-                    bestTable = 'invalid'
+    for x in sortedParties:
+        # find all people loved/liked who have not been seated yet
+        people = []
+        # mutual loves are most important
+        for p in superLikes[x]:
+            if p not in seatedParties and p not in people:
+                if x in superLikes[p]:
+                    people.append(p)
+        # mutual likes are next important
+        for p in likes[x]:
+            if p not in seatedParties and p not in people:
+                if x in likes[p]:
+                    people.append(p)
+        for p in superLikes[x]:
+            if p not in seatedParties and p not in people:
+                # add people who didn't answer
+                if len(likes[p]) + len(superLikes[p]) + len(dislikes[p]) == 0:
+                    people.append(p)
+        for p in likes[x]:
+            if p not in seatedParties and p not in people:
+                # add people who didn't answer
+                if len(likes[p]) + len(superLikes[p]) + len(dislikes[p]) == 0:
+                    people.append(p)
+        # look for the best table for party x
+        # try to seat this individual with those who like them
+        possibleTables = {} # keeps track of table name and number of loved/liked/disliked people in each table option
+        badTables = {} # this table has dislikes
+        emptyTables = [] # this table is empty
+        unfitTables = [] # party does not fit at this table
+        for t in tableNames:
+            if t not in possibleTables:
+                # if the table is already there, ignore, otherwise count
+                if len(seatingChart[t]) == 0:
+                    emptyTables.append(t)
                 else:
-                    # empty table is found, sit x here
-                    seatingChart[emptyTables[0]].append(x)
-                    seatedParties[x] = emptyTables[0]
-                    bestTable = 'empty'
+                    groupToCheck = []
+                    for k in seatingChart[t]:
+                        groupToCheck.append(k)
+                    for p in people:
+                        if fineTable(groupToCheck, p, parties, dislikes, perTable) and len(seatingChart[t]) < perTable - 1:
+                            groupToCheck.append(p)
+                    count = countTable(groupToCheck, x, lovedBy, likedBy, dislikes, parties, perTable)
+                    if count[2] > 0:
+                        # somebody dislikes them at this table! Bad table!!
+                        badTables[t] = count
+                    elif count[0] == -1:
+                        # ignore this table! can't fit the party!
+                        unfitTables.append(t)
+                    else:
+                        possibleTables[t] = count
+        
+        # look through possible tables to see what is best
+        bestTable = (-1, '')
+        if len(possibleTables) == 0:
+            if len(emptyTables) == 0:
+                print('No good table found! Skipping... (' + x + ")")
+                badNames.append(x)
+                bestTable = 'invalid'
             else:
-                # calculate the best table
-                for pT in possibleTables:
-                    # weight based on loves/likes
-                    count = possibleTables[pT][0]*2 + possibleTables[pT][1]
-                    if count > bestTable[0]:
-                        bestTable = (count, pT)
-                # see if there are any empty tables that would be better
-                if len(emptyTables) > 0:
-                    # find all people loved/liked who have not been seated yet
-                    people = []
-                    for p in lovedBy[x]:
-                        if p not in seatedParties and p not in people:
-                            people.append(p)
-                    for p in likedBy[x]:
-                        if p not in seatedParties and p not in people:
-                            people.append(p)
-                    for p in superLikes[x]:
-                        if p not in seatedParties and p not in people:
-                            people.append(p)
-                    for p in likes[x]:
-                        if p not in seatedParties and p not in people:
-                            people.append(p)
-                    count = countTable(people, x, lovedBy, likedBy, dislikes, parties, perTable)
-                    if (count[0]*2 + count[1]) > bestTable[0]:
-                        bestTable = 'empty'
+                # empty table is found, sit x here
+                seatingChart[emptyTables[0]].append(x)
+                seatedParties[x] = emptyTables[0]
+                bestTable = 'empty'
+        else:
+            # calculate the best table
+            for pT in possibleTables:
+                # weight based on loves/likes
+                count = possibleTables[pT][0]*2 + possibleTables[pT][1]
+                if count > bestTable[0]:
+                    bestTable = (count, pT)
+            # see if there are any empty tables that would be better
+            if len(emptyTables) > 0:
+                count = countTable(people[:(perTable-1)], x, lovedBy, likedBy, dislikes, parties, perTable)
+                print('empty count: ' + str(count))
+                print('best count: ' + str(bestTable[0]))
+                if (count[0]*2 + count[1]) > bestTable[0]:
+                    bestTable = 'empty'
+                    if x not in seatedParties:
                         seatingChart[emptyTables[0]].append(x)
                         seatedParties[x] = emptyTables[0]
-                        if not happinessPossible(seatingChart, tableNames, parties, dislikes, perTable):
-                            print("After seating " + x + ", it is no longer possible for everyone to be seated happily")
 
-            print(x, bestTable)
-            if bestTable == 'empty':
-                # add people who love/like x mutually
-                table = emptyTables[0]
+        if bestTable == 'empty':
+            # add people who love/like x mutually
+            table = emptyTables[0]
+            for y in lovedBy[x]:
+                if y[0] == '*':
+                    if y[1:] not in seatedParties:
+                        # make sure nobody dislikes party y too much
+                        if fineTable(seatingChart[table], y[1:], parties, dislikes, perTable):
+                            # TODO: add sizes of parties and checks to make sure they fit
+                            seatedParties[y[1:]] = table
+                            seatingChart[table].append(y[1:])
+            for y in likedBy[x]:
+                if y[0] == '*':
+                    if y[1:] not in seatedParties:
+                        # make sure nobody dislikes party y too much
+                        if fineTable(seatingChart[table], y[1:], parties, dislikes, perTable):
+                            # TODO: add sizes of parties and checks to make sure they fit
+                            seatedParties[y[1:]] = table
+                            seatingChart[table].append(y[1:])
+            # add people who x loves/likes but didn't respond
+            for y in superLikes[x]:
+                if y not in seatedParties and len(likes[y]) + len(dislikes[y]) + len(superLikes[y]) == 0:
+                    # make sure nobody dislikes party y too much
+                    if fineTable(seatingChart[table], y, parties, dislikes, perTable):
+                        # TODO: add sizes of parties and checks to make sure they fit
+                        seatedParties[y] = table
+                        seatingChart[table].append(y)
+            for y in likes[x]:
+                if y not in seatedParties and len(likes[y]) + len(dislikes[y]) + len(superLikes[y]) == 0:
+                    # make sure nobody dislikes party y too much
+                    if fineTable(seatingChart[table], y, parties, dislikes, perTable):
+                        # TODO: add sizes of parties and checks to make sure they fit
+                        seatedParties[y] = table
+                        seatingChart[table].append(y)          
+        elif bestTable == 'invalid':
+            print('Uh oh...')
+        else:
+            # seat the party at the best table found for them
+            if x not in seatedParties:
+                seatingChart[bestTable[1]].append(x)
+                seatedParties[x] = bestTable[1]  
                 for y in lovedBy[x]:
                     if y[0] == '*':
                         if y[1:] not in seatedParties:
                             # make sure nobody dislikes party y too much
-                            if fineTable(seatingChart(table), y[1:], parties, dislikes, perTable):
+                            if fineTable(seatingChart[table], y[1:], parties, dislikes, perTable):
                                 # TODO: add sizes of parties and checks to make sure they fit
                                 seatedParties[y[1:]] = table
                                 seatingChart[table].append(y[1:])
-                                if not happinessPossible(seatingChart, tableNames, parties, dislikes, perTable):
-                                    print("After seating " + x + ", it is no longer possible for everyone to be seated happily")
-                # TODO: refactor!!! to get rid of copy/paste code
-                for y in likedBy[x]:
-                    if y[0] == '*':
-                        if y[1:] not in seatedParties:
-                            # make sure nobody dislikes party y too much
-                            if fineTable(seatingChart(table), y[1:], parties, dislikes, perTable):
-                                # TODO: add sizes of parties and checks to make sure they fit
-                                seatedParties[y[1:]] = table
-                                seatingChart[table].append(y[1:])
-                                if not happinessPossible(seatingChart, tableNames, parties, dislikes, perTable):
-                                    print("After seating " + x + ", it is no longer possible for everyone to be seated happily")
-                
-            elif bestTable == 'invalid':
-                print('Uh oh...')
-            else:
-                # seat the party at the best table found for them
-                seatingChart[bestTable[1]].append(x)
-                seatedParties[x] = bestTable[1]  
-                if not happinessPossible(seatingChart, tableNames, parties, dislikes, perTable):
-                    print("After seating " + x + ", it is no longer possible for everyone to be seated happily")
+                # for y in likedBy[x]:
+                #     if y[0] == '*':
+                #         if y[1:] not in seatedParties:
+                #             # make sure nobody dislikes party y too much
+                #             if fineTable(seatingChart[table], y[1:], parties, dislikes, perTable):
+                #                 # TODO: add sizes of parties and checks to make sure they fit
+                #                 seatedParties[y[1:]] = table
+                #                 seatingChart[table].append(y[1:])
+                # add people who x loves/likes but didn't respond
+                for y in superLikes[x]:
+                    if y not in seatedParties and len(likes[y]) + len(dislikes[y]) + len(superLikes[y]) == 0:
+                        # make sure nobody dislikes party y too much
+                        if fineTable(seatingChart[table], y, parties, dislikes, perTable):
+                            # TODO: add sizes of parties and checks to make sure they fit
+                            seatedParties[y] = table
+                            seatingChart[table].append(y)
+                # for y in likes[x]:
+                #     if y not in seatedParties and len(likes[y]) + len(dislikes[y]) + len(superLikes[y]) == 0:
+                #         # make sure nobody dislikes party y too much
+                #         if fineTable(seatingChart[table], y, parties, dislikes, perTable):
+                #             # TODO: add sizes of parties and checks to make sure they fit
+                #             seatedParties[y] = table
+                #             seatingChart[table].append(y) 
 
-            # if len(dislikes[x]) > 0:
-            #     # first, place x at a table, see if there are any good ones, then only fine
-            #     if x not in seatedParties:
-            #         (seatingChart, t) = seatParty(x, parties, likes, dislikes, tableNames, perTable, seatingChart)  
-            #         seatedParties[x] = t
-            #     # seat the disliked party
-            #     for y in dislikes[x]:
-            #         if y not in seatedParties:
-            #             (seatingChart, t) = seatParty(y, parties, likes, dislikes, tableNames, perTable, seatingChart)  
-            #             seatedParties[y] = t
-
-    # sort by those who are liked by the least amount of people
-    partyNames = list(likedBy.keys())
-    leastLiked = sorted(partyNames, key = lambda k: len(likedBy[k]), reverse = False)
-
-
-
-    # for the first least liked people, seat them at tables one by one
-    # once you run out of tables, see if any can be combined
-    # continue
-
-    # t = 0
-    # for partyA in leastLiked:
-    #     if t == len(tableNames):
-    #         break
-    #     if partyA not in seatedParties:
-    #         for partyB in likedBy[partyA]:
-    #             if partyB[0] == '*':
-    #                 if partyB[1:] not in seatedParties:
-    #                     # if it's a mutual like, add to table
-    #                     if partyA not in seatedParties:
-    #                         for _ in range(0, parties[partyA]):
-    #                             seatingChart[tableNames[t]].append(partyA)
-    #                         seatedParties[partyA] = tableNames[t]
-    #                     for _ in range(0, parties[partyB[1:]]):
-    #                         seatingChart[tableNames[t]].append(partyB[1:])
-    #                     seatedParties[partyB[1:]] = tableNames[t]
-    #     t += 1
-
+    # leastLoves = sorted(partyNames, key = lambda k: len(loves[k]), reverse = False)
+    # for x in leastLoves:
+    #     # only pay attention if they love at least 1 person
+    #     if len(loves[x]) > 0:
+    #         for t in tableNames:
+    #             if seatingChart[t] == []:
+    #                 if x not in seatedParties:
+    #                     seatingChart[t].append(x)
+    #                     seatedParties[x] = t
+    #                 for y in loves[x]:
+    #                     if y not in seatedParties:
+    #                         seatingChart[t].append(y)
+    #                         seatedParties[y] = t
+    #                 break
     return seatingChart
+
+
+def generateChart2(parties, superLikes, likes, dislikes, perTable, tableNames):
+    '''Some new ideas on how to generate the seating chart'''
+    seatedParties = {}
+    badNames = []
+    bestBad = []
+    bestChart = {}
+    seatingChart = {}
+    # for _ in range(2):
+    i = 0
+    highest = 0
+    start = time.time()
+    while len(seatedParties) != len(parties):
+        print("New round!")
+        if len(seatedParties) > highest:
+            highest = max(highest, len(seatedParties))
+            print("New highest found!")
+            print("HIGHEST: " + str(highest))
+            bestChart = seatingChart
+            numNames = len(parties) - highest
+            bestBad = badNames[(len(badNames) - numNames):]
+            print(bestBad)
+            input('ready?')
+    
+        # run for 10 seconds
+        if time.time() - start > 10:
+
+            # # bests = []
+            # for x in bestBad:
+            #     bestT = 'empty'
+            #     leastDislikes = 100000000000
+            #     for t in tableNames:
+            #         (like, love, dislike) = countTable(bestChart[t], x, lovedBy, likedBy, dislikes, parties, perTable)
+            #         if dislike < leastDislikes and dislike != -1 and tableFits(bestChart[t], x, parties, perTable):
+            #             leastDislikes = dislike
+            #             bestT = t
+            #     for guest in bestChart[table]:
+            #         if guest in dislikes[x] or x in dislikes[guest]:
+            #             # move guest!
+            #             for t2 in tableNames:
+            #                 c = countTable(bestChart[t2], guest, lovedBy, likedBy, dislikes, parties, perTable)
+            #                 if c[2] == 0 and tableFits(bestChart[t2], x, parties, perTable):
+            #                     print('yay!')
+            #                     newTable = []
+            #                     for y in bestChart[t2]:
+            #                         if y != guest:
+            #                             newTable.append(y)
+            #                     newTable.append(x)
+            #                     bestChart[bestT] = newTable
+            #                     bestChart[t2].append(guest)
+            #                     break
+                        
+                        
+                # bests.append(x, bestT, leastDislikes)
+            break
+
+        i += 1
+        # initialize the seating chart with each table name pointing to
+        # an empty list that will eventually be filled with the people sitting
+        # at that table
+        seatingChart = {}
+        for x in tableNames:
+            seatingChart[x] = []
+
+        # for each party name, go through all the parties and see if they are liked by them. Create a new dictionary like this.
+        likedBy = mutualDicts(likes)
+
+        # do the same for superLikes
+        lovedBy = mutualDicts(superLikes)
+
+        # and dislikes
+        dislikedBy = mutualDicts(dislikes)
+
+        # keep track of parties that are already seated
+        seatedParties = {}
+
+        # find those who are disliked by the greatest amount of people
+        partyNames = list(dislikedBy.keys())
+        mostDisliked = sorted(partyNames, key = lambda k: len(dislikedBy[k]), reverse = True)
+
+        for name in badNames:
+            ind = mostDisliked.index(name)
+            mostDisliked = [name] + mostDisliked[0:ind] + mostDisliked[ind+1:]
+        # reset the bad names every other time
+        if i % 2 == 0:
+            badNames = []
+
+        # start by seating those who are disliked the most
+        for x in mostDisliked:
+            if x not in seatedParties:
+                # randomize the order in which the tables will be checked
+                random.shuffle(tableNames)
+                # try to seat this individual with those who like them
+                possibleTables = {} # keeps track of table name and number of loved/liked/disliked people in each table option
+                badTables = {}
+                emptyTables = []
+                unfitTables = []
+                for t in tableNames:
+                    if t not in possibleTables:
+                        # if the table is already there, ignore, otherwise count
+                        if len(seatingChart[t]) == 0:
+                            emptyTables.append(t)
+                        else:
+                            count = countTable(seatingChart[t], x, lovedBy, likedBy, dislikes, parties, perTable)
+                            if count[2] > 0:
+                                badTables[t] = count
+                            elif count[0] == -1:
+                                # ignore this table! can't fit the party!
+                                unfitTables.append(t)
+                            else:
+                                possibleTables[t] = count
+                # look through possible tables to see what is best
+                bestTable = (-1, '')
+                if len(possibleTables) == 0:
+                    if len(emptyTables) == 0:
+                        print('No good table found! Skipping... (' + x + ")")
+                        badNames.append(x)
+                        bestTable = 'invalid'
+                    else:
+                        # empty table is found, sit x here
+                        seatingChart[emptyTables[0]].append(x)
+                        seatedParties[x] = emptyTables[0]
+                        bestTable = 'empty'
+                else:
+                    # calculate the best table
+                    for pT in possibleTables:
+                        # weight based on loves/likes
+                        count = possibleTables[pT][0]*2 + possibleTables[pT][1]
+                        if count > bestTable[0]:
+                            bestTable = (count, pT)
+                    # see if there are any empty tables that would be better
+                    if len(emptyTables) > 0:
+                        # find all people loved/liked who have not been seated yet
+                        # people = []
+                        # for p in lovedBy[x]:
+                        #     if p not in seatedParties and p not in people:
+                        #         people.append(p)
+                        # for p in likedBy[x]:
+                        #     if p not in seatedParties and p not in people:
+                        #         people.append(p)
+                        # for p in superLikes[x]:
+                        #     if p not in seatedParties and p not in people:
+                        #         people.append(p)
+                        # for p in likes[x]:
+                        #     if p not in seatedParties and p not in people:
+                        #         people.append(p)
+                        # count = countTable(people, x, lovedBy, likedBy, dislikes, parties, perTable)
+                        # find all people loved/liked who have not been seated yet
+                        people = []
+                        # mutual loves are most important
+                        for p in superLikes[x]:
+                            if p not in seatedParties and p not in people:
+                                if x in superLikes[p]:
+                                    people.append(p)
+                        # mutual likes are next important
+                        for p in likes[x]:
+                            if p not in seatedParties and p not in people:
+                                if x in likes[p]:
+                                    people.append(p)
+                        if len(people) < perTable - 1:
+                            for p in superLikes[x]:
+                                # add people who didn't answer
+                                if len(likes[p]) + len(superLikes[p]) + len(dislikes[p]) == 0:
+                                    people.append(p)
+                        if len(people) < perTable - 1:
+                            for p in likes[x]:
+                                # add people who didn't answer
+                                if len(likes[p]) + len(superLikes[p]) + len(dislikes[p]) == 0:
+                                    people.append(p)
+                        count = countTable(people[:(perTable-1)], x, lovedBy, likedBy, dislikes, parties, perTable)
+                        if (count[0]*2 + count[1]) > bestTable[0]:
+                            bestTable = 'empty'
+                            seatingChart[emptyTables[0]].append(x)
+                            seatedParties[x] = emptyTables[0]
+                            # if not happinessPossible(seatingChart, tableNames, parties, dislikes, perTable):
+                            #     print("After seating " + x + ", it is no longer possible for everyone to be seated happily")
+
+                if bestTable == 'empty':
+                    # add people who love/like x mutually
+                    table = emptyTables[0]
+                    for y in lovedBy[x]:
+                        if y[0] == '*':
+                            if y[1:] not in seatedParties:
+                                # make sure nobody dislikes party y too much
+                                if fineTable(seatingChart[table], y[1:], parties, dislikes, perTable):
+                                    # TODO: add sizes of parties and checks to make sure they fit
+                                    seatedParties[y[1:]] = table
+                                    seatingChart[table].append(y[1:])
+                                    # if not happinessPossible(seatingChart, tableNames, parties, dislikes, perTable):
+                                    #     print("After seating " + x + ", it is no longer possible for everyone to be seated happily")
+                    # TODO: refactor!!! to get rid of copy/paste code
+                    for y in likedBy[x]:
+                        if y[0] == '*':
+                            if y[1:] not in seatedParties:
+                                # make sure nobody dislikes party y too much
+                                if fineTable(seatingChart[table], y[1:], parties, dislikes, perTable):
+                                    # TODO: add sizes of parties and checks to make sure they fit
+                                    seatedParties[y[1:]] = table
+                                    seatingChart[table].append(y[1:])
+                                    # if not happinessPossible(seatingChart, tableNames, parties, dislikes, perTable):
+                                    #     print("After seating " + x + ", it is no longer possible for everyone to be seated happily")
+                    
+                elif bestTable == 'invalid':
+                    print('Uh oh...')
+                else:
+                    # seat the party at the best table found for them
+                    seatingChart[bestTable[1]].append(x)
+                    seatedParties[x] = bestTable[1]  
+                    # if not happinessPossible(seatingChart, tableNames, parties, dislikes, perTable):
+                    #     print("After seating " + x + ", it is no longer possible for everyone to be seated happily")
+
+                # if len(dislikes[x]) > 0:
+                #     # first, place x at a table, see if there are any good ones, then only fine
+                #     if x not in seatedParties:
+                #         (seatingChart, t) = seatParty(x, parties, likes, dislikes, tableNames, perTable, seatingChart)  
+                #         seatedParties[x] = t
+                #     # seat the disliked party
+                #     for y in dislikes[x]:
+                #         if y not in seatedParties:
+                #             (seatingChart, t) = seatParty(y, parties, likes, dislikes, tableNames, perTable, seatingChart)  
+                #             seatedParties[y] = t
+
+        # sort by those who are liked by the least amount of people
+        partyNames = list(likedBy.keys())
+        leastLiked = sorted(partyNames, key = lambda k: len(likedBy[k]), reverse = False)
+
+
+
+        # for the first least liked people, seat them at tables one by one
+        # once you run out of tables, see if any can be combined
+        # continue
+
+        # t = 0
+        # for partyA in leastLiked:
+        #     if t == len(tableNames):
+        #         break
+        #     if partyA not in seatedParties:
+        #         for partyB in likedBy[partyA]:
+        #             if partyB[0] == '*':
+        #                 if partyB[1:] not in seatedParties:
+        #                     # if it's a mutual like, add to table
+        #                     if partyA not in seatedParties:
+        #                         for _ in range(0, parties[partyA]):
+        #                             seatingChart[tableNames[t]].append(partyA)
+        #                         seatedParties[partyA] = tableNames[t]
+        #                     for _ in range(0, parties[partyB[1:]]):
+        #                         seatingChart[tableNames[t]].append(partyB[1:])
+        #                     seatedParties[partyB[1:]] = tableNames[t]
+        #     t += 1
+
+    if bestChart == {}:
+        return seatingChart
+    return bestChart
 
 def happinessPossible(seatingChart, tableNames, parties, dislikes, perTable):
     '''check with the current seatings if we can find a place where people
@@ -480,6 +769,195 @@ def checkWrongPlacements(seatingChart, superLikes, likes, dislikes):
                     right[party1] += 1
     return (sat, total, wrongPerTable, wrong, right)
 
+def scoreChart(seatingChart, loves, likes, dislikes, perTable):
+    '''Calculates the score of the chart based on who people like/dislike
+    at their table.'''
+    highestScore = topScore(loves, likes, perTable)
+    currScore = 0
+    for t in seatingChart:
+        table = seatingChart[t]
+        for x in table:
+            for y in table:
+                # if x has responded, calculate the score
+                if x != y and ((len(loves[x]) + len(likes[x]) + len(dislikes[x])) != 0):
+                    # print(x, y)
+                    # # if y has responded, top score is +5
+                    # if len(loves[y]) + len(likes[y]) + len(dislikes[y]) != 0:
+                    #     topScore += 5
+                    # # otherwise, top score is +3
+                    # else:
+                    #     topScore += 3
+                    # mutual love is + 5 points
+                    if x in loves[y] and y in loves[x]:
+                        # print('love*')
+                        currScore += 5
+                    # mutual like is + 4 points
+                    elif x in likes[y] and y in likes[x]:
+                        # print('like*')
+                        currScore += 4
+                    # mutual dislike is - 5 points
+                    elif x in dislikes[y] and y in dislikes[x]:
+                        # print('dislike*')
+                        currScore -= 5
+                    # one-sided love is + 3 points
+                    elif y in loves[x]:
+                        # print('love')
+                        currScore += 3
+                    # one-sided like is + 2 points
+                    elif y in likes[x]:
+                        # print('like')
+                        currScore += 2
+                    # one-sided dislike is - 3 points
+                    elif y in dislikes[x]:
+                        # print('dislike')
+                        currScore -= 3
+
+    return (highestScore, currScore)
+
+def topScore(loves, likes, perTable):
+    '''Calculates the top possible score for the chart'''
+    topScore = 0
+    for person in loves:
+        indScore = 0
+        scores = []
+        loved = loves[person]
+        liked = likes[person]
+        # go through the list of all the people they love
+        for x in loved:
+            # if the person they love has responded, look for a mutual love
+            if len(loves[x]) + len(likes[x]) != 0:
+                if person in loves[x]:
+                    scores.append(5)
+                else:
+                    # look for mutual like
+                    if person in likes[x]:
+                        scores.append(4)
+                    # no mutual like/love; just add 3 for the love
+                    else:
+                        scores.append(3)
+            # if the person they love has not responded, the top score is +3
+            else:
+                scores.append(3)
+        for x in liked:
+            if x not in loved:
+                # if the person they like has responded, look for a mutual like
+                if len(loves[x]) + len(likes[x]) != 0:
+                    if person in likes[x]:
+                        scores.append(4)
+                    # no mutual like, just + 2 for like
+                    else:
+                        scores.append(2)
+                # if the person they like has not responded, the top score is + 2
+                else:
+                    scores.append(2)
+        sorted(scores).reverse()
+        scores = scores[:(perTable-1)]
+        for x in scores:
+            indScore += x
+        topScore += indScore
+    return topScore
+
+def topTable(group, loves, likes, perTable):
+    '''Calculates the top possible score for the chart'''
+    topScore = 0
+    for person in group:
+        indScore = 0
+        scores = []
+        loved = loves[person]
+        liked = likes[person]
+        # go through the list of all the people they love
+        for x in loved:
+            # if the person they love has responded, look for a mutual love
+            if len(loves[x]) + len(likes[x]) != 0:
+                if person in loves[x]:
+                    scores.append(5)
+                else:
+                    # look for mutual like
+                    if person in likes[x]:
+                        scores.append(4)
+                    # no mutual like/love; just add 3 for the love
+                    else:
+                        scores.append(3)
+            # if the person they love has not responded, the top score is +3
+            else:
+                scores.append(3)
+        for x in liked:
+            if x not in loved:
+                # if the person they like has responded, look for a mutual like
+                if len(loves[x]) + len(likes[x]) != 0:
+                    if person in likes[x]:
+                        scores.append(4)
+                    # no mutual like, just + 2 for like
+                    else:
+                        scores.append(2)
+                # if the person they like has not responded, the top score is + 2
+                else:
+                    scores.append(2)
+        sorted(scores).reverse()
+        scores = scores[:(perTable-1)]
+        for x in scores:
+            indScore += x
+        topScore += indScore
+    return topScore
+
+def scoreTable(table, loves, likes, dislikes, perTable):
+    '''Calculates the score of the table based on who people like/dislike
+    at their table.'''
+    highestScore = topTable(table, loves, likes, perTable)
+    currScore = 0
+    for x in table:
+        for y in table:
+            # if x has responded, calculate the score
+            if x != y and ((len(loves[x]) + len(likes[x]) + len(dislikes[x])) != 0):
+                # print(x, y)
+                # # if y has responded, top score is +5
+                # if len(loves[y]) + len(likes[y]) + len(dislikes[y]) != 0:
+                #     topScore += 5
+                # # otherwise, top score is +3
+                # else:
+                #     topScore += 3
+                # mutual love is + 5 points
+                if x in loves[y] and y in loves[x]:
+                    # print('love*')
+                    currScore += 5
+                # mutual like is + 4 points
+                elif x in likes[y] and y in likes[x]:
+                    # print('like*')
+                    currScore += 4
+                # mutual dislike is - 5 points
+                elif x in dislikes[y] and y in dislikes[x]:
+                    # print('dislike*')
+                    currScore -= 5
+                # one-sided love is + 3 points
+                elif y in loves[x]:
+                    # print('love')
+                    currScore += 3
+                # one-sided like is + 2 points
+                elif y in likes[x]:
+                    # print('like')
+                    currScore += 2
+                # one-sided dislike is - 3 points
+                elif y in dislikes[x]:
+                    # print('dislike')
+                    currScore -= 3
+
+    return (highestScore, currScore)
+
+def intermediateStep(seatingChart, loves, likes, dislikes, perTable):
+    newChart = {}
+    problemPeople = []
+    for x in seatingChart:
+        newChart[x] = []
+        table = seatingChart[x]
+        (perfectScore, actualScore) = scoreTable(seatingChart[x], loves, likes, dislikes, perTable)
+        print(perfectScore, actualScore)
+        if perfectScore == actualScore:
+            print(x + " is perfect!")
+            newChart[x] = seatingChart[x]
+    
+    return (newChart, problemPeople)
+
+
 
 if __name__ == '__main__':
     # violations = 0
@@ -500,10 +978,15 @@ if __name__ == '__main__':
     #     if wrong > 0:
     #         timesViolated += 1
     # print(timesViolated)
-    seatingChart = generateChart2(parties, superLikes, likes, dislikes, 10, tableNames)
-    print(seatingChart)
+    PERTABLE = 10
+    seatingChart = generateChart3(parties, superLikes, likes, dislikes, PERTABLE, tableNames)
+    print(json.dumps(seatingChart, indent = 4))
     (sat, total, wrongPerTable, wrong, right) = checkWrongPlacements(seatingChart, superLikes, likes, dislikes)
     print(sat, total)
+    (best, ours) = scoreChart(seatingChart, superLikes, likes, dislikes, PERTABLE)
+    print(best, ours)
+    print(ours/best)
+    intermediateStep(seatingChart, superLikes, likes, dislikes, PERTABLE)
         # print("Total Sat:", totalSat)
         # print("Total Violations:", totalWrong)
         # for x in wrongPerTable:
