@@ -13,5 +13,11 @@ const getCollection = (collection) => {
 };
 
 module.exports = {
+<<<<<<< HEAD
   events: getCollection("events"),
 };
+=======
+    events: getCollection("events"),
+    guests: getCollection("guests")
+};
+>>>>>>> Refactored schema validation function and added custom API error handling

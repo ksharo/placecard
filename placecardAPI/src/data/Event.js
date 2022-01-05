@@ -15,9 +15,8 @@ const {
   generateCRUDErrorMessage,
   generateNotFoundMessage,
 } = require("../utils/errors");
-const EventSchema = require("./schema/EventSchema");
 const EVENT_TYPE = require("../constants/schemaTypes").SCHEMA_TYPES.EVENT;
-const { validateSchema } = require("../utils/schemaValidator");
+const { validateSchema } = require("../utils/preconditions");
 const { checkPrecondition } = require("../utils/preconditions");
 
 async function getEvent(eventId) {
@@ -41,6 +40,7 @@ async function getEvent(eventId) {
 // TODO: Maybe we should move data validation into middleware functions for POST and PUT routes rather than doing it everywhere and repeating code
 // TODO: custom error handling class/objects so that we can define meaningful properties
 async function createEvent(newEventConfig) {
+<<<<<<< HEAD
   checkPrecondition(newEventConfig, isUndefined, EVENT_UNDEFINED_MESSAGE);
   checkPrecondition(newEventConfig, isEmpty, EVENT_EMPTY_MESSAGE);
   newEventConfig.tables = [];
@@ -100,6 +100,52 @@ async function updateEvent(eventId, updatedEventConfig) {
 
   const updatedEvent = await this.getEvent(eventId);
   return updatedEvent;
+=======
+    checkPrecondition(newEventConfig, isUndefined, EVENT_UNDEFINED_MESSAGE);
+    checkPrecondition(newEventConfig, isEmpty, EVENT_EMPTY_MESSAGE);
+
+    newEventConfig.tables = [];
+    validateSchema(newEventConfig, EVENT_TYPE);
+
+    // TODO: Validate the event time is greater than the current time
+    const eventCollection = await events();
+    const insertInfo = await eventCollection.insertOne(newEventConfig);
+
+    if (insertInfo.insertedCount === 0) {
+        throw new Error(generateCRUDErrorMessage(INSERT_ERROR_MESSAGE, EVENT_TYPE));
+    }
+    const newId = insertInfo.insertedId.toString();
+    const newEvent = await this.getEvent(newId);
+
+    return convertIdToString(newEvent);
+}
+
+async function updateEvent(eventId, updatedEventConfig) {
+    checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
+    checkPrecondition(updatedEventConfig, isUndefined, EVENT_UNDEFINED_MESSAGE)
+    checkPrecondition(updatedEventConfig, isEmpty, EVENT_UNDEFINED_MESSAGE);
+    validateSchema(updatedEventConfig, EVENT_TYPE)
+
+    const eventCollection = await events();
+    const eventObjectId = ObjectId(eventId);
+
+    const queryParameters = {
+         _id: eventObjectId
+    };
+    const updatedDocument = {
+        $set: {
+            updatedEventConfig
+        }
+    };
+
+    const updateInfo = await eventCollection.updateOne(queryParameters, updatedDocument);
+    if (updateInfo.matchedCount === 0 || updateInfo.modifiedCount === 0) {
+        throw new Error(generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE));
+    }
+    
+    const updatedEvent = await this.getEvent(eventId);
+    return updatedEvent;
+>>>>>>> Refactored schema validation function and added custom API error handling
 }
 
 async function deleteEvent(eventId) {

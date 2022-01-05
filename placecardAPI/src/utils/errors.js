@@ -1,7 +1,4 @@
-
-// function generateInsertError(input, type) {
-//     return `${INSERT_ERROR_MESSAGE} ${type}: ${input}`;
-// }
+const CustomAPIError = require("./customAPIError");
 
 function generateCRUDErrorMessage(operationMessage, schemaType) {
     return `${operationMessage} (${schemaType})`;
@@ -15,8 +12,16 @@ function generateErrorMessage(error) {
     return `${error.name}: ${error.message}`;
 }
 
+function createErrorResponse(message, type, status, res) {
+    const errorResponse = { 
+        error: new CustomAPIError(message, type, status)
+    };
+    return res.status(status).json(errorResponse);
+}
+
 module.exports = {
     generateCRUDErrorMessage,
     generateNotFoundMessage,
-    generateErrorMessage
+    generateErrorMessage,
+    createErrorResponse
 }
