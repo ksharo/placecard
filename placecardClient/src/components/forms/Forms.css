@@ -42,3 +42,9 @@
     margin: 0;
     width: 85%;
   }
+
+  .pageError {
+    color: red;
+    display: none;
+    margin-top: 0;
+  }

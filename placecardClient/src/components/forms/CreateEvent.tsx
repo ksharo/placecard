@@ -13,192 +13,106 @@ export function CreateEvent(){
     
     let validateName = (event: any) => {
         if (!firstTime) {
-            name = event.target.value;
-            name = validator.trim(name);
-            let x = document.getElementById('nameError');
-            if (!validator.isEmpty(name) && validator.isWhitelisted(name.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\'')) {
-                if (x != null) {
-                    x.style.display = 'none';
-                }             }
-            else {
-                if (x != null) {
-                    x.style.display = 'inline-block';
-                } 
-            }
+            name = validator.trim(event.target.value);
+            const valid = !validator.isEmpty(name) && validator.isWhitelisted(name.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\'');
+            validateHelper('nameError', valid);
+            checkAllErrors(name, date, location, num_attend, per_table);
         }
     }
+
     let validateDate = (event: any) => {
         if (!firstTime) {
             date = event.target.value;
-            let x = document.getElementById('dateError');
-            if (validator.isDate(date) && validator.isAfter(date)) {
-                if (x != null) {
-                    x.style.display = 'none';
-                } 
-            }
-            else {
-                if (x != null) {
-                    x.style.display = 'inline-block';
-                } 
-            }        
+            const valid = validator.isDate(date) && validator.isAfter(date);
+            validateHelper('dateError', valid);
+            checkAllErrors(name, date, location, num_attend, per_table);
         }
     }
+
     let validateLocation = (event: any) => {
         if (!firstTime) {
-            location = event.target.value;
-            location = validator.trim(location);
-            let x = document.getElementById('locationError');
-            if (validator.isWhitelisted(location.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_., &!\'')) {
-                if (x != null) {
-                    x.style.display = 'none';
-                } 
-            }
-            else {
-                if (x != null) {
-                    x.style.display = 'inline-block';
-                } 
-            }        
+            location = validator.trim(event.target.value);
+            const valid = validator.isWhitelisted(location.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_., &!\'');
+            validateHelper('locationError', valid);
+            checkAllErrors(name, date, location, num_attend, per_table);
         }
     }
+
     let validateAttend = (event: any) => {
         if (!firstTime) {
             num_attend = event.target.value;
-            let x = document.getElementById('numAttError');
-            let strNum = validator.trim(num_attend.toString());
-            if (!validator.isEmpty(strNum) && num_attend > 0) {
-                if (x != null) {
-                    x.style.display = 'none';
-                } 
-            }
-            else {
-                if (x != null) {
-                    x.style.display = 'inline-block';
-                } 
-            }        
+            const strNum = validator.trim(num_attend.toString());
+            const valid = !validator.isEmpty(strNum) && num_attend > 0;
+            validateHelper('numAttError', valid);
+            checkAllErrors(name, date, location, num_attend, per_table);
         }
     }
+
     let validateTable = (event: any) => {
         if (!firstTime) {
             per_table = event.target.value;
-            let strNum = validator.trim(per_table.toString());
-            let x = document.getElementById('perTableError');
-            if (!validator.isEmpty(strNum) && per_table > 0) {
-                if (x != null) {
-                    x.style.display = 'none';
-                } 
-            }
-            else {
-                if (x != null) {
-                    x.style.display = 'inline-block';
-                } 
-            }        
+            const strNum = validator.trim(per_table.toString());
+            const valid = !validator.isEmpty(strNum) && per_table > 0;
+            validateHelper('perTableError', valid);
+            checkAllErrors(name, date, location, num_attend, per_table);
         }
     }
+    
     let handleSubmit = async (event: any) => {
-        let errorFound = false;
-        if (event == null) {
-            console.log('uh oh (handleSubmit)')
-        }
         event.preventDefault();
+        let errorFound = false;
+        const x = document.getElementById('sendEventError');
+        if (x != null) {
+            x.style.display = 'none';
+        }
+        if (event == null) {
+            if (x != null) {
+                x.style.display = 'inline-block';
+                window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+            }
+        }
         // get data from form and fill variables
-        name = event?.target?.name?.value;
-        date = event?.target?.date?.value;
-        location = event?.target?.location?.value;
+        name = validator.trim(event?.target?.name?.value);
+        date = validator.trim(event?.target?.date?.value);
+        location = validator.trim(event?.target?.location?.value);
         num_attend = event?.target?.num_attend?.value;
         per_table = event?.target?.per_table?.value;
 
         // validate form based on above data
-        // check to make sure name is not empty and is only letters, numbers, underscores, apostrophes, ampersands, and dashes
-        name = validator.trim(name);
-        if (!validator.isEmpty(name) && validator.isWhitelisted(name.toLocaleLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\'')) {
-            console.log('yay!');
-        }
-        else {
-            console.log('boo');
-            let x = document.getElementById('nameError');
-            if (x != null) {
-                x.style.display = 'inline-block';
-            } 
-            errorFound = true;
-        }
-
-        // check to make sure the date is after today
-        if (validator.isDate(date) && validator.isAfter(date)) {
-            console.log('yay');
-        }
-        else {
-            console.log('boo');
-            let x = document.getElementById('dateError');
-            if (x != null) {
-                x.style.display = 'inline-block';
-            } 
-            errorFound = true;
-        }
-
-        // check to make sure location is only letters, numbers, underscores, apostrophes, ampersands, and dashes
-        location = validator.trim(location);
-        if (validator.isWhitelisted(location.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_., &!\'')) {
-            console.log('yay!');
-        }
-        else {
-            console.log('boo');
-            let x = document.getElementById('locationError');
-            if (x != null) {
-                x.style.display = 'inline-block';
-            } 
-            errorFound = true;
-        }
-
-        // check to make sure the number attending is a valid, positive number
-        let strNum = validator.trim(num_attend.toString());
-        if (!validator.isEmpty(strNum) && num_attend > 0) {
-            console.log('yay!');
-        }
-        else {
-            console.log('boo');
-            let x = document.getElementById('numAttError');
-            if (x != null) {
-                x.style.display = 'inline-block';
-            } 
-            errorFound = true;
-        }
-
-        // check to make sure the number per table is a valid, positive number
-        strNum = validator.trim(per_table.toString());
-        if (!validator.isEmpty(strNum) && per_table > 0) {
-            console.log('yay!');
-        }
-        else {
-            console.log('boo');
-            let x = document.getElementById('perTableError');
-            if (x != null) {
-                x.style.display = 'inline-block';
-            } 
-            errorFound = true;
-        }
+        errorFound = validate(name, date, location, num_attend, per_table);
 
         if (!errorFound) { 
             // if form is good, sendEvent
             try {
                 await sendEvent(name, date, location, num_attend, per_table);
+                // if sendEvent is successful, go to next page
+                history.push('/uploadGuestList');            
             }
             catch {
-                console.log('uh oh (handleClick)');
+                if (x != null) {
+                    x.style.display = 'inline-block';
+                    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+                }
             }
-            // if sendEvent is successful, go to next page
-            history.push('/uploadGuestList');
         }
+        // if there is an error, tell the user
         else {
-            console.log('errors found');
+            const y = document.getElementById('eventFormError');
+            if (y != null) {
+                y.style.display = 'inline-block';
+                window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+            }
             firstTime = false;
         }
     }
+
     return (
     <>
         <h1 className='title'>Create a New Event</h1>
         <p className='subtitle'>To get started, we just need some of the basics.
         <br/>Don't worry, these can always be edited later.</p>
-
+        <p className='subtitle pageError' id='eventFormError'>Please fix the errors.</p>
+        <p className='subtitle pageError' id='sendEventError'>Something went wrong. Please try again.</p>
         <form className='vertical-form' onSubmit={handleSubmit} id='createEventForm'>
             <label>Event Name
             <span id='nameError' className='formError'>The event name can only contain spaces and the following characters: [a-zA-Z0-9.'&!-_].</span>
@@ -240,4 +154,96 @@ async function sendEvent(name: string, date: string, location: string, num_atten
             })
         };
     return fetch('http://localhost:3001/events/newEvent', requestOptions);
+}
+
+/*
+ * Displays the error with id 'id'. Returns true so that
+ * errorFound is set properly.
+ */
+function showError(id: string): boolean {
+    let x = document.getElementById(id);
+    if (x != null) {
+        x.style.display = 'inline-block';
+    } 
+    return true;
+}
+
+/* 
+ * Validates the information in the form
+ */
+function validate(name: string, date: string, location: string, num_attend: number, per_table: number) {
+    let errorFound = false;
+
+    /* Make sure name is not empty and is only letters, numbers, underscores, apostrophes, ampersands, and dashes */
+    if (!(!validator.isEmpty(name) && validator.isWhitelisted(name.toLocaleLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\''))) {
+        errorFound = showError('nameError');
+    }
+
+    /* Make sure the date is after today */
+    if (!(validator.isDate(date) && validator.isAfter(date))) {
+        errorFound = showError('dateError');
+    }
+
+    /* Make sure location is only letters, numbers, underscores, apostrophes, ampersands, and dashes */
+    if (!(validator.isWhitelisted(location.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_., &!\''))) {
+        errorFound = showError('locationError');
+    }
+    
+    /* Make sure the number attending is a valid, positive number */
+    let strNum = validator.trim(num_attend.toString());
+    if (!(!validator.isEmpty(strNum) && num_attend > 0)) {
+        errorFound = showError('numAttError');
+    }
+
+    /* Make sure the number per table is a valid, positive number */
+    strNum = validator.trim(per_table.toString());
+    if (!(!validator.isEmpty(strNum) && per_table > 0)) {
+        errorFound = showError('perTableError');
+    }
+
+    return errorFound;
+}
+
+/* 
+ * Removes redundancy from validation functions by performing the
+ * show/hide of errors given the id of that error and the boolean
+ * that must be checked
+ */
+function validateHelper(id: string, valid: boolean) {
+    let x = document.getElementById(id);
+    if (valid) {
+        if (x != null) {
+            x.style.display = 'none';
+        }             
+    }
+    else {
+        if (x != null) {
+            x.style.display = 'inline-block';
+        } 
+    }
+}
+
+/*
+ * Checks to see if there are any errors in order to show
+ * or hide the error at the top of the page
+ */
+function checkAllErrors(name: string, date: string, location: string, num_attend: number, per_table: number) {
+    const strNum1 = validator.trim(per_table.toString());
+    const strNum = validator.trim(num_attend.toString());
+    const error = (!validator.isEmpty(strNum1) && per_table > 0) && (!validator.isEmpty(strNum) && num_attend > 0) && (validator.isWhitelisted(location.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_., &!\''))
+    && (validator.isDate(date) && validator.isAfter(date)) && (!validator.isEmpty(name) && validator.isWhitelisted(name.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\''));
+    
+    let x = document.getElementById('eventFormError');
+    // if there's an error, keep the item visible
+    if (!error) {
+        if (x != null) {
+            x.style.display = 'inline-block';
+        }
+    }
+    // otherwise, hide it
+    else {
+        if (x != null) {
+            x.style.display = 'none';
+        }
+    }
 }

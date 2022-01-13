@@ -3,8 +3,6 @@ import { useHistory } from "react-router-dom";
 import validator from 'validator';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 
-
-
 export function NewAccount() {
     const history = useHistory();
     let firstName = '';
@@ -37,6 +35,7 @@ export function NewAccount() {
             firstName = validator.trim(event.target.value);
             const valid = !validator.isEmpty(firstName) && validator.isAlphanumeric(firstName) && validator.isByteLength(firstName, {min: 2, max: undefined});
             validateHelper('firstNameError', valid);
+            checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
     }
 
@@ -45,6 +44,7 @@ export function NewAccount() {
             lastName = validator.trim(event.target.value);
             const valid = !validator.isEmpty(lastName) && validator.isAlphanumeric(lastName) && validator.isByteLength(lastName, {min: 2, max: undefined});
             validateHelper('lastNameError', valid);
+            checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
     }
 
@@ -56,6 +56,7 @@ export function NewAccount() {
             (validator.isWhitelisted(phone, '0123456789-') && phone.length == 12 && regex.test(phone)) ||
             (phone.length == 0);
             validateHelper('phoneError', valid);
+            checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
     }
 
@@ -64,6 +65,7 @@ export function NewAccount() {
             email = validator.trim(event.target.value);
             const valid = validator.isEmail(email);
             validateHelper('emailError', valid);
+            checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
     }
 
@@ -73,6 +75,10 @@ export function NewAccount() {
             const valid = (validator.isWhitelisted(password.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%&* ') &&
             validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 0, returnScore: false }));
             validateHelper('passError', valid);
+            if (confirm != password) {
+                validateHelper('confirmError', false);
+            }
+            checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
     }
 
@@ -81,16 +87,24 @@ export function NewAccount() {
             confirm = event.target.value;
             const valid = confirm == password;
             validateHelper('confirmError', valid);
+            checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
     }
 
     // takes care of validation and sending data to the database when the "Next" button is pressed
     let handleSubmit = async (event: any) => {
+        event.preventDefault();
+        const x = document.getElementById('sendAccountError');
+        if (x != null) {
+            x.style.display = 'none';
+        }
         let errorFound = false;
         if (event == null) {
-            console.log('uh oh (handleSubmit1)')
+            if (x != null) {
+                x.style.display = 'inline-block';
+                window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+            }
         }
-        event.preventDefault();
         // get data from form and fill variables
         firstName = validator.trim(event?.target?.firstName?.value);
         lastName = validator.trim(event?.target?.lastName?.value);
@@ -105,15 +119,23 @@ export function NewAccount() {
             // if form is good, create the new account
             try {
                 await sendAccount(firstName, lastName, phone, email, password);
+                // if sendEvent is successful, go to next page
+                history.push('/createEvent');
             }
             catch {
-                console.log('uh oh (handleSubmit2)');
+                if (x != null) {
+                    x.style.display = 'inline-block';
+                    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+                }
             }
-            // if sendEvent is successful, go to next page
-            history.push('/createEvent');
         }
+        // if there is an error, tell the user
         else {
-            console.log('errors found');
+            const y = document.getElementById('accountFormError');
+            if (y != null) {
+                y.style.display = 'inline-block';
+                window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+            }
             firstTime = false;
         }
     }
@@ -122,7 +144,8 @@ export function NewAccount() {
     <>
         <h1 className='title'>Welcome to Placecard!</h1>
         <p className='subtitle'>Let's get started with some basic information:</p>
-        
+        <p className='subtitle pageError' id='accountFormError'>Please fix the errors.</p>
+        <p className='subtitle pageError' id='sendAccountError'>Something went wrong. Please try again.</p>
         <form className='vertical-form' onSubmit={handleSubmit}>
             <label>First Name
                 <span id='firstNameError' className='formError'>Please make sure your first name is at least two characters and contains only letters and numbers.</span>
@@ -301,5 +324,32 @@ function validateHelper(id: string, valid: boolean) {
         if (x != null) {
             x.style.display = 'inline-block';
         } 
+    }
+}
+
+/*
+ * Checks to see if there are any errors in order to show
+ * or hide the error at the top of the page
+ */
+function checkAllErrors(firstName: string, lastName: string, phone: string, email: string, password: string, confirm: string) {
+    const regex = new RegExp('[0-9]{3}-[0-9]{3}-[0-9]{4}');
+    const error = (!validator.isEmpty(firstName) && validator.isAlphanumeric(firstName) && validator.isByteLength(firstName, {min: 2, max: undefined}))
+    && (!validator.isEmpty(lastName) && validator.isAlphanumeric(lastName) && validator.isByteLength(lastName, {min: 2, max: undefined})) &&
+    ((validator.isWhitelisted(phone, '0123456789') && phone.length == 10) || (validator.isWhitelisted(phone, '0123456789-') && phone.length == 12 && 
+    regex.test(phone)) || (phone.length == 0)) && validator.isEmail(email) && (validator.isWhitelisted(password.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%&* ') &&
+    validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 0, returnScore: false })) && confirm == password;
+    
+    let x = document.getElementById('accountFormError');
+    // if there's an error, keep the item visible
+    if (!error) {
+        if (x != null) {
+            x.style.display = 'inline-block';
+        }
+    }
+    // otherwise, hide it
+    else {
+        if (x != null) {
+            x.style.display = 'none';
+        }
     }
 }
