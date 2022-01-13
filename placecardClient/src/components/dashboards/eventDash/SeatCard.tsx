@@ -13,7 +13,7 @@ export function SeatCard(props: {tables: string; full: string; started: string; 
                 <p>Tables Part Full: {props.started} </p>
                 <p>Tables Empty: {props.empty} </p>
             </section>
-            <Link to='/editSeatingChart' className='editButton'>
+            <Link to='/seatDash' className='editButton'>
                     Edit/View Seating Chart
             </Link>
         </Card>

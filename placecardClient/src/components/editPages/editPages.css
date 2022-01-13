@@ -1,0 +1,70 @@
+.box {
+    border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: 80%;
+    height: 80%;
+    min-width: 500px;
+    max-width: 800px;
+    align-self: center;
+    font-size: 14px;
+}
+
+.box * {
+    padding-bottom: 6px;
+    padding-top: 6px;
+    padding-left: 4px;
+    margin: 0;
+}
+
+.box textarea {
+    border: 1px solid black;
+    padding-left: 2px;
+    padding-right: 2px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.centered {
+    display: flex;
+    flex-direction: column;
+}
+
+.details {
+    padding: 1px 1px 1px 16px;
+}
+
+.customInput {
+    margin-left: 16px;
+    margin-right: 80px;
+    padding-bottom: 80px;
+}
+
+.signature {
+    margin-left: 4px;
+    margin-right: 80px;
+    margin-bottom: 10px;
+}
+
+.horizontalFlex {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.verticalFlex {
+    margin-right: 50px;
+    margin-left: 50px;
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+    text-align: center;
+}
+
+.verticalFlex a {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-size: 16px;
+}

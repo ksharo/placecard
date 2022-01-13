@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -12,6 +12,10 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MdLock, MdLockOpen } from 'react-icons/md';
 
 export function SeatingDashboard() {
+    const history = useHistory();
+    let handleClick =  () => {
+        history.push('/eventDash');
+      }  
     const name = 'Wedding';
     const date = '10/10/10';
     const survComp = 10;
@@ -91,7 +95,7 @@ export function SeatingDashboard() {
             <section className='header'>
                 <section className='titleBar'>
                     <h1>Wedding | 10/10/10</h1>
-                    <Button variant='outlined'>Return to Dashboard</Button>
+                    <Button variant='outlined' onClick={handleClick}>Return to Dashboard</Button>
                 </section>
                 <hr />
             </section>
