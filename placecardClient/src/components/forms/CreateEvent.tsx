@@ -11,9 +11,87 @@ export function CreateEvent(){
     let per_table = -1;
     let firstTime = true;
     
-    let validate = (event: any) => {
+    let validateName = (event: any) => {
         if (!firstTime) {
-            // event.target
+            name = event.target.value;
+            name = validator.trim(name);
+            let x = document.getElementById('nameError');
+            if (!validator.isEmpty(name) && validator.isWhitelisted(name.toLocaleLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\'')) {
+                if (x != null) {
+                    x.style.display = 'none';
+                }             }
+            else {
+                if (x != null) {
+                    x.style.display = 'inline-block';
+                } 
+            }
+        }
+    }
+    let validateDate = (event: any) => {
+        if (!firstTime) {
+            date = event.target.value;
+            let x = document.getElementById('dateError');
+            if (validator.isDate(date) && validator.isAfter(date)) {
+                if (x != null) {
+                    x.style.display = 'none';
+                } 
+            }
+            else {
+                if (x != null) {
+                    x.style.display = 'inline-block';
+                } 
+            }        
+        }
+    }
+    let validateLocation = (event: any) => {
+        if (!firstTime) {
+            location = event.target.value;
+            location = validator.trim(location);
+            let x = document.getElementById('locationError');
+            if (validator.isWhitelisted(location.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_., &!\'')) {
+                if (x != null) {
+                    x.style.display = 'none';
+                } 
+            }
+            else {
+                if (x != null) {
+                    x.style.display = 'inline-block';
+                } 
+            }        
+        }
+    }
+    let validateAttend = (event: any) => {
+        if (!firstTime) {
+            num_attend = event.target.value;
+            let x = document.getElementById('numAttError');
+            let strNum = validator.trim(num_attend.toString());
+            if (!validator.isEmpty(strNum) && num_attend > 0) {
+                if (x != null) {
+                    x.style.display = 'none';
+                } 
+            }
+            else {
+                if (x != null) {
+                    x.style.display = 'inline-block';
+                } 
+            }        
+        }
+    }
+    let validateTable = (event: any) => {
+        if (!firstTime) {
+            per_table = event.target.value;
+            let strNum = validator.trim(per_table.toString());
+            let x = document.getElementById('perTableError');
+            if (!validator.isEmpty(strNum) && per_table > 0) {
+                if (x != null) {
+                    x.style.display = 'none';
+                } 
+            }
+            else {
+                if (x != null) {
+                    x.style.display = 'inline-block';
+                } 
+            }        
         }
     }
     let handleSubmit = async (event: any) => {
@@ -108,7 +186,7 @@ export function CreateEvent(){
                 console.log('uh oh (handleClick)');
             }
             // if sendEvent is successful, go to next page
-            history.push('/createGuestList');
+            history.push('/uploadGuestList');
         }
         else {
             console.log('errors found');
@@ -124,23 +202,23 @@ export function CreateEvent(){
         <form className='vertical-form' onSubmit={handleSubmit} id='createEventForm'>
             <label>Event Name
             <span id='nameError' className='formError'>The event name can only contain spaces and the following characters: [a-zA-Z0-9.'&!-_].</span>
-            <input name='name' onChange={validate} type="text"/>
+            <input name='name' onChange={validateName} type="text"/>
             </label>
             <label>Event Date
             <span id='dateError' className='formError'>Please enter a valid date that is after today.</span>
-            <input name='date' onChange={validate} type="date"/>
+            <input name='date' onChange={validateDate} type="date"/>
             </label>
             <label>Location (optional)
             <span id='locationError' className='formError'>The event location can only contain spaces and the following characters: [a-zA-Z0-9.'&!-_,].</span>
-            <input name='location' onChange={validate} type="text"/>
+            <input name='location' onChange={validateLocation} type="text"/>
             </label>
             <label>Expected Number of Attendees
             <span id='numAttError' className='formError'>Please enter a positive number.</span>
-            <input name='num_attend' onChange={validate} type="number" defaultValue="100"/>
+            <input name='num_attend' onChange={validateAttend} type="number" defaultValue="100"/>
             </label>
             <label>Attendees Per Table
             <span id='perTableError' className='formError'>Please enter a positive number.</span>
-            <input name='per_table' onChange={validate} type="number" defaultValue="10"/>
+            <input name='per_table' onChange={validateTable} type="number" defaultValue="10"/>
             </label>
             <button type='submit' className='rectangleButton smallerButton'>Create!</button>
         </form>
