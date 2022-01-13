@@ -35,24 +35,26 @@ router.get("/:eventId", async (req, res) => {
 
 router.post("/newEvent", async (req, res) => {
     const newEvent = req.body;
-    
     try {
         checkPrecondition(newEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
         checkPrecondition(newEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
+        console.log('1')
     } catch (e) {
         const error = {
             error: e.message
         };
         return res.status(statusCodes.BAD_REQUEST).json(error);
     }
+    console.log('2')
 
     const validatorResponse = validateSchema(EventSchema, newEvent, SCHEMA_TYPES.EVENT);
     if (!_.isUndefined(validatorResponse.error)) {
         return res.status(statusCodes.BAD_REQUEST).json(validatorResponse.error);
     }
-
+    console.log('before here')
     try {
         const createdEvent = await events.createEvent(newEvent);
+        console.log('here?')
         return res.json(createdEvent);
     } catch(e) {
         const error = {
