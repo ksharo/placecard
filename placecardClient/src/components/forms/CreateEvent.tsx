@@ -1,5 +1,5 @@
 import './Forms.css'
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import validator from 'validator';
 
 export function CreateEvent(){
@@ -16,7 +16,7 @@ export function CreateEvent(){
             name = event.target.value;
             name = validator.trim(name);
             let x = document.getElementById('nameError');
-            if (!validator.isEmpty(name) && validator.isWhitelisted(name.toLocaleLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\'')) {
+            if (!validator.isEmpty(name) && validator.isWhitelisted(name.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\'')) {
                 if (x != null) {
                     x.style.display = 'none';
                 }             }
