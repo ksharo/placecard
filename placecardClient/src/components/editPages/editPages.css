@@ -9,6 +9,7 @@
     max-width: 800px;
     align-self: center;
     font-size: 14px;
+    margin-top: 0px !important;
 }
 
 .box * {
@@ -107,16 +108,40 @@
 
 .profileElem {
     font-size: 18px;
-    padding: 8px;
+    padding: 8px 8px 12px 8px;
     font-weight: bold;
 }
 
 .bottomButtons {
-    margin: 72px 240px 0px 240px;
+    margin: 0px 4px 0px 4px;
 }
 
 .profileData {
     font-weight: normal;
     padding-left: 10px;
     font-size: 16px;
+}
+
+.editable {
+    display: none;
+    border: 1px solid black;
+    margin: 0px 8px 0px 8px;
+}
+
+.homeButton {
+    width: 100px;
+    margin: 24px auto 24px auto !important;
+    font-size: 24px !important;
+}
+
+#editProfileError {
+    margin-bottom: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+.editProfError {
+    color: red;
+    font-size: 12px;
+    margin-left: 6px;
+    display: none;
 }

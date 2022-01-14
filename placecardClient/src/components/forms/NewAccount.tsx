@@ -33,7 +33,7 @@ export function NewAccount() {
     let validateFirstName = (event: any) => {
         if (!firstTime) {
             firstName = validator.trim(event.target.value);
-            const valid = !validator.isEmpty(firstName) && validator.isAlphanumeric(firstName) && validator.isByteLength(firstName, {min: 2, max: undefined});
+            const valid = !validator.isEmpty(firstName) && validator.isAlphanumeric(firstName.replace('-', '')) && validator.isByteLength(firstName, {min: 2, max: undefined});
             validateHelper('firstNameError', valid);
             checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
@@ -42,7 +42,7 @@ export function NewAccount() {
     let validateLastName = (event: any) => {
         if (!firstTime) {
             lastName = validator.trim(event.target.value);
-            const valid = !validator.isEmpty(lastName) && validator.isAlphanumeric(lastName) && validator.isByteLength(lastName, {min: 2, max: undefined});
+            const valid = !validator.isEmpty(lastName) && validator.isAlphanumeric(lastName.replace('-', '')) && validator.isByteLength(lastName, {min: 2, max: undefined});
             validateHelper('lastNameError', valid);
             checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
@@ -148,11 +148,11 @@ export function NewAccount() {
         <p className='subtitle pageError' id='sendAccountError'>Something went wrong. Please try again.</p>
         <form className='vertical-form' onSubmit={handleSubmit}>
             <label>First Name
-                <span id='firstNameError' className='formError'>Please make sure your first name is at least two characters and contains only letters and numbers.</span>
+                <span id='firstNameError' className='formError'>Please make sure your first name is at least two characters and contains only letters, numbers, and hyphens.</span>
                 <input type="text" name='firstName' onChange={validateFirstName}/>
             </label>
             <label>Last Name
-                <span id='lastNameError' className='formError'>Please make sure your last name is at least two characters and contains only letters and numbers.</span>
+                <span id='lastNameError' className='formError'>Please make sure your last name is at least two characters and contains only letters, numbers, and hyphens.</span>
                 <input type="text" name='lastName' onChange={validateLastName}/>
             </label>
             <label>Phone Number (optional)
@@ -273,12 +273,12 @@ function showError(id: string): boolean {
 function validate(firstName: string, lastName: string, phone: string, email: string, password: string, confirm: string) {
     let errorFound = false;
     /* Make sure the first name is at least two characters, remove extra white space, and check for alphanumeric only */
-    if (!(!validator.isEmpty(firstName) && validator.isAlphanumeric(firstName) && validator.isByteLength(firstName, {min: 2, max: undefined}))) {
+    if (!(!validator.isEmpty(firstName) && validator.isAlphanumeric(firstName.replace('-', '')) && validator.isByteLength(firstName, {min: 2, max: undefined}))) {
         errorFound = showError('firstNameError');
     }
 
     /* Make sure the last name is at least two characters, remove extra white space, and check for alphanumeric only */
-    if (!(!validator.isEmpty(lastName) && validator.isAlphanumeric(lastName) && validator.isByteLength(lastName, {min: 2, max: undefined}))) {
+    if (!(!validator.isEmpty(lastName) && validator.isAlphanumeric(lastName.replace('-', '')) && validator.isByteLength(lastName, {min: 2, max: undefined}))) {
         errorFound = showError('lastNameError');
     }
 
@@ -333,8 +333,8 @@ function validateHelper(id: string, valid: boolean) {
  */
 function checkAllErrors(firstName: string, lastName: string, phone: string, email: string, password: string, confirm: string) {
     const regex = new RegExp('[0-9]{3}-[0-9]{3}-[0-9]{4}');
-    const error = (!validator.isEmpty(firstName) && validator.isAlphanumeric(firstName) && validator.isByteLength(firstName, {min: 2, max: undefined}))
-    && (!validator.isEmpty(lastName) && validator.isAlphanumeric(lastName) && validator.isByteLength(lastName, {min: 2, max: undefined})) &&
+    const error = (!validator.isEmpty(firstName) && validator.isAlphanumeric(firstName.replace('-', '')) && validator.isByteLength(firstName, {min: 2, max: undefined}))
+    && (!validator.isEmpty(lastName) && validator.isAlphanumeric(lastName.replace('-', '')) && validator.isByteLength(lastName, {min: 2, max: undefined})) &&
     ((validator.isWhitelisted(phone, '0123456789') && phone.length == 10) || (validator.isWhitelisted(phone, '0123456789-') && phone.length == 12 && 
     regex.test(phone)) || (phone.length == 0)) && validator.isEmail(email) && (validator.isWhitelisted(password.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%&* ') &&
     validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 0, returnScore: false })) && confirm == password;
