@@ -24,6 +24,8 @@ import { SurveyPt1 } from './components/guestPages/SurveyPt1';
 import { SurveyPt2 } from './components/guestPages/SurveyPt2';
 import { SurveyConf } from './components/confirmationPages/SurveyConf';
 import { SentConf } from './components/confirmationPages/SentConf';
+import { EditDetails } from './components/editPages/EditDetails';
+import { EditProfile } from './components/editPages/EditProfile';
 
 
 function App() {
@@ -35,13 +37,15 @@ function App() {
         <Header/>
         <Switch>
           <Route exact path='/' component={ Home }/>
+          <Route exact path='/editProfile' component={ EditProfile }/>
           <Route exact path='/newAccount' component={ NewAccount }/>
-          <Route exact path='/eventDash' component={ EventDashboard }/>
           <Route exact path='/createEvent' component={ CreateEvent }/>
           <Route exact path='/userHome' component={ UserDashboard }/>
           <Route exact path='/uploadGuestList' component={ GuestList }/>
           <Route exact path='/editSurvey' component={ EditSurvey }/>
           <Route exact path='/sentConf' component={ SentConf }/>
+          <Route exact path='/eventDash' component={ EventDashboard }/>
+          <Route exact path='/editDetails' component={ EditDetails }/>
           <Route exact path='/seatDash' component={ SeatingDashboard }/>
           <Route exact path='/beginSurvey' component={ GuestConfirmation }/>
           <Route exact path='/surveyPt1' component={ SurveyPt1 }/>
