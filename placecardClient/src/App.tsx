@@ -36,6 +36,8 @@ function App() {
   [window.emailState, window.setEmail] = React.useState('email@email.com');
   [window.profPicState, window.setProfPic] = React.useState(null);
   [window.profPicNameState, window.setProfPicName] = React.useState('None');
+  [window.eventsState, window.setEvents] = React.useState([{name:'none', date:'none', location:'none', numAttend:10, perTable:1}]);
+  [window.activeEvent, window.setActiveEvent] = React.useState(null);
 
   document.title = 'Placecard';
 

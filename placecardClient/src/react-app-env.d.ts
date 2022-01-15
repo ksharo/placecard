@@ -1,5 +1,6 @@
 /// <reference types="react-scripts" />
 interface Window {
+    // TODO: figure out type of set functions
     loggedInState: boolean;
     setLoggedIn: any;
 
@@ -20,4 +21,18 @@ interface Window {
 
     profPicNameState: string;
     setProfPicName: any;
+
+    eventsState: PlacecardEvent[];
+    setEvents: any;
+
+    activeEvent: PlacecardEvent | null;
+    setActiveEvent: any;
+}
+
+interface PlacecardEvent {
+    name: string;
+    date: string;
+    location: string;
+    numAttend: number;
+    perTable: number;
 }

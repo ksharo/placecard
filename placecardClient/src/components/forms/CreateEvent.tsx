@@ -84,8 +84,13 @@ export function CreateEvent(){
         if (!errorFound) { 
             // if form is good, sendEvent
             try {
-                await sendEvent(name, date, location, num_attend, per_table);
-                // if sendEvent is successful, go to next page
+                // TODO: uncomment when backend is ready
+                // await sendEvent(name, date, location, num_attend, per_table);
+                // if sendEvent is successful, go to next page after adding event to global list
+                const eventsList = window.eventsState;
+                eventsList.push({name: name, date: date, location: location, numAttend: num_attend, perTable: per_table});
+
+                window.setEvents(eventsList);
                 history.push('/uploadGuestList');            
             }
             catch {
