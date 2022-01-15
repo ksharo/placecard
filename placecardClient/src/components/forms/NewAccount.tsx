@@ -78,6 +78,9 @@ export function NewAccount() {
             if (confirm != password) {
                 validateHelper('confirmError', false);
             }
+            else {
+                validateHelper('confirmError', true);
+            }
             checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
     }
@@ -118,8 +121,15 @@ export function NewAccount() {
         if (!errorFound) { 
             // if form is good, create the new account
             try {
-                await sendAccount(firstName, lastName, phone, email, password);
-                // if sendEvent is successful, go to next page
+                // TODO: uncomment when backend is ready
+                // await sendAccount(firstName, lastName, phone, email, password);
+                // if sendEvent is successful, go to next page after setting window variables
+                window.setFirstName(firstName);
+                window.setLastName(lastName);
+                window.setPhone(phone);
+                window.setEmail(email);
+                // log in with this data
+                window.setLoggedIn(true);
                 history.push('/createEvent');
             }
             catch {
@@ -166,7 +176,7 @@ export function NewAccount() {
             <label>Password
                 <span id='passError' className='formError'>Password must be at least 8 characters including at least one uppercase letter, one lowercase letter, and one number. Spaces and the following special symbols are allowed: [ ! @ # $ % & * ]</span>
                 <section className='passwordHolder'>    
-                    <input type="password" name='password' id='password' onChange={validatePass}/>         
+                    <input type="password" name='password' id='passInp' onChange={validatePass}/>         
                     <AiFillEyeInvisible className='passEye' id='passNoEye' onClick={ toggleOnPassword }/>
                     <AiFillEye className='passEye yesEye' id='passEye' onClick={ toggleOffPassword }/>
                 </section>           
@@ -220,7 +230,8 @@ function toggleHelper(iconID: string, inputID: string, backupElem: HTMLElement |
         // change the type of the input
         let y = document.getElementById(inputID);
         if (y) {
-            y.setAttribute('type',type);
+            y.setAttribute('type', type);
+            console.log(y);
         }
     }
     // if something went wrong, show the old element
@@ -236,16 +247,15 @@ function toggleHelper(iconID: string, inputID: string, backupElem: HTMLElement |
  * in order to hide/show the password to the user.
  */
 function togglePassword(id: string) {
-    console.log(id);
     let e = document.getElementById(id);
     if (e) {
         e.style.display = 'none';
     }
     if (id == 'passNoEye') {
-        toggleHelper('passEye', 'password', e, 'text');
+        toggleHelper('passEye', 'passInp', e, 'text');
     }
     else if (id == 'passEye') {
-        toggleHelper('passNoEye', 'password', e, 'password');
+        toggleHelper('passNoEye', 'passInp', e, 'password');
     }
     else if (id == 'confirmEye') {
         toggleHelper('confirmNoEye', 'passConfirm', e, 'password');
