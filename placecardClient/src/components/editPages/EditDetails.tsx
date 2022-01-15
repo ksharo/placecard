@@ -2,6 +2,8 @@ import '../forms/Forms.css'
 import './editPages.css'
 import { useHistory } from "react-router-dom";
 import validator from 'validator';
+import { Button } from '@mui/material';
+import moment from 'moment';
 
 export function EditDetails(){
     const history = useHistory();
@@ -85,9 +87,28 @@ export function EditDetails(){
         if (!errorFound) { 
             // if form is good, sendEvent
             try {
-                // TODO: edit event, not send it
-                await sendEvent(name, date, location, num_attend, per_table);
-                // if sendEvent is successful, go back to dashboard
+                // TODO: edit event, not send it, and uncomment when backend is working
+                // await sendEvent(name, date, location, num_attend, per_table);
+                // if sendEvent is successful, go back to dashboard after updating globals
+                const activeEvent = {name: name, date: date, location: location, numAttend: num_attend, perTable: per_table};
+                // first change list
+                const events = [...window.eventsState];
+                const curEvent = window.activeEvent;
+                for (let i = 0; i < events.length; i++) {
+                    const event = events[i];
+                    if (curEvent != null && event.name == curEvent.name && (event.date == curEvent.date || moment(event.date).format('DD MMMM YYYY') == curEvent.date) && 
+                        event.location == curEvent.location && event.numAttend == curEvent.numAttend
+                        && event.perTable == curEvent.perTable) {
+                            // found the matching event!
+                            events[i] = activeEvent;
+                            console.log('found');
+                            break;
+                        }
+                }
+                window.setEvents(events);
+                console.log(events);
+                // then change active event
+                window.setActiveEvent(activeEvent);
                 history.push('/eventDash');            
             }
             catch {
@@ -117,6 +138,9 @@ export function EditDetails(){
     const toDashboard = () => {
         history.push('/eventDash');
     };
+    const toHome = () => {
+        history.push('/userHome');
+    };
     const hideWarning = () => {
         const x = document.getElementById('hiddenWarning');
         if (x != null) {
@@ -126,6 +150,13 @@ export function EditDetails(){
 
     return (
     <>
+    {window.activeEvent == null ?
+    <>
+     <h1 className='title'>Error: No event found.</h1> 
+     <Button variant='outlined' onClick={toHome}>Return Home</Button>
+     </>
+     : 
+        <>
         <section className='hiddenBoxes' id='hiddenWarning'>
             <section className='innerBox'>
                 <h1 className='smallBoxTitle title'>Notice</h1>
@@ -143,30 +174,33 @@ export function EditDetails(){
         <form className='vertical-form' onSubmit={handleSubmit} id='editEventForm'>
             <label>Event Name
             <span id='editNameError' className='formError'>The event name can only contain spaces and the following characters: [a-zA-Z0-9.'&!-_].</span>
-            <input name='name' onChange={validateName} type="text"/>
+            <input name='name' onChange={validateName} defaultValue={window.activeEvent.name} type="text"/>
             </label>
             <label>Event Date
             <span id='editDateError' className='formError'>Please enter a valid date that is after today.</span>
-            <input name='date' onChange={validateDate} type="date"/>
+            <input name='date' defaultValue={moment(window.activeEvent.date).format('YYYY-MM-DD')} onChange={validateDate} type="date"/>
             </label>
             <label>Location (optional)
             <span id='editLocationError' className='formError'>The event location can only contain spaces and the following characters: [a-zA-Z0-9.'&!-_,].</span>
-            <input name='location' onChange={validateLocation} type="text"/>
+            <input name='location' defaultValue={window.activeEvent.location} onChange={validateLocation} type="text"/>
             </label>
             <label>Expected Number of Attendees
             <span id='editNumAttError' className='formError'>Please enter a positive number.</span>
-            <input name='num_attend' onChange={validateAttend} type="number" defaultValue="100"/>
+            <input name='num_attend' defaultValue={window.activeEvent.numAttend} onChange={validateAttend} type="number"/>
             </label>
             <label>Attendees Per Table
             <span id='editPerTableError' className='formError'>Please enter a positive number.</span>
-            <input name='per_table' onChange={validateTable} type="number" defaultValue="10"/>
+            <input name='per_table' onChange={validateTable} defaultValue={window.activeEvent.perTable} type="number"/>
             </label>
             <section className='horizontalFlex'> 
                 <button className='rectangleButton smallerButton' onClick={noSave}>Return to Dashboard</button>
                 <button type='submit' className='rectangleButton smallerButton'>Save</button>
             </section>
         </form>
+        </>
+    }
     </>
+    
     );
 }
 
