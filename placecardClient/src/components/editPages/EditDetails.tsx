@@ -126,7 +126,7 @@ export function EditDetails(){
 
     return (
     <>
-        <section id='hiddenWarning'>
+        <section className='hiddenBoxes' id='hiddenWarning'>
             <section className='innerBox'>
                 <h1 className='smallBoxTitle title'>Notice</h1>
                 <p className='subtitle'>Returning to the dashboard will forget your saved data.</p>

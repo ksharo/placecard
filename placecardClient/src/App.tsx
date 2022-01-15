@@ -54,8 +54,6 @@ function App() {
       <Route exact path='/surveyPt2' component={ SurveyPt2 }/>
       <Route exact path='/doneSurvey' component={ SurveyConf }/></>);
 
-  const empty = (<></>);
-
   return (
       <body>
         <Router>
@@ -64,8 +62,8 @@ function App() {
           <Switch>
             <Route exact path='/' component={ Home }/>
             <Route exact path='/newAccount' component={ NewAccount }/>
-            { window.loggedInState ? loggedInRoutes : empty}
             <Route path="/404" component={ NotFound }/>
+            { window.loggedInState ? loggedInRoutes : <Redirect to='/'/>}
             <Redirect to="/404"/>
           </Switch>
           </section>

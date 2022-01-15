@@ -1,8 +1,7 @@
 import './editPages.css';
 import validator from 'validator';
 import { useHistory } from "react-router-dom";
-import { Button } from "@mui/material";
-import React from 'react';
+import { Button, Switch } from "@mui/material";
 
 export function EditProfile() {
     const history = useHistory();
@@ -149,9 +148,94 @@ export function EditProfile() {
         }
     }
 
+    const updatePassword = () => {
+        // validate first!!
+        const op = document.getElementById('oldPass');
+        const np = document.getElementById('newPass');
+        const cnp = document.getElementById('confNewPass');
+        if (op != null && np != null && cnp != null) {
+            const oldPass = (op as HTMLInputElement).value;
+            const newPass = (np as HTMLInputElement).value;
+            const confPass = (cnp as HTMLInputElement).value;
+            let errorFound = false;
+            // TODO: make sure op is correct!
+
+            // make sure the new password follows the guidelines
+            if (!(validator.isWhitelisted(newPass.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%&* ') &&
+                validator.isStrongPassword(newPass, { minLength: 8, minLowercase: 1, minUppercase: 1, 
+                minNumbers: 1, minSymbols: 0, returnScore: false }))) {
+                    errorFound = showError('newPassError');
+            }
+            // make sure the new password is not the same as the old password
+            if (newPass == oldPass) {
+                errorFound = showError('matchPassErr');
+            }
+            // make sure the new password and confirmation are the same
+            if (newPass != confPass) {
+                errorFound = showError('confError');
+            }
+            // if everything is good, hide the box
+            if (!errorFound) {
+                // TODO: actually send the password
+                const x = document.getElementById('passChange');
+                if (x != null) {
+                    x.style.display = 'none';
+                }
+            }
+            else {
+                // otherwise, show the page error
+                showError('passPageError');
+            }
+        }
+        // show error on page if something went wrong
+        else {
+            showError('passPageError');
+        }
+
+    };
+
+    const changePassword = () => {
+        const x = document.getElementById('passChange');
+        if (x != null) {
+            x.style.display = 'inline-block';
+        }
+    }
+
+    const viewHidePasswords = (event: any) => {
+        let toggle = event.target;
+        if (toggle != null) {
+            toggle = toggle.checked;
+            const passwords = document.getElementsByClassName('passwordBox');
+            // show passwords if checked
+            if (toggle) {
+                for (let i = 0; i < passwords.length; i++) {
+                    passwords[i].setAttribute('type','text');
+                }
+            }
+            // otherwise hide passwords
+            else {
+                for (let i = 0; i < passwords.length; i++) {
+                    passwords[i].setAttribute('type','password');
+                }  
+            }
+        }
+    }
+
+    const hideNewErrors = () => {
+        hideError('newPassError');
+        hideError('matchPassErr');
+        hideError('confError');
+    }
+    const hideOldErrors = () => {
+        hideError('passErr');
+    }
+    const hideConfErrors = () => {
+        hideError('confError');
+    }
+
     return (
         <>
-            <section id='hiddenWarning'>
+            <section className='hiddenBoxes' id='hiddenWarning'>
                 <section className='innerBox'>
                     <h1 className='smallBoxTitle title'>Notice</h1>
                     <p className='subtitle'>All unsaved changes will be lost.</p>
@@ -159,6 +243,35 @@ export function EditProfile() {
                     <section className='horizontalFlex'>
                         <button className='smallButton' onClick={ hideWarning }>No</button>
                         <button className='smallButton' onClick={ toHome }>Yes</button>
+                    </section>
+                </section>
+            </section>
+            <section className='hiddenBoxes' id='passChange'>
+                <section className='innerBox biggerBox'>
+                    <h1 className='smallBoxTitle title'>Change Password</h1>
+                    <p className='pageError' id='functionalError'>Something went wrong. Please try again.</p>
+                    <p className='pageError' id='passPageError'>Please fix the errors.</p>
+                    <section className='verticalFlex passInputs'>
+                            <label>Old Password
+                                <span id='passErr' className='formError'>Password is incorrect.</span>
+                                <input id='oldPass' onChange={ hideOldErrors} className='passwordBox' type='password'/>
+                            </label>
+                            <label>New Password
+                                <span id='newPassError' className='formError'>Password must be at least 8 characters including at least one uppercase letter, one lowercase letter, and one number. Spaces and the following special symbols are allowed: [ ! @ # $ % & * ]</span>
+                                <span id='matchPassErr' className='formError'>New password cannot be the same as the old password.</span>
+                                <input id='newPass' onChange={ hideNewErrors} className='passwordBox' type='password'/>
+                            </label>
+                            <label>Confirm New Password
+                                <span id='confError' className='formError'>Passwords don't match.</span>
+                                <input id='confNewPass' onChange={ hideConfErrors} className='passwordBox' type='password'/>
+                            </label>
+                    </section>
+                    <section className='horizontalFlex passChangeFooter'>
+                        <label>
+                            <Switch onChange={ viewHidePasswords }/>
+                            View Text
+                        </label>
+                        <Button variant='outlined' className='smallButton' onClick={ updatePassword }>Save</Button>
                     </section>
                 </section>
             </section>
@@ -184,7 +297,7 @@ export function EditProfile() {
                         <input className='profileData editable' id='editPhone' type='text' onChange={ validatePhone } defaultValue={window.phoneState}/>
                     </p>
                     <p className='profileElem'>Password: 
-                        <Button className='profileData'>Change Password</Button>
+                        <Button className='profileData' onClick={changePassword}>Change Password</Button>
                     </p>
                     <p className='profileElem closeHorizontalFlex'>Upload Profile Picture: 
                             <label className='profileData' id='fileChooser'> Choose File
@@ -249,5 +362,20 @@ function checkAllErrors(firstName: string, lastName: string, phone: string, emai
             x.style.display = 'none';
         }
         return true;
+    }
+}
+
+function showError(id: string) {
+    const x = document.getElementById(id);
+    if (x != null) {
+        x.style.display = 'inline-block'
+    }
+    return true;
+}
+
+function hideError(id: string) {
+    const x = document.getElementById(id);
+    if (x != null) {
+        x.style.display = 'none'
     }
 }
