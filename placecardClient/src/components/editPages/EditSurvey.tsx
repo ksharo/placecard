@@ -14,7 +14,7 @@ export function EditSurvey () {
             <p className='details'> Event Date: 08/05/2008 </p>
             <p className='details'> Number of Guests in Your Party: 6</p>
             <p className='details'> Your unique link: https://placecard.com/guestResponse/123456</p>
-            <textarea className='signature' defaultValue={'Thanks! \r\nApple Zebra'}/>
+            <textarea className='signature' defaultValue={'Thanks! \r\n'+window.firstNameState + ' ' + window.lastNameState}/>
         </section>
         <section className='horizontalFlex'>
             <section className='verticalFlex'>

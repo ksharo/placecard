@@ -5,7 +5,7 @@ import './UserDashboard.css';
 export function UserDashboard() {
     return (
         <>
-            <h1 className='title'>Welcome back, Apple Zebra!</h1>
+            <h1 className='title'>Welcome back, {window.firstNameState} {window.lastNameState}!</h1>
             <section className='boxes'>
                 <EventBox></EventBox>
             </section>
