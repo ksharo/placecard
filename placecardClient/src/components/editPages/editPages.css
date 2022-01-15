@@ -86,6 +86,7 @@
     top: 0px;
     background-color: rgba(0, 0, 0, 0.7);
     display: none;
+    z-index: 5;
 }
 
 .smallButton {
@@ -144,4 +145,34 @@
     font-size: 12px;
     margin-left: 6px;
     display: none;
+}
+
+.picButton {
+    margin: 0px 620px 12px 0px !important;
+    padding-top: 0 !important;
+}
+
+#editProfPic {
+    display: none;
+}
+
+#fileChooser {
+    background-color: rgba(228, 228, 228, 0.555);
+    border: 0.3px solid black;
+    text-align: center;
+    padding: 5px !important;
+    margin-left: 10px !important;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+#fileChooser:hover {
+    background-color: rgba(228, 228, 228, 0.888);
+    cursor: pointer;
+}
+
+.closeHorizontalFlex {
+    display: flex;
+    justify-content: flex-start;
 }

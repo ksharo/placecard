@@ -26,38 +26,52 @@ import { SurveyConf } from './components/confirmationPages/SurveyConf';
 import { SentConf } from './components/confirmationPages/SentConf';
 import { EditDetails } from './components/editPages/EditDetails';
 import { EditProfile } from './components/editPages/EditProfile';
-
+import React from 'react';
 
 function App() {
+  [window.loggedInState, window.setLoggedIn] = React.useState(false);
+  [window.firstNameState, window.setFirstName] = React.useState('Apple');
+  [window.lastNameState, window.setLastName] = React.useState('Zebra');
+  [window.phoneState, window.setPhone] = React.useState('555-555-5555');
+  [window.emailState, window.setEmail] = React.useState('email@email.com');
+  [window.profPicState, window.setProfPic] = React.useState(null);
+  [window.profPicNameState, window.setProfPicName] = React.useState('None');
+
   document.title = 'Placecard';
+
+  const loggedInRoutes = (<>
+      <Route exact path='/editProfile' component={ EditProfile }/>
+      <Route exact path='/createEvent' component={ CreateEvent }/>
+      <Route exact path='/userHome' component={ UserDashboard }/>
+      <Route exact path='/uploadGuestList' component={ GuestList }/>
+      <Route exact path='/editSurvey' component={ EditSurvey }/>
+      <Route exact path='/sentConf' component={ SentConf }/>
+      <Route exact path='/eventDash' component={ EventDashboard }/>
+      <Route exact path='/editDetails' component={ EditDetails }/>
+      <Route exact path='/seatDash' component={ SeatingDashboard }/>
+      <Route exact path='/beginSurvey' component={ GuestConfirmation }/>
+      <Route exact path='/surveyPt1' component={ SurveyPt1 }/>
+      <Route exact path='/surveyPt2' component={ SurveyPt2 }/>
+      <Route exact path='/doneSurvey' component={ SurveyConf }/></>);
+
+  const empty = (<></>);
+
   return (
-    <Router>
       <body>
-        <section className='content'>
-        <Header/>
-        <Switch>
-          <Route exact path='/' component={ Home }/>
-          <Route exact path='/editProfile' component={ EditProfile }/>
-          <Route exact path='/newAccount' component={ NewAccount }/>
-          <Route exact path='/createEvent' component={ CreateEvent }/>
-          <Route exact path='/userHome' component={ UserDashboard }/>
-          <Route exact path='/uploadGuestList' component={ GuestList }/>
-          <Route exact path='/editSurvey' component={ EditSurvey }/>
-          <Route exact path='/sentConf' component={ SentConf }/>
-          <Route exact path='/eventDash' component={ EventDashboard }/>
-          <Route exact path='/editDetails' component={ EditDetails }/>
-          <Route exact path='/seatDash' component={ SeatingDashboard }/>
-          <Route exact path='/beginSurvey' component={ GuestConfirmation }/>
-          <Route exact path='/surveyPt1' component={ SurveyPt1 }/>
-          <Route exact path='/surveyPt2' component={ SurveyPt2 }/>
-          <Route exact path='/doneSurvey' component={ SurveyConf }/>
-          <Route path="/404" component={ NotFound }/>
-          <Redirect to="/404"/>
-        </Switch>
-        </section>
-        <Footer/>
+        <Router>
+          <section className='content'>
+          <Header/>
+          <Switch>
+            <Route exact path='/' component={ Home }/>
+            <Route exact path='/newAccount' component={ NewAccount }/>
+            { window.loggedInState ? loggedInRoutes : empty}
+            <Route path="/404" component={ NotFound }/>
+            <Redirect to="/404"/>
+          </Switch>
+          </section>
+          <Footer/>
+        </Router>
       </body>
-    </Router>
   );
 }
 
