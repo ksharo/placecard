@@ -1,4 +1,4 @@
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -10,6 +10,7 @@ import { useState } from "react";
 import { IoIosSave } from "react-icons/io";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MdLock, MdLockOpen } from 'react-icons/md';
+import moment from 'moment';
 
 export function SeatingDashboard() {
     const history = useHistory();
@@ -92,9 +93,16 @@ export function SeatingDashboard() {
 
     return (
         <>
+            {window.activeEvent == null ? 
+            <>
+            <h1 className='title'>Error: No event found.</h1>
+            <Button variant='outlined' onClick={handleClick}>Return to Dashboard</Button>
+            </>
+            :
+            <>
             <section className='header'>
                 <section className='titleBar'>
-                    <h1>Wedding | 10/10/10</h1>
+                    <h1>{window.activeEvent.name} | {moment(window.activeEvent.date).format('MM/DD/YY')}</h1>
                     <Button variant='outlined' onClick={handleClick}>Return to Dashboard</Button>
                 </section>
                 <hr />
@@ -205,7 +213,8 @@ export function SeatingDashboard() {
                     </Card>
                 </Grid>
             </Grid>
-
+            </>
+        }
         </>
     );
 }

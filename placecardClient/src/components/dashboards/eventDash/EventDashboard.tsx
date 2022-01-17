@@ -4,6 +4,7 @@ import { EditCard } from "./EditCard";
 import { SeatCard } from "./SeatCard";
 import './EventDash.css';
 import Button from "@mui/material/Button";
+import moment from 'moment';
 
 export function EventDashboard() {
     const history = useHistory();
@@ -21,7 +22,7 @@ export function EventDashboard() {
         <>
             <h1 className='title'>{window.activeEvent.name}</h1>            
             <section id='edit-cards'>
-                <DetailsCard name={window.activeEvent.name} date={window.activeEvent.date} location={window.activeEvent.location} guests={window.activeEvent.numAttend.toString()} perTable={window.activeEvent.perTable.toString()}></DetailsCard>
+                <DetailsCard name={window.activeEvent.name} date={moment(window.activeEvent.date).format('DD MMMM YYYY')} location={window.activeEvent.location} guests={window.activeEvent.numAttend.toString()} perTable={window.activeEvent.perTable.toString()}></DetailsCard>
                 <EditCard numSent='200' numRec='123'></EditCard>
                 <SeatCard tables={Math.ceil(window.activeEvent.numAttend/window.activeEvent.perTable).toString()} full='5' started='8' empty='2'></SeatCard>
             </section>
