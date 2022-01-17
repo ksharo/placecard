@@ -41,11 +41,13 @@ router.post("/newEvent", async (req, res) => {
         const error = {
             error: e.message
         };
+        console.log('Error', error);
         return res.status(statusCodes.BAD_REQUEST).json(error);
     }
 
     const validatorResponse = validateSchema(EventSchema, newEvent, SCHEMA_TYPES.EVENT);
     if (!_.isUndefined(validatorResponse.error)) {
+        console.log('Error:', validatorResponse.error);
         return res.status(statusCodes.BAD_REQUEST).json(validatorResponse.error);
     }
     try {
@@ -55,6 +57,7 @@ router.post("/newEvent", async (req, res) => {
         const error = {
             error: e.message
         };
+        console.log('Error', error);
         return res.status(statusCodes.INTERNAL_SERVER).json(error);
     } 
 });
