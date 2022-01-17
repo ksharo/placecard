@@ -43,7 +43,6 @@ async function getEvent(eventId) {
 async function createEvent(newEventConfig) {
   checkPrecondition(newEventConfig, isUndefined, EVENT_UNDEFINED_MESSAGE);
   checkPrecondition(newEventConfig, isEmpty, EVENT_EMPTY_MESSAGE);
-  // console.log('before1')
   newEventConfig.tables = [];
   const validationResponse = validateSchema(
     EventSchema,
@@ -51,22 +50,17 @@ async function createEvent(newEventConfig) {
     EVENT_TYPE
   );
   if (!isUndefined(validationResponse.error)) {
-    // console.log('problem1')
     throw new Error(validationResponse.error.message);
   }
 
   // TODO: Validate the event time is greater than the current time
   const eventCollection = await events();
   const insertInfo = await eventCollection.insertOne(newEventConfig);
-  //   console.log("before2");
   if (insertInfo.insertedCount === 0) {
-    // console.log("problem2");
     throw new Error(generateCRUDErrorMessage(INSERT_ERROR_MESSAGE, EVENT_TYPE));
   }
-  //   console.log("after2");
   const newId = insertInfo.insertedId.toString();
   const newEvent = await this.getEvent(newId);
-  //   console.log("beforereturn");
   return convertIdToString(newEvent);
 }
 

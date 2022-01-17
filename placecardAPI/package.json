@@ -15,5 +15,8 @@
     "joi": "^17.4.2",
     "lodash": "^4.17.21",
     "mongodb": "^4.2.1"
+  },
+  "devDependencies": {
+    "cors": "^2.8.5"
   }
 }
