@@ -18,6 +18,7 @@ const statusCodes = require("../constants/statusCodes");
 const ERROR_TYPES = require("../constants/errorTypes");
 const { isInvalidObjectId } = require("../utils/mongoDocument");
 const { INVALID_GUEST_ID } = require("../constants/errorTypes");
+const { create } = require("lodash");
 
 router.get("/:guestId", async (req, res) => {
     let guestId = req.params.guestId.trim();
@@ -111,6 +112,46 @@ router.put("/updateGuest", async (req, res) => {
             e.message,
             ERROR_TYPES.UPDATE_ERROR,
             statusCodes.INTERNAL_SERVER
+        );
+    }
+});
+
+router.delete("/:guestId", async (req, res) => {
+    const guestId = req.params.guestId.trim();
+    try {
+        checkPrecondition(guestId, _.isUndefined, INVALID_GUEST_ID_MESSAGE);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_GUEST,
+            statusCodes.BAD_REQUEST,
+            res
+        );
+    }
+
+    try {
+        const guest = await guests.getGuest(guestId);
+    } catch (e) {
+        return createErrorResponse(
+            generateErrorMessage(e),
+            ERROR_TYPES.GUEST_NOT_FOUND,
+            statusCodes.NOT_FOUND,
+            res
+        );
+    }
+
+    try {
+        await guests.deleteGuest(guestId);
+        const response = {
+            snapshot_id: guestId,
+        };
+        return res.json(response);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.GUEST_NOT_FOUND,
+            statusCodes.INTERNAL_SERVER,
+            res
         );
     }
 });
