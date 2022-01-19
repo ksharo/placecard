@@ -202,7 +202,7 @@ async function sendAccount(first_name: string, last_name: string, phone: string,
     const requestOptions = {
         method: 'POST',
         headers: {
-            'Content-Type': 'applications/json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
                 first_name: first_name,

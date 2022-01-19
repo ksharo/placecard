@@ -74,7 +74,7 @@
     width: 40%;
     height: 50%;
     min-width: 400px;
-    min-height: 400px;
+    min-height: 300px;
     margin: auto;
     margin-top: 5%;
     background-color: white;
@@ -103,7 +103,7 @@
 }
 
 .smallBoxTitle {
-    padding-top: 35px;
+    padding-top: 20px;
     padding-bottom: 20px;
 }
 
@@ -204,4 +204,9 @@
 
 .passChangeFooter {
     margin: auto 24px auto 24px;
+}
+
+.closeBox {
+    display: flex !important;
+    margin: 5px!important;
 }

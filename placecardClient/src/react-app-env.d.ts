@@ -30,6 +30,7 @@ interface Window {
 }
 
 interface PlacecardEvent {
+    id: string;
     name: string;
     date: string;
     location: string;

@@ -85,13 +85,23 @@ export function CreateEvent(){
             // if form is good, sendEvent
             try {
                 // TODO: uncomment when backend is ready
-                // await sendEvent(name, date, location, num_attend, per_table);
-                // if sendEvent is successful, go to next page after adding event to global list
-                const eventsList = window.eventsState;
-                eventsList.push({name: name, date: date, location: location, numAttend: num_attend, perTable: per_table});
-
-                window.setEvents(eventsList);
-                history.push('/uploadGuestList');            
+                const result = await sendEvent(name, date, location, num_attend, per_table);
+                if (result.status == 200) {
+                    const data = await result.json();
+                    const id: string = data._id;
+                    // if sendEvent is successful, go to next page after adding event to global list
+                    const eventsList = window.eventsState;
+                    eventsList.push({id: id, name: name, date: date, location: location, numAttend: num_attend, perTable: per_table});
+                    window.setEvents(eventsList);
+                    history.push('/uploadGuestList');
+                }
+                else {
+                    if (x != null) {
+                        x.style.display = 'inline-block';
+                        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+                    }
+                }
+                      
             }
             catch {
                 if (x != null) {
@@ -146,16 +156,21 @@ export function CreateEvent(){
 }
 
 async function sendEvent(name: string, date: string, location: string, num_attendees: number, per_table: number) {
+    // location cannot be empty string when sent to database
+    if (location == '') {
+        location = 'N/A';
+    }
     const requestOptions = {
         method: 'POST',
         headers: {
-            'Content-Type': 'applications/json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-                event_name: name,
-                event_time: date,
-                expected_number_of_attendees: num_attendees,
-                attendees_per_table: per_table
+            event_name: name,
+            event_time: date,
+            location: location,
+            expected_number_of_attendees: Number(num_attendees),
+            attendees_per_table: Number(per_table)
             })
         };
     return fetch('http://localhost:3001/events/newEvent', requestOptions);

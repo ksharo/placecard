@@ -1,7 +1,8 @@
 import './editPages.css';
 import validator from 'validator';
 import { useHistory } from "react-router-dom";
-import { Button, Switch } from "@mui/material";
+import { Button, IconButton, Switch } from "@mui/material";
+import { IoClose } from 'react-icons/io5';
 
 export function EditProfile() {
     const history = useHistory();
@@ -141,6 +142,8 @@ export function EditProfile() {
             y.textContent = 'None';
         }
         const x = document.getElementById('editProfPic');
+        // make sure the change registers so the user is reminded to save
+        picChanged = true;
         // reset the input so if they choose the same picture 
         // again it will still show up properly
         if (x != null) {
@@ -191,13 +194,19 @@ export function EditProfile() {
         else {
             showError('passPageError');
         }
-
     };
 
     const changePassword = () => {
         const x = document.getElementById('passChange');
         if (x != null) {
             x.style.display = 'inline-block';
+        }
+    }
+
+    const closePassBox = () => {
+        const x = document.getElementById('passChange');
+        if (x != null) {
+            x.style.display = 'none';
         }
     }
 
@@ -248,6 +257,7 @@ export function EditProfile() {
             </section>
             <section className='hiddenBoxes' id='passChange'>
                 <section className='innerBox biggerBox'>
+                    <IconButton className='closeBox' onClick={closePassBox}><IoClose/></IconButton>
                     <h1 className='smallBoxTitle title'>Change Password</h1>
                     <p className='pageError' id='functionalError'>Something went wrong. Please try again.</p>
                     <p className='pageError' id='passPageError'>Please fix the errors.</p>

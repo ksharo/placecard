@@ -1,13 +1,83 @@
 import random
 import csv
+from sys import breakpointhook
 import time
 import json
 
+########## Main Function ##########
+def seatParties(origChart, parties, loves, likes, dislikes, tableNames, perTable):
+    '''Creates a seating chart for the parties, given some original seating chart
+    and the necessary data'''
+    # tables mapped to the list of party ids at that table
+    seatingChart = {}
+    for x in origChart:
+        seatingChart[x] = list(origChart[x])
+    for x in tableNames:
+        if x not in seatingChart:
+            seatingChart[x] = []
+
+    # party ids mapped to the table at which they are sitting
+    seatedParties = {}
+    for x in seatingChart:
+        table = seatingChart[x]
+        for y in table:
+            seatedParties[y] = x
+
+    # count how many people responded
+    respondents = []
+    for x in parties:
+        if isRespondent(x, loves, likes, dislikes):
+            respondents.append(x)
+
+    if len(respondents) <= 2*len(tableNames):
+        seatingChart = baseCase(seatingChart, seatedParties, parties, loves, likes, dislikes, perTable, respondents)
+    else:
+        # try different algorithms and choose the highest scoring one
+        chart1 = baseCase(seatingChart, seatedParties, parties, loves, likes, dislikes, perTable, respondents)
+        chart2 = placecardMainAlgorithm(seatingChart, seatedParties, parties, loves, likes, dislikes, perTable)
+        chart3 = recursionCaller(seatingChart, parties, seatedParties, loves, likes, dislikes, perTable)
+        # TODO: find groups first to eliminate big time up front
+        chart4 = placecardSecondaryAlgorithm(seatingChart, parties, loves, likes, dislikes, perTable, spaces=0)
+        chart5 = placecardSecondaryAlgorithm(seatingChart, parties, loves, likes, dislikes, perTable, spaces=1)
+        chart6 = placecardSecondaryAlgorithm(seatingChart, parties, loves, likes, dislikes, perTable, spaces=2)
+        charts = [chart1, chart2, chart3, chart4, chart5, chart6]
+
+        score1 = scoreChart(chart1, parties, loves, likes, dislikes)
+        score2 = scoreChart(chart2, parties, loves, likes, dislikes)
+        score3 = scoreChart(chart3, parties, loves, likes, dislikes)
+        score4 = scoreChart(chart4, parties, loves, likes, dislikes)
+        score5 = scoreChart(chart5, parties, loves, likes, dislikes)
+        score6 = scoreChart(chart6, parties, loves, likes, dislikes)
+        scores = [score1, score2, score3, score4, score5, score6]
+        fewestDislikes = -1
+        chartsWith = [] # keeps track of the indexes of the charts that have the fewest dislikes
+        for x in range(len(scores)):
+            if scores[x]['disCount'] == fewestDislikes:
+                chartsWith.append(x)
+            elif scores[x]['disCount'] < fewestDislikes or fewestDislikes == -1:
+                fewestDislikes = scores[x]['disCount']
+                chartsWith = [x]
+        if len(chartsWith) == 1:
+            print(chartsWith[0])
+            return charts[chartsWith[0]]
+        else:
+            bestScore = 0
+            bestChart = {}
+            bestInd = 0
+            for x in chartsWith:
+                if scores[x]['score'] > bestScore:
+                    bestInd = x
+                    bestChart = charts[x]
+            print(bestInd)
+            return bestChart
+    return seatingChart
+#this is cool!!
+########## General Functions ##########
 def isRespondent(partyID, loves, likes, dislikes):
     '''Returns true if the party has responded, false otherwise.'''
     return len(loves[partyID]) + len(likes[partyID]) + len(dislikes[partyID]) != 0
 
-def getIndScore(id, table, parties, loves, likes, dislikes, perTable):
+def getIndScore(id, table, parties, loves, likes, dislikes):
     '''Calculates the score for an individual party at this table.
     Does not take into account dislikes'''
     score = 0
@@ -29,8 +99,8 @@ def getIndScore(id, table, parties, loves, likes, dislikes, perTable):
         elif isRespondent(x, loves, likes, dislikes) and x in likes[id]:
             score += 1 * pSize
         elif x in dislikes[id]:
-            dislikes += 1
-    return {'score': score, 'dislikes': dislikes}
+            dislikeCount += 1
+    return {'score': score, 'dislikes': dislikeCount}
     
 def bestIndScore(id, parties, loves, likes, dislikes, perTable):
     '''Calculates the best possible score for an individual party'''
@@ -240,25 +310,26 @@ def scoreChart(seatingChart, parties, loves, likes, dislikes):
         indScore = scoreTable(table, parties, loves, likes, dislikes)
         totalScore += indScore['score']
         totalRespondents += indScore['respondents']
-        mDis = indScore['mDis']
+        mDis += indScore['mDis']
         loveDis += indScore['loveDis']
         disLove += indScore['disLove']
         disLike += indScore['disLike']
         likeDis += indScore['likeDis']
         justDis += indScore['justDis']
         nrDis += indScore['nrDis']
-        dislikeScore += loveDis + disLove + 4*mDis + 3*disLike + 3*likeDis + 3*justDis + 2*nrDis
-    disCount = mDis + loveDis + disLove + disLike + likeDis + justDis + nrDis
+        dislikeScore += indScore['loveDis'] + 4*indScore['mDis'] + 3*indScore['disLike'] + 3*indScore['justDis'] + 2*indScore['nrDis']
+    # only mutual dislike should be counted as 2 people disliking each other
+    disCount = mDis + loveDis/2 + disLove/2 + disLike/2 + likeDis/2 + justDis + nrDis
     return {'score': totalScore, 'respondents': totalRespondents, 'dislikes': dislikeScore, 'mutual dislikes': mDis, \
         'loveDis/disLove': loveDis+disLove, 'disLike/likeDis': disLike + likeDis, 'just dislike': justDis, \
-        'nrDis': nrDis, 'disCount': disCount, 'peopleSat': sat, 'partyLength': len(parties)}
+        'nrDis': nrDis, 'totalDis': disCount, 'disCount': countDislikes(seatingChart, dislikes), 'peopleSat': sat, 'partyLength': len(parties)}
 
-def bestChart(parties, loves, likes, dislikes, perTable):
+def bestChartScore(people, parties, loves, likes, dislikes, perTable):
     '''Calculates the best score for the seating chart based on the best
     score for each individual person'''
     topScore = 0
     problemPeople = []
-    for x in parties:
+    for x in people:
         indScore = bestIndScore(x, parties, loves, likes, dislikes, perTable)
         if indScore[0] >= 0:
             topScore += indScore[0]
@@ -308,120 +379,30 @@ def prepData(fileName):
 
     return {'parties': partyDict, 'likes': likesDict, 'dislikes': dislikesDict, 'superLikes': superLikesDict}
 
-def seatParties(origChart, parties, loves, likes, dislikes, tableNames, perTable):
-    '''Creates a seating chart for the parties, given some original seating chart
-    and the necessary data'''
-    # tables mapped to the list of party ids at that table
-    seatingChart = {}
-    for x in origChart:
-        seatingChart[x] = list(origChart[x])
-    for x in tableNames:
-        if x not in seatingChart:
-            seatingChart[x] = []
+def tableSize(table, parties):
+    '''Returns the size of a table'''
+    size = 0
+    counted = []
+    for x in table:
+        if x not in counted:
+            size += parties[x]
+            counted.append(x)
+    return size
 
-    # party ids mapped to the table at which they are sitting
-    seatedParties = {}
-    for x in seatingChart:
-        table = seatingChart[x]
-        for y in table:
-            seatedParties[y] = x
+def countDislikes(seatingChart, dislikes):
+    '''Returns the number of people who are unhappy
+    at their table.'''
+    people = 0
+    for tableName in seatingChart:
+        table = seatingChart[tableName]
+        for x in table:
+            for y in table:
+                if y in dislikes[x]:
+                    people += 1
+                    break
+    return people
 
-    # count how many people responded
-    respondents = []
-    for x in parties:
-        if isRespondent(x, loves, likes, dislikes):
-            respondents.append(x)
-
-    if len(respondents) <= perTable*100:
-        seatingChart = baseCase(seatingChart, seatedParties, parties, loves, likes, dislikes, perTable, respondents)
-    
-    return seatingChart
-
-def baseCase(origChart, seatedParties, parties, loves, likes, dislikes, perTable, respondents):
-    '''This is the base case, for when very few people have responded.'''
-    # go through a few iterations and save the best one
-    bestChart = dict(origChart)
-    bestScore = scoreChart(origChart, parties, loves, likes, dislikes)['score']
-    leastDislikes = -1
-
-    start = time.time()
-    while time.time() - start < 1:
-
-        # refresh variables each time
-        seatingChart = {}
-        for x in origChart:
-            seatingChart[x] = list(origChart[x])
-        seatedParties = {}
-        for x in seatingChart:
-            for y in seatingChart[x]:
-                seatedParties[y] = x
-        unseated = list(parties.keys())
-        for x in seatedParties:
-            if x in unseated:
-                unseated.remove(x)
-
-        # start with those parties which have responded
-        for x in respondents:
-            if x not in seatedParties:
-                (table, unseatedFriends) = seatResponseParty(x, seatingChart, seatedParties, unseated, parties, loves, likes, dislikes, perTable)
-                if x in unseated:
-                    unseated.remove(x)
-                    for _ in range(parties[x]):
-                        seatingChart[table].append(x)
-                    seatedParties[x] = table
-                for y in unseatedFriends:
-                    # make sure if friends were stolen, they are removed from their previous tables
-                    if y in seatedParties:
-                        t = seatedParties[y]
-                        for _ in range(parties[x]):
-                            seatingChart[t].remove(y)
-                        unseated.append(y)
-                    # add them to the correct table
-                    if y in unseated:
-                        unseated.remove(y)
-                        for _ in range(parties[x]):
-                            seatingChart[table].append(y)
-                        seatedParties[y] = table
-
-        thisScore = scoreChart(seatingChart, parties, loves, likes, dislikes)
-        if thisScore['score'] > bestScore and (leastDislikes == -1 or thisScore['dislikes'] < leastDislikes) :
-            bestScore = thisScore['score']
-            bestChart = dict(seatingChart)
-            leastDislikes = thisScore['dislikes']
-    # NOTICE: seating those who did not respond DOES NOT AFFECT THE SCORE!
-    # refresh variables based on bestChart
-    seatedParties = {}
-    for x in bestChart:
-        for y in bestChart[x]:
-            seatedParties[y] = x
-    unseated = list(parties.keys())
-    for x in seatedParties:
-        if x in unseated:
-            unseated.remove(x)
-    # after the bestChart base is found, place those who did not respond
-    random.shuffle(unseated)
-    tmpUnseated = list(unseated)
-    for x in tmpUnseated:
-        if x not in seatedParties:
-            (table, possibleFriends) = seatNoResponseParty(x, bestChart, unseated, parties, loves, likes, dislikes, perTable)
-            if x in unseated:
-                unseated.remove(x)
-                for _ in range(parties[x]):
-                    bestChart[table].append(x)
-                seatedParties[x] = table
-            for y in possibleFriends:
-                # friends should not be stolen here!!!
-                if y in unseated:
-                    unseated.remove(y)
-                    for _ in range(parties[x]):
-                        bestChart[table].append(y)
-                    seatedParties[y] = table
-
-    # for x in parties:
-    #     if isRespondent(x, loves, likes, dislikes):
-    #         print(x, bestIndScore(x, parties, loves, likes, dislikes, perTable), getIndScore(x, seatingChart[seatedParties[x]], parties, loves, likes, dislikes, perTable))
-    return bestChart
-
+########## Shared Functions to Facilitate Seating ##########
 def seatResponseParty(id, seatingChart, seatedParties, unseated, parties, loves, likes, dislikes, perTable):
     '''Returns the table the party (id) should be sat at along with
     any friends that should/can be seated with them'''
@@ -630,30 +611,360 @@ def seatNoResponseParty(id, seatingChart, unseated, parties, loves, likes, disli
     else:
         return (bestWorstTable, [])
 
-def tableSize(table, parties):
-    '''Returns the size of a table'''
-    size = 0
-    for x in table:
-        size += parties[x]
-    return size
+def seatingHelper(table, partyID, unseatedFriends, seatingChart, unseated, seatedParties):
+    '''Seats the party and their friends at the table.
+    Returns the updated seating chart, list of unseated parties, 
+    and dictionary of seated parties'''
+    if partyID in unseated:
+        unseated.remove(partyID)
+        for _ in range(parties[partyID]):
+            seatingChart[table].append(partyID)
+        seatedParties[partyID] = table
+    for y in unseatedFriends:
+        # make sure if friends were stolen, they are removed from their previous tables
+        if y in seatedParties:
+            t = seatedParties[y]
+            for _ in range(parties[y]):
+                seatingChart[t].remove(y)
+            unseated.append(y)
+        # add them to the correct table
+        if y in unseated:
+            unseated.remove(y)
+            for _ in range(parties[y]):
+                seatingChart[table].append(y)
+            seatedParties[y] = table
+    return (seatingChart, unseated, seatedParties)
+
+def refreshVariables(origChart):
+    '''For functions that iterate to find the best chart,
+    this refreshes their main variables (seating chart, unseated,
+    and seatedParties) to follow origChart'''
+    seatingChart = {}
+    for x in origChart:
+        seatingChart[x] = list(origChart[x])
+    seatedParties = {}
+    for x in seatingChart:
+        for y in seatingChart[x]:
+            seatedParties[y] = x
+    unseated = list(parties.keys())
+    for x in seatedParties:
+        if x in unseated:
+            unseated.remove(x)
+    return (seatingChart, unseated, seatedParties)
+
+########## Cases For Few Respondents ##########
+def justRandom(origChart, parties, perTable, tableNames):
+    '''Finds everyone who is unseated and places them 
+    randomly in the seating chart'''
+    seatingChart = {}
+    for x in origChart:
+        seatingChart[x] = list(origChart[x])
+    seatedParties = {}
+    for x in seatingChart:
+        for y in seatingChart[x]:
+            seatedParties[y] = x
+    unseated = list(parties.keys())
+    for x in seatedParties:
+        if x in unseated:
+            unseated.remove(x)
+    random.shuffle(unseated)
+    for x in unseated:
+        for t in tableNames:
+            if tableSize(seatingChart[t]) + parties[x] <= perTable:
+                for _ in range(parties[x]):
+                    seatingChart[t].append(x)
+                break
+    return seatingChart
+
+def baseCase(origChart, seatedParties, parties, loves, likes, dislikes, perTable, respondents):
+    '''This is the base case, for when very few people have responded.'''
+    # speed up the process by just placing people at random tables if nobody has responded
+    if len(respondents) == 0:
+        return justRandom(origChart, parties, perTable, list(origChart.keys()))
+    
+    # go through a few iterations and save the best one
+    bestChart = dict(origChart)
+    bestScore = scoreChart(origChart, parties, loves, likes, dislikes)['score']
+    leastDislikes = -1
+
+    start = time.time()
+    while time.time() - start < 1:
+
+        # refresh variables each time
+        (seatingChart, unseated, seatedParties) = refreshVariables(origChart)
+
+        # start with those parties which have responded
+        for x in respondents:
+            if x not in seatedParties:
+                (table, unseatedFriends) = seatResponseParty(x, seatingChart, seatedParties, unseated, parties, loves, likes, dislikes, perTable)
+                (seatingChart, unseated, seatedParties) = seatingHelper(table, x, unseatedFriends, seatingChart, unseated, seatedParties)
+
+        thisScore = scoreChart(seatingChart, parties, loves, likes, dislikes)
+        if thisScore['score'] >= bestScore and (leastDislikes == -1 or thisScore['disCount'] <= leastDislikes) :
+            bestScore = thisScore['score']
+            bestChart = dict(seatingChart)
+            leastDislikes = thisScore['disCount']
+
+    # NOTICE: seating those who did not respond DOES NOT AFFECT THE SCORE!
+    # refresh variables based on bestChart
+    (bestChart, unseated, seatedParties) = refreshVariables(bestChart)
+
+    # after the bestChart base is found, place those who did not respond
+    random.shuffle(unseated)
+    tmpUnseated = list(unseated)
+    for x in tmpUnseated:
+        if x not in seatedParties:
+            (table, possibleFriends) = seatNoResponseParty(x, bestChart, unseated, parties, loves, likes, dislikes, perTable)
+            (bestChart, unseated, seatedParties) = seatingHelper(table, x, possibleFriends, bestChart, unseated, seatedParties)
+
+    return bestChart
+
+########## Cases For Many Respondents ##########
+def placecardMainAlgorithm(origChart, seatedParties, parties, loves, likes, dislikes, perTable):
+    '''Generates a seating chart that seats many people'''
+    bestChart = dict(origChart)
+    tmp = bestChartScore(list(seatedParties.keys()), parties, loves, likes, dislikes, perTable)[0]
+    if tmp != 0:
+        bestScore = scoreChart(origChart, parties, loves, likes, dislikes)['score']/tmp
+    else:
+        bestScore = 0
+    leastDislikes = -1
+
+    start = time.time()
+    while time.time() - start < 5:
+        # refresh variables each time
+        (seatingChart, unseated, seatedParties) = refreshVariables(origChart)
+        # start by choosing a few people with whom to create base tables
+        partyNames = list(parties.keys())
+        partyNames.sort(key = lambda k : len(dislikes[k]), reverse=True)
+        unseated = list(partyNames)
+        for x in seatedParties:
+            unseated.remove(x)
+        # create base tables for numTables people
+        for x in partyNames:
+            if x not in seatedParties:
+                (table, unseatedFriends) = seatResponseParty(x, seatingChart, seatedParties, unseated, parties, loves, likes, dislikes, perTable)
+                (seatingChart, unseated, seatedParties) = seatingHelper(table, x, unseatedFriends, seatingChart, unseated, seatedParties)
+
+            # seat the people who are disliked by this person
+            # TODO: for each person, sit the people who they dislike
+            # RECURSIVE!
+            nextPeople = list(dislikes[x])
+            random.shuffle(nextPeople)
+            for d in nextPeople:
+                if d not in seatedParties:
+                    (table, unseatedFriends) = seatResponseParty(d, seatingChart, seatedParties, unseated, parties, loves, likes, dislikes, perTable)
+                    (seatingChart, unseated, seatedParties) = seatingHelper(table, d, unseatedFriends, seatingChart, unseated, seatedParties)
+
+        bestPossible = bestChartScore(list(seatedParties.keys()), parties, loves, likes, dislikes, perTable)[0]
+        thisScoreData = scoreChart(seatingChart, parties, loves, likes, dislikes)
+        if bestPossible != 0:
+            thisScore = thisScoreData['score']/bestPossible
+        else:
+            thisScore = 0
+        if thisScore >= bestScore and (leastDislikes == -1 or thisScoreData['disCount'] <= leastDislikes):
+            bestScore = thisScore
+            bestChart = dict(seatingChart)
+            leastDislikes = thisScoreData['disCount']
+
+    # build off of those tables
+    # fill in with those who are unseated
+
+    return bestChart
+
+def placecardRecursion(partyID, seatingChart, parties, unseated, seatedParties, loves, likes, dislikes, perTable):
+    '''Seat id. For each person id dislikes, seat them using the recursive method.'''
+    if partyID in unseated:
+        # if the party is a respondent, use the response party function
+        if isRespondent(partyID, loves, likes, dislikes):
+            (table, friends) = seatResponseParty(partyID, seatingChart, seatedParties, unseated, parties, loves, likes, dislikes, perTable)
+            if len(friends) > 1:
+                friends = friends[:(len(friends)//2)]
+            (seatingChart, unseated, seatedParties) = seatingHelper(table, partyID, friends, seatingChart, unseated, seatedParties)
+        # otherwise use the no response party function
+        else:
+            (table, friends) = seatNoResponseParty(partyID, seatingChart, unseated, parties, loves, likes, dislikes, perTable)
+            (seatingChart, unseated, seatedParties) = seatingHelper(table, partyID, friends, seatingChart, unseated, seatedParties)
+    # for each person they dislike, seat that person using this recursive method 
+    # and update the seating chart accordingly
+    for x in dislikes[partyID]:
+        if x in unseated:
+            (unseated, seatingChart) = placecardRecursion(x, seatingChart, parties, unseated, seatedParties, loves, likes, dislikes, perTable)
+    return (unseated, seatingChart)
+
+def recursionCaller(origChart, parties, seatedParties, loves, likes, dislikes, perTable):
+    '''Calls the recursion method with a random party to start off'''
+    (seatingChart, unseated, seatedParties) = refreshVariables(origChart)
+    unseated.sort(key=lambda k: len(dislikes[k]), reverse=True)
+    while unseated != []:
+        (unseated, seatingChart) = placecardRecursion(unseated[0], seatingChart, parties, unseated, seatedParties, loves, likes, dislikes, perTable)
+    return seatingChart
+
+def placecardSecondaryAlgorithm(origChart, parties, loves, likes, dislikes, perTable, spaces=0):
+    '''Hopefully the final attempt at solving the seating chart problem.'''
+    (seatingChart, unseated, seatedParties) = refreshVariables(origChart)
+    ## USE LINES 793 to 861 FOR BEST SCORING!!!!!! ##
+
+    # get all possible groups of people who will not be unhappy together
+    groups = []
+    partyNames = list(parties.keys())
+    peopleInGroups = []
+    idGroups = {}
+    for x in partyNames:
+        for y in loves[x] + likes[x] + partyNames:
+            if y != x and x not in dislikes[y] and y not in dislikes[x]:
+                tmpGroup = [x, y]
+                for z in loves[x] + likes[x] + partyNames:
+                    disliked = False
+                    if z not in tmpGroup:
+                        for p in tmpGroup:
+                            if z in dislikes[p] or p in dislikes[z]:
+                                disliked = True
+                                break
+                        if not disliked:
+                            tmpGroup.append(z)                    
+                tmpGroup.sort()
+                if tmpGroup not in groups:
+                    groups.append(tmpGroup)
+                    for p in tmpGroup:
+                        # keep track of the groups for each person
+                        if p in idGroups:
+                            idGroups[p].append(tmpGroup)
+                        else:
+                            idGroups[p] = [tmpGroup]
+                        if p not in peopleInGroups:
+                            peopleInGroups.append(p)
+
+    # find all the people who aren't in any groups and try to find a group for them!
+    unloved = []
+    for x in partyNames:
+        if x not in peopleInGroups:
+            unloved.append(x)
+
+    for x in unloved:
+        found = False
+        for g in groups:
+            disliked = False
+            for p in g:
+                if x in dislikes[p] or p in dislikes[x]:
+                    disliked = True
+                    break
+            if not disliked:
+                g.append(x)
+                if x in idGroups:
+                    idGroups[x].append(g)
+                else:
+                    idGroups[x] = [g]
+                found = True
+        if found == False:
+            print(x, 'does not have a suitable group :(')
+
+    # start by seating groups of 'perTable' people
+    while True:
+        bestTable = []
+        for x in idGroups:
+            groups = idGroups[x]
+            for g in groups:
+                # remove the people in seatedParties from all groups
+                tmpG = list(g)
+                for p in tmpG:
+                    if p in seatedParties:
+                        g.remove(p)
+            if idGroups[x].count(g) >= 2: 
+                while g in idGroups[x]:
+                    # make sure there are not repeat groups
+                    idGroups[x].remove(g)
+                    if idGroups[x].count(g) == 1:
+                        break
+            # find the group with perTable people that has the
+            # people that affect the least number of total groups
+            perTableGroups = list(filter(lambda k: len(k)==perTable or (len(k) < perTable and len(k) > perTable-spaces), groups))
+            if len(perTableGroups) > 0:
+                bestSum = -1
+                for x in perTableGroups:
+                    thisSum = 0
+                    for person in x:
+                        thisSum += len(idGroups[person])
+                    if thisSum < bestSum or bestSum == -1:
+                        bestSum = thisSum
+                        bestTable = x
+        if bestTable == []:
+            biggest = bestTable
+            size = 0
+            # find the next biggest group
+            for x in idGroups:
+                groups = idGroups[x]
+                for g in groups:
+                    if len(g) > size:
+                        biggest = g
+                        size = len(g)
+                # take up to perTable people who have the least committment to other groups
+                biggest.sort(key = lambda k: len(idGroups[k]))
+                bestTable = biggest[:perTable]
+        if bestTable == []:
+            break
+
+        # try to find a table for the group
+        tableFound = False
+        for tableName in seatingChart:
+            table = seatingChart[tableName]
+            if len(table) == 0:
+                seatingChart[tableName] = list(bestTable)
+                tableFound = True
+                # for each person in the group, remove their lists and
+                # add them to seatedParties
+                for i in bestTable:
+                    seatedParties[i] = tableName
+                    unseated.remove(i)
+                    idGroups[i] = []
+                break
+        if tableFound == False:
+            # no empty tables left. break out of the loop
+            break
+   
+    people = []
+    for x in seatingChart:
+        for z in seatingChart[x]:
+            if z in people:
+                print('uh oh duplicate')
+            else:
+                people.append(z)
+
+    
+    # seat the rest of the people!
+    tmpUnseated = list(unseated)
+    random.shuffle(tmpUnseated)
+    for x in tmpUnseated:
+        # use seatNoResponse because we don't want to steal friends
+        (table, friends) = seatNoResponseParty(x, seatingChart, unseated, parties, loves, likes, dislikes, perTable)
+        (seatingChart, unseated, seatedParties) = seatingHelper(table, x, friends, seatingChart, unseated, seatedParties)
+    return seatingChart
+
 
 if __name__ == '__main__':
-    data = prepData('SCS3.csv')
-    parties = data['parties']
-    loves = data['superLikes']
-    likes = data['likes']
-    dislikes = data['dislikes']
-    tableNames = ['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5', 'Table 6', 'Table 7', 'Table 8', 'Table 9', 'Table 10']
-    perTable = 10
+    for _ in range(1):
+        data = prepData('SCS.csv')
+        parties = data['parties']
+        loves = data['superLikes']
+        likes = data['likes']
+        dislikes = data['dislikes']
+        tableNames = ['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5', 'Table 6', 'Table 7', 'Table 8', 'Table 9', 'Table 10', 'Table 11']
+        perTable = 10
 
-    print(bestChart(parties, loves, likes, dislikes, perTable))
 
-    seatingChart = seatParties({}, parties, loves, likes, dislikes, tableNames, perTable)
-    print(json.dumps(seatingChart, indent = 4))
-    print(scoreChart(seatingChart, parties, loves, likes, dislikes))
+        seatingChart = seatParties({}, parties, loves, likes, dislikes, tableNames, perTable)
+        people = []
+        for x in seatingChart:
+            for y in seatingChart[x]:
+                people.append(y)
+        print(bestChartScore(people, parties, loves, likes, dislikes, perTable))
+        print(json.dumps(seatingChart, indent = 4))
+        print(scoreChart(seatingChart, parties, loves, likes, dislikes))
     # for x in seatingChart:
     #     print(x)
     #     print(json.dumps(scoreTable(seatingChart[x], parties, loves, likes, dislikes), indent=4))
 
-# TODO: 
-# remember that base case is running in all cases rn. Fix that for testing.
+
+# TODO: separate group making process from placecardSecondary
+# change scoring algorithm based on group-generating process (SBG)
+# even out tables at the end of placecardSecondary and see if swapping can be achieved

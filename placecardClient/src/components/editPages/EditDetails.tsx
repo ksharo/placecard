@@ -90,7 +90,8 @@ export function EditDetails(){
                 // TODO: edit event, not send it, and uncomment when backend is working
                 // await sendEvent(name, date, location, num_attend, per_table);
                 // if sendEvent is successful, go back to dashboard after updating globals
-                const activeEvent = {name: name, date: date, location: location, numAttend: num_attend, perTable: per_table};
+                // TODO: add id stuff from event
+                const activeEvent = {id: '', name: name, date: date, location: location, numAttend: num_attend, perTable: per_table};
                 // first change list
                 const events = [...window.eventsState];
                 const curEvent = window.activeEvent;
@@ -101,7 +102,6 @@ export function EditDetails(){
                         && event.perTable == curEvent.perTable) {
                             // found the matching event!
                             events[i] = activeEvent;
-                            console.log('found');
                             break;
                         }
                 }
@@ -205,16 +205,21 @@ export function EditDetails(){
 }
 
 async function sendEvent(name: string, date: string, location: string, num_attendees: number, per_table: number) {
+    // location cannot be empty string when sent to database
+    if (location == '') {
+        location = 'N/A';
+    }
     const requestOptions = {
         method: 'POST',
         headers: {
-            'Content-Type': 'applications/json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-                event_name: name,
-                event_time: date,
-                expected_number_of_attendees: num_attendees,
-                attendees_per_table: per_table
+            event_name: name,
+            event_time: date,
+            location: location,
+            expected_number_of_attendees: Number(num_attendees),
+            attendees_per_table: Number(per_table)
             })
         };
     return fetch('http://localhost:3001/events/editEvent', requestOptions);
