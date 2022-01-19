@@ -74,4 +74,45 @@ router.post("/newGuest", async (req, res) => {
     }
 });
 
+router.put("/updateGuest", async (req, res) => {
+    const updatedGuest = req.body;
+
+    try {
+        checkPrecondition(updatedGuest, _.isUndefined, GUEST_UNDEFINED_MESSAGE);
+        checkPrecondition(updatedGuest, _.isEmpty, GUEST_EMPTY_MESSAGE);
+        validateSchema(updatedGuest, SCHEMA_TYPES.GUEST);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_GUEST,
+            statusCodes.BAD_REQUEST,
+            res
+        );
+    }
+
+    try {
+        const guestId = updatedGuest._id;
+        checkPrecondition(guestId, _.isUndefined, INVALID_GUEST_ID_MESSAGE);
+        checkPrecondition(guestId, isInvalidObjectId, INVALID_GUEST_ID_MESSAGE);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_GUEST_ID,
+            INVALID_GUEST_ID
+        );
+    }
+
+    try {
+        const guestId = updatedGuest._id;
+        const updatedGuest = await guests.updateGuest(guestId, updatedGuest);
+        return res.json(updatedGuest);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.UPDATE_ERROR,
+            statusCodes.INTERNAL_SERVER
+        );
+    }
+});
+
 module.exports = router;
