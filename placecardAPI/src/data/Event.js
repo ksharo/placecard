@@ -1,7 +1,7 @@
 const { isUndefined, isEmpty } = require("lodash");
 const { ObjectId } = require("mongodb");
 const { events } = require("../../config/mongoConfig/mongoCollections");
-const { convertIdToString } = require("../utils/mongoDocument");
+const { convertIdToString, isInvalidObjectId } = require("../utils/mongoDocument");
 const {
   INVALID_EVENT_ID_MESSAGE,
   NO_EVENT_FOUND_MESSAGE,
@@ -16,11 +16,11 @@ const {
   generateNotFoundMessage,
 } = require("../utils/errors");
 const EVENT_TYPE = require("../constants/schemaTypes").SCHEMA_TYPES.EVENT;
-const { validateSchema } = require("../utils/preconditions");
-const { checkPrecondition } = require("../utils/preconditions");
+const { validateSchema, checkPrecondition } = require("../utils/preconditions");
 
 async function getEvent(eventId) {
   checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
+  checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
 
   const eventCollection = await events();
   const eventObjectId = ObjectId(eventId);
@@ -56,11 +56,12 @@ async function createEvent(newEventConfig) {
     const newId = insertInfo.insertedId.toString();
     const newEvent = await this.getEvent(newId);
 
-    return convertIdToString(newEvent);
+    return newEvent;
 }
 
 async function updateEvent(eventId, updatedEventConfig) {
     checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
+    checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
     checkPrecondition(updatedEventConfig, isUndefined, EVENT_UNDEFINED_MESSAGE)
     checkPrecondition(updatedEventConfig, isEmpty, EVENT_UNDEFINED_MESSAGE);
     validateSchema(updatedEventConfig, EVENT_TYPE)
@@ -93,7 +94,7 @@ async function deleteEvent(eventId) {
   const eventObjectId = ObjectId(eventId);
 
   const queryParameters = {
-    _id: eventObjectId,
+    _id: eventObjectId
   };
 
   const deleteResult = await eventCollection.deleteOne(queryParameters);

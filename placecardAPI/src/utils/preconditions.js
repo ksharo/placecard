@@ -1,7 +1,12 @@
 const { isUndefined } = require("lodash");
 const { TYPE_TO_SCHEMA } = require("../constants/schemaTypes");
+const { MISSING_FUNCTION_ARGUMENT_MESSAGE } = require("../constants/errorMessages");
 
 function checkPrecondition(value, checkFunction, errorMessage) {
+    if (isUndefined(value) || isUndefined(checkFunction) || isUndefined(errorMessage)) {
+        throw new Error(MISSING_FUNCTION_ARGUMENT_MESSAGE);
+    }
+
     if (checkFunction(value)) {
         throw new Error(errorMessage);
     }

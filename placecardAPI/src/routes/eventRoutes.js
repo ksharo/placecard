@@ -50,15 +50,15 @@ router.put("/updateEvent", async (req, res) => {
     const updatedEvent = req.body;
 
     try {
-        checkPrecondition(newEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
-        checkPrecondition(newEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
-        validateSchema(newEvent, SCHEMA_TYPES.EVENT);
+        checkPrecondition(updatedEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
+        checkPrecondition(updatedEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
+        validateSchema(updatedEvent, SCHEMA_TYPES.EVENT);
     } catch (e) {
         return createErrorResponse(e.message, ERROR_TYPES.INVALID_EVENT, statusCodes.BAD_REQUEST, res);
     }
 
+    const eventId = updatedEvent._id;
     try {
-        const eventId = updatedEvent._id;
         checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID);
         checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID);
     } catch(e) {
