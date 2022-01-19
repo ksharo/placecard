@@ -18,7 +18,6 @@ const statusCodes = require("../constants/statusCodes");
 const ERROR_TYPES = require("../constants/errorTypes");
 const { isInvalidObjectId } = require("../utils/mongoDocument");
 const { INVALID_GUEST_ID } = require("../constants/errorTypes");
-const { create } = require("lodash");
 
 router.get("/:guestId", async (req, res) => {
     let guestId = req.params.guestId.trim();
