@@ -18,14 +18,7 @@ router.get("/:eventId", async (req, res) => {
         checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID_MESSAGE);    
         checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
     } catch (e) {
-<<<<<<< HEAD
-        const error = {
-            error: e.message
-        };
-        return res.status(statusCodes.BAD_REQUEST).json(error);
-=======
         return createErrorResponse(e.message, ERROR_TYPES.INVALID_EVENT_ID, statusCodes.BAD_REQUEST, res);
->>>>>>> Refactored schema validation function and added custom API error handling
     }
 
     try {
@@ -43,35 +36,13 @@ router.post("/newEvent", async (req, res) => {
         checkPrecondition(newEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
         validateSchema(newEvent, SCHEMA_TYPES.EVENT);
     } catch (e) {
-<<<<<<< HEAD
-        const error = {
-            error: e.message
-        };
-        console.log('Error', error);
-        return res.status(statusCodes.BAD_REQUEST).json(error);
-    }
-
-    const validatorResponse = validateSchema(EventSchema, newEvent, SCHEMA_TYPES.EVENT);
-    if (!_.isUndefined(validatorResponse.error)) {
-        console.log('Error:', validatorResponse.error);
-        return res.status(statusCodes.BAD_REQUEST).json(validatorResponse.error);
-=======
         return createErrorResponse(e.message, ERROR_TYPES.INVALID_EVENT, statusCodes.BAD_REQUEST, res);
->>>>>>> Refactored schema validation function and added custom API error handling
     }
     try {
         const createdEvent = await events.createEvent(newEvent);
         return res.json(createdEvent);
-    } catch(e) {
-<<<<<<< HEAD
-        const error = {
-            error: e.message
-        };
-        console.log('Error', error);
-        return res.status(statusCodes.INTERNAL_SERVER).json(error);
-=======
+    } catch(e) {        
         return createErrorResponse(e.message, ERROR_TYPES.INSERT_ERROR, statusCodes.INTERNAL_SERVER, res);
->>>>>>> Refactored schema validation function and added custom API error handling
     } 
 });
 
