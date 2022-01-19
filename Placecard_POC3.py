@@ -58,7 +58,6 @@ def seatParties(origChart, parties, loves, likes, dislikes, tableNames, perTable
                 fewestDislikes = scores[x]['disCount']
                 chartsWith = [x]
         if len(chartsWith) == 1:
-            print(chartsWith[0])
             return charts[chartsWith[0]]
         else:
             bestScore = 0
@@ -66,6 +65,7 @@ def seatParties(origChart, parties, loves, likes, dislikes, tableNames, perTable
             bestInd = 0
             for x in chartsWith:
                 if scores[x]['score'] > bestScore:
+                    bestScore = scores[x]['score']
                     bestInd = x
                     bestChart = charts[x]
             print(bestInd)
@@ -943,12 +943,12 @@ def placecardSecondaryAlgorithm(origChart, parties, loves, likes, dislikes, perT
 
 if __name__ == '__main__':
     for _ in range(1):
-        data = prepData('SCS.csv')
+        data = prepData('SCS3.csv')
         parties = data['parties']
         loves = data['superLikes']
         likes = data['likes']
         dislikes = data['dislikes']
-        tableNames = ['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5', 'Table 6', 'Table 7', 'Table 8', 'Table 9', 'Table 10', 'Table 11']
+        tableNames = ['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5', 'Table 6', 'Table 7', 'Table 8', 'Table 9', 'Table 10']
         perTable = 10
 
 
