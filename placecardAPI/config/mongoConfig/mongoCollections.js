@@ -13,5 +13,6 @@ const getCollection = (collection) => {
 };
 
 module.exports = {
-  events: getCollection("events"),
+    events: getCollection("events"),
+    guests: getCollection("guests")
 };

@@ -7,6 +7,10 @@ var cors = require('cors');
 const constructorMethod = (app) => {
     app.options('/events', cors());
     app.use('/events', cors(), eventsRoutes);
+
+    app.use("/events", eventsRoutes);
+    // app.use("/guests", guestRoutes);
+    
     app.use('*', (req, res) => {
         res.sendStatus(404);
     });

@@ -1,7 +1,7 @@
 const { isUndefined, isEmpty } = require("lodash");
 const { ObjectId } = require("mongodb");
 const { events } = require("../../config/mongoConfig/mongoCollections");
-const { convertIdToString } = require("../utils/mongoDocument");
+const { convertIdToString, isInvalidObjectId } = require("../utils/mongoDocument");
 const {
   INVALID_EVENT_ID_MESSAGE,
   NO_EVENT_FOUND_MESSAGE,
@@ -15,13 +15,12 @@ const {
   generateCRUDErrorMessage,
   generateNotFoundMessage,
 } = require("../utils/errors");
-const EventSchema = require("./schema/EventSchema");
 const EVENT_TYPE = require("../constants/schemaTypes").SCHEMA_TYPES.EVENT;
-const { validateSchema } = require("../utils/schemaValidator");
-const { checkPrecondition } = require("../utils/preconditions");
+const { validateSchema, checkPrecondition } = require("../utils/preconditions");
 
 async function getEvent(eventId) {
   checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
+  checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
 
   const eventCollection = await events();
   const eventObjectId = ObjectId(eventId);
@@ -41,65 +40,51 @@ async function getEvent(eventId) {
 // TODO: Maybe we should move data validation into middleware functions for POST and PUT routes rather than doing it everywhere and repeating code
 // TODO: custom error handling class/objects so that we can define meaningful properties
 async function createEvent(newEventConfig) {
-  checkPrecondition(newEventConfig, isUndefined, EVENT_UNDEFINED_MESSAGE);
-  checkPrecondition(newEventConfig, isEmpty, EVENT_EMPTY_MESSAGE);
-  newEventConfig.tables = [];
-  const validationResponse = validateSchema(
-    EventSchema,
-    newEventConfig,
-    EVENT_TYPE
-  );
-  if (!isUndefined(validationResponse.error)) {
-    throw new Error(validationResponse.error.message);
-  }
+    checkPrecondition(newEventConfig, isUndefined, EVENT_UNDEFINED_MESSAGE);
+    checkPrecondition(newEventConfig, isEmpty, EVENT_EMPTY_MESSAGE);
 
-  // TODO: Validate the event time is greater than the current time
-  const eventCollection = await events();
-  const insertInfo = await eventCollection.insertOne(newEventConfig);
-  if (insertInfo.insertedCount === 0) {
-    throw new Error(generateCRUDErrorMessage(INSERT_ERROR_MESSAGE, EVENT_TYPE));
-  }
-  const newId = insertInfo.insertedId.toString();
-  const newEvent = await this.getEvent(newId);
-  return convertIdToString(newEvent);
+    newEventConfig.tables = [];
+    validateSchema(newEventConfig, EVENT_TYPE);
+
+    // TODO: Validate the event time is greater than the current time
+    const eventCollection = await events();
+    const insertInfo = await eventCollection.insertOne(newEventConfig);
+
+    if (insertInfo.insertedCount === 0) {
+        throw new Error(generateCRUDErrorMessage(INSERT_ERROR_MESSAGE, EVENT_TYPE));
+    }
+    const newId = insertInfo.insertedId.toString();
+    const newEvent = await this.getEvent(newId);
+
+    return newEvent;
 }
 
 async function updateEvent(eventId, updatedEventConfig) {
-  checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
-  checkPrecondition(updatedEventConfig, isUndefined, EVENT_UNDEFINED_MESSAGE);
-  checkPrecondition(updatedEventConfig, isEmpty, EVENT_UNDEFINED_MESSAGE);
+    checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
+    checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
+    checkPrecondition(updatedEventConfig, isUndefined, EVENT_UNDEFINED_MESSAGE)
+    checkPrecondition(updatedEventConfig, isEmpty, EVENT_UNDEFINED_MESSAGE);
+    validateSchema(updatedEventConfig, EVENT_TYPE)
 
-  const validationResponse = validateSchema(
-    EventSchema,
-    updatedEventConfig,
-    EVENT_TYPE
-  );
-  if (!isUndefined(validationResponse.error)) {
-    throw new Error(validationResponse.error.message);
-  }
+    const eventCollection = await events();
+    const eventObjectId = ObjectId(eventId);
 
-  const eventCollection = await events();
-  const eventObjectId = ObjectId(eventId);
+    const queryParameters = {
+         _id: eventObjectId
+    };
+    const updatedDocument = {
+        $set: {
+            updatedEventConfig
+        }
+    };
 
-  const queryParameters = {
-    _id: eventObjectId,
-  };
-  const updatedDocument = {
-    $set: {
-      updatedEventConfig,
-    },
-  };
-
-  const updateInfo = await eventCollection.updateOne(
-    queryParameters,
-    updatedDocument
-  );
-  if (updateInfo.matchedCount === 0 || updateInfo.modifiedCount === 0) {
-    throw new Error(generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE));
-  }
-
-  const updatedEvent = await this.getEvent(eventId);
-  return updatedEvent;
+    const updateInfo = await eventCollection.updateOne(queryParameters, updatedDocument);
+    if (updateInfo.matchedCount === 0 || updateInfo.modifiedCount === 0) {
+        throw new Error(generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE));
+    }
+    
+    const updatedEvent = await this.getEvent(eventId);
+    return updatedEvent;
 }
 
 async function deleteEvent(eventId) {
@@ -109,7 +94,7 @@ async function deleteEvent(eventId) {
   const eventObjectId = ObjectId(eventId);
 
   const queryParameters = {
-    _id: eventObjectId,
+    _id: eventObjectId
   };
 
   const deleteResult = await eventCollection.deleteOne(queryParameters);

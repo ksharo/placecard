@@ -1,5 +1,6 @@
 const Joi = require("joi");
 
+// TODO: Add propeties to surveyResponseSchema, or remove it later on
 const surveyResponseSchema = Joi.object();
 
 const schema = Joi.object({
