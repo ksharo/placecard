@@ -1,6 +1,6 @@
 .tinyButton {
     padding: 8px 16px 8px 16px;
-    margin: 10px;
+    margin: 20px 100px 10px 100px;
 }
 
 .lowSub {
@@ -22,10 +22,14 @@
 }
 
 .survey {
-    margin: 20px 50px 20px 50px !important;
+    margin: auto !important;
     overflow: scroll;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
+    width: 40%;
+    min-width: 600px;
+    border: 1px solid grey;
+    border-radius: 5px;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -57,4 +61,35 @@
 .surveyPt1, .surveyPt2 {
     max-width: 1400px;
     margin: auto;
+}
+
+/* hide the sorting buttons  */
+.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeSmall.css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root[title~=Sort]
+{
+    display: none !important;
+}
+
+.instructionList {
+    text-align: left;
+    justify-self: center !important;
+    line-height: 2;
+}
+
+.centeredBox {
+    margin: auto !important;
+    border: 1px solid grey;
+    border-radius: 5px;
+    width: 50%;
+    min-width: 750px;
+    padding: 15px 10px 15px 10px !important;
+}
+
+.generalButton {
+    margin: 20px 200px 20px 200px !important;
+    min-width: 100px !important;
+    font-size: 18px !important;
+}
+
+.MuiDataGrid-cell.MuiDataGrid-cell--textLeft {
+    padding-left: 30px !important;
 }

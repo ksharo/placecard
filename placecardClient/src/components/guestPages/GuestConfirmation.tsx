@@ -13,7 +13,7 @@ export function GuestConfirmation() {
                 <Link to='/' className='rectangleButton tinyButton'>
                         Home
                 </Link>
-                <Link to='/surveyPt1' className='rectangleButton tinyButton'>
+                <Link to='/surveyInstructions' className='rectangleButton tinyButton'>
                         Next
                 </Link>
             </section>

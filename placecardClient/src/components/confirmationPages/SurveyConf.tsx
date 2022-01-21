@@ -5,6 +5,7 @@ export function SurveyConf() {
     return (
         <>
             <h1 className='title'>Your survey responses have been received.</h1>
+            <p className='subtitle'>We will do our best to place you properly based on your responses.</p>
             <h1 className='title'>Thank you!</h1>
             <Link to='/' className='rectangleButton smallerButton'>
                 Go to Placecard Home

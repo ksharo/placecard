@@ -27,6 +27,18 @@ interface Window {
 
     activeEvent: PlacecardEvent | null;
     setActiveEvent: any;
+
+    inviteesState: Invitee[];
+    setInvitees: any;
+
+    dislikedInvitees: Invitee[];
+    setDisliked: any;
+
+    likedInvitees: Invitee[];
+    setLiked: any;
+
+    lovedInvitees: Invitee[];
+    setLoved: any;
 }
 
 interface PlacecardEvent {
@@ -36,4 +48,10 @@ interface PlacecardEvent {
     location: string;
     numAttend: number;
     perTable: number;
+}
+
+interface Invitee {
+    id: string;
+    name: string;
+    size: number;
 }
