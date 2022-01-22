@@ -34,10 +34,10 @@ export function SurveyIdealTable() {
         },
         {
             field: 'col2', headerName: 'Include at table', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 1,
-            renderCell: (params) => { return (<>
+            renderCell: (params) => { return (<section className='checkboxWithError'>
             <Checkbox id={'checkbox' + params.value} checked={isChecked(params.value)} onClick={updateLoves}></Checkbox>
-            <p id={'warning'+params.value} className='formError'>Party too big.</p>
-            </>) }
+            <p id={'warning'+params.value} className='hiddenError'>Party too big.</p>
+            </section>) }
         }
     ];
 
@@ -90,7 +90,11 @@ export function SurveyIdealTable() {
                 // show error on page
                 const warning = document.getElementById('warning'+id);
                 if (warning != null) {
-                    warning.style.display = 'inline-block';
+                    // do this so animation plays
+                    warning.classList.remove('gradualError');
+                    window.requestAnimationFrame(function() {
+                        warning.classList.add('gradualError');
+                    });
                 }
             }
         }

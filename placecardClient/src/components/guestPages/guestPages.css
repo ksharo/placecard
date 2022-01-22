@@ -93,3 +93,40 @@
 .MuiDataGrid-cell.MuiDataGrid-cell--textLeft {
     padding-left: 30px !important;
 }
+
+.hiddenError {
+    opacity: 0;
+    font-size: 10px;
+    color: red;
+}
+
+.gradualError {
+    animation-duration: 2s;
+    animation-name: showHide;
+    animation-fill-mode: forwards;
+  }
+  
+  @keyframes showHide {
+    from {
+      opacity: 0;
+    }
+  
+    15% {
+      opacity: 100;
+    }
+
+    55% {
+        opacity: 100;
+      }
+  
+    to {
+      opacity: 0;
+    }
+  }
+
+  .checkboxWithError {
+      display: flex;
+      height: 50%;
+      flex-direction: column;
+      line-height: 0;
+  }
