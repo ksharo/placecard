@@ -1,301 +1,252 @@
+import { Button } from "@mui/material";
 import React, { useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import {uuid} from "uuidv4";
+import { useHistory } from "react-router-dom";
 
 export function EditSurveyResponses() {
+    const history = useHistory();
+    const perTable = 10; // TODO change to global
+    const ourSize = 6; // TODO change to global
 
-    const unusedInvitees = [];
-    for (let x of window.inviteesState) {
-        if (!(window.lovedInvitees.includes(x) || window.likedInvitees.includes(x) || window.dislikedInvitees.includes(x))) {
-            unusedInvitees.push(x);
-        }
-    }
+    const unusedInvitees = window.inviteesState.filter( (x) => {
+        return !(window.lovedInvitees.map(y => y.id).includes(x.id) || window.likedInvitees.map(z => z.id).includes(x.id) || window.dislikedInvitees.map(t => t.id).includes(x.id));
+    });
+
     const disliked = [...window.dislikedInvitees];
-    const liked = [...window.likedInvitees];
+    const liked = window.likedInvitees.filter( (x) => {
+        return !window.lovedInvitees.map(y => y.id).includes(x.id);
+    });
     const loved = [...window.lovedInvitees];
+    // create columns with headers and unique ids
+    const dislikedID = uuid();
+    const likedID = uuid();
+    const lovedID = uuid();
+    const othersID = uuid();
     const origColumns = {
-        [uuid()]: {
+        [dislikedID]: {
             name: 'Avoid Sitting With',
             items: disliked
         },
-        [uuid()]: {
+        [likedID]: {
             name: 'Comfortable Sitting With',
             items: liked
         },
-        [uuid()]: {
+        [lovedID]: {
             name: 'Ideal Table',
             items: loved
         },
-        [uuid()]: {
+        [othersID]: {
             name: 'Others',
             items: unusedInvitees
         }
     }
 
+    // put the columns in a state so changes stick
     const [columns, setColumns] = React.useState(origColumns);
 
     const onDragEnd = (result: any, columns: any, setColumns: any) => {
+        // make sure that result is in the right format
         if (!result.destination) return;
         const { source, destination } = result;
+        // do stuff if the name was moved from one column to another
         if (source.droppableId !== destination.droppableId) {
+            // find the data at the to/from columns
             const sourceColumn = columns[source.droppableId];
             const destColumn = columns[destination.droppableId];
+            // get the items from each column in a copied list
             const sourceItems = [...sourceColumn.items];
             const destItems = [...destColumn.items];
+            // take the item that was removed from the source list
             const [removed] = sourceItems.splice(source.index, 1);
+            // put it into the destination list. 
+            // Don't delete anything, just put it in the right position (index)
             destItems.splice(destination.index, 0, removed);
-            setColumns({
-            ...columns,
-            [source.droppableId]: {
-                ...sourceColumn,
-                items: sourceItems
-            },
-            [destination.droppableId]: {
-                ...destColumn,
-                items: destItems
+            // check that, if moving to idealTable column, the party is not too big
+            if (destination.droppableId == lovedID) {
+                let count = 0;
+                for (let x of window.lovedInvitees) {
+                    count += x.size;
+                }
+                // party is too big!! don't do anything
+                if (count + removed.size + ourSize > perTable) {
+                    // show the error (shows and then hides with animation in class)
+                    const errorEl = document.getElementById('tooBigError');
+                    if (errorEl != null) {
+                        // do this so animation plays
+                        errorEl.classList.remove('slowGradualError');
+                        window.requestAnimationFrame(function() {
+                            errorEl.classList.add('slowGradualError');
+                        });
+                        window.scrollTo({top: 0, behavior: 'smooth'});
+                    }
+                    return;
+                }
             }
-            });
-        } else {
+            // set the new column data based off of the above
+            const newColumns = {
+                ...columns,
+                [source.droppableId]: {
+                    ...sourceColumn,
+                    items: sourceItems
+                },
+                [destination.droppableId]: {
+                    ...destColumn,
+                    items: destItems
+                }
+            }
+            setColumns(newColumns);
+            // set the global variables based on source id
+            // (remove the moved item from the source's corresponding list)
+            switch (source.droppableId) {
+                case dislikedID:
+                    const tmpDis = [...window.dislikedInvitees];
+                    const disInd = tmpDis.indexOf(removed);
+                    tmpDis.splice(disInd, 1);
+                    window.setDisliked(tmpDis);
+                    break;
+                case likedID:
+                    const tmpLike = [...window.likedInvitees];
+                    const likeInd = tmpLike.indexOf(removed);
+                    tmpLike.splice(likeInd, 1);
+                    window.setLiked(tmpLike);                  
+                    break;
+                case lovedID:
+                    const tmpLove = [...window.lovedInvitees];
+                    const loveInd = tmpLove.indexOf(removed);
+                    tmpLove.splice(loveInd, 1);
+                    window.setLoved(tmpLove);
+                    // check if we need to remove it from liked as well
+                    if (destination.droppableId != likedID) {
+                        const updateLikes = [...window.likedInvitees];
+                        const likeIndForUpdate = updateLikes.indexOf(removed);
+                        updateLikes.splice(likeIndForUpdate, 1);
+                        window.setLiked(updateLikes);
+                    }           
+                    break;
+                default:
+                    break;
+            }
+            // set the global variables based on dest id
+            // (add the removed item to the destination's corresponding list)
+            switch (destination.droppableId) {
+                case dislikedID:
+                    const tmpDis = [...window.dislikedInvitees];
+                    tmpDis.push(removed);
+                    window.setDisliked(tmpDis);
+                    break;
+                case likedID:
+                    const tmpLike = [...window.likedInvitees];
+                    // make sure no duplicates (could happen if moving from loved to liked)
+                    if (tmpLike.indexOf(removed) == -1) {
+                        tmpLike.push(removed);
+                        window.setLiked(tmpLike);       
+                    }           
+                    break;
+                case lovedID:
+                    const tmpLove = [...window.lovedInvitees];
+                    tmpLove.push(removed);
+                    window.setLoved(tmpLove);    
+                    // update likes if someone is moved to love
+                    const updateLikes = [...window.likedInvitees];
+                    if (updateLikes.indexOf(removed) == -1) {
+                        updateLikes.push(removed);
+                        window.setLiked(updateLikes);   
+                    }           
+                    break;
+                default:
+                    break;
+            }
+        } 
+        // name is moved within column. Just change the order.
+        else {
             const column = columns[source.droppableId];
             const copiedItems = [...column.items];
             const [removed] = copiedItems.splice(source.index, 1);
             copiedItems.splice(destination.index, 0, removed);
-            setColumns({
-            ...columns,
-            [source.droppableId]: {
-                ...column,
-                items: copiedItems
+            // set the new column data based off of the above
+            const newColumns = {
+                ...columns,
+                [destination.droppableId]: {
+                    ...column,
+                    items: copiedItems
+                }
             }
-            });
+            setColumns(newColumns);
         }
     }
-
+    const prevPage = () => {
+        history.push('/surveyIdealTable');
+    }
+    const nextPage = () => {
+        history.push('/doneSurvey');
+    }
       return (
-        <div style={{ display: "flex", justifyContent: "center", height: "100%" }}>
-        <DragDropContext
-            onDragEnd={result => onDragEnd(result, columns, setColumns)}
-        >
-            {Object.entries(columns).map(([columnId, column], index) => {
-            return (
-                <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center"
-                }}
-                key={columnId}
-                >
-                <h2>{column.name}</h2>
-                <div style={{ margin: 8 }}>
-                    <Droppable droppableId={columnId} key={columnId}>
-                    {(provided, snapshot) => {
-                        return (
-                        <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            style={{
-                            background: snapshot.isDraggingOver
-                                ? "lightblue"
-                                : "lightgrey",
-                            padding: 4,
-                            width: 250,
-                            minHeight: 500
-                            }}
-                        >
-                            {column.items.map((item, index) => {
-                            return (
-                                <Draggable
-                                key={item.id}
-                                draggableId={item.id}
-                                index={index}
-                                >
+        <>
+            <h1 className='title'>Review Your Responses</h1>
+            <p className='bigHiddenError' id='tooBigError'>The party is too big for the table.<br/>Please note the size of the party and the space left at your ideal table.</p>
+            <section className='columnGroupStyle'>
+                <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
+                    {Object.entries(columns).map(([columnId, column]) => {
+                    return (
+                        <section className='wholeColumnStyle' key={columnId}>
+                            <h2>{column.name}</h2>
+                            <section className='columnCenterStyle'>
+                                <Droppable droppableId={columnId} key={columnId}>
+                                    {/* START HERE */}
                                 {(provided, snapshot) => {
                                     return (
-                                    <div
+                                    <section
+                                        {...provided.droppableProps}
                                         ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                        style={{
-                                        userSelect: "none",
-                                        padding: 16,
-                                        margin: "0 0 8px 0",
-                                        minHeight: "50px",
-                                        backgroundColor: snapshot.isDragging
-                                            ? "#263B4A"
-                                            : "#456C86",
-                                        color: "white",
-                                        ...provided.draggableProps.style
-                                        }}
+                                        className={`columnBackground ${snapshot.isDraggingOver ? "activeBackground" : "normalBackground"}`}
                                     >
-                                        {item.name}
-                                    </div>
+                                        {column.items.map((item, index) => {
+                                        return (
+                                            <Draggable key={item.id} draggableId={item.id} index={index}>
+                                            {(provided, snapshot) => {
+                                                return (
+                                                <section
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    style={{
+                                                    userSelect: "none",
+                                                    padding: 16,
+                                                    margin: "0 0 8px 0",
+                                                    minHeight: "50px",
+                                                    backgroundColor: snapshot.isDragging
+                                                        ? "#263B4A"
+                                                        : "#456C86",
+                                                    color: "white",
+                                                    ...provided.draggableProps.style
+                                                    }}
+                                                >
+                                                    {item.name}
+                                                </section>
+                                                );
+                                            }}
+                                            </Draggable>
+                                        );
+                                        })}
+                                        {provided.placeholder}
+                                    </section>
                                     );
                                 }}
-                                </Draggable>
-                            );
-                            })}
-                            {provided.placeholder}
-                        </div>
-                        );
-                    }}
-                    </Droppable>
-                </div>
-                </div>
-            );
-            })}
-        </DragDropContext>
-        </div>
+                                </Droppable>
+                            </section>
+                        </section>
+                    );
+                    })}
+                </DragDropContext>
+            </section>
+            {/* END HERE */}
+            <Button variant='outlined' className='generalButton' onClick={prevPage}>
+                Go Back
+            </Button>
+            <Button variant='outlined' className='generalButton' onClick={nextPage}>
+                Finish!
+            </Button>
+        </>
       );
 }
-
-
-// function App() {
-//   const [columns, setColumns] = useState(columnsFromBackend);
-//   return (
-//     <div style={{ display: "flex", justifyContent: "center", height: "100%" }}>
-//       <DragDropContext
-//         onDragEnd={result => onDragEnd(result, columns, setColumns)}
-//       >
-//         {Object.entries(columns).map(([columnId, column], index) => {
-//           return (
-//             <div
-//               style={{
-//                 display: "flex",
-//                 flexDirection: "column",
-//                 alignItems: "center"
-//               }}
-//               key={columnId}
-//             >
-//               <h2>{column.name}</h2>
-//               <div style={{ margin: 8 }}>
-//                 <Droppable droppableId={columnId} key={columnId}>
-//                   {(provided, snapshot) => {
-//                     return (
-//                       <div
-//                         {...provided.droppableProps}
-//                         ref={provided.innerRef}
-//                         style={{
-//                           background: snapshot.isDraggingOver
-//                             ? "lightblue"
-//                             : "lightgrey",
-//                           padding: 4,
-//                           width: 250,
-//                           minHeight: 500
-//                         }}
-//                       >
-//                         {column.items.map((item, index) => {
-//                           return (
-//                             <Draggable
-//                               key={item.id}
-//                               draggableId={item.id}
-//                               index={index}
-//                             >
-//                               {(provided, snapshot) => {
-//                                 return (
-//                                   <div
-//                                     ref={provided.innerRef}
-//                                     {...provided.draggableProps}
-//                                     {...provided.dragHandleProps}
-//                                     style={{
-//                                       userSelect: "none",
-//                                       padding: 16,
-//                                       margin: "0 0 8px 0",
-//                                       minHeight: "50px",
-//                                       backgroundColor: snapshot.isDragging
-//                                         ? "#263B4A"
-//                                         : "#456C86",
-//                                       color: "white",
-//                                       ...provided.draggableProps.style
-//                                     }}
-//                                   >
-//                                     {item.content}
-//                                   </div>
-//                                 );
-//                               }}
-//                             </Draggable>
-//                           );
-//                         })}
-//                         {provided.placeholder}
-//                       </div>
-//                     );
-//                   }}
-//                 </Droppable>
-//               </div>
-//             </div>
-//           );
-//         })}
-//       </DragDropContext>
-//     </div>
-//   );
-// }
-
-// export default App;
-
-
-//// DONEEEEEEEEEEE
-
-// const itemsFromBackend = [
-//   { id: uuid(), content: "First task" },
-//   { id: uuid(), content: "Second task" },
-//   { id: uuid(), content: "Third task" },
-//   { id: uuid(), content: "Fourth task" },
-//   { id: uuid(), content: "Fifth task" }
-// ];
-
-// const columnsFromBackend = {
-//   [uuid()]: {
-//     name: "Requested",
-//     items: itemsFromBackend
-//   },
-//   [uuid()]: {
-//     name: "To do",
-//     items: []
-//   },
-//   [uuid()]: {
-//     name: "In Progress",
-//     items: []
-//   },
-//   [uuid()]: {
-//     name: "Done",
-//     items: []
-//   }
-// };
-
-
-
-// const onDragEnd = (result, columns, setColumns) => {
-//   if (!result.destination) return;
-//   const { source, destination } = result;
-
-//   if (source.droppableId !== destination.droppableId) {
-//     const sourceColumn = columns[source.droppableId];
-//     const destColumn = columns[destination.droppableId];
-//     const sourceItems = [...sourceColumn.items];
-//     const destItems = [...destColumn.items];
-//     const [removed] = sourceItems.splice(source.index, 1);
-//     destItems.splice(destination.index, 0, removed);
-//     setColumns({
-//       ...columns,
-//       [source.droppableId]: {
-//         ...sourceColumn,
-//         items: sourceItems
-//       },
-//       [destination.droppableId]: {
-//         ...destColumn,
-//         items: destItems
-//       }
-//     });
-//   } else {
-//     const column = columns[source.droppableId];
-//     const copiedItems = [...column.items];
-//     const [removed] = copiedItems.splice(source.index, 1);
-//     copiedItems.splice(destination.index, 0, removed);
-//     setColumns({
-//       ...columns,
-//       [source.droppableId]: {
-//         ...column,
-//         items: copiedItems
-//       }
-//     });
-//   }
-// };

@@ -100,6 +100,20 @@
     color: red;
 }
 
+.bigHiddenError {
+    opacity: 0;
+    font-size: 14px;
+    color: red;
+    padding: 0;
+    margin: 0;
+}
+
+.slowGradualError {
+    animation-duration: 8.5s;
+    animation-name: showHide;
+    animation-fill-mode: forwards;
+  }
+
 .gradualError {
     animation-duration: 2s;
     animation-name: showHide;
@@ -129,4 +143,35 @@
       height: 50%;
       flex-direction: column;
       line-height: 0;
+  }
+
+  .wholeColumnStyle {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .columnCenterStyle {
+      margin: 12px;
+  }
+
+  .columnGroupStyle {
+      display: flex;
+      justify-content: center;
+      height: 100%;
+  }
+
+
+  .columnBackground {
+    padding: 8px;
+    width: 250px;
+    min-height: 500px;
+  }
+
+  .activeBackground {
+    background-color: lightgrey;
+  }
+
+  .normalBackground {
+      background-color: lightblue;
   }
