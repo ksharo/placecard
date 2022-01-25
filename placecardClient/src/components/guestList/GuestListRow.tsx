@@ -1,5 +1,6 @@
 import { IoTrashBinSharp } from 'react-icons/io5';
 import { useState } from 'react'
+import { Checkbox, TextField } from "@mui/material";
 
 // new updates
 type GuestListRowProps = {
@@ -20,14 +21,19 @@ export function GuestListRow({ guestName, email, phone, partySize, isVip}: Guest
 
 	return(
 		<>
-			<form action="">
-				<input type='text'		value={rowState.guestName}	onChange={(e) => {setRowState(prevState => ({...rowState, guestName: e.target.value}))}}/>
+			{/* <form action=""> */}
+				{/* <input type='text'		value={rowState.guestName}	onChange={(e) => {setRowState(prevState => ({...rowState, guestName: e.target.value}))}}/>
 				<input type='email'		value={rowState.email}		onChange={(e) => {setRowState(prevState => ({...rowState, email: e.target.value}))}}/>
 				<input type='phone'		value={rowState.phone}		onChange={(e) => {setRowState(prevState => ({...rowState, phone: e.target.value}))}}/>
 				<input type='number'	value={rowState.partySize}	onChange={(e) => {setRowState(prevState => ({...rowState, partySize: parseInt(e.target.value)}))}}/>
-				<input type='checkbox'	checked={rowState.isVip}		onChange={(e) => {setRowState(prevState => ({...rowState, isVip: e.target.checked}))}}/>
-				<button><IoTrashBinSharp/></button>
-			</form>
+				<input type='checkbox'	checked={rowState.isVip}		onChange={(e) => {setRowState(prevState => ({...rowState, isVip: e.target.checked}))}}/> */}
+				<TextField inputProps={{autoComplete: "disabled"}}/>
+				<TextField type="email" inputProps={{autoComplete: "disabled"}}/>
+				<TextField type="phone" inputProps={{autoComplete: "disabled"}}/>
+				<TextField type="number" inputProps={{autoComplete: "disabled"}}/>
+				<Checkbox/>
+				{/* <button><IoTrashBinSharp/></button> */}
+			{/* </form> */}
 
 
 

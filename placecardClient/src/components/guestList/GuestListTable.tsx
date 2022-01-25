@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { GuestListRow } from "./GuestListRow"
+import { Button, Checkbox, Input, TextField } from "@mui/material";
 
 
 type rowDetails = {
@@ -34,7 +35,6 @@ export function GuestListTable() {
 					<span>Phone</span>
 					<span># in Party</span>
 					<span>VIP</span>
-				</section>
 
 				{rows.map((row: rowDetails) => (
 					<GuestListRow
@@ -45,12 +45,18 @@ export function GuestListTable() {
 						isVip	= {row.isVip}
 					/>
 				))}
+				</section>
+
 			</section>
 
-			<button onClick={addRow}>
+
+			<Button variant="outlined" onClick={addRow}>
+				Add New Guest
+			</Button>
+			{/* <button onClick={addRow}>
 				<img alt="Fake"></img>
 				<span>Add New Guest</span>
-			</button>
+			</button> */}
 		</>
 	)
 }
