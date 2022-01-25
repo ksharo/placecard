@@ -166,12 +166,27 @@
     padding: 8px;
     width: 250px;
     min-height: 500px;
-  }
-
-  .activeBackground {
     background-color: lightgrey;
+
   }
 
-  .normalBackground {
-      background-color: lightblue;
+  .activeBackgroundColumn {
+    background-color: #01a6a0;
+  }
+
+  .smallerText {
+      font-size: 14px;
+  }
+
+  .partyBox {
+    user-select: none;
+    padding: 12px;
+    min-height: 50px;
+    color: white;
+    background-color: rgb(44, 53, 94);
+    margin: 8px;
+  }
+
+  .activeBackgroundPartyBox {
+    background-color: black;
   }

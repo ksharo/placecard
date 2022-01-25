@@ -4,6 +4,12 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import {uuid} from "uuidv4";
 import { useHistory } from "react-router-dom";
 
+// create unique ids
+const dislikedID = uuid();
+const likedID = uuid();
+const lovedID = uuid();
+const othersID = uuid();
+
 export function EditSurveyResponses() {
     const history = useHistory();
     const perTable = 10; // TODO change to global
@@ -19,10 +25,6 @@ export function EditSurveyResponses() {
     });
     const loved = [...window.lovedInvitees];
     // create columns with headers and unique ids
-    const dislikedID = uuid();
-    const likedID = uuid();
-    const lovedID = uuid();
-    const othersID = uuid();
     const origColumns = {
         [dislikedID]: {
             name: 'Avoid Sitting With',
@@ -199,7 +201,7 @@ export function EditSurveyResponses() {
                                     <section
                                         {...provided.droppableProps}
                                         ref={provided.innerRef}
-                                        className={`columnBackground ${snapshot.isDraggingOver ? "activeBackground" : "normalBackground"}`}
+                                        className={`columnBackground ${snapshot.isDraggingOver ? "activeBackgroundColumn" : ""}`}
                                     >
                                         {column.items.map((item, index) => {
                                         return (
@@ -210,19 +212,12 @@ export function EditSurveyResponses() {
                                                     ref={provided.innerRef}
                                                     {...provided.draggableProps}
                                                     {...provided.dragHandleProps}
-                                                    style={{
-                                                    userSelect: "none",
-                                                    padding: 16,
-                                                    margin: "0 0 8px 0",
-                                                    minHeight: "50px",
-                                                    backgroundColor: snapshot.isDragging
-                                                        ? "#263B4A"
-                                                        : "#456C86",
-                                                    color: "white",
-                                                    ...provided.draggableProps.style
-                                                    }}
+                                                    className={`partyBox ${snapshot.isDragging ? "activeBackgroundPartyBox" : ""}`}
                                                 >
                                                     {item.name}
+                                                    <br/>
+                                                    <hr/>
+                                                    <span className='smallerText'>(Size: {item.size})</span>
                                                 </section>
                                                 );
                                             }}
