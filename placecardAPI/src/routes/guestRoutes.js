@@ -98,7 +98,8 @@ router.put("/updateGuest", async (req, res) => {
         return createErrorResponse(
             e.message,
             ERROR_TYPES.INVALID_GUEST_ID,
-            INVALID_GUEST_ID
+            INVALID_GUEST_ID,
+            res
         );
     }
 
@@ -110,7 +111,8 @@ router.put("/updateGuest", async (req, res) => {
         return createErrorResponse(
             e.message,
             ERROR_TYPES.UPDATE_ERROR,
-            statusCodes.INTERNAL_SERVER
+            statusCodes.INTERNAL_SERVER,
+            res
         );
     }
 });

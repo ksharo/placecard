@@ -1,9 +1,17 @@
 const Joi = require("joi");
 
-// TODO: Add propeties to surveyResponseSchema, or remove it later on
-const surveyResponseSchema = Joi.object();
+// TODO: Add properties to surveyResponseSchema, or remove it later on
+const surveyResponseSchema = Joi.object({
+    disliked: Joi.array().
+        required(),
+    liked: Joi.array().
+        required(),
+    ideal: Joi.array(),
+        required()
+});
 
 const schema = Joi.object({
+    _id: Joi.string(),
     first_name: Joi.string().
         min(2).
         required(),

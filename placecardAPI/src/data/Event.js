@@ -79,7 +79,8 @@ async function updateEvent(eventId, updatedEventConfig) {
             event_time: updatedEventConfig.event_time,
             location: updatedEventConfig.location,
             expected_number_of_attendees: updatedEventConfig.expected_number_of_attendees,
-            attendees_per_table: updatedEventConfig.attendees_per_table
+            attendees_per_table: updatedEventConfig.attendees_per_table,
+            guest_list: updatedEventConfig.guest_list
         }
     };
 

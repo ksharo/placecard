@@ -48,6 +48,7 @@ interface PlacecardEvent {
     location: string;
     numAttend: number;
     perTable: number;
+    guestList: string[];
 }
 
 interface Invitee {

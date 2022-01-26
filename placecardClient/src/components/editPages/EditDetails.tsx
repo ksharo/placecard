@@ -89,10 +89,10 @@ export function EditDetails(){
             try {
                 // send the edited event to the backend
                 if (window.activeEvent != null) {
-                    const result = await updateEvent(window.activeEvent.id, name, date, location, num_attend, per_table);
+                    const result = await updateEvent(window.activeEvent.id, name, date, location, num_attend, per_table, window.activeEvent.guestList);
                     // if sendEvent is successful, go back to dashboard after updating globals
                     if (result.status == 200) {
-                        const activeEvent = {id: window.activeEvent.id, name: name, date: date, location: location, numAttend: num_attend, perTable: per_table};
+                        const activeEvent = {id: window.activeEvent.id, name: name, date: date, location: location, numAttend: num_attend, perTable: per_table, guestList: window.activeEvent.guestList};
                         // first change list
                         const events = [...window.eventsState];
                         const curEvent = window.activeEvent;
@@ -218,7 +218,7 @@ export function EditDetails(){
     );
 }
 
-async function updateEvent(id: string, name: string, date: string, location: string, num_attendees: number, per_table: number) {
+async function updateEvent(id: string, name: string, date: string, location: string, num_attendees: number, per_table: number, guestList: string[]) {
     // location cannot be empty string when sent to database
     if (location == '') {
         location = 'N/A';
@@ -234,7 +234,8 @@ async function updateEvent(id: string, name: string, date: string, location: str
             event_time: date,
             location: location,
             expected_number_of_attendees: Number(num_attendees),
-            attendees_per_table: Number(per_table)
+            attendees_per_table: Number(per_table),
+            guest_list: guestList
             })
         };
     return fetch('http://localhost:3001/events/updateEvent', requestOptions);
