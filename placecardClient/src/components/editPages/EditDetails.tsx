@@ -87,29 +87,43 @@ export function EditDetails(){
         if (!errorFound) { 
             // if form is good, sendEvent
             try {
-                // TODO: edit event, not send it, and uncomment when backend is working
-                // await sendEvent(name, date, location, num_attend, per_table);
-                // if sendEvent is successful, go back to dashboard after updating globals
-                // TODO: add id stuff from event
-                const activeEvent = {id: '', name: name, date: date, location: location, numAttend: num_attend, perTable: per_table};
-                // first change list
-                const events = [...window.eventsState];
-                const curEvent = window.activeEvent;
-                for (let i = 0; i < events.length; i++) {
-                    const event = events[i];
-                    if (curEvent != null && event.name == curEvent.name && (event.date == curEvent.date || moment(event.date).format('DD MMMM YYYY') == curEvent.date) && 
-                        event.location == curEvent.location && event.numAttend == curEvent.numAttend
-                        && event.perTable == curEvent.perTable) {
-                            // found the matching event!
-                            events[i] = activeEvent;
-                            break;
+                // send the edited event to the backend
+                if (window.activeEvent != null) {
+                    const result = await updateEvent(window.activeEvent.id, name, date, location, num_attend, per_table);
+                    // if sendEvent is successful, go back to dashboard after updating globals
+                    if (result.status == 200) {
+                        const activeEvent = {id: window.activeEvent.id, name: name, date: date, location: location, numAttend: num_attend, perTable: per_table};
+                        // first change list
+                        const events = [...window.eventsState];
+                        const curEvent = window.activeEvent;
+                        for (let i = 0; i < events.length; i++) {
+                            const event = events[i];
+                            if (curEvent != null && event.name == curEvent.name && (event.date == curEvent.date || moment(event.date).format('DD MMMM YYYY') == curEvent.date) && 
+                                event.location == curEvent.location && event.numAttend == curEvent.numAttend
+                                && event.perTable == curEvent.perTable) {
+                                    // found the matching event!
+                                    events[i] = activeEvent;
+                                    break;
+                                }
                         }
+                        window.setEvents(events);
+                        // then change active event
+                        window.setActiveEvent(activeEvent);
+                        history.push('/eventDash'); 
+                    }
+                    else {
+                        if (x != null) {
+                            x.style.display = 'inline-block';
+                            window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+                        } 
+                    }          
                 }
-                window.setEvents(events);
-                console.log(events);
-                // then change active event
-                window.setActiveEvent(activeEvent);
-                history.push('/eventDash');            
+                else {
+                    if (x != null) {
+                        x.style.display = 'inline-block';
+                        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+                    }  
+                }
             }
             catch {
                 if (x != null) {
@@ -182,7 +196,7 @@ export function EditDetails(){
             </label>
             <label>Location (optional)
             <span id='editLocationError' className='formError'>The event location can only contain spaces and the following characters: [a-zA-Z0-9.'&!-_,].</span>
-            <input name='location' defaultValue={window.activeEvent.location} onChange={validateLocation} type="text"/>
+            <input name='location' defaultValue={window.activeEvent.location=='N/A' ? '' : window.activeEvent.location} onChange={validateLocation} type="text"/>
             </label>
             <label>Expected Number of Attendees
             <span id='editNumAttError' className='formError'>Please enter a positive number.</span>
@@ -204,17 +218,18 @@ export function EditDetails(){
     );
 }
 
-async function sendEvent(name: string, date: string, location: string, num_attendees: number, per_table: number) {
+async function updateEvent(id: string, name: string, date: string, location: string, num_attendees: number, per_table: number) {
     // location cannot be empty string when sent to database
     if (location == '') {
         location = 'N/A';
     }
     const requestOptions = {
-        method: 'POST',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+            _id: id,
             event_name: name,
             event_time: date,
             location: location,
@@ -222,7 +237,7 @@ async function sendEvent(name: string, date: string, location: string, num_atten
             attendees_per_table: Number(per_table)
             })
         };
-    return fetch('http://localhost:3001/events/editEvent', requestOptions);
+    return fetch('http://localhost:3001/events/updateEvent', requestOptions);
 }
 
 /*

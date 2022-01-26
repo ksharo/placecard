@@ -74,7 +74,12 @@ async function updateEvent(eventId, updatedEventConfig) {
     };
     const updatedDocument = {
         $set: {
-            updatedEventConfig
+            event_name: updatedEventConfig.event_name,
+            tables: updatedEventConfig.tables,
+            event_time: updatedEventConfig.event_time,
+            location: updatedEventConfig.location,
+            expected_number_of_attendees: updatedEventConfig.expected_number_of_attendees,
+            attendees_per_table: updatedEventConfig.attendees_per_table
         }
     };
 
@@ -82,7 +87,6 @@ async function updateEvent(eventId, updatedEventConfig) {
     if (updateInfo.matchedCount === 0 || updateInfo.modifiedCount === 0) {
         throw new Error(generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE));
     }
-    
     const updatedEvent = await this.getEvent(eventId);
     return updatedEvent;
 }

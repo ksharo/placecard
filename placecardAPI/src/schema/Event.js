@@ -1,6 +1,7 @@
 const Joi = require("joi");
 
 const schema = Joi.object({
+    _id: Joi.string(),
     event_name: Joi.string().
         required(),
     tables: Joi.array(),

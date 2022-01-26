@@ -108,10 +108,13 @@ export function EditSurveyResponses() {
                     window.setDisliked(tmpDis);
                     break;
                 case likedID:
-                    const tmpLike = [...window.likedInvitees];
-                    const likeInd = tmpLike.indexOf(removed);
-                    tmpLike.splice(likeInd, 1);
-                    window.setLiked(tmpLike);                  
+                    // don't remove from liked if we're just moving to loved
+                    if (destination.droppableId != lovedID) {
+                        const tmpLike = [...window.likedInvitees];
+                        const likeInd = tmpLike.indexOf(removed);
+                        tmpLike.splice(likeInd, 1);
+                        window.setLiked(tmpLike);        
+                    }          
                     break;
                 case lovedID:
                     const tmpLove = [...window.lovedInvitees];
@@ -195,7 +198,6 @@ export function EditSurveyResponses() {
                             <h2>{column.name}</h2>
                             <section className='columnCenterStyle'>
                                 <Droppable droppableId={columnId} key={columnId}>
-                                    {/* START HERE */}
                                 {(provided, snapshot) => {
                                     return (
                                     <section
@@ -235,7 +237,6 @@ export function EditSurveyResponses() {
                     })}
                 </DragDropContext>
             </section>
-            {/* END HERE */}
             <Button variant='outlined' className='generalButton' onClick={prevPage}>
                 Go Back
             </Button>

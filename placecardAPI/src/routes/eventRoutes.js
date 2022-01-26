@@ -47,29 +47,29 @@ router.post("/newEvent", async (req, res) => {
 });
 
 router.put("/updateEvent", async (req, res) => {
-    const updatedEvent = req.body;
+    const oldEvent = req.body;
 
     try {
-        checkPrecondition(updatedEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
-        checkPrecondition(updatedEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
-        validateSchema(updatedEvent, SCHEMA_TYPES.EVENT);
+        checkPrecondition(oldEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
+        checkPrecondition(oldEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
+        validateSchema(oldEvent, SCHEMA_TYPES.EVENT);
     } catch (e) {
         return createErrorResponse(e.message, ERROR_TYPES.INVALID_EVENT, statusCodes.BAD_REQUEST, res);
     }
 
-    const eventId = updatedEvent._id;
+    const eventId = oldEvent._id;
     try {
         checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID);
         checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID);
     } catch(e) {
-        return createErrorResponse(e.message, ERROR_TYPES.INVALID_EVENT_ID, INVALID_EVENT_ID)
+        return createErrorResponse(e.message, ERROR_TYPES.INVALID_EVENT_ID, INVALID_EVENT_ID, res)
     }
 
     try {
-        const updatedEvent = await events.updateEvent(eventId, updatedEvent);
+        const updatedEvent = await events.updateEvent(eventId, oldEvent);
         return res.json(updatedEvent);
     } catch (e) {
-        return createErrorResponse(e.message, ERROR_TYPES.UPDATE_ERROR, statusCodes.INTERNAL_SERVER);
+        return createErrorResponse(e.message, ERROR_TYPES.UPDATE_ERROR, statusCodes.INTERNAL_SERVER, res);
     }
 });
 

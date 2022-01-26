@@ -12,7 +12,7 @@ const {
     createErrorResponse,
 } = require("../utils/errors");
 const { SCHEMA_TYPES } = require("../constants/schemaTypes");
-const { validateSchema } = require("../utils/schemaValidator");
+const { validateSchema } = require("../utils/preconditions");
 const { checkPrecondition } = require("../utils/preconditions");
 const statusCodes = require("../constants/statusCodes");
 const ERROR_TYPES = require("../constants/errorTypes");
