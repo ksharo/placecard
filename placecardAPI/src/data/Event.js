@@ -73,9 +73,7 @@ async function updateEvent(eventId, updatedEventConfig) {
          _id: eventObjectId
     };
     const updatedDocument = {
-        $set: {
-            updatedEventConfig
-        }
+        $set: updatedEventConfig
     };
 
     const updateInfo = await eventCollection.updateOne(queryParameters, updatedDocument);
