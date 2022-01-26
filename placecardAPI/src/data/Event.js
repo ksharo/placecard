@@ -72,6 +72,7 @@ async function updateEvent(eventId, updatedEventConfig) {
     const queryParameters = {
          _id: eventObjectId
     };
+    
     const updatedDocument = {
         $set: updatedEventConfig
     };

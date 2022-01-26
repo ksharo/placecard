@@ -1,11 +1,16 @@
 const Joi = require("joi");
 
 const schema = Joi.object({
+    _id: Joi.string(),
     event_name: Joi.string().
         required(),
     tables: Joi.array(),
-    event_time: Joi.string().
+    event_start_time: Joi.number().
+        integer().
         required(),
+    event_end_time: Joi.number().
+        integer().
+        greater(Joi.ref("event_start_time")),
     location: Joi.string(),
     expected_number_of_attendees: Joi.number().
         integer().

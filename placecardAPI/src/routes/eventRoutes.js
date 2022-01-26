@@ -62,14 +62,14 @@ router.put("/updateEvent", async (req, res) => {
         checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID);
         checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID);
     } catch(e) {
-        return createErrorResponse(e.message, ERROR_TYPES.INVALID_EVENT_ID, INVALID_EVENT_ID)
+        return createErrorResponse(e.message, ERROR_TYPES.INVALID_EVENT_ID, INVALID_EVENT_ID, res)
     }
 
     try {
-        const updatedEvent = await events.updateEvent(eventId, updatedEvent);
-        return res.json(updatedEvent);
+        const event = await events.updateEvent(eventId, updatedEvent);
+        return res.json(event);
     } catch (e) {
-        return createErrorResponse(e.message, ERROR_TYPES.UPDATE_ERROR, statusCodes.INTERNAL_SERVER);
+        return createErrorResponse(e.message, ERROR_TYPES.UPDATE_ERROR, statusCodes.INTERNAL_SERVER, res);
     }
 });
 

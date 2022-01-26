@@ -4,6 +4,7 @@
   "description": "API service for placecard",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint",
     "test": "mocha 'test/**/*.js'",
     "start": "node server.js",
     "seed": "node ./tasks/seed.js"
@@ -12,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "chai": "^4.3.4",
+    "dotenv": "^14.3.2",
     "express": "^4.17.1",
     "firebase": "^9.6.3",
     "joi": "^17.4.2",
