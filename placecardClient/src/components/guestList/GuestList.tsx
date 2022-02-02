@@ -1,4 +1,5 @@
 import { GuestListTable } from "./GuestListTable"
+import { useHistory } from "react-router-dom";
 import { DataGrid } from '@mui/x-data-grid';
 import { useState } from "react";
 import { Button, Checkbox, Input, TextField } from "@mui/material";
@@ -10,6 +11,11 @@ export function GuestList(){
 
 	const tableTitle		= 'Enter Guest List Manually'
 	const tableDescription	= 'You only need to provide one method of contact for each guest'
+    
+	const history = useHistory();
+	let handleClick = () => {
+		history.push('/editSurvey');
+	}
 
 	const columns = [
 		{
@@ -117,7 +123,7 @@ export function GuestList(){
 				Add New Guest
 			</Button>
 
-			<Button color="primary" variant="contained">Next</Button>
+			<Button color="primary" variant="contained" onClick={handleClick}>Next</Button>
 		</>
 	);
 }

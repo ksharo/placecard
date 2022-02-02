@@ -10,7 +10,7 @@ export function DetailsCard(props: {name: string; date: string; location: string
                 <hr/>    
                 <p>Name: {props.name} </p>
                 <p>Date: {props.date} </p>
-                <p>Location: {props.location} </p>
+                <p>Location: {props.location == '' ? 'N/A' : props.location} </p>
                 <p>Number of Guests: {props.guests} </p>
                 <p>Guests Per Table: {props.perTable} </p>
             </section>

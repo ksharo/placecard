@@ -4,7 +4,7 @@ import './guestPages.css';
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import { Checkbox } from "@mui/material";
 
-export function SurveyPt1() {
+export function SurveyPt1WithAges() {
     const invited = 6;
 
     const makeRows = () => {
