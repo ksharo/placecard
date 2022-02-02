@@ -1,16 +1,20 @@
 import { IoTrashBinSharp } from 'react-icons/io5';
+import { HiTrash } from 'react-icons/hi';
 import { useState } from 'react'
 import { Checkbox, TextField } from "@mui/material";
+import './GuestListRow.css'
 
 // new updates
 type GuestListRowProps = {
+	rowNum:		number,
 	guestName:	string,
 	email:		string,
 	phone:		string,
 	partySize:	number,
-	isVip:		boolean
+	isVip:		boolean,
+	deleteRowFunction: (index: number) => void,
 }
-export function GuestListRow({ guestName, email, phone, partySize, isVip}: GuestListRowProps){
+export function GuestListRow({ rowNum, guestName, email, phone, partySize, isVip, deleteRowFunction}: GuestListRowProps){
 	const [rowState, setRowState] = useState({
 			guestName		: guestName,
 			email		: email,
@@ -27,11 +31,13 @@ export function GuestListRow({ guestName, email, phone, partySize, isVip}: Guest
 				<input type='phone'		value={rowState.phone}		onChange={(e) => {setRowState(prevState => ({...rowState, phone: e.target.value}))}}/>
 				<input type='number'	value={rowState.partySize}	onChange={(e) => {setRowState(prevState => ({...rowState, partySize: parseInt(e.target.value)}))}}/>
 				<input type='checkbox'	checked={rowState.isVip}		onChange={(e) => {setRowState(prevState => ({...rowState, isVip: e.target.checked}))}}/> */}
-				<TextField inputProps={{autoComplete: "disabled"}}/>
-				<TextField type="email" inputProps={{autoComplete: "disabled"}}/>
-				<TextField type="phone" inputProps={{autoComplete: "disabled"}}/>
-				<TextField type="number" inputProps={{autoComplete: "disabled"}}/>
-				<Checkbox/>
+				<TextField name={"name" + rowNum} inputProps={{autoComplete: "disabled"}} className= 'nameColumn'/>
+				<TextField name={"email" + rowNum} type="email" inputProps={{autoComplete: "disabled"}}/>
+				<TextField name={"phone" + rowNum} type="phone" inputProps={{autoComplete: "disabled"}}/>
+				<TextField name={"partySize" + rowNum} type="number" inputProps={{autoComplete: "disabled"}}/>
+				<Checkbox name={"isVip" + rowNum}/>
+				<button tabIndex={-1} id={"deleteRow" + rowNum} onClick={ () => deleteRowFunction(rowNum) } type="button"><HiTrash/></button>
+
 				{/* <button><IoTrashBinSharp/></button> */}
 			{/* </form> */}
 

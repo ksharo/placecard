@@ -21,10 +21,29 @@ export function GuestListTable() {
 			isVip		: false
 		}
 	])
+	const [numRows, setNumRows] = useState(1)
 
-	function addRow(): void{
-		setRows([...rows, {guestName: "", email: "", phone:"", partySize: 1, isVip: false}])
+	function addRow(): void {
+		setRows([...rows, {guestName: "", email: "", phone:"", partySize: 1, isVip: false}]);
+		setNumRows(rows.length + 1)
 	}
+
+	function updateRow(): void {
+
+	}
+
+	function deleteRow(indexToDelete: number): void {
+		console.log("delete", indexToDelete)
+
+		console.log(rows.filter(function(person, index) {
+			return index !== indexToDelete
+		}))
+		setRows(rows.filter(function(person, index) {
+			return index !== indexToDelete
+		}));
+	}
+
+//  items: this.state.items.filter((item, index) => index !== removeIndex)
 	return (
 		<>
 			{/* <Search /> */}
@@ -36,23 +55,29 @@ export function GuestListTable() {
 					<span># in Party</span>
 					<span>VIP</span>
 
-				{rows.map((row: rowDetails) => (
-					<GuestListRow
-						guestName	= {row.guestName}
-						email	= {row.email}
-						phone	= {row.phone}
-						partySize	= {row.partySize}
-						isVip	= {row.isVip}
-					/>
-				))}
+					{rows.map((row: rowDetails, index: number) => (
+						<GuestListRow
+							rowNum	= {index}
+							guestName	= {row.guestName}
+							email	= {row.email}
+							phone	= {row.phone}
+							partySize	= {row.partySize}
+							isVip	= {row.isVip}
+							deleteRowFunction	= {deleteRow}
+						/>
+					))}
 				</section>
 
 			</section>
 
+			<section className = 'addGuestRowBottomControl'>
+				<Button variant="outlined" onClick={addRow} className="addGuestRowButton">
+					Add New Guest
+				</Button>
+				 <input type="hidden" name="numGuestsAdded" value={numRows} />
 
-			<Button variant="outlined" onClick={addRow}>
-				Add New Guest
-			</Button>
+			</section>
+
 			{/* <button onClick={addRow}>
 				<img alt="Fake"></img>
 				<span>Add New Guest</span>
