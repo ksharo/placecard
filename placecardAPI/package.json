@@ -4,15 +4,22 @@
   "description": "API service for placecard",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "mocha 'test/**/*.js'",
+    "start": "node server.js",
+    "seed": "node ./tasks/seed.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chai": "^4.3.4",
     "express": "^4.17.1",
     "joi": "^17.4.2",
     "lodash": "^4.17.21",
-    "mongodb": "^4.1.3"
+    "mocha": "^9.1.4",
+    "mongodb": "^4.2.1",
+    "sinon": "^12.0.1"
+  },
+  "devDependencies": {
+    "cors": "^2.8.5"
   }
 }

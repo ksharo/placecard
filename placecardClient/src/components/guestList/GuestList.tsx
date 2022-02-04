@@ -6,6 +6,7 @@ import { MdUploadFile } from 'react-icons/md';
 import './GuestList.css'
 
 
+
 export function GuestList(){
 	const title			= 'Add a Guest List For Your Event'
 	const pageDescription	= 'Download our guest list template, fill it out, and drop it back here'
@@ -13,6 +14,7 @@ export function GuestList(){
 	const tableTitle		= 'Enter Guest List Manually'
 	const tableDescription	= 'You only need to provide one method of contact for each guest'
 	const history = useHistory();
+
 
 
 	const [userFile, setUserFile] = useState(undefined);
@@ -77,8 +79,9 @@ export function GuestList(){
 			};
 			return fetch('http://localhost:3001/guestList/fileUpload', requestOptions);
 		}
-
-		// history.push('/customizeSurvey')
+    let handleClick = () => {
+      history.push('/editSurvey');
+    }
 	}
 
 	return(
@@ -128,6 +131,7 @@ export function GuestList(){
 
 				<Button type="submit" color="primary" variant="contained">Next</Button>
 			</form>
+
 		</>
 	);
 }
