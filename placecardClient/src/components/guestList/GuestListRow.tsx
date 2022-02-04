@@ -1,4 +1,3 @@
-import { IoTrashBinSharp } from 'react-icons/io5';
 import { HiTrash } from 'react-icons/hi';
 import { useState, useEffect } from 'react'
 import { Checkbox, TextField } from "@mui/material";
