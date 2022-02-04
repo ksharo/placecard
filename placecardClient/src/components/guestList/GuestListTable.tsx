@@ -1,66 +1,54 @@
 import { useState } from "react"
 import { GuestListRow } from "./GuestListRow"
-import { Button, Checkbox, Input, TextField } from "@mui/material";
-
+import { Button } from "@mui/material";
 
 type rowDetails = {
-	guestName: string,
-	email: string,
-	phone: string,
-	partySize: number,
-	isVip: boolean
+	guestName:	string,
+	email:		string,
+	phone:		string,
+	partySize:	number,
+	isVip:		boolean
 }
+
 
 export function GuestListTable() {
 	const [rows, setRows] = useState([
 		{
-			guestName		: "",
-			email		: "",
-			phone		: "",
-			partySize		: 1,
-			isVip		: false
+			guestName:	"",
+			email:		"",
+			phone:		"",
+			partySize:	1,
+			isVip:		false
 		}
 	])
-	const [numRows, setNumRows] = useState(1)
+	const [numRows, setNumRows] = useState(rows.length)
 
 	function addRow(): void {
-		console.log(rows);
 		setRows([...rows, {guestName: "", email: "", phone:"", partySize: 1, isVip: false}]);
-		setNumRows(rows.length + 1)
+		setNumRows(numRows + 1)
 	}
 
 	function updateRow(rowIndex: number, property: any, value: any): void {
 		setRows( (prev) => (prev.map((item, itemIndex) => {
 			if (itemIndex === rowIndex){
-				console.log("Update name");
 				return {...item, [property]: value}
 			}
 			else{
-				console.log("Same");
 				return item;
 			}
 		})) )
-
-
-
-
-		// setRows(rows.filter(function(person, index) {
-		// 	return index !== indexToDelete
-		// }));
 	}
 
 	function deleteRow(indexToDelete: number): void {
-		console.log("delete", indexToDelete)
+		// console.log("delete", indexToDelete)
+		// console.log(rows.filter(function(...[, index]) {return index !== indexToDelete	}))
 
-		console.log(rows.filter(function(person, index) {
-			return index !== indexToDelete
-		}))
-		setRows(rows.filter(function(person, index) {
+		setRows(rows.filter(function(...[, index]) { //...[, index] is equivalent to saying "I only want the second argument", equivalent to function(_, index)
 			return index !== indexToDelete
 		}));
+		setNumRows(numRows - 1)
 	}
 
-//  items: this.state.items.filter((item, index) => index !== removeIndex)
 	return (
 		<>
 			{/* <Search /> */}
@@ -83,24 +71,16 @@ export function GuestListTable() {
 							deleteRowFunction	= {deleteRow}
 							updateRowFunction	= {updateRow}
 						/>
-
 					))}
 				</section>
-
 			</section>
-			{console.log("Updated Parent State")}
+
 			<section className = 'addGuestRowBottomControl'>
 				<Button variant="outlined" onClick={addRow} className="addGuestRowButton">
 					Add New Guest
 				</Button>
 				 <input type="hidden" name="numGuestsAdded" value={numRows} />
-
 			</section>
-
-			{/* <button onClick={addRow}>
-				<img alt="Fake"></img>
-				<span>Add New Guest</span>
-			</button> */}
 		</>
 	)
 }

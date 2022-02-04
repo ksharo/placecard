@@ -21,7 +21,7 @@ export function GuestListRow({ rowNum, guestName, email, phone, partySize, isVip
 			email		: email,
 			phone		: phone,
 			partySize		: partySize,
-			isVip		: isVip
+			isVip		: isVip,
 		})
 
 	function updateCheckboxState(event: any): void {
@@ -31,19 +31,16 @@ export function GuestListRow({ rowNum, guestName, email, phone, partySize, isVip
 		}
 	}
 
-	let oldPropGuestName = guestName
-
-
-
-	if( guestName !== oldPropGuestName){
-		console.log("hi")
-		oldPropGuestName = guestName
-	}
-
 	useEffect( () => {
-		console.log('guestName updated');
-		setRowState( (prev) => ({ ...prev, guestName: guestName}) )
-	}, [guestName])
+		console.log('GuestListRowRerender: Parent props did not match my state');
+		setRowState( {
+			guestName: guestName,
+			email: email,
+			phone: phone,
+			partySize: partySize,
+			isVip: isVip,
+		} )
+	}, [guestName, email, phone, partySize, isVip])
 
 	// return <div>Hi {props.counter}</div>
 	return(

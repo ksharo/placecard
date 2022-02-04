@@ -1,9 +1,7 @@
 import { GuestListTable } from "./GuestListTable"
-import { GuestListRow } from "./GuestListRow"
-import { DataGrid } from '@mui/x-data-grid';
 import { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Button, Checkbox, Input, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import { MdUploadFile } from 'react-icons/md';
 import './GuestList.css'
 
@@ -14,97 +12,16 @@ export function GuestList(){
 
 	const tableTitle		= 'Enter Guest List Manually'
 	const tableDescription	= 'You only need to provide one method of contact for each guest'
-    const history = useHistory();
+	const history = useHistory();
 
-	const columns = [
-		{
-			field: 'individualOrPartyName',
-			headerName: 'Name of Individual/Party',
-			flex: 3,
-			renderCell: () => {
-				return <TextField fullWidth={true} inputProps={{autoComplete: "disabled"}}/>
-			},
-		},
-		{
-			field: 'email',
-			headerName: 'Email',
-			flex: 3,
-			renderCell: () => {
-				return <TextField type="email" fullWidth={true} inputProps={{autoComplete: "disabled"}}/>
-			},
-		},
-		{
-			field: 'phone',
-			headerName: 'Phone',
-			flex: 3,
-			renderCell: () => {
-				return <TextField type="phone" fullWidth={true} inputProps={{autoComplete: "disabled"}}/>
-			},
-		},
-		{
-			field: 'numberInParty',
-			headerName: '# in Party',
-			flex: 1,
-			renderCell: () => {
-				return <TextField type="number" fullWidth={true} inputProps={{autoComplete: "disabled"}}/>
-			},
-		},
-		{
-			field: 'vip',
-			headerName: 'VIP*',
-			flex: 1,
-			renderCell: () => {
-				return <Checkbox/>
-			},
-		},
-	]
-
-	const [rows, editRows] = useState([
-		{
-			id: 1,
-			individualOrPartyName: "J",
-			email: "c",
-			phone: "d",
-			numberInParty: "e",
-			vip: "l"
-		},
-		{
-			id: 2,
-			individualOrPartyName: "J",
-			email: "c",
-			phone: "d",
-			numberInParty: "e",
-			vip: "l"
-		},
-	])
-
-	const [currentID, editCurrentID] = useState(3)
-
-	const [customRows, editCustomRows] = useState([
-		{
-			id: 1,
-			individualOrPartyName: "J",
-			email: "c",
-			phone: "d",
-			numberInParty: 4,
-			vip: true
-		},
-		{
-			id: 2,
-			individualOrPartyName: "J",
-			email: "c",
-			phone: "d",
-			numberInParty: 4,
-			vip: false
-		},
-	])
 
 	const [userFile, setUserFile] = useState(undefined);
+
 
 	const fileSelected = (event: any) => {
 		const selectedFile = event.target.files[0];
 		setUserFile(selectedFile)
-     	// const reader = new FileReader();npm
+     	// const reader = new FileReader();
 		let data = new FormData();
           data.append('file', selectedFile);
 
@@ -116,6 +33,7 @@ export function GuestList(){
 		// };
 		// return fetch('http://localhost:3001/guestList/fileUpload', requestOptions);
 	}
+
 
 	const toCustomizeSurvey = (event: any) => {
 		event.preventDefault()
@@ -144,7 +62,6 @@ export function GuestList(){
 			console.log(guestList);
 		}
 
-
 		let data = new FormData();
 		if (userFile != undefined) {
           	data.append('file', userFile);
@@ -162,21 +79,16 @@ export function GuestList(){
 		}
 
 		// history.push('/customizeSurvey')
-
 	}
 
 	return(
 		<>
-
-
-
 			<section>
 				<h1 className='title'>{title}</h1>
 				<p className='subtitle'>{pageDescription}</p>
 			</section>
 
 			<section className='fileUploadSection'>
-
 				<section className="fileUploadButtonSection">
 					<MdUploadFile className="uploadFileIcon"/>
 
@@ -188,7 +100,6 @@ export function GuestList(){
 							<span> Upload files</span>
 						</button> */}
 					</section>
-
 				</section>
 
 				<section id="dragDropContainer">
@@ -204,15 +115,10 @@ export function GuestList(){
 				</section>
 			</section>
 
-			{/* <section>
-				<img alt="File Icon"></img>
-				<p>Drag Your File Here</p>
-				<p>or</p>
-				<p><input type='file' id="guestListFileUpload"></input></p>
-			</section> */}
 			<section>
 				<span>OR</span><hr/>
 			</section>
+
 			<form id="addGuestListForm" onSubmit={ toCustomizeSurvey }>
 				<section className = "manualGuestListSection">
 					<h3>{tableTitle}</h3>
@@ -222,54 +128,6 @@ export function GuestList(){
 
 				<Button type="submit" color="primary" variant="contained">Next</Button>
 			</form>
-
-
-			{/* <section style={{ height: 400, width: '100%' }}>
-				<DataGrid
-					rows={rows}
-					columns={columns}
-					hideFooter={true}
-					disableSelectionOnClick={true}
-				/>
-			</section>
-
-			<Button variant="outlined" onClick={() => {console.log(currentID); editRows([...rows, {
-				id: currentID + 1,
-				individualOrPartyName: "J",
-				email: "c",
-				phone: "d",
-				numberInParty: "e",
-				vip: "l"
-			}]);
-			editCurrentID(currentID + 1)}}>
-				Add New Guest
-			</Button> */}
-
-
-			{/* {customRows.map( (userDetail) =>
-				<GuestListRow
-					guestName={userDetail.individualOrPartyName}
-					email={userDetail.email}
-					phone={userDetail.phone}
-					partySize={userDetail.numberInParty}
-					isVip={userDetail.vip}
-				/>
-			)} */}
-
-			{/* <Button variant="outlined" onClick={() => {
-				editCustomRows([...customRows,{
-					id: currentID + 1,
-					individualOrPartyName: "J",
-					email: "c",
-					phone: "d",
-					numberInParty: 0,
-					vip: false
-				}]);
-				editCurrentID(currentID + 1)
-			}}>
-				Add New Guest
-			</Button> */}
-
 		</>
 	);
 }
