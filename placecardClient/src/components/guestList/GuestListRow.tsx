@@ -1,6 +1,6 @@
 import { IoTrashBinSharp } from 'react-icons/io5';
 import { HiTrash } from 'react-icons/hi';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Checkbox, TextField } from "@mui/material";
 import './GuestListRow.css'
 
@@ -13,8 +13,9 @@ type GuestListRowProps = {
 	partySize:	number,
 	isVip:		boolean,
 	deleteRowFunction: (index: number) => void,
+	updateRowFunction: (index: number, property: any, value: any) => void,
 }
-export function GuestListRow({ rowNum, guestName, email, phone, partySize, isVip, deleteRowFunction}: GuestListRowProps){
+export function GuestListRow({ rowNum, guestName, email, phone, partySize, isVip, deleteRowFunction, updateRowFunction}: GuestListRowProps){
 	const [rowState, setRowState] = useState({
 			guestName		: guestName,
 			email		: email,
@@ -23,6 +24,28 @@ export function GuestListRow({ rowNum, guestName, email, phone, partySize, isVip
 			isVip		: isVip
 		})
 
+	function updateCheckboxState(event: any): void {
+		if (event){
+			setRowState( (prev) => ({...prev, isVip: event['target']['checked']}));
+			updateRowFunction(rowNum, "isVip", (event.target as HTMLInputElement).checked)
+		}
+	}
+
+	let oldPropGuestName = guestName
+
+
+
+	if( guestName !== oldPropGuestName){
+		console.log("hi")
+		oldPropGuestName = guestName
+	}
+
+	useEffect( () => {
+		console.log('guestName updated');
+		setRowState( (prev) => ({ ...prev, guestName: guestName}) )
+	}, [guestName])
+
+	// return <div>Hi {props.counter}</div>
 	return(
 		<>
 			{/* <form action=""> */}
@@ -31,30 +54,45 @@ export function GuestListRow({ rowNum, guestName, email, phone, partySize, isVip
 				<input type='phone'		value={rowState.phone}		onChange={(e) => {setRowState(prevState => ({...rowState, phone: e.target.value}))}}/>
 				<input type='number'	value={rowState.partySize}	onChange={(e) => {setRowState(prevState => ({...rowState, partySize: parseInt(e.target.value)}))}}/>
 				<input type='checkbox'	checked={rowState.isVip}		onChange={(e) => {setRowState(prevState => ({...rowState, isVip: e.target.checked}))}}/> */}
+				{/* {console.log("update Child State", guestName, rowState.guestName)} */}
+				{  }
 				<TextField
 					name={"name" + rowNum}
 					value={rowState.guestName}
 					inputProps={{autoComplete: "disabled"}}
 					className= 'nameColumn'
-					onBlur={(event)=>  setRowState( (prev) => ({ ...prev, guestName: event.target.value }) )}
+					onChange={(event)=> setRowState( (prev) => ({ ...prev, guestName: event.target.value }) )}
+					onBlur={(event) => updateRowFunction(rowNum, "guestName", event.target.value)}
 				/>
 				<TextField
 					name={"email" + rowNum}
 					type="email"
+					value={rowState.email}
 					inputProps={{autoComplete: "disabled"}}
+					onChange={(event)=> setRowState( (prev) => ({ ...prev, email: event.target.value }) )}
+					onBlur={(event) => updateRowFunction(rowNum, "email", event.target.value)}
 				/>
 				<TextField
 					name={"phone" + rowNum}
 					type="phone"
+					value={rowState.phone}
 					inputProps={{autoComplete: "disabled"}}
+					onChange={(event)=> setRowState( (prev) => ({ ...prev, phone: event.target.value }) )}
+					onBlur={(event) => updateRowFunction(rowNum, "phone", event.target.value)}
 				/>
 				<TextField
 					name={"partySize" + rowNum}
 					type="number"
+					value={rowState.partySize}
 					inputProps={{autoComplete: "disabled"}}
+					onChange={(event)=> setRowState( (prev) => ({ ...prev, partySize: Number(event.target.value) }) )}
+					onBlur={(event) => updateRowFunction(rowNum, "partySize", event.target.value)}
 				/>
 				<Checkbox
 					name={"isVip" + rowNum}
+					checked={rowState.isVip}
+					defaultChecked={false}
+					onChange={(event)=> updateCheckboxState(event)}
 				/>
 				<button
 					tabIndex={-1}

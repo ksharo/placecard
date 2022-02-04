@@ -136,7 +136,7 @@ export function GuestList(){
 					email: 		event.target["email"+i].value,
 					phone_number: 	event.target["phone"+i].value,
 					party_size: 	event.target["partySize"+i].value,
-					isVip: 		event.target["isVip"+i].value,
+					isVip: 		event.target["isVip"+i].checked,
 				}
 				guestList['guest'+ i] = guest
 			}
