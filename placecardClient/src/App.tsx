@@ -36,8 +36,8 @@ import { EditSurveyResponses } from './components/guestPages/EditSurveyResponses
 
 function App() {
   const seedGuests: Invitee[] = [{id: '00', name: 'Sharo Family', size: 6}, {id: '11', name: 'Choy Family', size: 5}, {id: '22', name: 'Alex Rubino', size: 1}, {id: '33', name: 'Simon Gao', size: 1}, {id: '44', name: 'Gil Austria', size: 1}, {id: '55', name: 'Jayson Infante', size: 1}];
-  const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}, {id: '3', name: 'Table 4', guests: []}];
-  const seedEvent: PlacecardEvent = { 'id': '1', 'name': 'testEvent', 'date': '03/08/2022', 'location': 'My House', 'numAttend': 100, 'perTable': 10, 'tables': seedTables, 'guestList': seedGuests};
+  const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
+  const seedEvent: PlacecardEvent = { 'id': '1', 'name': 'testEvent', 'date': '03/08/2022', 'location': 'My House', 'numAttend': 6, 'perTable': 2, 'tables': seedTables, 'guestList': seedGuests};
   [window.loggedInState, window.setLoggedIn] = React.useState(true);
   [window.firstNameState, window.setFirstName] = React.useState('Apple');
   [window.lastNameState, window.setLastName] = React.useState('Zebra');

@@ -14,38 +14,36 @@ import moment from 'moment';
 import React from "react";
 import {uuid} from "uuidv4";
 
-
-const editList: boolean[] = [];
-for (let x in (window.activeEvent? window.activeEvent.tables : [])) {
-    editList.push(false);
-}
 const unseatedID = uuid();
-
 
 export function SeatingDashboard() {
     const history = useHistory();
     let handleClick =  () => {
         history.push('/eventDash');
-      }  
+    }  
+    const editList: boolean[] = [];
+    for (let x in (window.activeEvent? window.activeEvent.tables : [])) {
+        editList.push(false);
+    }
 
-    const survComp = 10;
-    const perTable = 10;
-    const seats = 100;
-    const tables = Math.ceil(seats / perTable);
-    const seated = 3;
+    let survComp = 0;
+    let perTable = -1;
+    let num_attend = 0;
+    let tables = Math.ceil(num_attend / perTable);
+    let seats = tables*perTable;
     let origTables: Table[] = [];
+    const tmpUnseated: Invitee[] = [];
+    const idList: string[] = [];
+
     if (window.activeEvent != undefined) {
         origTables = window.activeEvent.tables;
-    }
-    const [tablesData, setTablesData] = React.useState(origTables);
-    const idList: string[] = [];
-    for (let x of tablesData) {
-        idList.push(x.id);
-    }
-    const [editing, toggleEditing] = React.useState(editList);
-
-    const tmpUnseated: Invitee[] = [];
-    if (window.activeEvent != undefined) {
+        for (let x of origTables) {
+            idList.push(x.id);
+        }
+        perTable = window.activeEvent.perTable;
+        num_attend = window.activeEvent.numAttend;
+        tables = Math.ceil(num_attend / perTable);
+        seats = tables*perTable;
         for (let x of window.activeEvent.guestList) {
             let isUnseated = true;
             for (let t of window.activeEvent.tables) {
@@ -59,24 +57,12 @@ export function SeatingDashboard() {
             }
         }
     }
+    const [tablesData, setTablesData] = React.useState(origTables);
+
+    const [editing, toggleEditing] = React.useState(editList);
     const [unseated, setUnseated] = React.useState(tmpUnseated);
+    const [seated, setSeated] = React.useState(num_attend - unseated.length);
 
-    // // get the data we need for the guests to be in the rows
-    // const tmpRows = [];
-    // const curEvent = window.activeEvent;
-    // const guestData = curEvent?.guestList;
-    // if (guestData != undefined) {
-    //     for (let guest of guestData) {
-    //         tmpRows.push({id: guest.id, col1: guest.name, col2: guest.size});
-    //     }
-    // }
-    // const rows: GridRowsProp = tmpRows;
-
-
-    // const columns: GridColDef[] = [
-    //     { field: 'col1', headerName: 'Name', headerAlign: 'left', cellClassName: 'nameCell', flex: 3},
-    //     { field: 'col2', headerName: 'Size', headerAlign: 'center', cellClassName: 'centeredCell', flex: 1},
-    // ];
 
     const renameTable = (table: Table, open: boolean) => {
         editList[idList.indexOf(table.id)] = open; 
@@ -156,6 +142,7 @@ export function SeatingDashboard() {
                     }
                     setTablesData(tmpTables);
                     setUnseated([...sourceItems]);
+                    setSeated(seated + 1);
                 }
                 else if (destination.droppableId == unseatedID) {
                     // find the data at the to/from columns
@@ -182,6 +169,7 @@ export function SeatingDashboard() {
                     }
                     setTablesData(tmpTables);
                     setUnseated([...destItems]);
+                    setSeated(seated - 1);
                 }
             }
         }
@@ -226,14 +214,14 @@ export function SeatingDashboard() {
             {window.activeEvent == null ? 
             <>
             <h1 className='title'>Error: No event found.</h1>
-            <Button variant='outlined' onClick={handleClick}>Return to Dashboard</Button>
+            <Button variant='outlined' onClick={() => handleClick}>Return to Dashboard</Button>
             </>
             :
             <>
             <section className='header'>
                 <section className='titleBar'>
                     <h1>{window.activeEvent.name} | {moment(window.activeEvent.date).format('MM/DD/YY')}</h1>
-                    <Button variant='outlined' onClick={handleClick}>Return to Dashboard</Button>
+                    <Button variant='outlined' onClick={() => handleClick}>Return to Dashboard</Button>
                 </section>
                 <hr />
             </section>
@@ -263,7 +251,7 @@ export function SeatingDashboard() {
                 </Grid>
             </Grid>
             {/* Unseated Guests Sidebar */}
-            <DragDropContext onDragEnd={result => onDragEnd(result, tablesData, setTablesData)}>
+            <DragDropContext onDragEnd={(result) => onDragEnd(result, tablesData, setTablesData)}>
 
             <Grid className='dashBody' container spacing={6} columns={{xs:1, sm:2, md:12}}>
                 <Grid item xs={1} sm={1} md={3}>
