@@ -185,6 +185,7 @@
     color: white;
     background-color: rgb(44, 53, 94);
     margin: 8px;
+    border-radius: 4px;
   }
 
   .activeBackgroundPartyBox {

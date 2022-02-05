@@ -12,11 +12,14 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MdLock, MdLockOpen } from 'react-icons/md';
 import moment from 'moment';
 import React from "react";
+import {uuid} from "uuidv4";
+
 
 const editList: boolean[] = [];
 for (let x in (window.activeEvent? window.activeEvent.tables : [])) {
     editList.push(false);
 }
+const unseatedID = uuid();
 
 
 export function SeatingDashboard() {
@@ -41,23 +44,39 @@ export function SeatingDashboard() {
     }
     const [editing, toggleEditing] = React.useState(editList);
 
-
-    // get the data we need for the guests to be in the rows
-    const tmpRows = [];
-    const curEvent = window.activeEvent;
-    const guestData = curEvent?.guestList;
-    if (guestData != undefined) {
-        for (let guest of guestData) {
-            tmpRows.push({id: guest.id, col1: guest.name, col2: guest.size});
+    const tmpUnseated: Invitee[] = [];
+    if (window.activeEvent != undefined) {
+        for (let x of window.activeEvent.guestList) {
+            let isUnseated = true;
+            for (let t of window.activeEvent.tables) {
+                if (t.guests.includes(x)) {
+                    isUnseated = false;
+                    break;
+                }
+            }
+            if (isUnseated) {
+                tmpUnseated.push(x);
+            }
         }
     }
-    const rows: GridRowsProp = tmpRows;
+    const [unseated, setUnseated] = React.useState(tmpUnseated);
+
+    // // get the data we need for the guests to be in the rows
+    // const tmpRows = [];
+    // const curEvent = window.activeEvent;
+    // const guestData = curEvent?.guestList;
+    // if (guestData != undefined) {
+    //     for (let guest of guestData) {
+    //         tmpRows.push({id: guest.id, col1: guest.name, col2: guest.size});
+    //     }
+    // }
+    // const rows: GridRowsProp = tmpRows;
 
 
-    const columns: GridColDef[] = [
-        { field: 'col1', headerName: 'Name', headerAlign: 'left', cellClassName: 'nameCell', flex: 3},
-        { field: 'col2', headerName: 'Size', headerAlign: 'center', cellClassName: 'centeredCell', flex: 1},
-    ];
+    // const columns: GridColDef[] = [
+    //     { field: 'col1', headerName: 'Name', headerAlign: 'left', cellClassName: 'nameCell', flex: 3},
+    //     { field: 'col2', headerName: 'Size', headerAlign: 'center', cellClassName: 'centeredCell', flex: 1},
+    // ];
 
     const renameTable = (table: Table, open: boolean) => {
         editList[idList.indexOf(table.id)] = open; 
@@ -79,35 +98,126 @@ export function SeatingDashboard() {
         const { source, destination } = result;
         // do stuff if the name was moved from one column to another
         if (source.droppableId !== destination.droppableId) {
-            // find the data at the to/from columns
-            let sourceColumn: Table = {id: '', guests: [], name: ''};
-            let destColumn: Table = {id: '', guests: [], name: ''};
-            for (let x of tablesData) {
-                if (x.id == source.droppableId) {
-                    sourceColumn = x;
+            // if just dragging between tables, this will work fine
+            if (source.droppableId != unseatedID && destination.droppableId != unseatedID) {
+                // find the data at the to/from columns
+                let sourceColumn: Table = {id: '', guests: [], name: ''};
+                let destColumn: Table = {id: '', guests: [], name: ''};
+                for (let x of tablesData) {
+                    if (x.id == source.droppableId) {
+                        sourceColumn = x;
+                    }
+                    if (x.id == destination.droppableId) {
+                        destColumn = x;
+                    }
                 }
-                if (x.id == destination.droppableId) {
-                    destColumn = x;
+                // get the items from each column in a copied list
+                const sourceItems = [...sourceColumn.guests];
+                const destItems = [...destColumn.guests];
+                // take the item that was removed from the source list
+                const [removed] = sourceItems.splice(source.index, 1);
+                // put it into the destination list. 
+                // Don't delete anything, just put it in the right position (index)
+                destItems.splice(destination.index, 0, removed);
+                const tmpTables = tablesData;
+                for (let x of tmpTables) {
+                    if (x.id == source.droppableId)  {
+                        x.guests = sourceItems;
+                    }
+                    if (x.id == destination.droppableId) {
+                        x.guests = destItems;
+                    }
+                }
+                setTablesData(tmpTables);
+            }
+            else {
+                if (source.droppableId == unseatedID) {
+                    // find the data at the to/from columns
+                    let destColumn: Table = {id: '', guests: [], name: ''};
+                    for (let x of tablesData) {
+                        if (x.id == destination.droppableId) {
+                            destColumn = x;
+                            break;
+                        }
+                    }
+                    // get the items from each column in a copied list
+                    const sourceItems = unseated;
+                    const destItems = [...destColumn.guests];
+                    // take the item that was removed from the source list
+                    const [removed] = sourceItems.splice(source.index, 1);
+                    // put it into the destination list. 
+                    // Don't delete anything, just put it in the right position (index)
+                    destItems.splice(destination.index, 0, removed);
+                    const tmpTables = tablesData;
+                    for (let x of tmpTables) {
+                        if (x.id == destination.droppableId) {
+                            x.guests = destItems;
+                        }
+                    }
+                    setTablesData(tmpTables);
+                    setUnseated([...sourceItems]);
+                }
+                else if (destination.droppableId == unseatedID) {
+                    // find the data at the to/from columns
+                    let sourceColumn: Table = {id: '', guests: [], name: ''};
+                    for (let x of tablesData) {
+                        if (x.id == source.droppableId) {
+                            sourceColumn = x;
+                            break;
+                        }
+                    }
+                    // get the items from each column in a copied list
+                    const destItems = unseated;
+                    const sourceItems = [...sourceColumn.guests];
+                    // take the item that was removed from the source list
+                    const [removed] = sourceItems.splice(source.index, 1);
+                    // put it into the destination list. 
+                    // Don't delete anything, just put it in the right position (index)
+                    destItems.splice(destination.index, 0, removed);
+                    const tmpTables = tablesData;
+                    for (let x of tmpTables) {
+                        if (x.id == source.droppableId) {
+                            x.guests = sourceItems;
+                        }
+                    }
+                    setTablesData(tmpTables);
+                    setUnseated([...destItems]);
                 }
             }
-            // get the items from each column in a copied list
-            const sourceItems = [...sourceColumn.guests];
-            const destItems = [...destColumn.guests];
-            // take the item that was removed from the source list
-            const [removed] = sourceItems.splice(source.index, 1);
-            // put it into the destination list. 
-            // Don't delete anything, just put it in the right position (index)
-            destItems.splice(destination.index, 0, removed);
-            const tmpTables = tablesData;
-            for (let x of tmpTables) {
-                if (x.id == source.droppableId)  {
-                    x.guests = sourceItems;
-                }
-                if (x.id == destination.droppableId) {
-                    x.guests = destItems;
-                }
+        }
+        else {
+            // unseated gets different treatment from tables!!
+            // sort based on drag and drop within unseated table
+            if (source.droppableId == unseatedID)  {
+                const copiedItems = [...unseated];
+                const [removed] = copiedItems.splice(source.index, 1);
+                copiedItems.splice(destination.index, 0, removed);
+                // set the new column data based off of the above
+                setUnseated([...copiedItems]);
             }
-            setTablesData(tmpTables);
+            // sort based on drag and drop within real table
+            else {
+                let sourceColumn: Table = {id: '', guests: [], name: ''};
+                for (let x of tablesData) {
+                    if (x.id == source.droppableId) {
+                        sourceColumn = x;
+                        break;
+                    }
+                }
+                // get the items from the column in a copied list
+                const sourceItems = [...sourceColumn.guests];
+                const [removed] = sourceItems.splice(source.index, 1);
+                sourceItems.splice(destination.index, 0, removed);
+                // set the new column data based off of the above
+                const tmpTables = tablesData;
+                for (let x of tmpTables) {
+                    if (x.id == source.droppableId)  {
+                        x.guests = sourceItems;
+                        break;
+                    }
+                }
+                setTablesData(tmpTables);
+            }
         }
     }
 
@@ -156,20 +266,44 @@ export function SeatingDashboard() {
             <DragDropContext onDragEnd={result => onDragEnd(result, tablesData, setTablesData)}>
 
             <Grid className='dashBody' container spacing={6} columns={{xs:1, sm:2, md:12}}>
-                <Grid item xs={1} sm={1} md={4}>
+                <Grid item xs={1} sm={1} md={3}>
                     <Card>
                         <AppBar className='tableTitle' position='static' color='inherit'>
                             <Toolbar className='toolbar tableTitle centeredContent'>
                                 <Typography variant='h5'>Unseated Guests</Typography>
                             </Toolbar>
                         </AppBar>
-                        <div className='guestTable' style={{ height: 500, width: '100%' }}>
-                            <DataGrid rows={rows} columns={columns} hideFooter={true} disableSelectionOnClick={true} />
-                        </div>
+                        <section className='guestTable'>
+                            <Droppable droppableId={unseatedID} key={unseatedID}>
+                                {(provided, snapshot) => {
+                                    return (
+                                        <section className={`unseatedSection ${snapshot.isDraggingOver ? "overBackground" : ""}`} {...provided.droppableProps} ref={provided.innerRef}>
+                                            {unseated.map((guest: Invitee, index) => {
+                                                return (
+                                                    <Draggable key={guest.id} draggableId={guest.id} index={index}>
+                                                        {(provided, snapshot) => {
+                                                            return (
+                                                                <section className={`guestName ${snapshot.isDragging ? "draggingGuest" : "placedGuest"}`} ref={provided.innerRef}
+                                                                {...provided.draggableProps}
+                                                                {...provided.dragHandleProps}>
+                                                                    {guest.name}
+                                                                </section>
+                                                            );
+                                                        }}
+                                                    </Draggable>
+                                                );
+                                            })
+                                            }
+                                            {provided.placeholder}
+                                        </section>
+                                    );
+                                }}
+                            </Droppable>
+                        </section>
                     </Card>
                 </Grid>
                 {/* Begin Central Seating Chart Code */}
-                <Grid item xs={1} sm={1} md={8}>
+                <Grid item xs={1} sm={1} md={9}>
                     <Card className='seatingChart'>
                         {/* Header within central seating chart */}
                         <AppBar className='tableTitle' position='static' color='inherit'>
@@ -206,16 +340,16 @@ export function SeatingDashboard() {
                                                     <Droppable droppableId={table.id} key={table.id}>
                                                         {(provided, snapshot) => {
                                                             return (
-                                                                <section className='tableInSeatDash' {...provided.droppableProps} ref={provided.innerRef}>
+                                                                <section className={`tableInSeatDash ${snapshot.isDraggingOver ? "overBackground" : ""}`} {...provided.droppableProps} ref={provided.innerRef}>
                                                                     {table.guests.map((guest, index) => {
                                                                         return (
                                                                             <Draggable key={guest.id} draggableId={guest.id} index={index}>
                                                                                 {(provided, snapshot) => {
                                                                                     return (
-                                                                                        <section ref={provided.innerRef}
+                                                                                        <section className={`guestName ${snapshot.isDragging ? "draggingGuest" : "placedGuest"}`} ref={provided.innerRef}
                                                                                         {...provided.draggableProps}
                                                                                         {...provided.dragHandleProps}>
-                                                                                            <p>{guest.name}</p>
+                                                                                            {guest.name}
                                                                                         </section>
                                                                                     );
                                                                                 }}

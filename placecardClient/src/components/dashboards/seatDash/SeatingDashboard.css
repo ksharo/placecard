@@ -30,6 +30,7 @@
   }
 
 .guestTable {
+    min-height: 500px;
     max-height: 700px;
     overflow: scroll;
     -ms-overflow-style: none;  /* IE and Edge */
@@ -108,5 +109,68 @@ ul {
 }
 
 .tableInSeatDash {
-    height: 100px;
+    min-height: 300px;
+    height: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+}
+
+.unseatedSection {
+    min-height: 500px;
+    min-height: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.overBackground {
+    background-color: rgb(245, 245, 245);
+}
+
+.guestName {
+    padding: 12px;
+    background-color: rgb(76 167 160);
+    color: white;
+    border-radius: 4px;
+    margin: 0 20px 15px 20px;
+}
+
+.guestName:last-child {
+    margin-bottom: 0;
+}
+
+.placedGuest {
+    box-shadow: 4px 4px 10px rgb(0 0 0 / 10%);
+    filter: brightness(100%);
+    animation-duration: 0.25s;
+    animation-name: putDown;
+}
+
+.draggingGuest {
+    filter: brightness(85%);
+    box-shadow: 7px 7px 20px rgb(0 0 0 / 15%);
+    animation-duration: 0.25s;
+    animation-name: pickUp;
+}
+
+@keyframes pickUp {
+    from {
+        filter: brightness(100%);
+        box-shadow: 4px 4px 10px rgb(0 0 0 / 10%);
+    }
+
+    to {
+        filter: brightness(85%);
+        box-shadow: 7px 7px 20px rgb(0 0 0 / 15%);
+    }
+}
+@keyframes putDown {
+    from {
+        filter: brightness(85%);
+        box-shadow: 7px 7px 20px rgb(0 0 0 / 15%);
+    }
+    to {
+        filter: brightness(100%);
+        box-shadow: 4px 4px 10px rgb(0 0 0 / 10%);
+    }
 }
