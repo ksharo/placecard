@@ -48,11 +48,18 @@ interface PlacecardEvent {
     location: string;
     numAttend: number;
     perTable: number;
-    guestList: string[];
+    guestList: Invitee[];
+    tables: Table[];
 }
 
 interface Invitee {
     id: string;
     name: string;
     size: number;
+}
+
+interface Table {
+    id: string;
+    name: string;
+    guests: Invitee[];
 }

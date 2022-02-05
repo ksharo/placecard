@@ -2,7 +2,7 @@ import '../forms/Forms.css'
 import './editPages.css'
 import { useHistory } from "react-router-dom";
 import validator from 'validator';
-import { Button } from '@mui/material';
+import { Button, tableSortLabelClasses } from '@mui/material';
 import moment from 'moment';
 
 export function EditDetails(){
@@ -89,10 +89,10 @@ export function EditDetails(){
             try {
                 // send the edited event to the backend
                 if (window.activeEvent != null) {
-                    const result = await updateEvent(window.activeEvent.id, name, date, location, num_attend, per_table, window.activeEvent.guestList);
+                    const result = await updateEvent(window.activeEvent.id, name, date, location, num_attend, per_table, window.activeEvent.tables, window.activeEvent.guestList);
                     // if sendEvent is successful, go back to dashboard after updating globals
                     if (result.status == 200) {
-                        const activeEvent = {id: window.activeEvent.id, name: name, date: date, location: location, numAttend: num_attend, perTable: per_table, guestList: window.activeEvent.guestList};
+                        const activeEvent = {id: window.activeEvent.id, name: name, date: date, location: location, numAttend: num_attend, perTable: per_table, tables: window.activeEvent.tables, guestList: window.activeEvent.guestList};
                         // first change list
                         const events = [...window.eventsState];
                         const curEvent = window.activeEvent;
@@ -218,7 +218,7 @@ export function EditDetails(){
     );
 }
 
-async function updateEvent(id: string, name: string, date: string, location: string, num_attendees: number, per_table: number, guestList: string[]) {
+async function updateEvent(id: string, name: string, date: string, location: string, num_attendees: number, per_table: number, tables: Table[], guestList: Invitee[]) {
     // location cannot be empty string when sent to database
     if (location == '') {
         location = 'N/A';
@@ -235,6 +235,7 @@ async function updateEvent(id: string, name: string, date: string, location: str
             location: location,
             expected_number_of_attendees: Number(num_attendees),
             attendees_per_table: Number(per_table),
+            tables: tables,
             guest_list: guestList
             })
         };

@@ -106,3 +106,7 @@ ul {
 .centeredContent {
     justify-content: center;
 }
+
+.tableInSeatDash {
+    height: 100px;
+}

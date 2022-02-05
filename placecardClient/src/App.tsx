@@ -35,16 +35,19 @@ import { SurveyInstructions } from './components/guestPages/SurveyInstructions';
 import { EditSurveyResponses } from './components/guestPages/EditSurveyResponses';
 
 function App() {
-  [window.loggedInState, window.setLoggedIn] = React.useState(false);
+  const seedGuests: Invitee[] = [{id: '00', name: 'Sharo Family', size: 6}, {id: '11', name: 'Choy Family', size: 5}, {id: '22', name: 'Alex Rubino', size: 1}, {id: '33', name: 'Simon Gao', size: 1}, {id: '44', name: 'Gil Austria', size: 1}, {id: '55', name: 'Jayson Infante', size: 1}];
+  const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}, {id: '3', name: 'Table 4', guests: []}];
+  const seedEvent: PlacecardEvent = { 'id': '1', 'name': 'testEvent', 'date': '03/08/2022', 'location': 'My House', 'numAttend': 100, 'perTable': 10, 'tables': seedTables, 'guestList': seedGuests};
+  [window.loggedInState, window.setLoggedIn] = React.useState(true);
   [window.firstNameState, window.setFirstName] = React.useState('Apple');
   [window.lastNameState, window.setLastName] = React.useState('Zebra');
   [window.phoneState, window.setPhone] = React.useState('555-555-5555');
   [window.emailState, window.setEmail] = React.useState('email@email.com');
   [window.profPicState, window.setProfPic] = React.useState(null);
   [window.profPicNameState, window.setProfPicName] = React.useState('None');
-  [window.eventsState, window.setEvents] = React.useState([]);
-  [window.activeEvent, window.setActiveEvent] = React.useState(null);
-  [window.inviteesState, window.setInvitees] = React.useState([{id: '0', name: 'Sharo Family', size: 6}, {id: '1', name: 'Choy Family', size: 5}, {id: '2', name: 'Alex Rubino', size: 1}, {id: '3', name: 'Simon Gao', size: 1}, {id: '4', name: 'Gil Austria', size: 1}, {id: '5', name: 'Jayson Infante', size: 1}]);
+  [window.eventsState, window.setEvents] = React.useState([seedEvent]);
+  [window.activeEvent, window.setActiveEvent] = React.useState(seedEvent);
+  [window.inviteesState, window.setInvitees] = React.useState(seedGuests);
   [window.dislikedInvitees, window.setDisliked] = React.useState([]);
   [window.likedInvitees, window.setLiked] = React.useState([]);
   [window.lovedInvitees, window.setLoved] = React.useState([]);

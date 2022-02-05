@@ -1,6 +1,7 @@
 import './Forms.css'
 import { useHistory } from "react-router-dom";
 import validator from 'validator';
+import {uuid} from "uuidv4";
 
 export function CreateEvent(){
     const history = useHistory();
@@ -84,14 +85,13 @@ export function CreateEvent(){
         if (!errorFound) { 
             // if form is good, sendEvent
             try {
-                // TODO: uncomment when backend is ready
                 const result = await sendEvent(name, date, location, num_attend, per_table);
                 if (result.status == 200) {
                     const data = await result.json();
                     const id: string = data._id;
                     // if sendEvent is successful, go to next page after adding event to global list
                     const eventsList = window.eventsState;
-                    eventsList.push({id: id, name: name, date: date, location: location, numAttend: num_attend, perTable: per_table, guestList: []});
+                    eventsList.push({id: id, name: name, date: date, location: location, numAttend: num_attend, perTable: per_table, tables: createTables(num_attend, per_table), guestList: []});
                     window.setEvents(eventsList);
                     history.push('/uploadGuestList');
                 }
@@ -155,11 +155,29 @@ export function CreateEvent(){
     );
 }
 
+/*
+ * Creates tables based on the number of attendees and number of people per table
+ */
+function createTables(num_attendees: number, per_table: number) {
+    const tables = [];
+    const numTables = Math.ceil(num_attendees/per_table);
+    for (let i = 0; i < numTables; i++) {
+        tables.push({
+            id: uuid(),
+            name: 'Table ' + (i+1).toString(),
+            guests: []
+        });
+    }
+    return tables;
+}
+
 async function sendEvent(name: string, date: string, location: string, num_attendees: number, per_table: number) {
     // location cannot be empty string when sent to database
     if (location == '') {
         location = 'N/A';
     }
+    // set tables
+    const tables = createTables(num_attendees, per_table);
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -171,6 +189,7 @@ async function sendEvent(name: string, date: string, location: string, num_atten
             location: location,
             expected_number_of_attendees: Number(num_attendees),
             attendees_per_table: Number(per_table),
+            tables: tables,
             guest_list: []
             })
         };

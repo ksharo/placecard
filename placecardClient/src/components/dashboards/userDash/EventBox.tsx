@@ -12,7 +12,7 @@ export function EventBox(props: {id: string, name: string; date: string; locatio
         window.setActiveEvent({id: props.id, name: props.name, date: props.date, location: props.location, numAttend: props.numAttend, perTable: props.perTable});
         history.push('/eventDash');
     };
-    const numTables = props.numAttend/props.perTable;
+    const numTables = Math.ceil(props.numAttend/props.perTable);
     const daysLeft = Math.ceil(((new Date(props.date)).valueOf() - (new Date()).valueOf())/100000000);
     let daysLeftString = daysLeft.toString() + " Days Left!";
     if (daysLeft == 0) {

@@ -11,85 +11,105 @@ import { IoIosSave } from "react-icons/io";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MdLock, MdLockOpen } from 'react-icons/md';
 import moment from 'moment';
+import React from "react";
+
+const editList: boolean[] = [];
+for (let x in (window.activeEvent? window.activeEvent.tables : [])) {
+    editList.push(false);
+}
+
 
 export function SeatingDashboard() {
     const history = useHistory();
     let handleClick =  () => {
         history.push('/eventDash');
       }  
-    const name = 'Wedding';
-    const date = '10/10/10';
+
     const survComp = 10;
     const perTable = 10;
     const seats = 100;
     const tables = Math.ceil(seats / perTable);
     const seated = 3;
+    let origTables: Table[] = [];
+    if (window.activeEvent != undefined) {
+        origTables = window.activeEvent.tables;
+    }
+    const [tablesData, setTablesData] = React.useState(origTables);
+    const idList: string[] = [];
+    for (let x of tablesData) {
+        idList.push(x.id);
+    }
+    const [editing, toggleEditing] = React.useState(editList);
 
-    const [editing, toggleEditing] = useState([false, true, false, false, false])
-    const [tableList, changeName] = useState(['Table1', 'table2', 'table3', 'hi', 'testThis']);
-    const [tablesData, editTablesData] = useState([["apple", "adam", "arkansas"], ["chips"]])
-    const rows: GridRowsProp = [
-        { id: 1, col1: 'Bob', col2: '1', col3: <select/>},
-        { id: 2, col1: 'Larry', col2: '1' },
-        { id: 3, col1: 'Junior', col2: '3' },
-    ];
+
+    // get the data we need for the guests to be in the rows
+    const tmpRows = [];
+    const curEvent = window.activeEvent;
+    const guestData = curEvent?.guestList;
+    if (guestData != undefined) {
+        for (let guest of guestData) {
+            tmpRows.push({id: guest.id, col1: guest.name, col2: guest.size});
+        }
+    }
+    const rows: GridRowsProp = tmpRows;
+
 
     const columns: GridColDef[] = [
-        { field: 'col1', headerName: 'Name', headerAlign: 'left', cellClassName: 'nameCell', flex: 6},
-        { field: 'col2', headerName: 'Party Size', headerAlign: 'center', cellClassName: 'centeredCell', flex: 3},
-        { field: 'col3', headerName: 'Table', renderCell: () => {
-           return (<select>
-                    <option selected disabled>No Table</option>
-                    {tableList.map( (name) => 
-                            <option value={name}>{name}</option>
-                    )}
-                </select>)
-        }, headerAlign: 'center',  cellClassName: 'centeredCell', flex: 4},
+        { field: 'col1', headerName: 'Name', headerAlign: 'left', cellClassName: 'nameCell', flex: 3},
+        { field: 'col2', headerName: 'Size', headerAlign: 'center', cellClassName: 'centeredCell', flex: 1},
     ];
 
-    const updateState = (ind: number, ed: any[], item: any, updater: any) => {
-        const eTemp = [...ed];
-        eTemp[ind] = item;
-        updater(eTemp);
-    };
-
-    const getNewName = (ind: number) => {
-        const nameEl = document.getElementById('tableName' + ind);
-        if (nameEl) {
-            return (nameEl as HTMLInputElement).value;
+    const renameTable = (table: Table, open: boolean) => {
+        editList[idList.indexOf(table.id)] = open; 
+        toggleEditing([...editList]); 
+        if (open == false) {
+            for (let x of origTables) {
+                if (table.id == x.id) {
+                    x.name = (document.getElementById('tableName'+table.id) as HTMLInputElement).value;
+                    setTablesData(origTables);
+                    break;
+                }
+            }
         }
-        return '';
-    };
+    }
 
-    const empty = (result: any) => {
-        const { destination, source, draggableId } = result;
-        console.log(destination);
-        console.log(source);
-        console.log(draggableId)
-
-        if (!destination || (destination.droppableId === source.droppableId && destination.index === source.index)) {
-            return;
+    const onDragEnd = (result: any, columns: any, setColumns: any) => {
+        // make sure that result is in the right format
+        if (!result.destination) return;
+        const { source, destination } = result;
+        // do stuff if the name was moved from one column to another
+        if (source.droppableId !== destination.droppableId) {
+            // find the data at the to/from columns
+            let sourceColumn: Table = {id: '', guests: [], name: ''};
+            let destColumn: Table = {id: '', guests: [], name: ''};
+            for (let x of tablesData) {
+                if (x.id == source.droppableId) {
+                    sourceColumn = x;
+                }
+                if (x.id == destination.droppableId) {
+                    destColumn = x;
+                }
+            }
+            // get the items from each column in a copied list
+            const sourceItems = [...sourceColumn.guests];
+            const destItems = [...destColumn.guests];
+            // take the item that was removed from the source list
+            const [removed] = sourceItems.splice(source.index, 1);
+            // put it into the destination list. 
+            // Don't delete anything, just put it in the right position (index)
+            destItems.splice(destination.index, 0, removed);
+            const tmpTables = tablesData;
+            for (let x of tmpTables) {
+                if (x.id == source.droppableId)  {
+                    x.guests = sourceItems;
+                }
+                if (x.id == destination.droppableId) {
+                    x.guests = destItems;
+                }
+            }
+            setTablesData(tmpTables);
         }
-
-        console.log(tablesData)
-        console.log(tablesData[destination.droppableId])
-
-        const newIds = Array.from(tablesData[destination.droppableId])
-        newIds.splice(source.index, 1);
-        newIds.splice(destination.index, 0, destination.droppableId)
-
-        const newColumn = {
-            ...tablesData[destination.droppableId],
-            taskIds: newIds
-        }
-
-        const newState = {
-            ...tablesData,
-            columns: newColumn
-        }
-
-        editTablesData(newState)
-    };
+    }
 
     return (
         <>
@@ -107,6 +127,7 @@ export function SeatingDashboard() {
                 </section>
                 <hr />
             </section>
+            {/* Header Code  */}
             <Grid container className='dashBody' spacing={0} columns={24}>
                 <Grid item xs={3}>
                     <h3 className='seatStat'>{survComp}%</h3>
@@ -131,13 +152,15 @@ export function SeatingDashboard() {
                     <p className='statLabel'>Available Seats</p>
                 </Grid>
             </Grid>
+            {/* Unseated Guests Sidebar */}
+            <DragDropContext onDragEnd={result => onDragEnd(result, tablesData, setTablesData)}>
 
             <Grid className='dashBody' container spacing={6} columns={{xs:1, sm:2, md:12}}>
                 <Grid item xs={1} sm={1} md={4}>
                     <Card>
                         <AppBar className='tableTitle' position='static' color='inherit'>
                             <Toolbar className='toolbar tableTitle centeredContent'>
-                                <Typography variant='h5'>Guests</Typography>
+                                <Typography variant='h5'>Unseated Guests</Typography>
                             </Toolbar>
                         </AppBar>
                         <div className='guestTable' style={{ height: 500, width: '100%' }}>
@@ -145,9 +168,10 @@ export function SeatingDashboard() {
                         </div>
                     </Card>
                 </Grid>
-
+                {/* Begin Central Seating Chart Code */}
                 <Grid item xs={1} sm={1} md={8}>
                     <Card className='seatingChart'>
+                        {/* Header within central seating chart */}
                         <AppBar className='tableTitle' position='static' color='inherit'>
                             <Toolbar className='toolbar tableTitle'>
                                 <section className='verticalContainer'>
@@ -158,61 +182,62 @@ export function SeatingDashboard() {
                                 <Button variant='contained' size='medium'>Generate New Plan</Button>
                             </Toolbar>
                         </AppBar>
-                        <Grid container spacing={{xs:1, md: 2, lg: 4}} columns={{ xs: 1, md: 2, lg: 3 }}>
-                            {tableList.map((el, ind) =>
-                                <Grid item xs={1} md={1} lg={1}>
-                                    <DragDropContext onDragEnd={empty}>
-                                        <Card className='tableBox'>
-                                            <AppBar position='static' className='tableHeader'>
-                                                <Toolbar>
-                                                    {editing[ind] ?
-                                                        <><input id={'tableName' + ind} defaultValue={el} />
-                                                            <IconButton onClick={(e) => { updateState(ind, tableList, getNewName(ind), changeName); updateState(ind, editing, !editing[ind], toggleEditing) }}>
+                        {/* Body of seating chart, containing the table boxes */}
+                            <Grid container spacing={{xs:1, md: 2, lg: 4}} columns={{ xs: 1, md: 2, lg: 3 }}>
+                                {Object.entries(tablesData).map(([_, table]) => {
+                                        return (
+                                            <Grid item xs={1} md={1} lg={1}>
+                                                <Card className='tableBox'>
+                                                    <AppBar position='static' className='tableHeader'>
+                                                        <Toolbar>
+                                                        {editing[idList.indexOf(table.id)] ?
+                                                        <><input id={'tableName' + table.id} defaultValue={table.name} onKeyDown={(event: any) => {if (event.key=='Enter'){ renameTable(table, false)}}}/>
+                                                            <IconButton onClick={() => renameTable(table, false)}>
                                                                 <IoIosSave />
                                                             </IconButton></>
                                                         :
-                                                        <><Typography variant='h6'> {el} </Typography>
-                                                            <IconButton onClick={() => updateState(ind, editing, !editing[ind], toggleEditing)}>
+                                                        <><Typography variant='h6'> {table.name} </Typography>
+                                                            <IconButton onClick={() => renameTable(table, true)}>
                                                                 <AiFillEdit />
                                                             </IconButton></>}
-                                                    <Button variant='text' size='small'>Clear</Button>
-                                                </Toolbar>
-                                            </AppBar>
-                                            <Droppable droppableId={ind.toString()}>
-                                                {(provided) => (
-                                                    <div {...provided.droppableProps} ref={provided.innerRef}>
-                                                        <ul>
-                                                            {[...Array(perTable)].map((i, ind) =>
-                                                                <Draggable draggableId={ind.toString()} index={ind}>
-                                                                    {(provided, snapshot) => (
-                                                                        <div
-                                                                            ref={provided.innerRef}
-                                                                            {...provided.draggableProps}
-                                                                            {...provided.dragHandleProps}
-                                                                        >
-                                                                            <li className='seat'>
-                                                                                {ind} {i}
-                                                                                <MdLock />
-                                                                                {/* <MdLockOpen /> */}
-                                                                            </li>
-                                                                        </div>
-                                                                    )}
-
-                                                                </Draggable>)}
-                                                            {provided.placeholder}
-                                                        </ul>
-                                                    </div>
-                                                )}
-
-                                            </Droppable>
-                                        </Card>
-                                    </DragDropContext>
-                                </Grid>
-                            )}
-                        </Grid>
+                                                            <Button variant='text' size='small'>Clear</Button>
+                                                        </Toolbar>
+                                                    </AppBar>
+                                                    <Droppable droppableId={table.id} key={table.id}>
+                                                        {(provided, snapshot) => {
+                                                            return (
+                                                                <section className='tableInSeatDash' {...provided.droppableProps} ref={provided.innerRef}>
+                                                                    {table.guests.map((guest, index) => {
+                                                                        return (
+                                                                            <Draggable key={guest.id} draggableId={guest.id} index={index}>
+                                                                                {(provided, snapshot) => {
+                                                                                    return (
+                                                                                        <section ref={provided.innerRef}
+                                                                                        {...provided.draggableProps}
+                                                                                        {...provided.dragHandleProps}>
+                                                                                            <p>{guest.name}</p>
+                                                                                        </section>
+                                                                                    );
+                                                                                }}
+                                                                            </Draggable>
+                                                                        );
+                                                                    })
+                                                                    }
+                                                                    {provided.placeholder}
+                                                                </section>
+                                                            );
+                                                        }}
+                                                    </Droppable>
+                                                </Card>
+                                            </Grid>
+                                        )
+                                    })
+                                }
+                            </Grid>
                     </Card>
                 </Grid>
             </Grid>
+            </DragDropContext>
             </>
         }
         </>
