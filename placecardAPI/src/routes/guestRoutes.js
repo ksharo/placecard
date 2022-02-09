@@ -1,6 +1,22 @@
 const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+
+// -> Multer Upload Storage
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, __basedir + "/src/uploads/");
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname);
+    },
+});
+
+const upload = multer({ storage: storage });
+
+const excelToJson = require("convert-excel-to-json");
+
 const { guests } = require("../data");
 const {
     INVALID_GUEST_ID_MESSAGE,
@@ -158,6 +174,9 @@ router.delete("/:guestId", async (req, res) => {
     }
 });
 
-router.post("/newGuest", async (req, res) => {});
+router.post("/fileUpload", upload.single("file"), async (req, res) => {
+    let formData = req.file;
+    console.log(formData);
+});
 
 module.exports = router;
