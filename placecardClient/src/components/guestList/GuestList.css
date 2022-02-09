@@ -1,0 +1,96 @@
+.guestTableHeader{
+	display: grid;
+    grid-template-columns: [first] auto [second] auto [third] auto [fourth] 124px [fifth] 70px [sixth] 70px;
+    text-align: left;
+    column-gap: 10px;
+    row-gap: 10px;
+}
+
+#guestListFileUpload {
+    display: none;
+}
+
+#inputTestTag {
+    font-size: 18px;
+    /* color: red;
+    background-color: green; */
+    display: block;
+    width: 100%;
+    border: none;
+    text-transform: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* opacity: 0.1; */
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+    /* z-index: 9; */
+}
+
+#dragDropContainer{
+    /* max-width: 40%;
+    max-height: 40%;
+    background-color: red; */
+
+
+    position: relative;
+  margin: 0 0 15px;
+  border: 2px dotted lightgray;
+  padding: 35px 20px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: transparent;
+  min-width: 400px;
+  width: 800px;
+    height: 200px;
+}
+
+.uploadFileIcon {
+    width: 88px;
+    height: 88px;
+    align-self: center;
+}
+
+.fileUploadButtonSection {
+    position: relative;
+    top: 92px;
+    display: grid;
+    grid-template-columns: [first] 20% [second] 80%;
+    column-gap: 54px;
+    height: 0;
+}
+
+.fileUploadButtonSection p{
+  font-size: 22px;
+}
+
+
+
+  .fileUploadSection {
+    display: flex;
+    flex-direction: column;
+    max-width: 1000px;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+.manualGuestListSection{
+  max-width: 1200px;
+  margin: auto;
+}
+
+.addGuestRowBottomControl{
+  text-align: left;
+}
+
+.addGuestRowButton{
+
+}
