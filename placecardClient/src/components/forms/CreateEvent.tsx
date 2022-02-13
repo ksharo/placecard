@@ -91,7 +91,7 @@ export function CreateEvent(){
                     const id: string = data._id;
                     // if sendEvent is successful, go to next page after adding event to global list
                     const eventsList = window.eventsState;
-                    eventsList.push({id: id, name: name, date: date, location: location, numAttend: num_attend, perTable: per_table});
+                    eventsList.push({id: id, name: name, date: date, location: location, numAttend: num_attend, perTable: per_table, guestList: []});
                     window.setEvents(eventsList);
                     history.push('/uploadGuestList');
                 }
@@ -170,7 +170,8 @@ async function sendEvent(name: string, date: string, location: string, num_atten
             event_time: date,
             location: location,
             expected_number_of_attendees: Number(num_attendees),
-            attendees_per_table: Number(per_table)
+            attendees_per_table: Number(per_table),
+            guest_list: []
             })
         };
     return fetch('http://localhost:3001/events/newEvent', requestOptions);
