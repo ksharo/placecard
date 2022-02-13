@@ -1,6 +1,5 @@
 const eventsRoutes = require("./eventRoutes");
 const guestRoutes = require("./guestRoutes");
-const userRoutes = require("./userRoutes");
 var cors = require("cors");
 
 // TODO: make cors only for our apps

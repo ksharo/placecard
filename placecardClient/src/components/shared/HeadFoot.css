@@ -52,3 +52,8 @@ footer {
   position: absolute;
   bottom: 0;
 }
+
+.loginBox {
+  padding-top:18px;
+  padding-right: 16px;
+}

@@ -72,16 +72,9 @@ async function updateEvent(eventId, updatedEventConfig) {
     const queryParameters = {
          _id: eventObjectId
     };
+    
     const updatedDocument = {
-        $set: {
-            event_name: updatedEventConfig.event_name,
-            tables: updatedEventConfig.tables,
-            event_time: updatedEventConfig.event_time,
-            location: updatedEventConfig.location,
-            expected_number_of_attendees: updatedEventConfig.expected_number_of_attendees,
-            attendees_per_table: updatedEventConfig.attendees_per_table,
-            guest_list: updatedEventConfig.guest_list
-        }
+        $set: updatedEventConfig
     };
 
     const updateInfo = await eventCollection.updateOne(queryParameters, updatedDocument);
