@@ -15,8 +15,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const excelToJson = require("convert-excel-to-json");
-
 const { guests } = require("../data");
 const {
     INVALID_GUEST_ID_MESSAGE,
@@ -175,8 +173,23 @@ router.delete("/:guestId", async (req, res) => {
 });
 
 router.post("/fileUpload", upload.single("file"), async (req, res) => {
-    let formData = req.file;
-    console.log(formData);
+    try {
+        let formData = req.file;
+        console.log(formData);
+
+        if (
+            file.mimetype == "application/vnd.ms-excel" ||
+            file.mimetype ==
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+            file.mimetype == "text/csv"
+        ) {
+            return res.status(400).json({
+                error: "Only .xls, .xlsx, and .csv formatted files are allowed!",
+            });
+        }
+    } catch (e) {
+        res.status(500).json({ error: e });
+    }
 });
 
 module.exports = router;
