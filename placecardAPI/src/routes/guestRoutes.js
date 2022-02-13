@@ -175,19 +175,24 @@ router.delete("/:guestId", async (req, res) => {
 router.post("/fileUpload", upload.single("file"), async (req, res) => {
     try {
         let formData = req.file;
-        console.log(formData);
+        let fileType = formData.originalname.split(".").pop();
 
         if (
-            file.mimetype == "application/vnd.ms-excel" ||
-            file.mimetype ==
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-            file.mimetype == "text/csv"
+            formData.mimetype !== "application/vnd.ms-excel" &&
+            formData.mimetype !==
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
+            formData.mimetype !== "text/csv"
         ) {
             return res.status(400).json({
                 error: "Only .xls, .xlsx, and .csv formatted files are allowed!",
             });
         }
+
+        let uploadData = await guests.uploadSurveyData(formData.path, fileType);
+
+        res.status(200).json(uploadData);
     } catch (e) {
+        console.log(e);
         res.status(500).json({ error: e });
     }
 });
