@@ -29,6 +29,7 @@ import { EditProfile } from './components/editPages/EditProfile';
 import React from 'react';
 
 function App() {
+  // TODO: We can switch window global variables for React context or use Redux for a global store
   [window.loggedInState, window.setLoggedIn] = React.useState(false);
   [window.firstNameState, window.setFirstName] = React.useState('Apple');
   [window.lastNameState, window.setLastName] = React.useState('Zebra');
@@ -41,6 +42,7 @@ function App() {
 
   document.title = 'Placecard';
 
+  // TODO: Create PrivateRoute component for authenticated routes
   const loggedInRoutes = (<>
       <Route exact path='/editProfile' component={ EditProfile }/>
       <Route exact path='/createEvent' component={ CreateEvent }/>
@@ -55,7 +57,7 @@ function App() {
       <Route exact path='/surveyPt1' component={ SurveyPt1 }/>
       <Route exact path='/surveyPt2' component={ SurveyPt2 }/>
       <Route exact path='/doneSurvey' component={ SurveyConf }/></>);
-
+  
   return (
       <body>
         <Router>
