@@ -55,18 +55,21 @@ export function SurveyLikes() {
         const checked = event.target.checked;
         // find the size and name of the party
         let size = 1;
-        let name = ''
+        let name = '';
+        let groupName = undefined;
+        let groupID = undefined;
         for (let x of window.inviteesState) {
             if (x.id == id) {
-                size = x.size;
                 name = x.name;
+                groupName = x.groupName;
+                groupID = x.groupID;
                 break;
             }
         }
         if (checked) {
             // add the party to the list of those who are liked
             const tmp = window.likedInvitees;
-            tmp.push({id: id, name: name, size: size});
+            tmp.push({id: id, name: name, groupName: groupName, groupID: groupID});
             window.setLiked(tmp);
         }
         else {
@@ -74,14 +77,14 @@ export function SurveyLikes() {
             const tmp = [];
             for (let x of window.likedInvitees) {
                 if (x.id != id) {
-                    tmp.push({id: x.id, name: x.name, size: x.size})
+                    tmp.push({id: x.id, name: x.name, groupName: x.groupName, groupID: x.groupID})
                 }
             }
             window.setLiked(tmp);
         }
     }
     return (<>
-                <h1 className='title'>Seating Survey - Part III</h1>
+                <h1 className='title'>Seating Survey - Part II</h1>
                 <p className='subtitle'>Which of these parties do you feel comfortable sitting with?</p>
 
                 <div className='survey' style={{ height: 400 }}>

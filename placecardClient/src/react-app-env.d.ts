@@ -55,7 +55,8 @@ interface PlacecardEvent {
 interface Invitee {
     id: string;
     name: string;
-    size: number;
+    groupID?: string; 
+    groupName?: string;
 }
 
 interface Table {

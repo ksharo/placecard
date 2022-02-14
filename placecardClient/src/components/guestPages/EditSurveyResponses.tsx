@@ -44,6 +44,8 @@ export function EditSurveyResponses() {
         }
     }
 
+    const [spaceUsed, setSpace] = React.useState(perTable-ourSize-loved.length);
+
     // put the columns in a state so changes stick
     const [columns, setColumns] = React.useState(origColumns);
 
@@ -68,10 +70,10 @@ export function EditSurveyResponses() {
             if (destination.droppableId == lovedID) {
                 let count = 0;
                 for (let x of window.lovedInvitees) {
-                    count += x.size;
+                    count += 1;
                 }
                 // party is too big!! don't do anything
-                if (count + removed.size + ourSize > perTable) {
+                if (count + 1 + ourSize > perTable) {
                     // show the error (shows and then hides with animation in class)
                     const errorEl = document.getElementById('tooBigError');
                     if (errorEl != null) {
@@ -128,6 +130,7 @@ export function EditSurveyResponses() {
                         updateLikes.splice(likeIndForUpdate, 1);
                         window.setLiked(updateLikes);
                     }           
+                    setSpace(spaceUsed+1);
                     break;
                 default:
                     break;
@@ -158,6 +161,7 @@ export function EditSurveyResponses() {
                         updateLikes.push(removed);
                         window.setLiked(updateLikes);   
                     }           
+                    setSpace(spaceUsed-1);
                     break;
                 default:
                     break;
@@ -189,13 +193,13 @@ export function EditSurveyResponses() {
       return (
         <>
             <h1 className='title'>Review Your Responses</h1>
-            <p className='bigHiddenError' id='tooBigError'>The party is too big for the table.<br/>Please note the size of the party and the space left at your ideal table.</p>
+            <p className='bigHiddenError' id='tooBigError'>Your table is full.<br/>Please rearrange your responses so that your table can fit your best friends.</p>
             <section className='columnGroupStyle'>
                 <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
                     {Object.entries(columns).map(([columnId, column]) => {
                     return (
                         <section className='wholeColumnStyle' key={columnId}>
-                            <h2>{column.name}</h2>
+                            <h2>{column.name} {column.name=='Ideal Table' ? <p className='unstyledSubheader'>Space Left: {spaceUsed}</p> : <p className='emptySpace unstyledSubheader'></p>}</h2>
                             <section className='columnCenterStyle'>
                                 <Droppable droppableId={columnId} key={columnId}>
                                 {(provided, snapshot) => {
@@ -219,7 +223,7 @@ export function EditSurveyResponses() {
                                                     {item.name}
                                                     <br/>
                                                     <hr/>
-                                                    <span className='smallerText'>(Size: {item.size})</span>
+                                                    <span className='smallerText'>Group: {(item.groupName==undefined ? 'None' : item.groupName)}</span>
                                                 </section>
                                                 );
                                             }}

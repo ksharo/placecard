@@ -27,7 +27,7 @@ import { SentConf } from './components/confirmationPages/SentConf';
 import { EditDetails } from './components/editPages/EditDetails';
 import { EditProfile } from './components/editPages/EditProfile';
 import React from 'react';
-import { SurveyPt1SitTogether } from './components/guestPages/SurveyPt1SitTogether';
+// import { SurveyPt1SitTogether } from './components/guestPages/oldPages/SurveyPt1SitTogether';
 import { SurveyDislikes } from './components/guestPages/SurveyDislikes';
 import { SurveyIdealTable } from './components/guestPages/SurveyIdealTable';
 import { SurveyLikes } from './components/guestPages/SurveyLikes';
@@ -35,7 +35,20 @@ import { SurveyInstructions } from './components/guestPages/SurveyInstructions';
 import { EditSurveyResponses } from './components/guestPages/EditSurveyResponses';
 
 function App() {
-  const seedGuests: Invitee[] = [{id: '00', name: 'Sharo Family', size: 6}, {id: '11', name: 'Choy Family', size: 5}, {id: '22', name: 'Alex Rubino', size: 1}, {id: '33', name: 'Simon Gao', size: 1}, {id: '44', name: 'Gil Austria', size: 1}, {id: '55', name: 'Jayson Infante', size: 1}];
+  const seedGuests: Invitee[] = [
+    {id: '00', name: 'Danielle Sharo', groupName: 'Sharo Family', groupID: '123'}, 
+    {id: '02', name: 'Jeremiah Sharo', groupName: 'Sharo Family', groupID: '123'}, 
+    {id: '03', name: 'Beth Sharo', groupName: 'Sharo Family', groupID: '123'}, 
+    {id: '04', name: 'Rob Sharo', groupName: 'Sharo Family', groupID: '123'}, 
+    {id: '11', name: 'Chloe Choy', groupName: 'Choy Family', groupID:'223'},
+    {id: '12', name: 'Abby Choy', groupName: 'Choy Family', groupID:'223'},
+    {id: '13', name: 'Mabel Choy', groupName: 'Choy Family', groupID:'223'},
+    {id: '14', name: 'Wing Choy', groupName: 'Choy Family', groupID:'223'},
+    {id: '22', name: 'Alex Rubino'}, 
+    {id: '33', name: 'Simon Gao'}, 
+    {id: '44', name: 'Gil Austria'}, 
+    {id: '55', name: 'Jayson Infante'}
+  ];
   const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
   const seedEvent: PlacecardEvent = { 'id': '1', 'name': 'testEvent', 'date': '03/08/2022', 'location': 'My House', 'numAttend': 6, 'perTable': 2, 'tables': seedTables, 'guestList': seedGuests};
   [window.loggedInState, window.setLoggedIn] = React.useState(true);
@@ -77,7 +90,7 @@ function App() {
             <Route exact path='/beginSurvey' component={ GuestConfirmation }/>
             {/* <Route exact path='/surveyPt1' component={ SurveyPt1WithAges }/> */}
             {/* <Route exact path='/surveyPt2' component={ SurveyPt2 }/> */}
-            <Route exact path='/surveyPt1' component={ SurveyPt1SitTogether }/>
+            {/* <Route exact path='/surveyPt1' component={ SurveyPt1SitTogether }/> */}
             <Route exact path='/surveyInstructions' component={ SurveyInstructions }/>
             <Route exact path='/surveyDislikes' component={ SurveyDislikes }/>
             <Route exact path='/surveyLikes' component={ SurveyLikes }/>
