@@ -13,6 +13,7 @@ import { MdLock, MdLockOpen } from 'react-icons/md';
 import moment from 'moment';
 import React from "react";
 import {uuid} from "uuidv4";
+import { letterSpacing } from "@mui/system";
 
 const unseatedID = uuid();
 
@@ -41,7 +42,7 @@ export function SeatingDashboard() {
             idList.push(x.id);
         }
         perTable = window.activeEvent.perTable;
-        num_attend = window.activeEvent.numAttend;
+        num_attend = window.activeEvent.guestList.length;
         tables = Math.ceil(num_attend / perTable);
         seats = tables*perTable;
         for (let x of window.activeEvent.guestList) {
@@ -209,6 +210,41 @@ export function SeatingDashboard() {
         }
     }
 
+    const clearTable = (event: any, id?: string) => {
+        let tableId = undefined;
+        if (id != undefined) {
+            tableId = id;
+        }
+        else {
+            tableId = event.target.id.substring(11);
+        }
+        const tmpTables = tablesData;
+        let nowUnseated: Invitee[] = []
+        for (let x of tmpTables) {
+            if (x.id == tableId) {
+                nowUnseated = [...x.guests];
+                x.guests = [];
+            }
+        }
+        if (id == undefined) {
+            setTablesData(tmpTables);
+            setUnseated(unseated.concat(nowUnseated));
+            setSeated(seated - nowUnseated.length);
+        }
+    };
+
+    const clearAll = () => {
+        const newTables: Table[] = [];
+        let newUnseated: Invitee[] = unseated;
+        for (let x of tablesData) {
+            newUnseated = newUnseated.concat(x.guests);
+            clearTable(null, x.id);
+            newTables.push({id: x.id, name: x.name, guests: []});
+        }
+        setTablesData(newTables);
+        setUnseated(newUnseated);
+        setSeated(0);
+    };
     return (
         <>
             {window.activeEvent == null ? 
@@ -274,8 +310,10 @@ export function SeatingDashboard() {
                                                                 <section className={`guestName ${snapshot.isDragging ? "draggingGuest" : "placedGuest"}`} ref={provided.innerRef}
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}>
-                                                                    {guest.name}
-                                                                </section>
+                                                                {guest.name}
+                                                                <br/>
+                                                                <hr/>
+                                                                <span className='smallerText'>Group: {(guest.groupName==undefined ? 'None' : guest.groupName)}</span>                                                                </section>
                                                             );
                                                         }}
                                                     </Draggable>
@@ -297,8 +335,8 @@ export function SeatingDashboard() {
                         <AppBar className='tableTitle' position='static' color='inherit'>
                             <Toolbar className='toolbar tableTitle'>
                                 <section className='verticalContainer'>
-                                    <Button variant='contained' size='small'>Lock All</Button>
-                                    <Button variant='contained' size='small'>Clear All</Button>
+                                    {/* <Button variant='contained' size='small'>Lock All</Button> */}
+                                    <Button variant='contained' size='small' onClick={clearAll}>Clear All</Button>
                                 </section>
                                 <Typography variant='h5'>Seating Chart</Typography>
                                 <Button variant='contained' size='medium'>Generate New Plan</Button>
@@ -322,7 +360,7 @@ export function SeatingDashboard() {
                                                             <IconButton onClick={() => renameTable(table, true)}>
                                                                 <AiFillEdit />
                                                             </IconButton></>}
-                                                            <Button variant='text' size='small'>Clear</Button>
+                                                            <Button variant='text' size='small' id={'clearButton'+table.id} onClick={clearTable}>Clear</Button>
                                                         </Toolbar>
                                                     </AppBar>
                                                     <Droppable droppableId={table.id} key={table.id}>
@@ -338,6 +376,9 @@ export function SeatingDashboard() {
                                                                                         {...provided.draggableProps}
                                                                                         {...provided.dragHandleProps}>
                                                                                             {guest.name}
+                                                                                            <br/>
+                                                                                            <hr/>
+                                                                                            <span className='smallerText'>Group: {(guest.groupName==undefined ? 'None' : guest.groupName)}</span>
                                                                                         </section>
                                                                                     );
                                                                                 }}

@@ -50,7 +50,7 @@ function App() {
     {id: '55', name: 'Jayson Infante'}
   ];
   const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
-  const seedEvent: PlacecardEvent = { 'id': '1', 'name': 'testEvent', 'date': '03/08/2022', 'location': 'My House', 'numAttend': 6, 'perTable': 2, 'tables': seedTables, 'guestList': seedGuests};
+  const seedEvent: PlacecardEvent = { 'id': '1', 'name': 'testEvent', 'date': '03/08/2022', 'location': 'My House', 'numAttend': 6, 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
   [window.loggedInState, window.setLoggedIn] = React.useState(true);
   [window.firstNameState, window.setFirstName] = React.useState('Apple');
   [window.lastNameState, window.setLastName] = React.useState('Zebra');
