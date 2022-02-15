@@ -37,7 +37,7 @@
     scrollbar-width: none;  /* Firefox */
 }
 
-.guestTable button{
+.guestTable button {
     box-shadow: none;
     color: white;
     margin-left: 10px;
@@ -64,6 +64,10 @@
     color: white !important;
     display: flex !important;
     justify-content: center;
+}
+
+.tableHeader input {
+    color: black !important;
 }
 
 .tableHeader button {

@@ -17,15 +17,16 @@ import { letterSpacing } from "@mui/system";
 
 const unseatedID = uuid();
 
+const editList: boolean[] = [];
+for (let x in (window.activeEvent? window.activeEvent.tables : [])) {
+    editList.push(false);
+}
+
 export function SeatingDashboard() {
     const history = useHistory();
     let handleClick =  () => {
         history.push('/eventDash');
     }  
-    const editList: boolean[] = [];
-    for (let x in (window.activeEvent? window.activeEvent.tables : [])) {
-        editList.push(false);
-    }
 
     let survComp = 0;
     let perTable = -1;
