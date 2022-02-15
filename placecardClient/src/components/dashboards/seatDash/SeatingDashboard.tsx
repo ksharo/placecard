@@ -109,13 +109,13 @@ export function SeatingDashboard() {
                 const tmpTables = tablesData;
                 for (let x of tmpTables) {
                     if (x.id == source.droppableId)  {
-                        x.guests = sourceItems;
+                        x.guests = [...sourceItems];
                     }
                     if (x.id == destination.droppableId) {
-                        x.guests = destItems;
+                        x.guests = [...destItems];
                     }
                 }
-                setTablesData(tmpTables);
+                setTablesData([...tmpTables]);
             }
             else {
                 if (source.droppableId == unseatedID) {
@@ -138,10 +138,10 @@ export function SeatingDashboard() {
                     const tmpTables = tablesData;
                     for (let x of tmpTables) {
                         if (x.id == destination.droppableId) {
-                            x.guests = destItems;
+                            x.guests = [...destItems];
                         }
                     }
-                    setTablesData(tmpTables);
+                    setTablesData([...tmpTables]);
                     setUnseated([...sourceItems]);
                     setSeated(seated + 1);
                 }
@@ -165,10 +165,10 @@ export function SeatingDashboard() {
                     const tmpTables = tablesData;
                     for (let x of tmpTables) {
                         if (x.id == source.droppableId) {
-                            x.guests = sourceItems;
+                            x.guests = [...sourceItems];
                         }
                     }
-                    setTablesData(tmpTables);
+                    setTablesData([...tmpTables]);
                     setUnseated([...destItems]);
                     setSeated(seated - 1);
                 }
@@ -205,7 +205,7 @@ export function SeatingDashboard() {
                         break;
                     }
                 }
-                setTablesData(tmpTables);
+                setTablesData([...tmpTables]);
             }
         }
     }
@@ -349,7 +349,7 @@ export function SeatingDashboard() {
                                             <Grid item xs={1} md={1} lg={1}>
                                                 <Card className='tableBox'>
                                                     <AppBar position='static' className='tableHeader'>
-                                                        <Toolbar>
+                                                        <Toolbar className='topTableHeader'>
                                                         {editing[idList.indexOf(table.id)] ?
                                                         <><input id={'tableName' + table.id} defaultValue={table.name} onKeyDown={(event: any) => {if (event.key=='Enter'){ renameTable(table, false)}}}/>
                                                             <IconButton onClick={() => renameTable(table, false)}>
@@ -360,8 +360,12 @@ export function SeatingDashboard() {
                                                             <IconButton onClick={() => renameTable(table, true)}>
                                                                 <AiFillEdit />
                                                             </IconButton></>}
-                                                            <Button variant='text' size='small' id={'clearButton'+table.id} onClick={clearTable}>Clear</Button>
-                                                        </Toolbar>
+                                                            </Toolbar>
+                                                            <hr className='smallHR'/>
+                                                            <section className='tableOptions'>
+                                                                <Button variant='contained' size='small' className='clearButton' id={'clearButton'+table.id} onClick={clearTable}>Clear</Button>
+                                                                <p className={table.guests.length > perTable ? 'overFull' : 'tableFillLevel'}>{table.guests.length} / {perTable}</p>
+                                                            </section>
                                                     </AppBar>
                                                     <Droppable droppableId={table.id} key={table.id}>
                                                         {(provided, snapshot) => {
