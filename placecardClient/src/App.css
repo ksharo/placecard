@@ -87,3 +87,8 @@ button:hover {
 .content {
   padding-bottom: 70px;
 }
+
+input {
+  box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
+  border-radius: 4px;
+}
