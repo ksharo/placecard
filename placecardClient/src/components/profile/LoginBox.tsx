@@ -14,7 +14,7 @@ const LoginBox = () => {
     };
 
     return (
-        <Box className="loginBox">
+        <Box>
             <Button variant="text" onClick={openDialogBox}>
                 Log In
             </Button>
