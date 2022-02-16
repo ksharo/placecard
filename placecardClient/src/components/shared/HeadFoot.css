@@ -53,7 +53,16 @@ footer {
   bottom: 0;
 }
 
-.loginBox {
-  padding-top:18px;
+.profileBox {
+  padding-top: 18px;
   padding-right: 16px;
+}
+
+.profileAvatarButton {
+  padding-top: 0px !important;
+}
+
+.profileMenuDropdown {
+  padding-right: 8px;
+  padding-left: 8px;
 }

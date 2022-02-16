@@ -1,6 +1,12 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+
 import { isUndefined } from "lodash";
 
+type OptionalFirebaseApp = FirebaseApp | undefined;
+
+// TODO: Move this to a backend API service where we make client requests ;
+// otherwise keys will be exposed to the browser in the front-end build which is insecure
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -11,7 +17,7 @@ const firebaseConfig = {
     measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
-let firebaseApp: FirebaseApp | undefined = undefined;
+let firebaseApp: OptionalFirebaseApp = undefined;
 
 function getFirebaseApp() {
     if (isUndefined(firebaseApp)) {
@@ -20,7 +26,13 @@ function getFirebaseApp() {
     return firebaseApp;
 }
 
+function getFirebaseAuth(firebaseApp?: OptionalFirebaseApp) {
+    const currentFirebaseApp = firebaseApp || getFirebaseApp();
+    return getAuth(currentFirebaseApp);
+}
+
 
 export {
-    getFirebaseApp
-}
+    getFirebaseApp,
+    getFirebaseAuth
+};
