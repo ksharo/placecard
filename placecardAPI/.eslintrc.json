@@ -1,0 +1,19 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true
+    },
+    "extends": [
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "rules": {
+        "no-unused-vars": ["warning"],
+        "no-empty": ["error"],
+        "quotes": ["error", "double", {"allowTemplateLiterals": true}],
+        "eqeqeq": ["error"],
+        "semi-style": ["error"]
+    }
+}

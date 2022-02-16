@@ -105,8 +105,9 @@ router.put("/updateGuest", async (req, res) => {
 
     try {
         const guestId = updatedGuest._id;
-        const updatedGuest = await guests.updateGuest(guestId, updatedGuest);
-        return res.json(updatedGuest);
+        delete updatedGuest._id;
+        const updatedGuestRet = await guests.updateGuest(guestId, updatedGuest);
+        return res.json(updatedGuestRet);
     } catch (e) {
         return createErrorResponse(
             e.message,

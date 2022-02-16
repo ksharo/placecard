@@ -52,6 +52,7 @@ function App() {
   const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
   const seedEvent: PlacecardEvent = { 'id': '1', 'name': 'testEvent', 'date': '03/08/2022', 'location': 'My House', 'numAttend': 6, 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
   [window.loggedInState, window.setLoggedIn] = React.useState(true);
+
   [window.firstNameState, window.setFirstName] = React.useState('Apple');
   [window.lastNameState, window.setLastName] = React.useState('Zebra');
   [window.phoneState, window.setPhone] = React.useState('555-555-5555');
@@ -67,6 +68,7 @@ function App() {
 
   document.title = 'Placecard';
 
+  // TODO: Create PrivateRoute component for authenticated routes
   const loggedInRoutes = (<>
       <Route exact path='/editProfile' component={ EditProfile }/>
       <Route exact path='/createEvent' component={ CreateEvent }/>
