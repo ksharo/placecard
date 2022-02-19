@@ -1,5 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+
+:root {
+  --main: #00A6A0;
+  --secondary: #1F6BAE;
+  --highlight: #F57A75;
+}
+
 body, html, input, button {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Ubuntu', sans-serif;
 }
 
 body {
@@ -32,6 +40,7 @@ button:hover {
   letter-spacing: 2px;
   font-size: 42px;
   margin: 20px auto 6px auto;
+  color: var(--secondary);
 }
 
 .subtitle {

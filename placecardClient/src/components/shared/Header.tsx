@@ -2,7 +2,6 @@ import { Link, useHistory } from "react-router-dom";
 import logo from '../../assets/logo.png';
 import './HeadFoot.css';
 import { ProfileMenu } from './ProfileMenu';
-import React from "react";
 
 export function Header() {
   const history = useHistory();
@@ -24,7 +23,7 @@ export function Header() {
         </section>;
 
     return (
-    <header className='header-footer'>
+      <header className='header'>
         <img className='logo' onClick={handleClick} src={logo} alt='Logo'></img>
            { window.loggedInState ? profile : login}
       </header>

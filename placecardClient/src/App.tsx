@@ -34,6 +34,8 @@ import { SurveyLikes } from './components/guestPages/SurveyLikes';
 import { SurveyInstructions } from './components/guestPages/SurveyInstructions';
 import { EditSurveyResponses } from './components/guestPages/EditSurveyResponses';
 import { SurveyGroupPage } from './components/guestPages/SurveyGroupPage';
+import { createTheme, ThemeProvider } from '@mui/material';
+import MuiThemeProvider from '@mui/material/styles';
 
 function App() {
   const seedGuests: Invitee[] = [
@@ -69,6 +71,18 @@ function App() {
 
   document.title = 'Placecard';
 
+
+  const theme = createTheme({
+    palette: {
+      secondary: {
+        main: '#1F6BAE'
+      },
+      primary: {
+        main: '#00A6A0'
+      }
+    }
+  });
+
   const loggedInRoutes = (<>
       <Route exact path='/editProfile' component={ EditProfile }/>
       <Route exact path='/createEvent' component={ CreateEvent }/>
@@ -82,7 +96,7 @@ function App() {
       </>);
 
   return (
-      <body>
+      <ThemeProvider theme={theme}>
         <Router>
           <section className='content'>
           <Header/>
@@ -107,7 +121,7 @@ function App() {
           </section>
           <Footer/>
         </Router>
-      </body>
+      </ThemeProvider>
   );
 }
 
