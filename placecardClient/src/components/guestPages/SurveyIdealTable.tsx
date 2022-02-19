@@ -118,7 +118,7 @@ export function SurveyIdealTable() {
     }
 
     return (<>
-                <h1 className='title'>Seating Survey - Part III</h1>
+                <h1 className='title'>Seating Survey - Part IV</h1>
                 <p className='subtitle'>Create your ideal table! Choose up to {sizeLeft} of the parties you are comfortable <br/>with (from the previous page) to fill up your table.</p>
                 <div className='survey' style={{ height: 400 }}>
                     <DataGrid rows={rows} columns={columns} disableColumnMenu={true} hideFooter={true} disableSelectionOnClick={true} rowHeight={80} />

@@ -84,7 +84,7 @@ export function SurveyLikes() {
         }
     }
     return (<>
-                <h1 className='title'>Seating Survey - Part II</h1>
+                <h1 className='title'>Seating Survey - Part III</h1>
                 <p className='subtitle'>Which of these parties do you feel comfortable sitting with?</p>
 
                 <div className='survey' style={{ height: 400 }}>

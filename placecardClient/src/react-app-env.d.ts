@@ -39,6 +39,9 @@ interface Window {
 
     lovedInvitees: Invitee[];
     setLoved: any;
+
+    curGroupID: string | undefined;
+    setGroupID: any;
 }
 
 interface PlacecardEvent {

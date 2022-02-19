@@ -29,7 +29,7 @@ export function SurveyDislikes() {
     ];
 
     const prevPage = () => {
-        history.push('/surveyInstructions');
+        history.push('/editGroup');
     }
     const nextPage = () => {
         history.push('/surveyLikes');
@@ -80,7 +80,7 @@ export function SurveyDislikes() {
     }
 
     return (<>
-                <h1 className='title'>Seating Survey - Part I</h1>
+                <h1 className='title'>Seating Survey - Part II</h1>
                 <p className='subtitle'>Which of these parties do you want to avoid sitting with?</p>
 
                 <div className='survey' style={{ height: 400 }}>

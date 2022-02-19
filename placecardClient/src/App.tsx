@@ -33,6 +33,7 @@ import { SurveyIdealTable } from './components/guestPages/SurveyIdealTable';
 import { SurveyLikes } from './components/guestPages/SurveyLikes';
 import { SurveyInstructions } from './components/guestPages/SurveyInstructions';
 import { EditSurveyResponses } from './components/guestPages/EditSurveyResponses';
+import { SurveyGroupPage } from './components/guestPages/SurveyGroupPage';
 
 function App() {
   const seedGuests: Invitee[] = [
@@ -64,6 +65,7 @@ function App() {
   [window.dislikedInvitees, window.setDisliked] = React.useState([]);
   [window.likedInvitees, window.setLiked] = React.useState([]);
   [window.lovedInvitees, window.setLoved] = React.useState([]);
+  [window.curGroupID, window.setGroupID] = React.useState('223');
 
   document.title = 'Placecard';
 
@@ -92,6 +94,7 @@ function App() {
             {/* <Route exact path='/surveyPt2' component={ SurveyPt2 }/> */}
             {/* <Route exact path='/surveyPt1' component={ SurveyPt1SitTogether }/> */}
             <Route exact path='/surveyInstructions' component={ SurveyInstructions }/>
+            <Route exact path='/editGroup' component={ SurveyGroupPage }/>
             <Route exact path='/surveyDislikes' component={ SurveyDislikes }/>
             <Route exact path='/surveyLikes' component={ SurveyLikes }/>
             <Route exact path='/surveyIdealTable' component={ SurveyIdealTable }/>
