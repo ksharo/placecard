@@ -1,30 +1,20 @@
-import { Card } from './Card'
-import { Link } from "react-router-dom";
+import { Button } from '@mui/material';
+import mainImg from '../../assets/placeholderImage.jpeg';
 import './Home.css';
 
 export function Home() {
-    const title1 = 'Upload Guest List';
-    const title2 = 'Send Survey';
-    const title3 = 'Placecard Magic!';
-    
-    const txt1 = 'Enter some basic information about your event and share your guest list with us to get started.';
-    const txt2 = 'Customize a message inviting your guests to fill out our seating survey and send it to anyone you want!';
-    const txt3 = 'Sit back, relax, and let Placecard do the rest of the work! We will seat guests based on their responses, but feel free to edit on your own as well!';
     return (
         <>
-            <h1 className='title'>Welcome to Placecard!</h1>
-            <p className='subtitle'>A magical application for all your seating chart needs</p>
-            
-            <h2 id='howTo'>How It Works:</h2>
-            <section id='how-to-cards'>
-                <Card num='1' title={title1} txt={txt1} img="guests"/>
-                <Card num='2' title={title2} txt={txt2} img="mail"/>
-                <Card num='3' title={title3} txt={txt3} img="magic"/>
+            <section className='eyeCatcher'>
+                <section className='gradientCover'>
+                    <section className='introSection'>
+                        <h1 className='homeTitle'>Welcome to Placecard</h1>
+                        <h4>A modernly versatile seating-chart application</h4>
+                        <Button variant='contained' color='info'>Get Started!</Button>
+                    </section>
+                    <img id='mainImage' src={mainImg}/>
+                </section>
             </section>
-            <Link to='/newAccount' className='rectangleButton' id='start-button'>
-                    Get Started!
-            </Link>
         </>
-    );
+    )
 }
-

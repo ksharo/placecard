@@ -35,7 +35,7 @@ import { SurveyInstructions } from './components/guestPages/SurveyInstructions';
 import { EditSurveyResponses } from './components/guestPages/EditSurveyResponses';
 import { SurveyGroupPage } from './components/guestPages/SurveyGroupPage';
 import { createTheme, ThemeProvider } from '@mui/material';
-import MuiThemeProvider from '@mui/material/styles';
+import { createBrowserHistory } from "history";
 
 function App() {
   const seedGuests: Invitee[] = [
@@ -79,6 +79,9 @@ function App() {
       },
       primary: {
         main: '#00A6A0'
+      },
+      info: {
+        main: '#F57A75'
       }
     }
   });
@@ -95,11 +98,12 @@ function App() {
       <Route exact path='/seatDash' component={ SeatingDashboard }/>
       </>);
 
+  const history = createBrowserHistory();
   return (
       <ThemeProvider theme={theme}>
         <Router>
           <section className='content'>
-          <Header/>
+          <Header stick={history.location.pathname=='/'}/>
           <Switch>
             <Route exact path='/' component={ Home }/>
             <Route exact path='/newAccount' component={ NewAccount }/>

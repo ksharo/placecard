@@ -11,6 +11,11 @@
   padding: 0;
 }
 
+.stickTop {
+  position: sticky;
+  top: 0;
+}
+
 .footer {
   background-color: #18283A;
   display: flex;

@@ -3,7 +3,7 @@ import logo from '../../assets/logo.png';
 import './HeadFoot.css';
 import { ProfileMenu } from './ProfileMenu';
 
-export function Header() {
+export function Header(props:{stick: boolean}) {
   const history = useHistory();
   const handleClick =  () => {
     history.push('/');
@@ -23,7 +23,7 @@ export function Header() {
         </section>;
 
     return (
-      <header className='header'>
+      <header className= {`header ${props.stick ? "stickTop" : ""}`}>
         <img className='logo' onClick={handleClick} src={logo} alt='Logo'></img>
            { window.loggedInState ? profile : login}
       </header>
