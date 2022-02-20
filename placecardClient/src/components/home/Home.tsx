@@ -20,15 +20,16 @@ export function Home() {
                 <img id='mainImage' src={mainImg}/>
             </section>
             <section className='mainContent'>
-                <h1 className='title'>How It Works:</h1>
+                <hr className='separatingLine'/>
+                <h1 className='title smallTitle'>How It Works:</h1>
                 <section className='howItWorksInstructions'>
                     <section className='instructionStep'>
                         <section className='stepNumber'>
                             1
                         </section>
                         <section className='stepCard'>
-                            <BsFillCloudArrowUpFill/>
-                            <h2>Upload Guest List</h2>
+                            <BsFillCloudArrowUpFill className='howToIcons'/>
+                            <h2 className='stepCardTitle'>Upload Guest List</h2>
                             <p>Enter some basic information about your event and share your guest list with us to get started.</p>
                         </section>
                     </section>
@@ -37,8 +38,8 @@ export function Home() {
                             2
                         </section>
                         <section className='stepCard'>
-                            <RiSurveyFill/>
-                            <h2>Send Survey</h2>
+                            <RiSurveyFill className='howToIcons'/>
+                            <h2 className='stepCardTitle'>Send Survey</h2>
                             <p>Customize a message inviting your guests to fill out our seating survey and send it to whoever you want!</p>
                         </section>
                     </section>
@@ -47,8 +48,8 @@ export function Home() {
                             3
                         </section>
                         <section className='stepCard'>
-                            <FaUmbrellaBeach/>
-                            <h2>Placecard Magic!</h2>
+                            <FaUmbrellaBeach className='howToIcons'/>
+                            <h2 className='stepCardTitle'>Placecard Magic!</h2>
                             <p>Sit back, relax, and let Placecard do the rest of the work! We will seat guests based on their responses, but feel free to edit on your own as well!</p>
                         </section>
                     </section>

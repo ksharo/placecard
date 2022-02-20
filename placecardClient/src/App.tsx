@@ -81,8 +81,12 @@ function App() {
         main: '#00A6A0'
       },
       info: {
-        main: '#F57A75'
+        main: '#F57A75',
+        contrastText: '#fff',
       }
+    },
+    typography: {
+      fontFamily: 'Ubuntu'
     }
   });
 

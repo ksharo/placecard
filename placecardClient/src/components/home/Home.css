@@ -1,3 +1,13 @@
+#mainImage {
+    z-index:0;
+    width: 100%;
+    object-fit: cover;
+    height: 500px;
+    animation-name: fadeIn;
+    animation-duration: 2s;
+    animation-timing-function: ease-in-out;
+}
+
 .gradientCover {
     background-color: transparent;
     display: flex;
@@ -6,19 +16,15 @@
     color: white;
     background-image :linear-gradient(to right, 
                         var(--main),
-                        var(--main) 35%,
-                        rgba(255,255,255, 0) 75%);
+                        var(--main) 40%,
+                        rgba(255,255,255, 0) 80%);
     z-index: 1;
     position: absolute;
     width: 80%;
     height: 500px;
-}
-
-#mainImage {
-    z-index:0;
-    width: 100%;
-    object-fit: cover;
-    height: 500px;
+    animation-name: slideLeft;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-in-out;
 }
 
 .homeTitle {
@@ -33,24 +39,69 @@
     text-align: left;
 }
 
+@keyframes slideLeft {
+    from {
+        left: -1500px;
+    }
+    to {
+        left: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 100;
+    }
+}
+
 .howItWorksInstructions {
     display: flex;
-    width: 100%;
-    justify-content: space-around;
-    gap: 34px;
+    width: 98%;
+    max-width: 1500px;
+    margin: 30px auto;
+    justify-content: space-between;
     box-sizing: border-box;
-    padding: 0 40px;
+    flex-direction: row;
+    padding-left: 40px;
+}
+
+@media only screen and (max-width: 1200px) {
+    .howItWorksInstructions {
+        flex-direction: column;
+        align-content: space-between;
+
+    }
+    .gradientCover {
+        background-image :linear-gradient(to bottom, 
+                        rgba(255,255,255, 0) 10%,
+                        var(--main) 30%,
+                        var(--main) 70%,
+                        rgba(255,255,255, 0) 90%);
+        width: 100%;
+    }
+
+    .instructionStep {
+        margin: 30px auto;
+    }
 }
 
 .stepCard {
     box-shadow: 4px 4px 8px rgb(0 0 0 / 8%);
     border-radius: 7px;
+    border: 1px solid rgb(0 0 0 / 8%);
     padding: 20px;
     text-align: left;
     position: relative;
     background: white;
-    height: 100%;
     box-sizing: border-box;
+    max-width: 320px;
+    min-width: 320px;
+    margin: auto;
+    height: 250px;
+    z-index: 1;
 }
 
 .instructionStep {
@@ -59,11 +110,39 @@
 }
 
 .stepNumber {
-    font-size: 90px;
+    font-size: 170px;
     font-weight: bold;
     color: var(--main);
     position: absolute;
-    left: -28px;
+    /* moves the numbers under step card */
+    left: -367px; 
+    top: 0;
+    bottom: 0;
+    right: 0;
     font-family: Arvo, sans-serif;
     font-weight: bold;
+}
+
+.separatingLine {
+    width: 98%;
+    height: 4px;
+    border: none;
+    background-color: var(--highlight);
+    box-shadow: 2px 2px 2px lightgrey;
+}
+
+.smallTitle {
+    font-size: 32px;
+    letter-spacing: 1px;
+}
+
+.howToIcons {
+    height: 32px;
+    width: 32px;
+    color: var(--secondary);
+}
+
+.stepCardTitle {
+    color: var(--secondary);
+    margin: 10px auto;
 }
