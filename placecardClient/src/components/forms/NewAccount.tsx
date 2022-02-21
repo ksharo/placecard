@@ -2,6 +2,7 @@ import './Forms.css'
 import { useHistory } from "react-router-dom";
 import validator from 'validator';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import { Button, IconButton, InputAdornment, TextField } from '@mui/material';
 
 export function NewAccount() {
     const history = useHistory();
@@ -157,39 +158,41 @@ export function NewAccount() {
         <p className='subtitle pageError' id='accountFormError'>Please fix the errors.</p>
         <p className='subtitle pageError' id='sendAccountError'>Something went wrong. Please try again.</p>
         <form className='vertical-form' onSubmit={handleSubmit}>
-            <label>First Name
+            <section className='formBox'>
                 <span id='firstNameError' className='formError'>Please make sure your first name is at least two characters and contains only letters, numbers, and hyphens.</span>
-                <input type="text" name='firstName' onChange={validateFirstName}/>
-            </label>
-            <label>Last Name
+                <TextField variant='outlined' type="text" label='First Name' name='firstName' onChange={validateFirstName}/>
+                
                 <span id='lastNameError' className='formError'>Please make sure your last name is at least two characters and contains only letters, numbers, and hyphens.</span>
-                <input type="text" name='lastName' onChange={validateLastName}/>
-            </label>
-            <label>Phone Number (optional)
+                <TextField variant='outlined' type="text" label='Last Name' name='lastName' onChange={validateLastName}/>
+
                 <span id='phoneError' className='formError'>Please make sure your phone number contains only numbers and hyphens and is of the form xxx-xxx-xxxx.</span>
-                <input type="tel" name='phone' placeholder='555-555-5555' onChange={validatePhone}/>
-            </label>
-            <label>Email
+                <TextField variant='outlined' type="tel" label='Phone Number (optional)' name='phone' placeholder='555-555-5555' onChange={validatePhone}/>
+
                 <span id='emailError' className='formError'>Please enter a valid email.</span>
-                <input type="text" name='email' onChange={validateEmail}/>
-            </label>
-            <label>Password
+                <TextField variant='outlined' type="text"label='Email' name='email' onChange={validateEmail}/>
+                
                 <span id='passError' className='formError'>Password must be at least 8 characters including at least one uppercase letter, one lowercase letter, and one number. Spaces and the following special symbols are allowed: [ ! @ # $ % & * ]</span>
                 <section className='passwordHolder'>    
-                    <input type="password" name='password' id='passInp' onChange={validatePass}/>         
-                    <AiFillEyeInvisible className='passEye' id='passNoEye' onClick={ toggleOnPassword }/>
-                    <AiFillEye className='passEye yesEye' id='passEye' onClick={ toggleOffPassword }/>
+                    <TextField variant='outlined' type="password" name='password' label='Password' id='passInp' onChange={validatePass}
+                        InputProps={{endAdornment:
+                            <InputAdornment position="end">  
+                                <AiFillEyeInvisible className='passEye' id='passNoEye' onClick={ toggleOnPassword }/>
+                                <AiFillEye className='passEye yesEye' id='passEye' onClick={ toggleOffPassword }/>
+                            </InputAdornment>}}/>       
                 </section>           
-            </label>
-            <label>Confirm Password
+                
                 <span id='confirmError' className='formError'>Passwords don't match.</span>
                 <section className='passwordHolder'>    
-                    <input type="password" name='confirm' id='passConfirm' onChange={validateConfirm}/>         
-                    <AiFillEyeInvisible className='passEye' id='confirmNoEye' onClick={ toggleOnConfirm }/>
-                    <AiFillEye className='passEye yesEye' id='confirmEye' onClick={ toggleOffConfirm }/>
+                    <TextField helperText="Passwords don't match." variant='outlined' type="password" label='Confirm Password' name='confirm' id='passConfirm' onChange={validateConfirm}
+                    InputProps={{endAdornment:
+                        <InputAdornment position="end">  
+                            <AiFillEyeInvisible className='passEye' id='confirmNoEye' onClick={ toggleOnConfirm }/>
+                            <AiFillEye className='passEye yesEye' id='confirmEye' onClick={ toggleOffConfirm }/>
+                        </InputAdornment>}}/>
+
                 </section>  
-            </label>
-            <button type='submit' className='rectangleButton smallerButton'>Next</button>
+                </section>
+            <Button type='submit' className='basicBtn' variant='contained'>Next</Button>
         </form>
     </>
     );

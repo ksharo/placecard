@@ -29,13 +29,13 @@
 
 .homeTitle {
     color: white;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     font-size: 32px;
     margin: 0px;
 }
 
 .introSection {
-    margin: auto auto auto 70px;
+    margin: auto auto auto 5%;
     text-align: left;
 }
 

@@ -5,8 +5,13 @@ import {RiSurveyFill} from 'react-icons/ri'
 import {FaUmbrellaBeach} from 'react-icons/fa'
 
 import './Home.css';
+import { useHistory } from 'react-router-dom';
 
 export function Home() {
+    const history = useHistory();
+    const getStartedBtn = () => {
+        history.push('newAccount');
+    }
     return (
         <>
             <section className='eyeCatcher'>
@@ -14,7 +19,7 @@ export function Home() {
                     <section className='introSection'>
                         <h1 className='homeTitle'>Welcome to Placecard</h1>
                         <h4>A modernly versatile seating-chart application</h4>
-                        <Button variant='contained' color='info'>Get Started!</Button>
+                        <Button variant='contained' onClick={getStartedBtn} color='info'>Get Started!</Button>
                     </section>
                 </section>
                 <img id='mainImage' src={mainImg}/>

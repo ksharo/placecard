@@ -90,18 +90,6 @@ function App() {
     }
   });
 
-  const loggedInRoutes = (<>
-      <Route exact path='/editProfile' component={ EditProfile }/>
-      <Route exact path='/createEvent' component={ CreateEvent }/>
-      <Route exact path='/userHome' component={ UserDashboard }/>
-      <Route exact path='/uploadGuestList' component={ GuestList }/>
-      <Route exact path='/editSurvey' component={ EditSurvey }/>
-      <Route exact path='/sentConf' component={ SentConf }/>
-      <Route exact path='/eventDash' component={ EventDashboard }/>
-      <Route exact path='/editDetails' component={ EditDetails }/>
-      <Route exact path='/seatDash' component={ SeatingDashboard }/>
-      </>);
-
   const history = createBrowserHistory();
   return (
       <ThemeProvider theme={theme}>
@@ -123,8 +111,16 @@ function App() {
             <Route exact path='/editSurveyResponses' component={ EditSurveyResponses }/>
             <Route exact path='/doneSurvey' component={ SurveyConf }/>
             <Route path="/404" component={ NotFound }/>
-            { window.loggedInState ? loggedInRoutes : <Redirect to='/'/>}
-            <Redirect to="/404"/>
+            {/* Authenticated routes below (user must be logged in to access) */}
+            { window.loggedInState && (<Route exact path='/editProfile' component={ EditProfile }/>)}
+            { window.loggedInState && (<Route exact path='/createEvent' component={ CreateEvent }/>)}
+            { window.loggedInState && (<Route exact path='/userHome' component={ UserDashboard }/>)}
+            { window.loggedInState && (<Route exact path='/uploadGuestList' component={ GuestList }/>)}
+            { window.loggedInState && (<Route exact path='/editSurvey' component={ EditSurvey }/>)}
+            { window.loggedInState && (<Route exact path='/sentConf' component={ SentConf }/>)}
+            { window.loggedInState && (<Route exact path='/eventDash' component={ EventDashboard }/>)}
+            { window.loggedInState && (<Route exact path='/seatDash' component={ SeatingDashboard }/>)}
+          <Redirect to="/404"/>
           </Switch>
           </section>
           <Footer/>

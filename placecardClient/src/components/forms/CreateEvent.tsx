@@ -129,26 +129,28 @@ export function CreateEvent(){
         <p className='subtitle pageError' id='eventFormError'>Please fix the errors.</p>
         <p className='subtitle pageError' id='sendEventError'>Something went wrong. Please try again.</p>
         <form className='vertical-form' onSubmit={handleSubmit} id='createEventForm'>
-            <label>Event Name
-            <span id='nameError' className='formError'>The event name can only contain spaces and the following characters: [a-zA-Z0-9.'&!-_].</span>
-            <input name='name' onChange={validateName} type="text"/>
-            </label>
-            <label>Event Date
-            <span id='dateError' className='formError'>Please enter a valid date that is after today.</span>
-            <input name='date' onChange={validateDate} type="date"/>
-            </label>
-            <label>Location (optional)
-            <span id='locationError' className='formError'>The event location can only contain spaces and the following characters: [a-zA-Z0-9.'&!-_,].</span>
-            <input name='location' onChange={validateLocation} type="text"/>
-            </label>
-            <label>Expected Number of Attendees
-            <span id='numAttError' className='formError'>Please enter a positive number.</span>
-            <input name='num_attend' onChange={validateAttend} type="number" defaultValue="100"/>
-            </label>
-            <label>Attendees Per Table
-            <span id='perTableError' className='formError'>Please enter a positive number.</span>
-            <input name='per_table' onChange={validateTable} type="number" defaultValue="10"/>
-            </label>
+            <section className='formBox'>
+                <label>Event Name
+                <span id='nameError' className='formError'>The event name can only contain spaces and the following characters: [a-zA-Z0-9.'&!-_].</span>
+                <input name='name' onChange={validateName} type="text"/>
+                </label>
+                <label>Event Date
+                <span id='dateError' className='formError'>Please enter a valid date that is after today.</span>
+                <input name='date' onChange={validateDate} type="date"/>
+                </label>
+                <label>Location (optional)
+                <span id='locationError' className='formError'>The event location can only contain spaces and the following characters: [a-zA-Z0-9.'&!-_,].</span>
+                <input name='location' onChange={validateLocation} type="text"/>
+                </label>
+                <label>Expected Number of Attendees
+                <span id='numAttError' className='formError'>Please enter a positive number.</span>
+                <input name='num_attend' onChange={validateAttend} type="number" defaultValue="100"/>
+                </label>
+                <label>Attendees Per Table
+                <span id='perTableError' className='formError'>Please enter a positive number.</span>
+                <input name='per_table' onChange={validateTable} type="number" defaultValue="10"/>
+                </label>
+            </section>
             <button type='submit' className='rectangleButton smallerButton'>Create!</button>
         </form>
     </>

@@ -47,6 +47,7 @@ button:hover {
 .subtitle {
   font-size: 16px;
   margin: 12px auto 24px auto;
+  color: #5e5e5e;
 }
 
 .rectangleButton {
@@ -98,7 +99,20 @@ button:hover {
   padding-bottom: 250px;
 }
 
-input {
-  box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
-  border-radius: 4px;
+/* input {
+  /* box-shadow: 3px 3px 5px rgba(0,0,0,0.2); */
+  /* border-radius: 2px; */
+  /* border: 2px solid rgb(228, 228, 228) !important; */
+/* } */ 
+
+label {
+  color: var(--secondary);
+}
+
+.basicBtn {
+  width: 140px;
+  margin: 20px auto !important;
+  font-weight: bold !important;
+  letter-spacing: 2px;
+  font-size: 16px !important;
 }
