@@ -5,7 +5,7 @@
   }
 
   .formBox {
-    border: 1px solid grey;
+    border: 1px solid #cfcfcf;
     width: fit-content;
     margin: auto;
     padding: 10px 80px;
@@ -25,20 +25,9 @@
     width: 280px;
     margin: 8px auto !important;
   }
-  /* .vertical-form label {
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-    min-width: 180px;
-    margin: auto auto 10px auto;
-  } */
-
-  /* .vertical-form input {
-      border: 1px solid black;
-  } */
-
+  
   .formError {
-    color: red;
+    color: var(--highlight);
     font-size: 10px;
     display: none;
   }
@@ -54,18 +43,8 @@
     display: none;
   }
 
-  /* .passwordHolder {
-    display: flex;
-    justify-content: space-between;
-  } */
-
-  /* .passwordHolder input {
-    margin: 0;
-    width: 85%;
-  } */
-
   .pageError {
-    color: red;
+    color: var(--highlight);
     display: none;
     margin-top: 0;
   }
