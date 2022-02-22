@@ -2,7 +2,7 @@ import '../forms/Forms.css'
 import './editPages.css'
 import { useHistory } from "react-router-dom";
 import validator from 'validator';
-import { Button, TextField } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardHeader, TextField } from '@mui/material';
 import moment from 'moment';
 import React from 'react';
 
@@ -43,7 +43,7 @@ export function EditDetails(){
             setNameError(!valid);
             checkAllErrors(name, date, location, per_table);
         }
-    }
+    };
 
     let validateDate = (event: any, val?: string) => {
         if (val != undefined) {
@@ -58,7 +58,7 @@ export function EditDetails(){
             setDateError(!valid);
             checkAllErrors(name, date, location, per_table);
         }
-    }
+    };
 
     let validateLocation = (event: any, val?: string) => {
         if (val != undefined) {
@@ -73,7 +73,7 @@ export function EditDetails(){
             setLocError(!valid);
             checkAllErrors(name, date, location, per_table);
         }
-    }
+    };
 
     let validateTable = (event: any, val?: number) => {
         if (val != undefined) {
@@ -89,7 +89,7 @@ export function EditDetails(){
             setPerTableError(!valid);
             checkAllErrors(name, date, location, per_table);
         }
-    }
+    };
     
     let handleSubmit = async (event: any) => {
         event.preventDefault();
@@ -119,6 +119,8 @@ export function EditDetails(){
         validateLocation(null, location);
         validateTable(null, per_table);
         firstTime = false;
+
+        errorFound = !(validName && validDate && validLoc && validPerTable);
 
         if (!errorFound) { 
             /* if form is good, sendEvent */
@@ -206,15 +208,17 @@ export function EditDetails(){
      : 
         <>
         <section className='hiddenBoxes' id='hiddenWarning'>
-            <section className='innerBox'>
-                <h1 className='smallBoxTitle title'>Notice</h1>
-                <p className='subtitle'>Returning to the dashboard will forget your saved data.</p>
-                <p className='subtitle'>Are you sure you want to continue?</p>
-                <section className='horizontalFlex'>
-                    <button className='smallButton' onClick={hideWarning}>No</button>
-                    <button className='smallButton' onClick={toDashboard}>Yes</button>
-                </section>
-            </section>
+            <Card className='innerBox'>
+                <CardHeader className='innerBoxHeader' title='Notice'/>
+                <CardContent>
+                    <p className='subtitle'>Returning to the dashboard will forget your saved data.</p>
+                    <p className='subtitle'>Are you sure you want to continue?</p>
+                </CardContent>
+                <CardActions>
+                    <Button variant='contained' className='basicBtn' onClick={hideWarning}>No</Button>
+                    <Button variant='contained' className='basicBtn' onClick={toDashboard}>Yes</Button>
+                </CardActions>
+            </Card>
         </section>
         <h1 className='title'>Edit Your Event</h1>
         <p className='subtitle pageError' id='editEventError'>Please fix the errors.</p>
@@ -281,7 +285,7 @@ export function EditDetails(){
 }
 
 async function updateEvent(id: string, name: string, date: string, time: string, location: string, per_table: number, tables: Table[], guestList: Invitee[]) {
-    // location cannot be empty string when sent to database
+    /* location cannot be empty string when sent to database */
     if (location == '') {
         location = 'N/A';
     }
@@ -301,18 +305,6 @@ async function updateEvent(id: string, name: string, date: string, time: string,
             })
         };
     return fetch('http://localhost:3001/events/updateEvent', requestOptions);
-}
-
-/*
- * Displays the error with id 'id'. Returns true so that
- * errorFound is set properly.
- */
-function showError(id: string): boolean {
-    let x = document.getElementById(id);
-    if (x != null) {
-        x.style.display = 'inline-block';
-    } 
-    return true;
 }
 
 /*

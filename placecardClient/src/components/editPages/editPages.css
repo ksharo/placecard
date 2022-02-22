@@ -71,13 +71,19 @@
 }
 
 .innerBox {
-    width: 40%;
-    height: 50%;
+    width: fit-content;
+    height: fit-content;
+    padding: 20px auto;
     min-width: 400px;
     min-height: 300px;
     margin: auto;
     margin-top: 5%;
     background-color: white;
+}
+
+.innerBoxHeader {
+    background-color: var(--secondary);
+    color: white;
 }
 
 .biggerBox {

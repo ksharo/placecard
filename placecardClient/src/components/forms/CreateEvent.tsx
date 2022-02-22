@@ -118,6 +118,8 @@ export function CreateEvent(){
         validateTable(null, per_table);
         firstTime = false;
 
+        errorFound = !(validName && validDate && validLoc && validPerTable);
+
         if (!errorFound) { 
             /* if form is good, sendEvent */
             try {
