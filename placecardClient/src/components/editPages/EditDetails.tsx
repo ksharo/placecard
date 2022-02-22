@@ -5,7 +5,6 @@ import validator from 'validator';
 import { Button, TextField } from '@mui/material';
 import moment from 'moment';
 import React from 'react';
-const createEvent = require('../forms/CreateEvent');
 
     let validName = true;
     let validLoc = true;
@@ -42,7 +41,7 @@ export function EditDetails(){
             const valid = !validator.isEmpty(name) && validator.isWhitelisted(name.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\'');
             validName = valid;
             setNameError(!valid);
-            createEvent(name, date, location, per_table);
+            checkAllErrors(name, date, location, per_table);
         }
     }
 
@@ -57,7 +56,7 @@ export function EditDetails(){
             const valid = validator.isDate(date) && validator.isAfter(date);
             validDate = valid;
             setDateError(!valid);
-            createEvent(name, date, location, per_table);
+            checkAllErrors(name, date, location, per_table);
         }
     }
 
@@ -72,7 +71,7 @@ export function EditDetails(){
             const valid = validator.isWhitelisted(location.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_., &!\'');
             validLoc = valid;
             setLocError(!valid);
-            createEvent(name, date, location, per_table);
+            checkAllErrors(name, date, location, per_table);
         }
     }
 
@@ -88,7 +87,7 @@ export function EditDetails(){
             const valid = !validator.isEmpty(strNum) && per_table > 0;
             validPerTable = valid;
             setPerTableError(!valid);
-            createEvent(name, date, location, per_table);
+            checkAllErrors(name, date, location, per_table);
         }
     }
     
