@@ -116,6 +116,7 @@ function App() {
             <Route path="/404" component={ NotFound }/>
             {/* Authenticated routes below (user must be logged in to access) */}
             { window.loggedInState && (<Route exact path='/editProfile' component={ EditProfile }/>)}
+            { window.loggedInState && (<Route exact path='/editDetails' component={ EditDetails }/>)}
             { window.loggedInState && (<Route exact path='/createEvent' component={ CreateEvent }/>)}
             { window.loggedInState && (<Route exact path='/userHome' component={ UserDashboard }/>)}
             { window.loggedInState && (<Route exact path='/uploadGuestList' component={ GuestList }/>)}

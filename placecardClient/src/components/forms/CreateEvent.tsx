@@ -111,7 +111,7 @@ export function CreateEvent(){
         location = validator.trim(event?.target?.location?.value);
         per_table = event?.target?.per_table?.value;
 
-        // validate form based on above data
+        /* validate form based on above data */
         validateName(null, name);
         validateDate(null, date);
         validateLocation(null, location);
@@ -216,22 +216,6 @@ export function CreateEvent(){
     );
 }
 
-/*
- * Creates tables based on the number of attendees and number of people per table
- */
-function createTables(num_attendees: number, per_table: number) {
-    const tables = [];
-    const numTables = Math.ceil(num_attendees/per_table);
-    for (let i = 0; i < numTables; i++) {
-        tables.push({
-            id: uuid(),
-            name: 'Table ' + (i+1).toString(),
-            guests: []
-        });
-    }
-    return tables;
-}
-
 async function sendEvent(name: string, date: string, time: string, location: string, initTable: Table[], per_table: number) {
     // location cannot be empty string when sent to database
     if (location == '') {
@@ -278,3 +262,4 @@ function checkAllErrors(name: string, date: string, location: string, per_table:
         }
     }
 }
+

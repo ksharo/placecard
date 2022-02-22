@@ -210,3 +210,8 @@
     display: flex !important;
     margin: 5px!important;
 }
+
+.closeButtons {
+    margin: auto;
+    width: 600px;
+}
