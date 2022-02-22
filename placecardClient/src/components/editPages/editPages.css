@@ -75,15 +75,29 @@
     height: fit-content;
     padding: 20px auto;
     min-width: 400px;
-    min-height: 300px;
+    min-height: 200px;
     margin: auto;
-    margin-top: 5%;
+    margin-top: 150px;
     background-color: white;
 }
 
 .innerBoxHeader {
     background-color: var(--secondary);
     color: white;
+}
+
+.innerBoxContent {
+    padding: 16px 24px !important;
+}
+
+.spacedBtns { 
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.spacedBtns * {  
+    margin: 4px auto 8px auto !important;
 }
 
 .biggerBox {

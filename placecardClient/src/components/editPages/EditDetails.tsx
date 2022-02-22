@@ -183,6 +183,7 @@ export function EditDetails(){
         const x = document.getElementById('hiddenWarning');
         if (x != null) {
             x.style.display = 'inline-block';
+            window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
         }
     };
     const toDashboard = () => {
@@ -210,11 +211,11 @@ export function EditDetails(){
         <section className='hiddenBoxes' id='hiddenWarning'>
             <Card className='innerBox'>
                 <CardHeader className='innerBoxHeader' title='Notice'/>
-                <CardContent>
-                    <p className='subtitle'>Returning to the dashboard will forget your saved data.</p>
+                <CardContent className='innerBoxContent'>
+                    <p className='subtitle'>Returning to the dashboard will lose your progress.</p>
                     <p className='subtitle'>Are you sure you want to continue?</p>
                 </CardContent>
-                <CardActions>
+                <CardActions className='spacedBtns'>
                     <Button variant='contained' className='basicBtn' onClick={hideWarning}>No</Button>
                     <Button variant='contained' className='basicBtn' onClick={toDashboard}>Yes</Button>
                 </CardActions>
