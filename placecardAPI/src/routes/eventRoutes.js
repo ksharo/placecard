@@ -2,7 +2,7 @@ const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
 const { events } = require("../data");
-const { INVALID_EVENT_ID_MESSAGE, EVENT_UNDEFINED_MESSAGE, EVENT_EMPTY_MESSAGE } = require('../constants/errorMessages');
+const { INVALID_EVENT_ID_MESSAGE, EVENT_UNDEFINED_MESSAGE, EVENT_EMPTY_MESSAGE } = require("../constants/errorMessages");
 const { generateErrorMessage, createErrorResponse } = require("../utils/errors");
 const { SCHEMA_TYPES } = require("../constants/schemaTypes");
 const { validateSchema } = require("../utils/preconditions");
@@ -47,17 +47,17 @@ router.post("/newEvent", async (req, res) => {
 });
 
 router.put("/updateEvent", async (req, res) => {
-    const oldEvent = req.body;
+    const updatedEvent = req.body;
 
     try {
-        checkPrecondition(oldEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
-        checkPrecondition(oldEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
-        validateSchema(oldEvent, SCHEMA_TYPES.EVENT);
+        checkPrecondition(updatedEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
+        checkPrecondition(updatedEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
+        validateSchema(updatedEvent, SCHEMA_TYPES.EVENT);
     } catch (e) {
         return createErrorResponse(e.message, ERROR_TYPES.INVALID_EVENT, statusCodes.BAD_REQUEST, res);
     }
 
-    const eventId = oldEvent._id;
+    const eventId = updatedEvent._id;
     try {
         checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID);
         checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID);
@@ -66,8 +66,8 @@ router.put("/updateEvent", async (req, res) => {
     }
 
     try {
-        const updatedEvent = await events.updateEvent(eventId, oldEvent);
-        return res.json(updatedEvent);
+        const event = await events.updateEvent(eventId, updatedEvent);
+        return res.json(event);
     } catch (e) {
         return createErrorResponse(e.message, ERROR_TYPES.UPDATE_ERROR, statusCodes.INTERNAL_SERVER, res);
     }

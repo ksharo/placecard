@@ -33,8 +33,10 @@ import { SurveyIdealTable } from './components/guestPages/SurveyIdealTable';
 import { SurveyLikes } from './components/guestPages/SurveyLikes';
 import { SurveyInstructions } from './components/guestPages/SurveyInstructions';
 import { EditSurveyResponses } from './components/guestPages/EditSurveyResponses';
+import { FirebaseAuthProvider } from "./components/firebase/AuthProvider";
 
 function App() {
+  // TODO: We can switch window global variables for React context or use Redux for a global store
   [window.loggedInState, window.setLoggedIn] = React.useState(false);
   [window.firstNameState, window.setFirstName] = React.useState('Apple');
   [window.lastNameState, window.setLastName] = React.useState('Zebra');
@@ -51,6 +53,7 @@ function App() {
 
   document.title = 'Placecard';
 
+  // TODO: Create PrivateRoute component for authenticated routes
   const loggedInRoutes = (<>
       <Route exact path='/editProfile' component={ EditProfile }/>
       <Route exact path='/createEvent' component={ CreateEvent }/>
@@ -64,31 +67,34 @@ function App() {
       </>);
 
   return (
-      <body>
-        <Router>
-          <section className='content'>
-          <Header/>
-          <Switch>
-            <Route exact path='/' component={ Home }/>
-            <Route exact path='/newAccount' component={ NewAccount }/>
-            <Route exact path='/beginSurvey' component={ GuestConfirmation }/>
-            {/* <Route exact path='/surveyPt1' component={ SurveyPt1WithAges }/> */}
-            {/* <Route exact path='/surveyPt2' component={ SurveyPt2 }/> */}
-            <Route exact path='/surveyPt1' component={ SurveyPt1SitTogether }/>
-            <Route exact path='/surveyInstructions' component={ SurveyInstructions }/>
-            <Route exact path='/surveyDislikes' component={ SurveyDislikes }/>
-            <Route exact path='/surveyLikes' component={ SurveyLikes }/>
-            <Route exact path='/surveyIdealTable' component={ SurveyIdealTable }/>
-            <Route exact path='/editSurveyResponses' component={ EditSurveyResponses }/>
-            <Route exact path='/doneSurvey' component={ SurveyConf }/>
-            <Route path="/404" component={ NotFound }/>
-            { window.loggedInState ? loggedInRoutes : <Redirect to='/'/>}
-            <Redirect to="/404"/>
-          </Switch>
-          </section>
-          <Footer/>
-        </Router>
-      </body>
+      <FirebaseAuthProvider>
+        <body>
+          <Router>
+            <section className='content'>
+            <Header/>
+            <Switch>
+              <Route exact path='/' component={ Home }/>
+              <Route exact path='/newAccount' component={ NewAccount }/>
+              <Route exact path='/beginSurvey' component={ GuestConfirmation }/>
+              {/* <Route exact path='/surveyPt1' component={ SurveyPt1WithAges }/> */}
+              {/* <Route exact path='/surveyPt2' component={ SurveyPt2 }/> */}
+              <Route exact path='/surveyPt1' component={ SurveyPt1SitTogether }/>
+              <Route exact path='/surveyInstructions' component={ SurveyInstructions }/>
+              <Route exact path='/surveyDislikes' component={ SurveyDislikes }/>
+              <Route exact path='/surveyLikes' component={ SurveyLikes }/>
+              <Route exact path='/surveyIdealTable' component={ SurveyIdealTable }/>
+              <Route exact path='/editSurveyResponses' component={ EditSurveyResponses }/>
+              <Route exact path='/doneSurvey' component={ SurveyConf }/>
+              <Route path="/404" component={ NotFound }/>
+              { window.loggedInState ? loggedInRoutes : <Redirect to='/'/>}
+              <Redirect to="/404"/>
+            </Switch>
+            </section>
+            <Footer/>
+          </Router>
+        </body>
+      </FirebaseAuthProvider>
+      
   );
 }
 
