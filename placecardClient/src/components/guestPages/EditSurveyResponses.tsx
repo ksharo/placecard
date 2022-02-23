@@ -241,10 +241,10 @@ export function EditSurveyResponses() {
                     })}
                 </DragDropContext>
             </section>
-            <Button variant='outlined' className='generalButton' onClick={prevPage}>
+            <Button variant='contained' className='generalButton' onClick={prevPage}>
                 Go Back
             </Button>
-            <Button variant='outlined' className='generalButton' onClick={nextPage}>
+            <Button variant='contained' className='generalButton' onClick={nextPage}>
                 Finish!
             </Button>
         </>

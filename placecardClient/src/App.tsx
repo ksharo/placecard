@@ -92,6 +92,29 @@ function App() {
       fontFamily: 'Ubuntu'
     }
   });
+  /*
+   * Pages:
+   * Home: redesigned :)
+   * New Account: redesigned :)
+   * Begin Survey: redesigned :) 
+   * Survey Instructions
+   * Survey Group Page
+   * Survey Dislikes
+   * Survey Likes
+   * Survey Ideal Table
+   * Edit Survey Responses
+   * Survey Confirmation
+   * Not Found: redesigned :|
+   * Edit Profile
+   * Edit Details: redesigned :)
+   * Create Event: redesigned :) 
+   * user dashboard
+   * guest list
+   * edit survey
+   * sent confirmation
+   * event dashboard: redesigned
+   * seating dashboard
+   */
 
   const history = createBrowserHistory();
   return (
@@ -100,7 +123,7 @@ function App() {
           <section className='content'>
           <Header stick={history.location.pathname=='/'}/>
           <Switch>
-            <Route exact path='/' component={ Home }/>
+            <Route exact path='/' component={ Home }/> 
             <Route exact path='/newAccount' component={ NewAccount }/>
             <Route exact path='/beginSurvey' component={ GuestConfirmation }/>
             {/* <Route exact path='/surveyPt1' component={ SurveyPt1WithAges }/> */}

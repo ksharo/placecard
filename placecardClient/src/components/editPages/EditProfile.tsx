@@ -281,7 +281,7 @@ export function EditProfile() {
                             <Switch onChange={ viewHidePasswords }/>
                             View Text
                         </label>
-                        <Button variant='outlined' className='smallButton' onClick={ updatePassword }>Save</Button>
+                        <Button variant='contained' className='smallButton' onClick={ updatePassword }>Save</Button>
                     </section>
                 </section>
             </section>
@@ -321,7 +321,7 @@ export function EditProfile() {
                         <Button variant='contained' onClick={ saveChanges }>Save Changes</Button>
                     </section>
                 </section>
-                <Button variant='outlined' onClick={ toDashboard } className='homeButton'>Home</Button>
+                <Button variant='contained' onClick={ toDashboard } className='homeButton'>Home</Button>
             </section>
         </>
     );

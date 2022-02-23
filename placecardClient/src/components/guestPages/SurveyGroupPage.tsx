@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-import { Button, Checkbox } from "@mui/material";
+import { Button, Checkbox, TextField } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
 
 
@@ -30,7 +30,7 @@ export function SurveyGroupPage() {
         },
         {
             field: 'col1', headerName: 'Email Address', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 3,
-            renderCell: (params) => { return (<input id={'input' + params.value} type='email' disabled></input>) }
+            renderCell: (params) => { return (<TextField id={'input' + params.value} variant='outlined' size='small' label='Email' placeholder='example@123.com' type='email' disabled={true}></TextField>) }
         },
         {
             field: 'col2', headerName: 'Remove from group', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 2,
@@ -51,26 +51,26 @@ export function SurveyGroupPage() {
         let id = event.target.id.substring(8);
         const el = document.getElementById('input'+id);
         if (event.target.checked) {
-            el?.removeAttribute('disabled');
+            el?.toggleAttribute('disabled', false);
         }
         else {
-            el?.setAttribute('disabled', 'true');
+            el?.toggleAttribute('disabled', true);
         }
     }
     return (
         <>
             <h1 className='title'>Seating Survey - Part I</h1>
-            <p className='subtitle'>Your group has {names.length} members.<br/>Your answers to this survey will 
-            count for everyone in the group and will cause the group to be kept together when seated.<br/>
-            If you want to separate your group so that other members can answer independently,<br/>please provide their 
+            <p className='subtitle'>Your group has {names.length} members.</p>
+            <p className='subtitle'>Your answers to this survey will count for everyone in the group and will cause the group to be kept together when seated.
+            If you want to separate your group so that other members can answer independently, please provide their 
             contact information below.</p>
             <div className='survey' style={{ height: 400 }}>
                     <DataGrid rows={rows} columns={columns} disableColumnMenu={true} hideFooter={true} disableSelectionOnClick={true} rowHeight={80} />
             </div>
-            <Button variant='outlined' className='generalButton' onClick={prevPage}>
+            <Button variant='contained' className='basicBtn generalButton' onClick={prevPage}>
                 Go Back
             </Button>
-            <Button variant='outlined' className='generalButton' onClick={nextPage}>
+            <Button variant='contained' className='basicBtn generalButton' onClick={nextPage}>
                 Continue
             </Button>
         </>

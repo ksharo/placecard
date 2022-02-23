@@ -96,3 +96,22 @@ footer {
   position: absolute;
   bottom: 0;
 }
+
+.peachLine {
+  background-color: var(--highlight);
+  border: 0px;
+  width: 60%;
+  min-width: 400px;
+  max-width: 80% !important;
+  height: 3px;
+  border-radius: 3px;
+  margin: 30px auto;
+}
+
+.lowImg {
+  margin: 10px auto 0px auto;
+}
+
+.highTitle {
+  margin-top: 0px;
+}

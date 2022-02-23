@@ -227,6 +227,7 @@ export function EditDetails(){
         <form className='vertical-form' onSubmit={handleSubmit} id='editEventForm'>
             <section className='formBox'>
                 <TextField 
+                    size='small'
                     variant='outlined' 
                     type="text" 
                     label='Event Name' 
@@ -236,6 +237,7 @@ export function EditDetails(){
                     helperText={nameError ? 'Must be at least one character (alphanumeric and [-_. &!\'] only)' : ''}  
                     onChange={validateName}/>
                 <TextField 
+                    size='small'
                     variant='outlined' 
                     type="text" 
                     label='Event Location (optional)' 
@@ -246,6 +248,7 @@ export function EditDetails(){
                     onChange={validateLocation}/>
                 <TextField 
                     variant='outlined' 
+                    size='small'
                     type="date" 
                     label='Event Date' 
                     name='date'
@@ -256,6 +259,7 @@ export function EditDetails(){
                     onChange={validateDate}/>
                 <TextField 
                     variant='outlined' 
+                    size='small'
                     type="time" 
                     label='Event Time (optional)' 
                     name='time'
@@ -263,6 +267,7 @@ export function EditDetails(){
                     />
                 <TextField 
                     variant='outlined' 
+                    size='small'
                     type="number" 
                     label='Attendees Per Table' 
                     name='per_table'

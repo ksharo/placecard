@@ -227,6 +227,7 @@ export function NewAccount() {
             <section className='formBox'>
                 <TextField 
                     variant='outlined' 
+                    size='small'
                     type="text" 
                     label='First Name' 
                     name='firstName'
@@ -236,6 +237,7 @@ export function NewAccount() {
                 
                 <TextField 
                     variant='outlined' 
+                    size='small'
                     type="text" 
                     label='Last Name' 
                     name='lastName' 
@@ -245,6 +247,7 @@ export function NewAccount() {
 
                 <TextField 
                     variant='outlined' 
+                    size='small'
                     type="tel" 
                     label='Phone Number (optional)' 
                     name='phone' 
@@ -255,6 +258,7 @@ export function NewAccount() {
 
                 <TextField 
                     variant='outlined' 
+                    size='small'
                     type="text"
                     label='Email' 
                     name='email'
@@ -262,24 +266,26 @@ export function NewAccount() {
                     helperText={emailError ? 'Please enter a valid email' : ''}  
                     onChange={validateEmail}/>
                 
-                    <TextField 
-                        id='passInp'
-                        variant='outlined'
-                        type="password" 
-                        name='password' 
-                        label='Password' 
-                        error={passError} 
-                        helperText={passError ? <>At least 8 characters. Must contain: <br/>1. One uppercase letter <br/>2. One lowercase letter <br/>3. One number <br/>Can contain spaces and the following special symbols: [ ! @ # $ % & * ] </> : ''}  
-                        onChange={validatePass}
-                        InputProps={{endAdornment:
-                            <InputAdornment position="end">  
-                                <AiFillEyeInvisible className='passEye' id='passNoEye' onClick={ toggleOnPassword }/>
-                                <AiFillEye className='passEye yesEye' id='passEye' onClick={ toggleOffPassword }/>
-                            </InputAdornment>}}/>       
+                <TextField 
+                    id='passInp'
+                    variant='outlined'
+                    size='small'
+                    type="password" 
+                    name='password' 
+                    label='Password' 
+                    error={passError} 
+                    helperText={passError ? <>At least 8 characters. Must contain: <br/>1. One uppercase letter <br/>2. One lowercase letter <br/>3. One number <br/>Can contain spaces and the following special symbols: [ ! @ # $ % & * ] </> : ''}  
+                    onChange={validatePass}
+                    InputProps={{endAdornment:
+                        <InputAdornment position="end">  
+                            <AiFillEyeInvisible className='passEye' id='passNoEye' onClick={ toggleOnPassword }/>
+                            <AiFillEye className='passEye yesEye' id='passEye' onClick={ toggleOffPassword }/>
+                        </InputAdornment>}}/>       
                 
                     <TextField 
                         id='passConfirm' 
                         variant='outlined'
+                        size='small'
                         type="password" 
                         label='Confirm Password' 
                         name='confirm' 

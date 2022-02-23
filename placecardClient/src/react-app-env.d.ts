@@ -60,6 +60,7 @@ interface Invitee {
     name: string;
     groupID?: string; 
     groupName?: string;
+    contact?: string;
 }
 
 interface Table {

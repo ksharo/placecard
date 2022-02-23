@@ -17,10 +17,6 @@
     }
 }
 
-.biggerBtn {
-    width: fit-content;
-}
-
 .dashCardHeader {
     background-color: var(--secondary);
     text-align: left;
@@ -43,7 +39,7 @@
 
 .dashCard {
     margin: 10px auto 0px auto;
-    grid-template-rows: [header] 20% [main] 65% [btn] 15%;
+    grid-template-rows: [header] 20% [main] 60% [btn] 20%;
     display: grid;
     height: 350px;
     text-align: left;

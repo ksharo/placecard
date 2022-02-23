@@ -5,6 +5,7 @@
   --main: #00A6A0;
   --secondary: #1F6BAE;
   --highlight: #F57A75;
+  --borderColor: #cfcfcf;
 }
 
 body, html, input, button {
@@ -40,7 +41,7 @@ button:hover {
 .title {
   letter-spacing: 2px;
   font-size: 42px;
-  margin: 20px auto 6px auto;
+  margin: 40px auto 6px auto;
   color: var(--secondary);
 }
 
@@ -48,6 +49,10 @@ button:hover {
   font-size: 16px;
   margin: 12px auto 24px auto;
   color: #5e5e5e;
+  max-width: 70%;
+  min-width: 400px;
+  width: 50%;
+  overflow-wrap: normal;
 }
 
 .rectangleButton {
@@ -116,3 +121,11 @@ label {
   letter-spacing: 1px;
   font-size: 16px !important;
 }
+
+.biggerBtn {
+  width: fit-content;
+} 
+
+.lowBtn {
+  margin-top: 60px !important;
+} 

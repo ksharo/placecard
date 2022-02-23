@@ -16,7 +16,7 @@ export function EventDashboard() {
         {window.activeEvent == null ? 
         <>
             <p className='subtitle'>There is no active event. Please return home and choose an event to view.</p> 
-            <Button variant='outlined' onClick={goHome}>Return Home</Button>
+            <Button variant='contained' onClick={goHome}>Return Home</Button>
         </> 
         :
         <>
@@ -27,7 +27,7 @@ export function EventDashboard() {
                 <EditCard numSent='200' numRec='123'></EditCard>
                 <SeatCard tables={Math.ceil(window.activeEvent.guestList.length/window.activeEvent.perTable).toString()} seats={(window.activeEvent.tables.length*window.activeEvent.perTable).toString()} invitees={window.activeEvent.guestList.length.toString()} seated='2'></SeatCard>
             </section>
-            <Button onClick={goHome} variant='contained' className='basicBtn biggerBtn'>
+            <Button onClick={goHome} variant='contained' className='basicBtn biggerBtn lowBtn'>
                     Return Home
             </Button>
             </>}

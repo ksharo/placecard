@@ -170,6 +170,7 @@ export function CreateEvent(){
             <section className='formBox'>
                 <TextField 
                     variant='outlined' 
+                    size='small'
                     type="text" 
                     label='Event Name' 
                     name='name'
@@ -178,6 +179,7 @@ export function CreateEvent(){
                     onChange={validateName}/>
                 <TextField 
                     variant='outlined' 
+                    size='small'
                     type="text" 
                     label='Event Location (optional)' 
                     name='location'
@@ -185,7 +187,8 @@ export function CreateEvent(){
                     helperText={locError ? 'Can only contain spaces and [a-zA-Z0-9.\'&!-_,]' : ''}  
                     onChange={validateLocation}/>
                 <TextField 
-                    variant='outlined' 
+                    variant='outlined'
+                    size='small' 
                     type="date" 
                     label='Event Date' 
                     name='date'
@@ -195,6 +198,7 @@ export function CreateEvent(){
                     onChange={validateDate}/>
                 <TextField 
                     variant='outlined' 
+                    size='small'
                     type="time" 
                     label='Event Time (optional)' 
                     name='time'
@@ -202,6 +206,7 @@ export function CreateEvent(){
                     />
                 <TextField 
                     variant='outlined' 
+                    size='small'
                     type="number" 
                     defaultValue='10'
                     label='Attendees Per Table' 

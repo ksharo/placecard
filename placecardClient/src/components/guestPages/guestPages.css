@@ -72,12 +72,17 @@
 .instructionList {
     text-align: left;
     justify-self: center !important;
-    line-height: 2;
+    line-height: 1.3;
+}
+
+.instructionList * {
+    margin: 16px auto
 }
 
 .centeredBox {
     margin: auto !important;
-    border: 1px solid grey;
+    border: 1px solid var(--borderColor);
+    box-shadow: 4px 4px 4px lightgrey;
     border-radius: 5px;
     width: 50%;
     min-width: 750px;
@@ -85,7 +90,7 @@
 }
 
 .generalButton {
-    margin: 20px 200px 20px 200px !important;
+    margin: 20px 160px 20px 160px !important;
     min-width: 100px !important;
     font-size: 18px !important;
 }
@@ -207,4 +212,19 @@
 
   .emptySpace {
       padding: 11px;
+  }
+
+  .twoBtns {
+      width: 500px;
+      margin: auto !important;
+      padding-bottom: 60px;
+  }
+
+  .decoratedTextField {
+      border-radius: 4px;
+      border: 1px solid var(--borderColor);
+      width: fit-content;
+      margin: 40px auto 20px auto!important;
+      padding: 12px 54px;
+      box-shadow: 4px 4px 4px lightgrey;
   }

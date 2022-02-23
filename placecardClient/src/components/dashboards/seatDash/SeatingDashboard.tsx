@@ -251,14 +251,14 @@ export function SeatingDashboard() {
             {window.activeEvent == null ? 
             <>
             <h1 className='title'>Error: No event found.</h1>
-            <Button variant='outlined' onClick={() => handleClick}>Return to Dashboard</Button>
+            <Button variant='contained' onClick={() => handleClick}>Return to Dashboard</Button>
             </>
             :
             <>
             <section className='header'>
                 <section className='titleBar'>
                     <h1>{window.activeEvent.name} | {moment(window.activeEvent.date).format('MM/DD/YY')}</h1>
-                    <Button variant='outlined' onClick={() => handleClick}>Return to Dashboard</Button>
+                    <Button variant='contained' onClick={() => handleClick}>Return to Dashboard</Button>
                 </section>
                 <hr />
             </section>
