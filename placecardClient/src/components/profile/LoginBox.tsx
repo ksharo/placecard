@@ -15,7 +15,7 @@ const LoginBox = () => {
 
     return (
         <Box>
-            <Button variant="text" onClick={openDialogBox}>
+            <Button variant="contained" className='basicBtn' onClick={openDialogBox}>
                 Log In
             </Button>
             <OAuthDialogList

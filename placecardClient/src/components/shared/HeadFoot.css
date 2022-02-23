@@ -117,8 +117,8 @@ footer {
 }
 
 .profileBox {
-  padding-top: 18px;
-  padding-right: 16px;
+  display: flex;
+  align-content: center;
 }
 
 .profileAvatarButton {
