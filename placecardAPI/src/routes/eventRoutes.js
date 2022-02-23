@@ -21,8 +21,15 @@ const { INVALID_EVENT_ID } = require("../constants/errorTypes");
 const axios = require("axios");
 
 router.get("/algorithm", async (req, res) => {
-    let { data } = await axios.get("http://127.0.0.1:5000/flask");
-    res.status(200).json(data);
+    try {
+        let { data } = await axios.post("http://127.0.0.1:5000/flask", {
+            x: 5,
+            y: 10,
+        });
+        res.status(200).json(data);
+    } catch (e) {
+        res.status(500).json({ error: e });
+    }
 });
 
 router.get("/:eventId", async (req, res) => {
