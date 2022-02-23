@@ -35,7 +35,7 @@ import { SurveyInstructions } from './components/guestPages/SurveyInstructions';
 import { EditSurveyResponses } from './components/guestPages/EditSurveyResponses';
 
 function App() {
-  [window.loggedInState, window.setLoggedIn] = React.useState(false);
+  [window.loggedInState, window.setLoggedIn] = React.useState(true);
   [window.firstNameState, window.setFirstName] = React.useState('Apple');
   [window.lastNameState, window.setLastName] = React.useState('Zebra');
   [window.phoneState, window.setPhone] = React.useState('555-555-5555');

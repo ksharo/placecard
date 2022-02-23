@@ -23,12 +23,14 @@ export function GuestListTable() {
 	])
 	const [numRows, setNumRows] = useState(rows.length)
 
+	const [tableValid, setTableValid] = useState(true)
+
 	function addRow(): void {
 		setRows([...rows, {guestName: "", email: "", phone:"", partySize: 1, isVip: false}]);
 		setNumRows(numRows + 1)
 	}
 
-	function updateRow(rowIndex: number, property: any, value: any): void {
+	function updateRow(rowIndex: number, property: any, value: any, validationRegex: RegExp): void {
 		setRows( (prev) => (prev.map((item, itemIndex) => {
 			if (itemIndex === rowIndex){
 				return {...item, [property]: value}
@@ -37,6 +39,10 @@ export function GuestListTable() {
 				return item;
 			}
 		})) )
+
+		if (!validationRegex.test(value)){
+			setTableValid(false)
+		}
 	}
 
 	function deleteRow(indexToDelete: number): void {
