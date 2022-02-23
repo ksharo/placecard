@@ -36,39 +36,45 @@ import { EditSurveyResponses } from './components/guestPages/EditSurveyResponses
 import { SurveyGroupPage } from './components/guestPages/SurveyGroupPage';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { createBrowserHistory } from "history";
+import { FirebaseAuthProvider } from "./components/firebase/AuthProvider";
+
+const seedGuests: Invitee[] = [
+  {id: '00', name: 'Danielle Sharo', groupName: 'Sharo Family', groupID: '123'}, 
+  {id: '02', name: 'Jeremiah Sharo', groupName: 'Sharo Family', groupID: '123'}, 
+  {id: '03', name: 'Beth Sharo', groupName: 'Sharo Family', groupID: '123'}, 
+  {id: '04', name: 'Rob Sharo', groupName: 'Sharo Family', groupID: '123'}, 
+  {id: '11', name: 'Chloe Choy', groupName: 'Choy Family', groupID:'223'},
+  {id: '12', name: 'Abby Choy', groupName: 'Choy Family', groupID:'223'},
+  {id: '13', name: 'Mabel Choy', groupName: 'Choy Family', groupID:'223'},
+  {id: '14', name: 'Wing Choy', groupName: 'Choy Family', groupID:'223'},
+  {id: '22', name: 'Alex Rubino'}, 
+  {id: '33', name: 'Simon Gao'}, 
+  {id: '44', name: 'Gil Austria'}, 
+  {id: '55', name: 'Jayson Infante'}
+];
+const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
+const seedEvent: PlacecardEvent = { 'id': '1', 'name': 'testEvent', 'date': '03/08/2022', 'location': 'My House', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
+[window.loggedInState, window.setLoggedIn] = React.useState(true);
+
+// TODO: We can switch window global variables for React context or use Redux for a global store
+[window.loggedInState, window.setLoggedIn] = React.useState(false);
+[window.firstNameState, window.setFirstName] = React.useState('Apple');
+[window.lastNameState, window.setLastName] = React.useState('Zebra');
+[window.phoneState, window.setPhone] = React.useState('555-555-5555');
+[window.emailState, window.setEmail] = React.useState('email@email.com');
+[window.profPicState, window.setProfPic] = React.useState(null);
+[window.profPicNameState, window.setProfPicName] = React.useState('None');
+[window.eventsState, window.setEvents] = React.useState([seedEvent]);
+[window.activeEvent, window.setActiveEvent] = React.useState(seedEvent);
+[window.inviteesState, window.setInvitees] = React.useState(seedGuests);
+[window.dislikedInvitees, window.setDisliked] = React.useState([]);
+[window.likedInvitees, window.setLiked] = React.useState([]);
+[window.lovedInvitees, window.setLoved] = React.useState([]);
+[window.curGroupID, window.setGroupID] = React.useState('223');
+
+
 
 function App() {
-  const seedGuests: Invitee[] = [
-    {id: '00', name: 'Danielle Sharo', groupName: 'Sharo Family', groupID: '123'}, 
-    {id: '02', name: 'Jeremiah Sharo', groupName: 'Sharo Family', groupID: '123'}, 
-    {id: '03', name: 'Beth Sharo', groupName: 'Sharo Family', groupID: '123'}, 
-    {id: '04', name: 'Rob Sharo', groupName: 'Sharo Family', groupID: '123'}, 
-    {id: '11', name: 'Chloe Choy', groupName: 'Choy Family', groupID:'223'},
-    {id: '12', name: 'Abby Choy', groupName: 'Choy Family', groupID:'223'},
-    {id: '13', name: 'Mabel Choy', groupName: 'Choy Family', groupID:'223'},
-    {id: '14', name: 'Wing Choy', groupName: 'Choy Family', groupID:'223'},
-    {id: '22', name: 'Alex Rubino'}, 
-    {id: '33', name: 'Simon Gao'}, 
-    {id: '44', name: 'Gil Austria'}, 
-    {id: '55', name: 'Jayson Infante'}
-  ];
-  const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
-  const seedEvent: PlacecardEvent = { 'id': '1', 'name': 'testEvent', 'date': '03/08/2022', 'location': 'My House', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
-  [window.loggedInState, window.setLoggedIn] = React.useState(true);
-  [window.firstNameState, window.setFirstName] = React.useState('Apple');
-  [window.lastNameState, window.setLastName] = React.useState('Zebra');
-  [window.phoneState, window.setPhone] = React.useState('555-555-5555');
-  [window.emailState, window.setEmail] = React.useState('email@email.com');
-  [window.profPicState, window.setProfPic] = React.useState(null);
-  [window.profPicNameState, window.setProfPicName] = React.useState('None');
-  [window.eventsState, window.setEvents] = React.useState([seedEvent]);
-  [window.activeEvent, window.setActiveEvent] = React.useState(seedEvent);
-  [window.inviteesState, window.setInvitees] = React.useState(seedGuests);
-  [window.dislikedInvitees, window.setDisliked] = React.useState([]);
-  [window.likedInvitees, window.setLiked] = React.useState([]);
-  [window.lovedInvitees, window.setLoved] = React.useState([]);
-  [window.curGroupID, window.setGroupID] = React.useState('223');
-
   document.title = 'Placecard';
 
 
@@ -118,6 +124,7 @@ function App() {
 
   const history = createBrowserHistory();
   return (
+  <FirebaseAuthProvider>
       <ThemeProvider theme={theme}>
         <Router>
           <section className='content'>
@@ -153,6 +160,7 @@ function App() {
           <Footer/>
         </Router>
       </ThemeProvider>
+      </FirebaseAuthProvider>
   );
 }
 
