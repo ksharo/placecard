@@ -14,7 +14,7 @@ export function NotFound() {
             <h1 className='title highTitle'>Oh no! Something went wrong...</h1>
             <hr className='peachLine'></hr>
             <p className='subtitle'>Error 404: The page you requested doesn't exist. </p>
-            <Button variant='contained' onClick={goHome} className='basicBtn biggerBtn'>Return Home</Button>
+            <Button variant='contained' onClick={goHome} className='basicBtn fitBtn'>Return Home</Button>
         </>
     );
 }

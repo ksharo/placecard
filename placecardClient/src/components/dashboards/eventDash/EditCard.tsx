@@ -27,7 +27,7 @@ export function EditCard(props: {numSent: string; numRec: string}) {
                     />
             </CardContent>
             <CardActions className='cardFooter'>
-                <Button onClick={toGuestListEdit} className='basicBtn biggerBtn' variant='contained'>
+                <Button onClick={toGuestListEdit} className='basicBtn fitBtn' variant='contained'>
                      Edit/View Guest List
                 </Button>
             </CardActions>

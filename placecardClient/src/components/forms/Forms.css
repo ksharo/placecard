@@ -48,3 +48,8 @@
     display: none;
     margin-top: 0;
   }
+
+  .successMessage {
+    color: var(--main);
+    text-align: center;
+  }

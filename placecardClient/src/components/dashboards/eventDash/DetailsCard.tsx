@@ -19,7 +19,7 @@ export function DetailsCard(props: {name: string; date: string; location: string
                 <p><strong>Guests Per Table:</strong> {props.perTable} </p>
             </CardContent>
             <CardActions className='cardFooter'>
-                <Button onClick={toEditDetails} className='basicBtn biggerBtn' variant='contained'>
+                <Button onClick={toEditDetails} className='basicBtn fitBtn' variant='contained'>
                      Edit Details
                 </Button>
             </CardActions>

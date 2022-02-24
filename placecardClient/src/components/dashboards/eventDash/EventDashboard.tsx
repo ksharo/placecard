@@ -27,7 +27,7 @@ export function EventDashboard() {
                 <EditCard numSent='200' numRec='123'></EditCard>
                 <SeatCard tables={Math.ceil(window.activeEvent.guestList.length/window.activeEvent.perTable).toString()} seats={(window.activeEvent.tables.length*window.activeEvent.perTable).toString()} invitees={window.activeEvent.guestList.length.toString()} seated='2'></SeatCard>
             </section>
-            <Button onClick={goHome} variant='contained' className='basicBtn biggerBtn lowBtn'>
+            <Button onClick={goHome} variant='contained' className='basicBtn fitBtn lowBtn'>
                     Return Home
             </Button>
             </>}

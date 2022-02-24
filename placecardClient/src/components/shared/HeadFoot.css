@@ -129,3 +129,18 @@ footer {
   padding-right: 8px;
   padding-left: 8px;
 }
+
+.greyBtn {
+  background-color: #efefef !important;
+  color: var(--secondary) !important;
+}
+
+.loginBtns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 260px;
+  margin: 0px 10px 0px 0px;
+  padding: 0px;
+  align-content: center;
+}

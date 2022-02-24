@@ -4,6 +4,8 @@ import validator from 'validator';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { Button, InputAdornment, TextField } from '@mui/material';
 import React from 'react';
+import { FaGoogle } from 'react-icons/fa';
+import OAuthDialogList from "../firebase/OAuthDialogList";
 
 
     let validFirst = true;
@@ -26,6 +28,15 @@ import React from 'react';
 
 export function NewAccount() {
     const history = useHistory();
+    const [ open, setOpen ] = React.useState(false);
+
+    const closeDialogBox = () => {
+        setOpen(false);
+    };
+
+    const openDialogBox = () => {
+        setOpen(true);
+    };
 
     /* Variables to keep track of if each textField shows an error */
     const [firstError, setFirstError] = React.useState(!validFirst);
@@ -157,6 +168,11 @@ export function NewAccount() {
     /* takes care of validation and sending data to the database when the "Next" button is pressed */
     let handleSubmit = async (event: any) => {
         event.preventDefault();
+        /* Logged in using google, go to next page */
+        if (window.loggedInState) {
+            history.push('/createEvent');
+            return;
+        }
         const x = document.getElementById('sendAccountError');
         if (x != null) {
             x.style.display = 'none';
@@ -231,6 +247,8 @@ export function NewAccount() {
                     type="text" 
                     label='First Name' 
                     name='firstName'
+                    value={window.loggedInState ? window.firstNameState : ''}
+                    disabled={window.loggedInState}
                     error={firstError} 
                     helperText={firstError ? 'At least two characters (alphanumeric only)' : ''}  
                     onChange={validateFirstName}/>
@@ -241,6 +259,8 @@ export function NewAccount() {
                     type="text" 
                     label='Last Name' 
                     name='lastName' 
+                    value={window.loggedInState ? window.lastNameState : ''}
+                    disabled={window.loggedInState}
                     error={lastError} 
                     helperText={lastError ? 'At least two characters (alphanumeric only)' : ''} 
                     onChange={validateLastName}/>
@@ -252,6 +272,8 @@ export function NewAccount() {
                     label='Phone Number (optional)' 
                     name='phone' 
                     placeholder='555-555-5555' 
+                    value={window.loggedInState ? window.phoneState : ''}
+                    disabled={window.loggedInState}
                     error={phoneError} 
                     helperText={phoneError ? 'xxx-xxx-xxxx' : ''} 
                     onChange={validatePhone}/>
@@ -262,15 +284,19 @@ export function NewAccount() {
                     type="text"
                     label='Email' 
                     name='email'
+                    value={window.loggedInState ? window.emailState : ''}
+                    disabled={window.loggedInState}
                     error={emailError} 
                     helperText={emailError ? 'Please enter a valid email' : ''}  
                     onChange={validateEmail}/>
                 
+                {window.loggedInState ? <></> : <>
                 <TextField 
                     id='passInp'
                     variant='outlined'
                     size='small'
                     type="password" 
+                    autoComplete='true'
                     name='password' 
                     label='Password' 
                     error={passError} 
@@ -287,6 +313,7 @@ export function NewAccount() {
                         variant='outlined'
                         size='small'
                         type="password" 
+                        autoComplete='true'
                         label='Confirm Password' 
                         name='confirm' 
                         error={confirmError} 
@@ -297,8 +324,15 @@ export function NewAccount() {
                                 <AiFillEyeInvisible className='passEye' id='confirmNoEye' onClick={ toggleOnConfirm }/>
                                 <AiFillEye className='passEye yesEye' id='confirmEye' onClick={ toggleOffConfirm }/>
                             </InputAdornment>}}/>
-
+                    </>}
                 </section>
+            {window.loggedInState ? <p className='successMessage'>Success!</p> : 
+                <Button className='basicBtn fitBtn smallMargin' variant='text' onClick={openDialogBox}><FaGoogle className='iconBtn'/> Sign up with your Google Account.</Button>}
+            <OAuthDialogList
+                open={open}
+                onClose={closeDialogBox}
+                title='Sign up for'
+            />
             <Button type='submit' className='basicBtn' variant='contained'>Next</Button>
         </form>
     </>

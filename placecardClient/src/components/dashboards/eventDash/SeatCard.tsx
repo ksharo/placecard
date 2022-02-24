@@ -31,7 +31,7 @@ export function SeatCard(props: {tables: string; seats: string; invitees: string
                     />
             </CardContent>
             <CardActions className='cardFooter'>
-                <Button onClick={toSeatDash} className='basicBtn biggerBtn' variant='contained'>
+                <Button onClick={toSeatDash} className='basicBtn fitBtn' variant='contained'>
                      Dashboard
                 </Button>
             </CardActions>
