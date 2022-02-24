@@ -68,6 +68,7 @@ function App() {
   [window.profPicState, window.setProfPic] = React.useState(null);
   [window.profPicNameState, window.setProfPicName] = React.useState('None');
   [window.eventsState, window.setEvents] = React.useState([seedEvent]);
+  console.log(seedEvent);
   [window.activeEvent, window.setActiveEvent] = React.useState(seedEvent);
   [window.inviteesState, window.setInvitees] = React.useState(seedGuests);
   [window.dislikedInvitees, window.setDisliked] = React.useState([]);

@@ -38,6 +38,7 @@ export function SeatingDashboard() {
     const idList: string[] = [];
 
     if (window.activeEvent != undefined) {
+        console.log(window.activeEvent);
         origTables = window.activeEvent.tables;
         for (let x of origTables) {
             idList.push(x.id);
@@ -255,7 +256,7 @@ export function SeatingDashboard() {
             </>
             :
             <>
-            <section className='header'>
+            <section className='pageHeader'>
                 <section className='titleBar'>
                     <h1>{window.activeEvent.name} | {moment(window.activeEvent.date).format('MM/DD/YY')}</h1>
                     <Button variant='contained' onClick={() => handleClick}>Return to Dashboard</Button>

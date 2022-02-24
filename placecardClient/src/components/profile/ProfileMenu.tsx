@@ -65,6 +65,10 @@ export function ProfileMenu(props: {user: any}) {
         history.push('/editProfile');
     };
 
+    const userHome = () => {
+        history.push('/userHome');
+    };
+
     const logOut = () => {
         userSignOut();
         window.setLoggedIn(false);
@@ -81,6 +85,7 @@ export function ProfileMenu(props: {user: any}) {
                 onClose ={ handleClose } 
                 onClick={ handleClose }>
                 <MenuItem id='fullName' style={{ pointerEvents: 'none' }}>{props.user.displayName}</MenuItem>
+                <MenuItem onClick={ userHome }>Home</MenuItem>
                 <MenuItem onClick={ goEditProfile }>View/Edit Profile</MenuItem>
                 <MenuItem onClick={ logOut }>Logout</MenuItem>
             </Menu>

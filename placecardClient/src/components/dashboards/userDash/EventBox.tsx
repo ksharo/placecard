@@ -6,10 +6,10 @@ import Button from '@mui/material/Button';
 import { useHistory } from "react-router-dom";
 import './EventBox.css';
 
-export function EventBox(props: {id: string, name: string; date: string; location: string; numAttend: number; perTable: number}) {
+export function EventBox(props: {id: string, name: string; date: string; location: string; numAttend: number; perTable: number; guestList: Invitee[]; tables: Table[]}) {
     const history = useHistory();
     const handleClick = () => {
-        window.setActiveEvent({id: props.id, name: props.name, date: props.date, location: props.location, numAttend: props.numAttend, perTable: props.perTable});
+        window.setActiveEvent({id: props.id, name: props.name, date: props.date, location: props.location, numAttend: props.numAttend, perTable: props.perTable, guestList: props.guestList, tables: props.tables});
         history.push('/eventDash');
     };
     const numTables = Math.ceil(props.numAttend/props.perTable);

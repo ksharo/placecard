@@ -11,7 +11,7 @@ export function UserDashboard() {
         if (event.location == '') {
             location = 'N/A';
         }
-        eventBoxes.push(<EventBox id={event.id} name={event.name} location={location} date={moment(event.date).format('DD MMMM YYYY')} numAttend={event.guestList.length} perTable={event.perTable}></EventBox>);
+        eventBoxes.push(<EventBox id={event.id} name={event.name} location={location} date={moment(event.date).format('DD MMMM YYYY')} numAttend={event.guestList.length} perTable={event.perTable} guestList={event.guestList} tables={event.tables}></EventBox>);
     }
     return (
         <>
