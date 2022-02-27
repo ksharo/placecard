@@ -61,7 +61,6 @@ function App() {
   const seedEvent2: PlacecardEvent = { 'id': '2', 'name': 'Bouncy Porpoise', 'date': '07/07/7777', 'location': 'Olive Garden', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
   const seedEvent3: PlacecardEvent = { 'id': '3', 'name': 'Running Bagel', 'date': '04/02/2097', 'location': '', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
 
-  // TODO: We can switch window global variables for React context or use Redux for a global store
   [window.loggedInState, window.setLoggedIn] = React.useState(true);
   [window.firstNameState, window.setFirstName] = React.useState('Apple');
   [window.lastNameState, window.setLastName] = React.useState('Zebra');
@@ -109,16 +108,16 @@ function App() {
    * Survey Likes
    * Survey Ideal Table
    * Edit Survey Responses
-   * Survey Confirmation
-   * Not Found: redesigned :|
+   * Survey Confirmation: redesigned :)
+   * Not Found 
    * Edit Profile
    * Edit Details: redesigned :)
    * Create Event: redesigned :) 
-   * user dashboard
+   * user dashboard: redesigned :)
    * guest list
    * edit survey
    * sent confirmation
-   * event dashboard: redesigned
+   * event dashboard: redesigned :)
    * seating dashboard
    */
 
