@@ -3,6 +3,7 @@
 
 :root {
   --main: #00A6A0;
+  --lighter: #03c9c2;
   --secondary: #1F6BAE;
   --highlight: #F57A75;
   --borderColor: #cfcfcf;
@@ -137,4 +138,8 @@ label {
 
 .smallMargin {
   margin: 8px auto 0px auto !important;
+}
+
+button {
+  box-shadow: 2px 3px 3px rgba(73, 73, 73, 0.363) !important;
 }

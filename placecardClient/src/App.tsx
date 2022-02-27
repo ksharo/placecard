@@ -57,7 +57,9 @@ function App() {
   {id: '55', name: 'Jayson Infante'}
   ];
   const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
-  const seedEvent: PlacecardEvent = { 'id': '1', 'name': 'testEvent', 'date': '03/08/2022', 'location': 'My House', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
+  const seedEvent1: PlacecardEvent = { 'id': '1', 'name': 'testEvent', 'date': '03/08/2022', 'location': 'My House', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
+  const seedEvent2: PlacecardEvent = { 'id': '2', 'name': 'Bouncy Porpoise', 'date': '07/07/7777', 'location': 'Olive Garden', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
+  const seedEvent3: PlacecardEvent = { 'id': '3', 'name': 'Running Bagel', 'date': '04/02/2097', 'location': '', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
 
   // TODO: We can switch window global variables for React context or use Redux for a global store
   [window.loggedInState, window.setLoggedIn] = React.useState(true);
@@ -67,9 +69,8 @@ function App() {
   [window.emailState, window.setEmail] = React.useState('email@email.com');
   [window.profPicState, window.setProfPic] = React.useState(null);
   [window.profPicNameState, window.setProfPicName] = React.useState('None');
-  [window.eventsState, window.setEvents] = React.useState([seedEvent]);
-  console.log(seedEvent);
-  [window.activeEvent, window.setActiveEvent] = React.useState(seedEvent);
+  [window.eventsState, window.setEvents] = React.useState([seedEvent1, seedEvent2, seedEvent3]);
+  [window.activeEvent, window.setActiveEvent] = React.useState(seedEvent1);
   [window.inviteesState, window.setInvitees] = React.useState(seedGuests);
   [window.dislikedInvitees, window.setDisliked] = React.useState([]);
   [window.likedInvitees, window.setLiked] = React.useState([]);
