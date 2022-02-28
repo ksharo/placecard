@@ -241,12 +241,12 @@ export function EditSurveyResponses() {
                     })}
                 </DragDropContext>
             </section>
-            <Button variant='contained' className='generalButton' onClick={prevPage}>
+            {/* <Button variant='contained' className='generalButton' onClick={prevPage}>
                 Go Back
             </Button>
             <Button variant='contained' className='generalButton' onClick={nextPage}>
                 Finish!
-            </Button>
+            </Button> */}
         </>
       );
 }

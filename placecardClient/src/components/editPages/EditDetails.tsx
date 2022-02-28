@@ -127,7 +127,8 @@ export function EditDetails(){
             try {
                 /* send the edited event to the backend */
                 if (window.activeEvent != null) {
-                    const result = await updateEvent(window.activeEvent.id, name, date, time, location, per_table, window.activeEvent.tables, window.activeEvent.guestList);
+                    const result = {status: 200};
+                    // const result = await updateEvent(window.activeEvent.id, name, date, time, location, per_table, window.activeEvent.tables, window.activeEvent.guestList);
                     /* if sendEvent is successful, go back to dashboard after updating globals */
                     if (result.status == 200) {
                         const activeEvent = {id: window.activeEvent.id, name: name, date: date, time: time, location: location, perTable: per_table, tables: window.activeEvent.tables, guestList: window.activeEvent.guestList};
@@ -145,7 +146,7 @@ export function EditDetails(){
                         window.setEvents(events);
                         /* then change active event */
                         window.setActiveEvent(activeEvent);
-                        history.push('/eventDash'); 
+                        history.goBack(); 
                     }
                     else {
                         if (x != null) {
@@ -187,10 +188,10 @@ export function EditDetails(){
         }
     };
     const toDashboard = () => {
-        history.push('/eventDash');
+        history.goBack();
     };
     const toHome = () => {
-        history.push('/userHome');
+        history.goBack();
     };
     const hideWarning = () => {
         const x = document.getElementById('hiddenWarning');
@@ -212,7 +213,7 @@ export function EditDetails(){
             <Card className='innerBox'>
                 <CardHeader className='innerBoxHeader' title='Notice'/>
                 <CardContent className='innerBoxContent'>
-                    <p className='subtitle'>Returning to the dashboard will lose your progress.</p>
+                    <p className='subtitle'>Your changes may not be saved.</p>
                     <p className='subtitle'>Are you sure you want to continue?</p>
                 </CardContent>
                 <CardActions className='spacedBtns'>

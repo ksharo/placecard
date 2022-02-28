@@ -22,14 +22,19 @@
 }
 
 .survey {
+    margin: 30px auto;
+    width: 700px;
+    border: none;
+    box-shadow: 4px 4px 4px lightgrey;
+    border-radius: 7px;
     margin: auto !important;
     overflow: scroll;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
     width: 40%;
     min-width: 600px;
-    border: 1px solid grey;
-    border-radius: 5px;
+    /* border: 1px solid grey; */
+    /* border-radius: 5px; */
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

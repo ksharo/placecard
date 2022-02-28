@@ -20,13 +20,14 @@ export function GuestConfirmation() {
         event.preventDefault();
         const contact = validator.trim(event?.target?.contactInfo?.value);
         try {
-            const guestInfo = await fetch('http://localhost:3001/guests/'+guestID);
+            // const guestInfo = await fetch('http://localhost:3001/guests/'+guestID);
+            const guestInfo = {status: 200};
             if (guestInfo.status == 200) {
-                const data = await guestInfo.json();
-                if ((data.email == contact || data.phone_number == contact) && contact != '' && contact != undefined) {
+                // const data = await guestInfo.json();
+                // if ((data.email == contact || data.phone_number == contact) && contact != '' && contact != undefined) {
                     // TODO: set current guest info to this guest
-                    history.push('/surveyInstructions');
-                }
+                    history.push('/takeSurvey');
+                // }
             }
             else {
                 const contactErr = document.getElementById('wrongContactError');

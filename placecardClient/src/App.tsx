@@ -37,6 +37,7 @@ import { SurveyGroupPage } from './components/guestPages/SurveyGroupPage';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { createBrowserHistory } from "history";
 import { FirebaseAuthProvider } from "./components/firebase/AuthProvider";
+import { FullSurvey } from './components/guestPages/FullSurvey';
 
 
 function App() {
@@ -115,8 +116,8 @@ function App() {
    * Create Event: redesigned :) 
    * user dashboard: redesigned :)
    * guest list
-   * edit survey
-   * sent confirmation
+   * edit survey: redesigned :)
+   * sent confirmation: redesigned :)
    * event dashboard: redesigned :)
    * seating dashboard
    */
@@ -135,21 +136,24 @@ function App() {
             {/* <Route exact path='/surveyPt1' component={ SurveyPt1WithAges }/> */}
             {/* <Route exact path='/surveyPt2' component={ SurveyPt2 }/> */}
             {/* <Route exact path='/surveyPt1' component={ SurveyPt1SitTogether }/> */}
-            <Route exact path='/surveyInstructions' component={ SurveyInstructions }/>
+            <Route exact path='/takeSurvey' component={FullSurvey}/>
+            {/* <Route exact path='/surveyInstructions' component={ SurveyInstructions }/>
             <Route exact path='/editGroup' component={ SurveyGroupPage }/>
             <Route exact path='/surveyDislikes' component={ SurveyDislikes }/>
             <Route exact path='/surveyLikes' component={ SurveyLikes }/>
             <Route exact path='/surveyIdealTable' component={ SurveyIdealTable }/>
             <Route exact path='/editSurveyResponses' component={ EditSurveyResponses }/>
-            <Route exact path='/doneSurvey' component={ SurveyConf }/>
+            <Route exact path='/doneSurvey' component={ SurveyConf }/> */}
             <Route path="/404" component={ NotFound }/>
             {/* Authenticated routes below (user must be logged in to access) */}
             { window.loggedInState && (<Route exact path='/editProfile' component={ EditProfile }/>)}
             { window.loggedInState && (<Route exact path='/editDetails' component={ EditDetails }/>)}
             { window.loggedInState && (<Route exact path='/createEvent' component={ CreateEvent }/>)}
             { window.loggedInState && (<Route exact path='/userHome' component={ UserDashboard }/>)}
-            { window.loggedInState && (<Route exact path='/uploadGuestList' component={ GuestList }/>)}
-            { window.loggedInState && (<Route exact path='/editSurvey' component={ EditSurvey }/>)}
+            <Route exact path='/uploadGuestList' component={ GuestList }/>
+            {/* { window.loggedInState && (<Route exact path='/uploadGuestList' component={ GuestList }/>)} */}
+            <Route exact path='/editSurvey' component={ EditSurvey }/>
+            {/* { window.loggedInState && (<Route exact path='/editSurvey' component={ EditSurvey }/>)} */}
             { window.loggedInState && (<Route exact path='/sentConf' component={ SentConf }/>)}
             { window.loggedInState && (<Route exact path='/eventDash' component={ EventDashboard }/>)}
             { window.loggedInState && (<Route exact path='/seatDash' component={ SeatingDashboard }/>)}

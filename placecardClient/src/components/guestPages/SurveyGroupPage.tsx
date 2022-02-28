@@ -33,7 +33,7 @@ export function SurveyGroupPage() {
             renderCell: (params) => { return (<TextField id={'input' + params.value} variant='outlined' size='small' label='Email' placeholder='example@123.com' type='email' disabled={true}></TextField>) }
         },
         {
-            field: 'col2', headerName: 'Remove from group', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 2,
+            field: 'col2', headerName: 'Remove from group', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 3,
             renderCell: (params) => { return (<Checkbox id={'checkbox' + params.value} onClick={updateInputs}></Checkbox>) }
         }
     ];
@@ -67,12 +67,12 @@ export function SurveyGroupPage() {
             <div className='survey' style={{ height: 400 }}>
                     <DataGrid rows={rows} columns={columns} disableColumnMenu={true} hideFooter={true} disableSelectionOnClick={true} rowHeight={80} />
             </div>
-            <Button variant='contained' className='basicBtn generalButton' onClick={prevPage}>
+            {/* <Button variant='contained' className='basicBtn generalButton' onClick={prevPage}>
                 Go Back
             </Button>
             <Button variant='contained' className='basicBtn generalButton' onClick={nextPage}>
                 Continue
-            </Button>
+            </Button> */}
         </>
     );
 

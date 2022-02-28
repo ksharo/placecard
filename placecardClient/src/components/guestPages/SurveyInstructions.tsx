@@ -19,9 +19,9 @@ export function SurveyInstructions() {
                     <li>Finally, you will be asked to review your selection and submit.</li>
                 </ol>
             </section>
-            <Button variant='contained' className='basicBtn' onClick={handleClick}>
+            {/* <Button variant='contained' className='basicBtn' onClick={handleClick}>
                         Continue
-            </Button>
+            </Button> */}
         </>
     )
 }

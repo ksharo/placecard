@@ -86,11 +86,11 @@ export function SurveyDislikes() {
                 <div className='survey' style={{ height: 400 }}>
                     <DataGrid rows={rows} columns={columns} disableColumnMenu={true} hideFooter={true} disableSelectionOnClick={true} rowHeight={80} />
                 </div>
-                <Button variant='outlined' className='generalButton' onClick={prevPage}>
+                {/* <Button variant='outlined' className='generalButton' onClick={prevPage}>
                             Go Back
                 </Button>
                 <Button variant='outlined' className='generalButton' onClick={nextPage}>
                             Continue
-                </Button>
+                </Button> */}
     </>);
 }

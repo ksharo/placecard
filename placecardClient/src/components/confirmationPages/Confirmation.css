@@ -5,4 +5,5 @@
 .confBtn {
     margin: 30px auto auto auto !important;
     background-color: var(--highlight) !important;
+    color: white !important;
 }
