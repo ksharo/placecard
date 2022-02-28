@@ -156,23 +156,55 @@ export function GuestList(){
 
 	const [namePlaceholder, setNamePlaceholder]		= useState("Appleseed Family")
 
-	const [currGrpMembers, setCurrGrpMembers]		= useState([])
+	// let adic = {
+	// 	'a1': "",
+	// 	'a2': "",
+	// }
+	// const [currGrpMembers, setCurrGrpMembers]		= useState(["", ""])
+	const [currGrpMembers, setCurrGrpMembers]		= useState([{"name": ""}, {"name": ""}])
+
+	// const handleInputChange = (e) => {
+	// 	const { name, value } = e.target;
+	// 	setCurrGrpMembers({
+	// 		...values,
+	// 		[name]: value,
+	// 	});
+	// };
+
+
 
 	function addGrpToTable(){
+		console.log(currGrpName, currGrpContact, currGrpSize, currGrpSendSurvey, currGrpMembers)
 		setCurrGrpName("")
 		setCurGrpContact("")
 		setCurrGrpSize(2)
 		setCurrGrpSendSurvey(true)
-		setCurrGrpMembers([])
+		// setCurrGrpMembers(["", ""])
+		setCurrGrpMembers([{"name": ""}, {"name": ""}])
+
 	}
 
-	const GroupRow = () => {
+	function updateGrpMembers(index: number, name: string){
+		// setCurrGrpMembers({
+		// 	...currGrpMembers,
+		// 	[index.toString()]: name,
+		// })
+
+		const newCurrGrpMembers = [...currGrpMembers];
+		newCurrGrpMembers[index].name = name;
+		setCurrGrpMembers(newCurrGrpMembers)
+	}
+
+	const GroupRow = (props: {index: number}) => {
 		return(
 			<>
 				<TextField
 					label="Member Name"
 					placeholder="Leave Blank if unknown"
-					value={currGrpMembers}
+					// value={currGrpMembers["a" + (props.index).toString()] || ""}
+					// value={currGrpMembers[props.index]}
+					value={currGrpMembers[props.index].name}
+					onChange={e=>updateGrpMembers(props.index, e.target.value)}
 				/>
 				{/* <section className="unknownNameCheckboxGroup">
 					<p>Name unknown</p>
@@ -282,10 +314,8 @@ export function GuestList(){
 				</section>
 				<p>Leave member name blank if you do not know the member's name</p>
 				<section className="groupMembers">
-					{[...Array(currGrpSize)].map((_, i) => <GroupRow key={i}/>)}
+					{[...Array(currGrpSize)].map((_, i) => <GroupRow key={i} index={i}/>)}
 					{/* {groupRow()}
-					{groupRow()}
-					{groupRow()}
 					{groupRow()}
 					{groupRow()} */}
 				</section>
