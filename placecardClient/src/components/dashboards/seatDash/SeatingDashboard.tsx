@@ -3,7 +3,7 @@ import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import './SeatingDashboard.css';
-import { AppBar, CardHeader, IconButton, Toolbar, Typography } from "@mui/material";
+import { AppBar, CardActions, CardHeader, IconButton, TextField, Toolbar, Typography } from "@mui/material";
 import { AiFillEdit } from 'react-icons/ai';
 import { IoIosSave } from "react-icons/io";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -253,55 +253,45 @@ export function SeatingDashboard() {
             </>
             :
             <section className='fullLengthSection'>
-            <Card className='topCard'>
-                <CardHeader title={title} className='dashCardHeader'/>
-            {/* <section className='pageHeader dashCardHeader'>
-                <section className='titleBar'>
-                    <h1>{window.activeEvent.name} | {moment(window.activeEvent.date).format('MM/DD/YY')}</h1>
-                    <Button variant='contained' onClick={() => handleClick}>Return to Dashboard</Button>
-                </section>
-                {/* <hr /> */}
-            {/* </section> */}
-            {/* Header Code  */}
-            <Grid container className='dashBody firstCard' spacing={0} columns={26}>
-                <Grid item xs={4}>
-                    <h3 className='seatStat'>{survComp}%</h3>
-                    <p className='statLabel'>Survey Completion</p>
+            <h1 className='title'>Seating Dashboard</h1>
+            <Card className='topCard seatDashCard'>
+                <CardHeader title={title} className='cardHeader'/>
+                {/* Header Code  */}
+                <Grid container className='dashBody firstCard' spacing={0} columns={26}>
+                    <Grid item xs={4}>
+                        <h3 className='seatStat'>{survComp}%</h3>
+                        <p className='statLabel'>Survey Completion</p>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <h3 className='seatStat'>{tables}</h3>
+                        <p className='statLabel'>Total Tables</p>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <h3 className='seatStat'>{seats}</h3>
+                        <p className='statLabel'>Total Seats</p>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <h3 className='seatStat'>{seated}</h3>
+                        <p className='statLabel'>Seated Guests</p>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <h3 className='seatStat'>{seats - seated}</h3>
+                        <p className='statLabel'>Available Seats</p>
+                    </Grid>
+                    <Grid item xs={1}>
+                    </Grid>
+                    <Grid item xs={5}>
+                        <Button variant='contained' className='fitBtn' onClick={handleClick}>Return to Dashboard</Button>
+                    </Grid>
                 </Grid>
-                <Grid item xs={4}>
-                    <h3 className='seatStat'>{tables}</h3>
-                    <p className='statLabel'>Total Tables</p>
-                </Grid>
-                <Grid item xs={4}>
-                    <h3 className='seatStat'>{seats}</h3>
-                    <p className='statLabel'>Total Seats</p>
-                </Grid>
-                <Grid item xs={4}>
-                    <h3 className='seatStat'>{seated}</h3>
-                    <p className='statLabel'>Seated Guests</p>
-                </Grid>
-                <Grid item xs={4}>
-                    <h3 className='seatStat'>{seats - seated}</h3>
-                    <p className='statLabel'>Available Seats</p>
-                </Grid>
-                <Grid item xs={1}>
-                </Grid>
-                <Grid item xs={5}>
-                    <Button variant='contained' className='fitBtn' onClick={handleClick}>Return to Dashboard</Button>
-                </Grid>
-            </Grid>
             </Card>
             {/* Unseated Guests Sidebar */}
             <DragDropContext onDragEnd={(result) => onDragEnd(result, tablesData, setTablesData)}>
 
             <Grid className='dashBody' container spacing={6} columns={{xs:1, sm:2, md:12}}>
                 <Grid item xs={1} sm={1} md={3}>
-                    <Card>
-                        <AppBar className='tableTitle' position='static' color='inherit'>
-                            <Toolbar className='toolbar tableTitle centeredContent'>
-                                <Typography variant='h5'>Unseated Guests</Typography>
-                            </Toolbar>
-                        </AppBar>
+                    <Card className='seatDashCard'>
+                        <CardHeader title='Unseated Guests' className='cardHeader'/>
                         <section className='guestTable'>
                             <Droppable droppableId={unseatedID} key={unseatedID}>
                                 {(provided, snapshot) => {
@@ -335,22 +325,16 @@ export function SeatingDashboard() {
                 </Grid>
                 {/* Begin Central Seating Chart Code */}
                 <Grid item xs={1} sm={1} md={9}>
-                    <Card className='seatingChart'>
+                    <Card className='seatingChart seatDashCard'>
                         {/* Header within central seating chart */}
-                        <AppBar className='tableTitle' position='static' color='inherit'>
-                            <Toolbar className='toolbar tableTitle seatingChartHead'>
-                                <Typography variant='h5'>Seating Chart</Typography>
-                                {/* <section className='verticalContainer'> */}
-                                    <section className='horizontalContainer'>
-                                    {/* <Button variant='contained' size='small'>Lock All</Button> */}
-                                    <Button variant='text' className='whiteTxtBtn' size='small' onClick={clearAll}>Clear All</Button>
-                                {/* </section> */}
-                                    <Button variant='text' className='whiteTxtBtn' size='medium'>Generate New Plan</Button>
-                                </section>
-                            </Toolbar>
-                        </AppBar>
+                        <CardHeader title='Seating Chart' className='cardHeader'
+                        action={<>
+                            <Button variant='text' className='whiteTxtBtn' size='small' onClick={clearAll}>Clear All</Button>
+                            &#160;&#160;|&#160;&#160;
+                            <Button variant='text' className='whiteTxtBtn' size='medium'>Generate New Plan</Button>
+                            </>}/>
                         {/* Body of seating chart, containing the table boxes */}
-                            <Grid container spacing={{xs:1, md: 2, lg: 4}} columns={{ xs: 1, md: 2, lg: 3 }}>
+                            <Grid container spacing={{xs:1, md: 2, lg: 1}} columns={{ xs: 1, md: 2, lg: 3 }}>
                                 {Object.entries(tablesData).map(([_, table]) => {
                                         return (
                                             <Grid item xs={1} md={1} lg={1}>
@@ -358,21 +342,23 @@ export function SeatingDashboard() {
                                                     <AppBar position='static' className='tableHeader'>
                                                         <Toolbar className='topTableHeader'>
                                                         {editing[idList.indexOf(table.id)] ?
-                                                        <><input id={'tableName' + table.id} defaultValue={table.name} onKeyDown={(event: any) => {if (event.key=='Enter'){ renameTable(table, false)}}}/>
+                                                        <section className='tableName'><TextField id={'tableName' + table.id} label='Table Name' size='small' defaultValue={table.name} onKeyDown={(event: any) => {if (event.key=='Enter'){ renameTable(table, false)}}}/>
                                                             <IconButton className='noShadow' onClick={() => renameTable(table, false)}>
                                                                 <IoIosSave />
-                                                            </IconButton></>
+                                                            </IconButton>
+                                                            </section>
                                                         :
-                                                        <><Typography variant='h6'> {table.name} </Typography>
+                                                        <section className='tableName'><Typography variant='h6'> {table.name} </Typography>
                                                             <IconButton className='noShadow' onClick={() => renameTable(table, true)}>
                                                                 <AiFillEdit />
-                                                            </IconButton></>}
+                                                            </IconButton></section>}
+                                                            <Button variant='text' size='small' className='greyTxtBtn' id={'clearButton'+table.id} onClick={clearTable}>Clear</Button>
                                                             </Toolbar>
-                                                            <hr className='smallHR'/>
-                                                            <section className='tableOptions'>
+                                                            {/* <hr className='smallHR'/> */}
+                                                            {/* <section className='tableOptions'>
                                                                 <Button variant='contained' size='small' className='clearButton' id={'clearButton'+table.id} onClick={clearTable}>Clear</Button>
                                                                 <p className={table.guests.length > perTable ? 'overFull' : 'tableFillLevel'}>{table.guests.length} / {perTable}</p>
-                                                            </section>
+                                                            </section> */}
                                                     </AppBar>
                                                     <Droppable droppableId={table.id} key={table.id}>
                                                         {(provided, snapshot) => {
@@ -402,6 +388,7 @@ export function SeatingDashboard() {
                                                             );
                                                         }}
                                                     </Droppable>
+                                                    <CardActions className={table.guests.length > perTable ? 'overFull' : 'tableFillLevel'}>Seated: {table.guests.length} / {perTable}</CardActions>
                                                 </Card>
                                             </Grid>
                                         )

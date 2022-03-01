@@ -12,6 +12,7 @@ import {
   Redirect,
   Route,
   Switch,
+  useHistory,
 } from "react-router-dom";
 import { EventDashboard } from './components/dashboards/eventDash/EventDashboard';
 import { UserDashboard } from './components/dashboards/userDash/UserDashboard';
@@ -26,7 +27,7 @@ import { SurveyConf } from './components/confirmationPages/SurveyConf';
 import { SentConf } from './components/confirmationPages/SentConf';
 import { EditDetails } from './components/editPages/EditDetails';
 import { EditProfile } from './components/editPages/EditProfile';
-import React from 'react';
+import React, { useEffect } from 'react';
 // import { SurveyPt1SitTogether } from './components/guestPages/oldPages/SurveyPt1SitTogether';
 import { SurveyDislikes } from './components/guestPages/SurveyDislikes';
 import { SurveyIdealTable } from './components/guestPages/SurveyIdealTable';
@@ -58,7 +59,7 @@ function App() {
   {id: '55', name: 'Jayson Infante'}
   ];
   const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
-  const seedEvent1: PlacecardEvent = { 'id': '1', 'name': 'testEvent', 'date': '03/08/2022', 'location': 'My House', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
+  const seedEvent1: PlacecardEvent = { 'id': '1', 'name': 'Wedding', 'date': '03/08/2022', 'location': 'My House', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
   const seedEvent2: PlacecardEvent = { 'id': '2', 'name': 'Bouncy Porpoise', 'date': '07/07/7777', 'location': 'Olive Garden', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
   const seedEvent3: PlacecardEvent = { 'id': '3', 'name': 'Running Bagel', 'date': '04/02/2097', 'location': '', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
 
@@ -122,13 +123,12 @@ function App() {
    * seating dashboard
    */
 
-  const history = createBrowserHistory();
   return (
   <FirebaseAuthProvider>
       <ThemeProvider theme={theme}>
         <Router>
           <section className='content'>
-          <Header stick={history.location.pathname=='/'}/>
+          <Header/>
           <Switch>
             <Route exact path='/' component={ Home }/> 
             <Route exact path='/newAccount' component={ NewAccount }/>
