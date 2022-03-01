@@ -18,7 +18,7 @@
 }
 
 .footer {
-  background-color: #18283A;
+  background-color: var(--footerColor);
   display: flex;
   justify-content: center;
   flex-direction: column;

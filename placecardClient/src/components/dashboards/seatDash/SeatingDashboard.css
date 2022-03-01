@@ -44,20 +44,17 @@
 }
 
 .tableTitle {
-    background-color: rgb(75, 75, 75);
+    background-color: var(--secondary);
     color: white;
     font-size: 24px;
 }
 
-.dashBody {
-    padding: 0px 24px 0px 24px;
-}
-
 .tableHeader {
-    background-color: black !important;
+    background-color: var(--footerColor) !important;
     color: white !important;
     display: flex !important;
     justify-content: space-evenly;
+    box-shadow: none !important;
 }
 
 .tableHeader * {
@@ -80,6 +77,7 @@
 
 .tableBox {
     margin: 6px;
+    border: 1px solid var(--borderColor);
 }
 
 .seatingChart::-webkit-scrollbar {
@@ -226,4 +224,32 @@ ul {
     color: black !important;
     background-color: white !important;
     align-self: center !important;
+}
+
+.seatingChartHead {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.noShadow {
+    box-shadow: none !important;
+}
+
+.whiteTxtBtn {
+    color: white !important;
+}
+
+.fullLengthSection {
+    width: 80%;
+    min-width: 800px;
+    margin: auto;
+}
+
+.firstCard {
+    padding-top: 20px;
+}
+
+.topCard {
+    margin: 24px auto;
 }
