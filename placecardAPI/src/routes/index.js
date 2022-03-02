@@ -1,6 +1,7 @@
-const eventsRoutes = require("./eventRoutes");
-const guestRoutes = require("./guestRoutes");
-var cors = require("cors");
+const eventsRoutes = require("./events");
+const guestRoutes = require("./guests");
+const notificationRoutes = require("./notifications");
+let cors = require("cors");
 
 // TODO: make cors only for our apps
 const constructorMethod = (app) => {
@@ -9,7 +10,7 @@ const constructorMethod = (app) => {
 
     app.use("/events", eventsRoutes);
     app.use("/guests", guestRoutes);
-
+    app.use("/notifications", notificationRoutes);
     app.use("*", (req, res) => {
         res.sendStatus(404);
     });
