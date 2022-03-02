@@ -312,3 +312,12 @@ ul {
     font-size: 10px;
     padding-right: 140px;
 }
+
+.infoError {
+    color: var(--highlight) !important;
+    float: right;
+    width: 14px;
+    height: 14px;
+    padding: 0 !important;
+    cursor: help !important;
+}

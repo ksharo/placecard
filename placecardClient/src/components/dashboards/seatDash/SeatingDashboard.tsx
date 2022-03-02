@@ -4,14 +4,14 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import './SeatingDashboard.css';
 import { AppBar, CardActions, CardHeader, IconButton, InputAdornment, Switch, 
-    TextField, Toolbar, Typography } from "@mui/material";
+    TextField, Toolbar, Tooltip, Typography } from "@mui/material";
 import { AiFillEdit } from 'react-icons/ai';
 import { IoIosSave } from "react-icons/io";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import moment from 'moment';
 import React, { useLayoutEffect } from "react";
 import {uuid} from "uuidv4";
-import { FaSearch } from "react-icons/fa";
+import { FaExclamationCircle, FaSearch } from "react-icons/fa";
 
 const unseatedID = uuid();
 let searchTerm = '';
@@ -361,6 +361,87 @@ export function SeatingDashboard() {
     const toggleGroupMode = (event: any) => {
         seatGroupsTogether = event.target.checked;
     };
+
+    /* checks if a group is sitting together */
+    const isGroupTogether = (groupID: string | undefined) => {
+        let difTables = 0;
+        for (let x of tablesData) {
+            for (let y of x.guests) {
+                if (y.groupID == groupID) {
+                    difTables += 1;
+                    break;
+                }
+            }
+            if (difTables > 1) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    /* checks if all members of a group are seated */
+    const isGroupUnseated = (groupID: string | undefined) => {
+        for (let x of unseated) {
+            if (x.groupID == groupID) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    /* seats a group together where the button is clicked */
+    const seatGroupTogether = (tableId: string, groupID: string | undefined) => {
+        let tmpTables = [...tablesData];
+        const guestsToAdd: Invitee[] = [];
+        let ourTableInd = 0;
+        for (let x of tablesData) {
+            if (tableId != x.id) {
+                // find all the guests with groupID
+                const tmpGuests = [...x.guests];
+                for (let y of tmpGuests) {
+                    console.log(y);
+                    if (y.groupID == groupID) {
+                        console.log(y);
+                        // remove them from their table
+                        const [removed] = tmpTables[tmpTables.indexOf(x)].guests.splice(x.guests.indexOf(y), 1);
+                        console.log(tmpTables[tmpTables.indexOf(x)]);
+                        // keep track of the guest
+                        guestsToAdd.push(removed);
+                    }
+                }
+            }
+            // find our table ind for the end
+            else {
+                ourTableInd = tmpTables.indexOf(x);
+            }
+        }
+        // set up our table
+        tmpTables[ourTableInd].guests = tmpTables[ourTableInd].guests.concat(guestsToAdd);
+        setTablesData(tmpTables);
+    };
+
+    /* seats all unseated members of a group  */
+    const seatUnseatedGroup = (tableId: string, groupID: string | undefined) => {
+        const guestsToAdd: Invitee[] = [];
+        const tmpNotSeated = [...unseated];
+        for (let x of unseated) {
+            if (x.groupID == groupID) {
+                const [removed] = tmpNotSeated.splice(tmpNotSeated.indexOf(x), 1);
+                guestsToAdd.push(removed);
+            }
+        }
+        // add the data to our table
+        const ourTable = tablesData.filter( (t) => {
+            return t.id == tableId;
+        });
+        tablesData[tablesData.indexOf(ourTable[0])].guests = tablesData[tablesData.indexOf(ourTable[0])].guests.concat(guestsToAdd);
+
+        setTablesData(tablesData);
+
+        // set unseated to value without these people
+        setUnseated(tmpNotSeated);
+    };
+
     return (
         <>
             {window.activeEvent == null ? 
@@ -503,6 +584,18 @@ export function SeatingDashboard() {
                                                                                         {...provided.draggableProps}
                                                                                         {...provided.dragHandleProps}>
                                                                                             <span className='cornerText'>{(guest.groupName==undefined ? 'No Group' : guest.groupName)}</span>
+                                                                                            {guest.groupName != undefined && !isGroupTogether(guest.groupID) && 
+                                                                                            <Tooltip title={<span>Group is separated.<br/>Click to seat group together.</span>}>
+                                                                                                <IconButton className='infoError' onClick={() => seatGroupTogether(table.id, guest.groupID)}>
+                                                                                                    <FaExclamationCircle />
+                                                                                                </IconButton>
+                                                                                            </Tooltip>}
+                                                                                            {guest.groupName != undefined && isGroupTogether(guest.groupID) && isGroupUnseated(guest.groupID) && 
+                                                                                            <Tooltip title={<span>Some members of this group are unseated.<br/>Click to seat group together.</span>}>
+                                                                                                <IconButton className='infoError' onClick={() => seatUnseatedGroup(table.id, guest.groupID)}>
+                                                                                                    <FaExclamationCircle />
+                                                                                                </IconButton>
+                                                                                            </Tooltip>}
                                                                                             <br/>
                                                                                             {guest.name}
                                                                                         </section>
