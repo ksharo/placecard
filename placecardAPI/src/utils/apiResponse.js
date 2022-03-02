@@ -8,7 +8,7 @@ function SuccessResponse(message) {
 }
 
 function createSuccessResponse(message, res) {
-    if (isUndefined(message) || isUndefined (res)) {
+    if (isUndefined(message) || isUndefined(res)) {
         throw new Error(MISSING_FUNCTION_ARGUMENT_MESSAGE);
     }
     const successResponse = new SuccessResponse(message);
