@@ -1,15 +1,15 @@
 {
   "name": "placecardapi",
   "version": "1.0.0",
-  "description": "API service for placecard",
+  "description": "API service for Placecard",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint",
+    "lint": "eslint --ext .js src/**/*.js tasks/seed.js tests/**/*.js --fix",
     "test": "mocha 'tests/**/*.js'",
     "start": "node server.js",
     "seed": "node ./tasks/seed.js"
   },
-  "author": "",
+  "author": "Placecard Senior Design Group 2021-2022",
   "license": "ISC",
   "dependencies": {
     "@sendgrid/mail": "^7.6.1",
@@ -25,7 +25,6 @@
   },
   "devDependencies": {
     "cors": "^2.8.5",
-    "eslint": "^8.7.0",
-    "eslint-config-google": "^0.14.0"
+    "eslint": "^8.10.0"
   }
 }
