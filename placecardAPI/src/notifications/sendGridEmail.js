@@ -9,7 +9,6 @@ async function sendEmailRequest(emailConfig) {
         console.log("Response: ", response);
         console.log("Email was successfully sent");
     } catch (error) {
-        console.log("Error: ", error);
         throw new Error(EMAIL_SEND_FAILED);
     }
 }

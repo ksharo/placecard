@@ -11,7 +11,7 @@ const schema = Joi.object({
     event_end_time: Joi.number().
         integer().
         greater(Joi.ref("event_start_time")),
-    location: Joi.string(),
+    location: Joi.string(),         // Should this be an object instead?
     expected_number_of_attendees: Joi.number().
         integer().
         greater(0).

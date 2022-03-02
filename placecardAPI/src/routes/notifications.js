@@ -5,28 +5,45 @@ const { checkPrecondition } = require("../utils/preconditions");
 const { createErrorResponse } = require("../utils/errors");
 const ERROR_TYPES = require("../constants/errorTypes");
 const STATUS_CODES = require("../constants/statusCodes");
-const { EMAIL_CONFIG_EMPTY, EMAIL_CONFIG_MISSING_PROP } = require("../constants/errorMessages");
+const { EMAIL_CONFIG_EMPTY, INVALID_EVENT_ID_MESSAGE } = require("../constants/errorMessages");
 const { EMAIL_SENT_SUCCESS } = require("../constants/messages");
 const { sendEmailRequest } = require("../notifications/sendGridEmail");
 const { createSuccessResponse } = require("../utils/apiResponse");
+const { SCHEMA_TYPES } = require("../constants/schemaTypes");
+const { validateSchema } = require("../utils/preconditions");
+const { isInvalidObjectId } = require("../utils/mongoDocument");
+const events = require("../data/Event");
 
-router.post("/email", async (req, res) => {
+router.use("/email",async (req, res, next) => {
     const emailConfig = req.body;
-    emailConfig.from = process.env.PLACECARD_EMAIL;
 
     try {
         checkPrecondition(emailConfig, _.isUndefined, EMAIL_CONFIG_EMPTY);
         checkPrecondition(emailConfig, _.isEmpty, EMAIL_CONFIG_EMPTY);
-        checkPrecondition(emailConfig.to, _.isUndefined, EMAIL_CONFIG_MISSING_PROP);
+        validateSchema(emailConfig, SCHEMA_TYPES.EMAIL_POST_BODY);
+        checkPrecondition(emailConfig.eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
     } catch (error) {
-        return createErrorResponse(e.message, ERROR_TYPES.INVALID_EMAIL_CONFIG, STATUS_CODES.BAD_REQUEST, res);
+        return createErrorResponse(error.message, ERROR_TYPES.INVALID_EMAIL_CONFIG, STATUS_CODES.BAD_REQUEST, res);
     }
+    next();
+});
+
+router.post("/email", async (req, res) => {
+    let emailConfig = req.body;
+
+    const event = await events.getEvent(emailConfig.eventId);
+
+    emailConfig.subject = `Your invitation to "${event.event_name}"`;
+    emailConfig.from = process.env.PLACECARD_EMAIL;
+    let toArray = emailConfig.to;
+    emailConfig.to = toArray.map(email => {
+        return { email };
+    });
 
     try {
         await sendEmailRequest(emailConfig);
         return createSuccessResponse(EMAIL_SENT_SUCCESS, res);
     } catch (error) {
-        console.log("Error in routes: ", error  );
         return createErrorResponse(error.message, ERROR_TYPES.FAILED_EMAIL_REQUEST, STATUS_CODES.INTERNAL_SERVER, res);
     }
 });
