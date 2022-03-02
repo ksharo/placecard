@@ -156,7 +156,8 @@ function App() {
             {/* { window.loggedInState && (<Route exact path='/editSurvey' component={ EditSurvey }/>)} */}
             { window.loggedInState && (<Route exact path='/sentConf' component={ SentConf }/>)}
             { window.loggedInState && (<Route exact path='/eventDash' component={ EventDashboard }/>)}
-            { window.loggedInState && (<Route exact path='/seatDash' component={ SeatingDashboard }/>)}
+            <Route exact path='/seatDash' component={ SeatingDashboard }/>
+            {/* { window.loggedInState && (<Route exact path='/seatDash' component={ SeatingDashboard }/>)} */}
             { !window.loggedInState && (<Redirect to='/'/>)}
           <Redirect to="/404"/>
           </Switch>
