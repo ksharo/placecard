@@ -40,6 +40,8 @@ router.post("/email", async (req, res) => {
         return { email };
     });
 
+    emailConfig.html = "<p>This is a test email for the Placecard notification system</p>";
+
     try {
         await sendEmailRequest(emailConfig);
         return createSuccessResponse(EMAIL_SENT_SUCCESS, res);
