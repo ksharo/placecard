@@ -9,13 +9,16 @@ import { AiFillEdit } from 'react-icons/ai';
 import { IoIosSave } from "react-icons/io";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import moment from 'moment';
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import {uuid} from "uuidv4";
 import { FaExclamationCircle, FaSearch } from "react-icons/fa";
+
 
 const unseatedID = uuid();
 let searchTerm = '';
 let seatGroupsTogether = false;
+let dataHistory: any[] = [];
+let timePoint = 0;
 
 export function SeatingDashboard() {
     const history = useHistory();
@@ -62,9 +65,13 @@ export function SeatingDashboard() {
     }
 
     const [tablesData, setTablesData] = React.useState(origTables);
+    const [unseated, setUnseated] = React.useState(tmpUnseated);
+    const [allData, setData] = React.useState([tablesData, unseated]);
+    if (dataHistory.length == 0) {
+        dataHistory.push(allData);
+    }
 
     const [editing, toggleEditing] = React.useState(editList);
-    const [unseated, setUnseated] = React.useState(tmpUnseated);
     const [shownUnseated, searchedUnseated] = React.useState([...tmpUnseated]);
     const [seated, setSeated] = React.useState(num_attend - unseated.length);
 
@@ -72,6 +79,21 @@ export function SeatingDashboard() {
         search(null, searchTerm);
     }, [unseated]);
 
+    useEffect(() => {
+        if (dataHistory[dataHistory.length-1][0] != allData[0] || dataHistory[dataHistory.length-1][1] != allData[1] ) {
+            dataHistory.push(allData);
+        }
+        // cleans from duplicates
+        let tmpHistory = [dataHistory[0]];
+        for (let i = 0; i < dataHistory.length; i++) {
+            if (tmpHistory[tmpHistory.length-1][0] != dataHistory[i][0] || tmpHistory[tmpHistory.length-1][1] != dataHistory[i][1]) {
+                tmpHistory.push(dataHistory[i]);
+            }
+        }
+        dataHistory = [...tmpHistory];
+        timePoint = dataHistory.length-1;
+        console.log(timePoint, dataHistory);
+    }, [allData]);
 
     const renameTable = (table: Table, open: boolean) => {
         editList[idList.indexOf(table.id)] = open; 
@@ -81,6 +103,7 @@ export function SeatingDashboard() {
                 if (table.id == x.id) {
                     x.name = (document.getElementById('tableName'+table.id) as HTMLInputElement).value;
                     setTablesData(origTables);
+                    setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
                     break;
                 }
             }
@@ -147,6 +170,7 @@ export function SeatingDashboard() {
                         }
                     }
                     setUnseated(tmpNotSeated);
+                    setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
                 }
                 for (let x of tmpTables) {
                     if (x.id == source.droppableId)  {
@@ -157,6 +181,7 @@ export function SeatingDashboard() {
                     }
                 }
                 setTablesData([...tmpTables]);
+                setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
             }
             else {
                 if (source.droppableId == unseatedID) {
@@ -219,6 +244,7 @@ export function SeatingDashboard() {
                     setTablesData([...tmpTables]);
                     setUnseated([...sourceItems]);
                     setSeated(seated + 1);
+                    setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
                 }
                 else if (destination.droppableId == unseatedID) {
                     // find the data at the to/from columns
@@ -267,6 +293,7 @@ export function SeatingDashboard() {
                     setTablesData([...tmpTables]);
                     setUnseated([...destItems]);
                     setSeated(seated - 1);
+                    setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
                 }
             }
         }
@@ -302,6 +329,7 @@ export function SeatingDashboard() {
                     }
                 }
                 setTablesData([...tmpTables]);
+                setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
             }
         }
     };
@@ -340,6 +368,7 @@ export function SeatingDashboard() {
             setTablesData(tmpTables);
             setUnseated(unseated.concat(nowUnseated));
             setSeated(seated - nowUnseated.length);
+            setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
         }
     };
 
@@ -354,6 +383,7 @@ export function SeatingDashboard() {
         setTablesData(newTables);
         setUnseated(newUnseated);
         setSeated(0);
+        setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
     };
 
     const title = window.activeEvent == null ? 'Event' : `${window.activeEvent.name}  |  ${moment(window.activeEvent.date).format('MM / DD / YYYY')}`;
@@ -418,6 +448,7 @@ export function SeatingDashboard() {
         // set up our table
         tmpTables[ourTableInd].guests = tmpTables[ourTableInd].guests.concat(guestsToAdd);
         setTablesData(tmpTables);
+        setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
     };
 
     /* seats all unseated members of a group  */
@@ -440,6 +471,19 @@ export function SeatingDashboard() {
 
         // set unseated to value without these people
         setUnseated(tmpNotSeated);
+        setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
+    };
+
+    const undo = () => {
+        timePoint -= 1;
+        console.log('hi?');
+        if (timePoint >= 0) {
+            console.log(timePoint, dataHistory);
+            let tmpTables = [...dataHistory[timePoint][0]];
+            setTablesData(JSON.parse(JSON.stringify(tmpTables)));
+            console.log(tmpTables);
+            setUnseated([...dataHistory[timePoint][1]]);
+        }
     };
 
     return (
@@ -545,6 +589,8 @@ export function SeatingDashboard() {
                                 <Switch defaultChecked={false} onChange={toggleGroupMode}/>
                                 Move Groups Together
                             </label>
+                            <Button variant='text' className='whiteTxtBtn' size='small' onClick={undo}>Undo</Button>
+                            <Button variant='text' className='whiteTxtBtn' size='small' onClick={clearAll}>Redo</Button>
                             <Button variant='text' className='whiteTxtBtn' size='small' onClick={clearAll}>Clear All</Button>
                             &#160;&#160;|&#160;&#160;
                             <Button variant='text' className='whiteTxtBtn' size='medium'>Generate New Plan</Button>
