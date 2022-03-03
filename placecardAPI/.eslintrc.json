@@ -18,6 +18,6 @@
         "quotes": ["error", "double", {"allowTemplateLiterals": true}],
         "eqeqeq": ["error"],
         "semi-style": ["error"],
-        "eol-last": ["error", "always"]
+        "eol-last": 1
     }
 }
