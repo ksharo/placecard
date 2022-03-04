@@ -7,6 +7,7 @@ import { CreateEvent } from './components/forms/CreateEvent';
 /* Import Shared Components */
 import { Footer } from './components/shared/Footer';
 import { Header } from './components/shared/Header';
+import { ObjectId } from 'mongodb';
 import {
   BrowserRouter as Router,
   Redirect,
@@ -59,9 +60,22 @@ function App() {
   {id: '55', name: 'Jayson Infante'}
   ];
   const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
-  const seedEvent1: PlacecardEvent = { 'id': '1', 'name': 'Wedding', 'date': '03/08/2022', 'location': 'My House', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
-  const seedEvent2: PlacecardEvent = { 'id': '2', 'name': 'Bouncy Porpoise', 'date': '07/07/7777', 'location': 'Olive Garden', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
-  const seedEvent3: PlacecardEvent = { 'id': '3', 'name': 'Running Bagel', 'date': '04/02/2097', 'location': '', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
+  let seedEvent1: PlacecardEvent = { 'id': '62225aebb824bfc14bbaf071', 'name': 'newName', 'date': '01/29/2022', 'location': 'N/A', 'perTable': 2, 'tables': seedTables, 'guestList': seedGuests};
+  fetch('http://192.168.50.48:3001/events/62225aebb824bfc14bbaf071')
+    .then(data => {
+      return data.json();
+    })
+    .then(post => {
+      seedEvent1 = {'id': post._id, 'name': post.name, 'date': post.event_start_time.toLocaleString().split(',')[0], 'time': post.event_start_time.toLocaleString().split(',')[1], 'location': post.location, 'tables': post.tables, 'perTable': post.attendees_per_table , 'guestList': post.guest_list};
+    });
+  // const event1 = await fetch('http://192.168.50.48:3001/events/62225aebb824bfc14bbaf071');
+  // let eventTxt = await event1.text();
+  // eventTxt = eventTxt.json()
+  // console.log(eventTxt);
+  // const seedEvent1: PlacecardEvent = {'id': eventTxt._id, 'name': event1.body.name, 'date': event1.body.date.toLocaleString().split(',')[0], 'location': event1.body.location };
+  // const seedEvent1: PlacecardEvent = { 'id': '62225aebb824bfc14bbaf071', 'name': 'newName', 'date': '01/29/2022', 'location': 'N/A', 'perTable': 2, 'tables': seedTables, 'guestList': seedGuests};
+  const seedEvent2: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Bouncy Porpoise', 'date': '07/07/7777', 'location': 'Olive Garden', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
+  const seedEvent3: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Running Bagel', 'date': '04/02/2097', 'location': '', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
 
   [window.loggedInState, window.setLoggedIn] = React.useState(true);
   [window.firstNameState, window.setFirstName] = React.useState('Apple');
@@ -146,16 +160,22 @@ function App() {
             <Route exact path='/doneSurvey' component={ SurveyConf }/> */}
             <Route path="/404" component={ NotFound }/>
             {/* Authenticated routes below (user must be logged in to access) */}
-            { window.loggedInState && (<Route exact path='/editProfile' component={ EditProfile }/>)}
-            { window.loggedInState && (<Route exact path='/editDetails' component={ EditDetails }/>)}
-            { window.loggedInState && (<Route exact path='/createEvent' component={ CreateEvent }/>)}
-            { window.loggedInState && (<Route exact path='/userHome' component={ UserDashboard }/>)}
+            <Route exact path='/editProfile' component={ EditProfile }/>
+            {/* { window.loggedInState && (<Route exact path='/editProfile' component={ EditProfile }/>)} */}
+            <Route exact path='/editDetails' component={ EditDetails }/>
+            {/* { window.loggedInState && (<Route exact path='/editDetails' component={ EditDetails }/>)} */}
+            <Route exact path='/createEvent' component={ CreateEvent }/>
+            {/* { window.loggedInState && (<Route exact path='/createEvent' component={ CreateEvent }/>)} */}
+            <Route exact path='/userHome' component={ UserDashboard }/>
+            {/* { window.loggedInState && (<Route exact path='/userHome' component={ UserDashboard }/>)} */}
             <Route exact path='/uploadGuestList' component={ GuestList }/>
             {/* { window.loggedInState && (<Route exact path='/uploadGuestList' component={ GuestList }/>)} */}
             <Route exact path='/editSurvey' component={ EditSurvey }/>
             {/* { window.loggedInState && (<Route exact path='/editSurvey' component={ EditSurvey }/>)} */}
-            { window.loggedInState && (<Route exact path='/sentConf' component={ SentConf }/>)}
-            { window.loggedInState && (<Route exact path='/eventDash' component={ EventDashboard }/>)}
+            <Route exact path='/sentConf' component={ SentConf }/>
+            {/* { window.loggedInState && (<Route exact path='/sentConf' component={ SentConf }/>)} */}
+            <Route exact path='/eventDash' component={ EventDashboard }/>
+            {/* { window.loggedInState && (<Route exact path='/eventDash' component={ EventDashboard }/>)} */}
             <Route exact path='/seatDash' component={ SeatingDashboard }/>
             {/* { window.loggedInState && (<Route exact path='/seatDash' component={ SeatingDashboard }/>)} */}
             { !window.loggedInState && (<Redirect to='/'/>)}

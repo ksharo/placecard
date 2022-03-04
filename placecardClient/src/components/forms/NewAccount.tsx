@@ -247,7 +247,7 @@ export function NewAccount() {
                     type="text" 
                     label='First Name' 
                     name='firstName'
-                    value={window.loggedInState ? window.firstNameState : ''}
+                    defaultValue={window.loggedInState ? window.firstNameState : ''}
                     disabled={window.loggedInState}
                     error={firstError} 
                     helperText={firstError ? 'At least two characters (alphanumeric only)' : ''}  
@@ -259,7 +259,7 @@ export function NewAccount() {
                     type="text" 
                     label='Last Name' 
                     name='lastName' 
-                    value={window.loggedInState ? window.lastNameState : ''}
+                    defaultValue={window.loggedInState ? window.lastNameState : ''}
                     disabled={window.loggedInState}
                     error={lastError} 
                     helperText={lastError ? 'At least two characters (alphanumeric only)' : ''} 
@@ -272,7 +272,7 @@ export function NewAccount() {
                     label='Phone Number (optional)' 
                     name='phone' 
                     placeholder='555-555-5555' 
-                    value={window.loggedInState ? window.phoneState : ''}
+                    defaultValue={window.loggedInState ? window.phoneState : ''}
                     disabled={window.loggedInState}
                     error={phoneError} 
                     helperText={phoneError ? 'xxx-xxx-xxxx' : ''} 
@@ -284,7 +284,7 @@ export function NewAccount() {
                     type="text"
                     label='Email' 
                     name='email'
-                    value={window.loggedInState ? window.emailState : ''}
+                    defaultValue={window.loggedInState ? window.emailState : ''}
                     disabled={window.loggedInState}
                     error={emailError} 
                     helperText={emailError ? 'Please enter a valid email' : ''}  

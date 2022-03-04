@@ -45,7 +45,7 @@ interface Window {
 }
 
 interface PlacecardEvent {
-    id: string;
+    id: string | ObjectId;
     name: string;
     date: string;
     time?: string;

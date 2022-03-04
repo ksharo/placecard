@@ -228,6 +228,7 @@ async function sendEvent(name: string, date: string, time: string, location: str
     if (location == '') {
         location = 'N/A';
     }
+    console.log(Date.parse(new Date(date + " " + time).toString()));
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -236,14 +237,14 @@ async function sendEvent(name: string, date: string, time: string, location: str
         // TODO: Simon change date to date and time info 
         body: JSON.stringify({
             event_name: name,
-            event_time: date,
+            event_start_time: Number(Date.parse(new Date(date + " " + time).toString())),
             location: location,
             attendees_per_table: Number(per_table),
             tables: initTable,
             guest_list: []
             })
         };
-    return fetch('http://localhost:3001/events/newEvent', requestOptions);
+    return fetch('http://192.168.50.48:3001/events/newEvent', requestOptions);
 }
 
 /*

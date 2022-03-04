@@ -14,7 +14,9 @@ const FirebaseAuthProvider = ({ children } : any) => {
 
     const toggleUser = (user: any) => {
         console.log("User: ", user);
-        window.setLoggedIn(!(user==null || user==undefined));
+        if (window.loggedInState==false) {
+            window.setLoggedIn(!(user==null || user==undefined));
+        }
         if (user != null && user != undefined) {
             const name = user.displayName.split(' ');
             window.setFirstName(name[0]);

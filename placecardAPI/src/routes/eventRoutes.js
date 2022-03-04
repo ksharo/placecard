@@ -11,6 +11,7 @@ const statusCodes = require("../constants/statusCodes");
 const ERROR_TYPES = require("../constants/errorTypes");
 const { isInvalidObjectId } = require("../utils/mongoDocument");
 const { INVALID_EVENT_ID } = require("../constants/errorTypes");
+const { ObjectId } = require("mongodb");
 
 router.get("/:eventId", async (req, res) => {
     let eventId = req.params.eventId.trim();
@@ -46,7 +47,7 @@ router.post("/newEvent", async (req, res) => {
     } 
 });
 
-router.put("/updateEvent", async (req, res) => {
+router.put("/updateEvent/:id", async (req, res) => {
     const updatedEvent = req.body;
 
     try {
@@ -57,18 +58,24 @@ router.put("/updateEvent", async (req, res) => {
         return createErrorResponse(e.message, ERROR_TYPES.INVALID_EVENT, statusCodes.BAD_REQUEST, res);
     }
 
-    const eventId = updatedEvent._id;
+    const eventId = req.params.id;
     try {
+        console.log('hi');
         checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID);
+        console.log('hi');
         checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID);
+        console.log('hi');
     } catch(e) {
         return createErrorResponse(e.message, ERROR_TYPES.INVALID_EVENT_ID, INVALID_EVENT_ID, res)
     }
 
     try {
+        console.log('hi');
         const event = await events.updateEvent(eventId, updatedEvent);
+        console.log('hi');
         return res.json(event);
     } catch (e) {
+        console.log(e);
         return createErrorResponse(e.message, ERROR_TYPES.UPDATE_ERROR, statusCodes.INTERNAL_SERVER, res);
     }
 });

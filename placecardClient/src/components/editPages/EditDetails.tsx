@@ -127,8 +127,7 @@ export function EditDetails(){
             try {
                 /* send the edited event to the backend */
                 if (window.activeEvent != null) {
-                    const result = {status: 200};
-                    // const result = await updateEvent(window.activeEvent.id, name, date, time, location, per_table, window.activeEvent.tables, window.activeEvent.guestList);
+                    const result = await updateEvent(window.activeEvent.id, name, date, time, location, per_table, window.activeEvent.tables, window.activeEvent.guestList);
                     /* if sendEvent is successful, go back to dashboard after updating globals */
                     if (result.status == 200) {
                         const activeEvent = {id: window.activeEvent.id, name: name, date: date, time: time, location: location, perTable: per_table, tables: window.activeEvent.tables, guestList: window.activeEvent.guestList};
@@ -302,16 +301,15 @@ async function updateEvent(id: string, name: string, date: string, time: string,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            _id: id,
             event_name: name,
-            event_time: date,
+            event_start_time: Number(Date.parse(new Date(date + " " + time).toString())),
             location: location,
             attendees_per_table: Number(per_table),
             tables: tables,
             guest_list: guestList
             })
         };
-    return fetch('http://localhost:3001/events/updateEvent', requestOptions);
+    return fetch('http://192.168.50.48:3001/events/updateEvent/'+id.toString(), requestOptions);
 }
 
 /*
