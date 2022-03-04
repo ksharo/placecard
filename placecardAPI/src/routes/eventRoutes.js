@@ -60,11 +60,8 @@ router.put("/updateEvent/:id", async (req, res) => {
 
     const eventId = req.params.id;
     try {
-        console.log('hi');
         checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID);
-        console.log('hi');
         checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID);
-        console.log('hi');
     } catch(e) {
         return createErrorResponse(e.message, ERROR_TYPES.INVALID_EVENT_ID, INVALID_EVENT_ID, res)
     }

@@ -262,6 +262,7 @@ export function EditDetails(){
                     size='small'
                     type="time" 
                     label='Event Time (optional)' 
+                    defaultValue={window.activeEvent.time}
                     name='time'
                     InputLabelProps={{ shrink: true }}  
                     />

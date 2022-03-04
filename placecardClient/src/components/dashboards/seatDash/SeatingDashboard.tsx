@@ -92,6 +92,7 @@ export function SeatingDashboard() {
         if (dataHistory.present.length > 0) {
             dataHistory.past.push([JSON.parse(JSON.stringify(dataHistory.present))]);
             dataHistory.present = allData;
+            dataHistory.future = [];
         }
     }, [allData]);
 
@@ -380,12 +381,17 @@ export function SeatingDashboard() {
             setTablesData(tmpTables);
             setUnseated(unseated.concat(nowUnseated));
             setSeated(seated - nowUnseated.length);
-            setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
+            let newTables = JSON.parse(JSON.stringify(tmpTables));
+            for (let x of newTables) {
+                x = JSON.parse(JSON.stringify(x));
+                x.guests = [...x.guests];
+            }
+            setData([newTables, [...unseated]]);
         }
     };
 
     const clearAll = () => {
-        const newTables: Table[] = [];
+        let newTables: Table[] = [];
         let newUnseated: Invitee[] = unseated;
         for (let x of tablesData) {
             newUnseated = newUnseated.concat(x.guests);
@@ -395,7 +401,12 @@ export function SeatingDashboard() {
         setTablesData(newTables);
         setUnseated(newUnseated);
         setSeated(0);
-        setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
+        newTables = JSON.parse(JSON.stringify(newTables));
+        for (let x of newTables) {
+            x = JSON.parse(JSON.stringify(x));
+            x.guests = [...x.guests];
+        }
+        setData([newTables, [...unseated]]);
     };
 
     const title = window.activeEvent == null ? 'Event' : `${window.activeEvent.name}  |  ${moment(window.activeEvent.date).format('MM / DD / YYYY')}`;
@@ -457,7 +468,12 @@ export function SeatingDashboard() {
         // set up our table
         tmpTables[ourTableInd].guests = tmpTables[ourTableInd].guests.concat(guestsToAdd);
         setTablesData(tmpTables);
-        setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
+        const newTables = JSON.parse(JSON.stringify(tmpTables));
+        for (let x of newTables) {
+            x = JSON.parse(JSON.stringify(x));
+            x.guests = [...x.guests];
+        }
+        setData([newTables, [...unseated]]);
     };
 
     /* seats all unseated members of a group  */
@@ -480,7 +496,12 @@ export function SeatingDashboard() {
 
         // set unseated to value without these people
         setUnseated(tmpNotSeated);
-        setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
+        const newTables = JSON.parse(JSON.stringify(tablesData));
+        for (let x of newTables) {
+            x = JSON.parse(JSON.stringify(x));
+            x.guests = [...x.guests];
+        }
+        setData([newTables, [...unseated]]);
     };
 
     const undo = () => {
@@ -508,6 +529,7 @@ export function SeatingDashboard() {
             }
             const tmpTables = JSON.parse(JSON.stringify(dataHistory.present[0]));
             for (let x of tmpTables) {
+                x = JSON.parse(JSON.stringify(x));
                 x.guests = [...x.guests];
             }
             setTablesData(tmpTables);            

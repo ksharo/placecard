@@ -40,12 +40,14 @@ import { createTheme, ThemeProvider } from '@mui/material';
 import { createBrowserHistory } from "history";
 import { FirebaseAuthProvider } from "./components/firebase/AuthProvider";
 import { FullSurvey } from './components/guestPages/FullSurvey';
+import { async } from '@firebase/util';
 
-
-function App() {
-  document.title = 'Placecard';
-
-  const seedGuests: Invitee[] = [
+// const getEvent = async () => {
+//   const fetchData = await fetch('http://192.168.50.48:3001/events/6222666115cdbb7e25bc388f');
+//   const post = await fetchData.json();
+//   return {'id': post._id, 'name': post.name, 'date': post.event_start_time.toLocaleString().split(',')[0], 'time': post.event_start_time.toLocaleString().split(',')[1], 'location': post.location, 'tables': post.tables, 'perTable': post.attendees_per_table , 'guestList': post.guest_list};
+// }
+const seedGuests: Invitee[] = [
   {id: '00', name: 'Danielle Sharo', groupName: 'Sharo Family', groupID: '123'}, 
   {id: '02', name: 'Jeremiah Sharo', groupName: 'Sharo Family', groupID: '123'}, 
   {id: '03', name: 'Beth Sharo', groupName: 'Sharo Family', groupID: '123'}, 
@@ -59,24 +61,13 @@ function App() {
   {id: '44', name: 'Gil Austria'}, 
   {id: '55', name: 'Jayson Infante'}
   ];
-  const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
-  let seedEvent1: PlacecardEvent = { 'id': '62225aebb824bfc14bbaf071', 'name': 'newName', 'date': '01/29/2022', 'location': 'N/A', 'perTable': 2, 'tables': seedTables, 'guestList': seedGuests};
-  fetch('http://192.168.50.48:3001/events/62225aebb824bfc14bbaf071')
-    .then(data => {
-      return data.json();
-    })
-    .then(post => {
-      seedEvent1 = {'id': post._id, 'name': post.name, 'date': post.event_start_time.toLocaleString().split(',')[0], 'time': post.event_start_time.toLocaleString().split(',')[1], 'location': post.location, 'tables': post.tables, 'perTable': post.attendees_per_table , 'guestList': post.guest_list};
-    });
-  // const event1 = await fetch('http://192.168.50.48:3001/events/62225aebb824bfc14bbaf071');
-  // let eventTxt = await event1.text();
-  // eventTxt = eventTxt.json()
-  // console.log(eventTxt);
-  // const seedEvent1: PlacecardEvent = {'id': eventTxt._id, 'name': event1.body.name, 'date': event1.body.date.toLocaleString().split(',')[0], 'location': event1.body.location };
-  // const seedEvent1: PlacecardEvent = { 'id': '62225aebb824bfc14bbaf071', 'name': 'newName', 'date': '01/29/2022', 'location': 'N/A', 'perTable': 2, 'tables': seedTables, 'guestList': seedGuests};
-  const seedEvent2: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Bouncy Porpoise', 'date': '07/07/7777', 'location': 'Olive Garden', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
-  const seedEvent3: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Running Bagel', 'date': '04/02/2097', 'location': '', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
+const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
+// const seedEvent1 = getEvent().then((result) => {return result});
+// const seedEvent2: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Bouncy Porpoise', 'date': '07/07/7777', 'location': 'Olive Garden', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
+// const seedEvent3: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Running Bagel', 'date': '04/02/2097', 'location': '', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};  
 
+function App() {
+  document.title = 'Placecard';
   [window.loggedInState, window.setLoggedIn] = React.useState(true);
   [window.firstNameState, window.setFirstName] = React.useState('Apple');
   [window.lastNameState, window.setLastName] = React.useState('Zebra');
@@ -84,13 +75,58 @@ function App() {
   [window.emailState, window.setEmail] = React.useState('email@email.com');
   [window.profPicState, window.setProfPic] = React.useState(null);
   [window.profPicNameState, window.setProfPicName] = React.useState('None');
-  [window.eventsState, window.setEvents] = React.useState([seedEvent1, seedEvent2, seedEvent3]);
-  [window.activeEvent, window.setActiveEvent] = React.useState(seedEvent1);
+  [window.eventsState, window.setEvents] = React.useState([]);
+  [window.activeEvent, window.setActiveEvent] = React.useState(null);
   [window.inviteesState, window.setInvitees] = React.useState(seedGuests);
   [window.dislikedInvitees, window.setDisliked] = React.useState([]);
   [window.likedInvitees, window.setLiked] = React.useState([]);
   [window.lovedInvitees, window.setLoved] = React.useState([]);
-  [window.curGroupID, window.setGroupID] = React.useState('223');
+  [window.curGroupID, window.setGroupID] = React.useState('223');  
+  useEffect(() => {
+    const getEvent = async() => {
+      const eventFetch = await fetch('http://192.168.50.48:3001/events/6222666115cdbb7e25bc388f');
+      const post = await eventFetch.json();
+      const event = {'id': post._id, 'name': post.event_name, 'date': (new Date(post.event_start_time)).toLocaleString().split(',')[0], 'time': (new Date(post.event_start_time)).toTimeString().split(' ')[0], 'location': post.location, 'tables': seedTables, 'perTable': post.attendees_per_table , 'guestList': seedGuests};
+      const events = [...window.eventsState]; 
+      events.push(event);
+      window.setEvents(events);
+      window.setActiveEvent(event);
+    };
+    getEvent();
+  }, [window.loggedInState]);
+  
+  // let seedEvent1: PlacecardEvent = { 'id': '62225aebb824bfc14bbaf071', 'name': 'newName', 'date': '01/29/2022', 'location': 'N/A', 'perTable': 2, 'tables': seedTables, 'guestList': seedGuests};
+  
+  // .then(data => {
+    //   return data.json();
+    // })
+    // .then(post => {
+    //   
+    //   const seedEvent2: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Bouncy Porpoise', 'date': '07/07/7777', 'location': 'Olive Garden', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
+    //   const seedEvent3: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Running Bagel', 'date': '04/02/2097', 'location': '', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
+    // });
+  // const event1 = await fetch('http://192.168.50.48:3001/events/62225aebb824bfc14bbaf071');
+  // let eventTxt = await event1.text();
+  // eventTxt = eventTxt.json()
+  // console.log(eventTxt);
+  // const seedEvent1: PlacecardEvent = {'id': eventTxt._id, 'name': event1.body.name, 'date': event1.body.date.toLocaleString().split(',')[0], 'location': event1.body.location };
+  // const seedEvent1: PlacecardEvent = { 'id': '62225aebb824bfc14bbaf071', 'name': 'newName', 'date': '01/29/2022', 'location': 'N/A', 'perTable': 2, 'tables': seedTables, 'guestList': seedGuests};
+  
+
+  // [window.loggedInState, window.setLoggedIn] = React.useState(true);
+  // [window.firstNameState, window.setFirstName] = React.useState('Apple');
+  // [window.lastNameState, window.setLastName] = React.useState('Zebra');
+  // [window.phoneState, window.setPhone] = React.useState('555-555-5555');
+  // [window.emailState, window.setEmail] = React.useState('email@email.com');
+  // [window.profPicState, window.setProfPic] = React.useState(null);
+  // [window.profPicNameState, window.setProfPicName] = React.useState('None');
+  // [window.eventsState, window.setEvents] = React.useState([seedEvent1, seedEvent2, seedEvent3]);
+  // [window.activeEvent, window.setActiveEvent] = React.useState(seedEvent1);
+  // [window.inviteesState, window.setInvitees] = React.useState(seedGuests);
+  // [window.dislikedInvitees, window.setDisliked] = React.useState([]);
+  // [window.likedInvitees, window.setLiked] = React.useState([]);
+  // [window.lovedInvitees, window.setLoved] = React.useState([]);
+  // [window.curGroupID, window.setGroupID] = React.useState('223');
 
 
   const theme = createTheme({
