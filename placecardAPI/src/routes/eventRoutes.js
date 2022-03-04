@@ -22,10 +22,7 @@ const axios = require("axios");
 
 router.get("/algorithm", async (req, res) => {
     try {
-        let { data } = await axios.post("http://127.0.0.1:5000/flask", {
-            x: 5,
-            y: 10,
-        });
+        let { data } = await axios.post("http://127.0.0.1:5000/flask");
         res.status(200).json(data);
     } catch (e) {
         res.status(500).json({ error: e });
