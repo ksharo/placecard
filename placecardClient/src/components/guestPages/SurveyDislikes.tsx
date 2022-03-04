@@ -1,5 +1,5 @@
 import { Button, Checkbox } from "@mui/material";
-import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
+import { DataGrid, GridArrowUpwardIcon, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import { useHistory } from "react-router-dom";
 
 export function SurveyDislikes() {
@@ -29,7 +29,7 @@ export function SurveyDislikes() {
     ];
 
     const prevPage = () => {
-        history.push('/surveyPt1');
+        history.push('/editGroup');
     }
     const nextPage = () => {
         history.push('/surveyLikes');
@@ -49,18 +49,22 @@ export function SurveyDislikes() {
         const checked = event.target.checked;
         // find the size and name of the party
         let size = 1;
-        let name = ''
+        let name = '';
+        let groupID = undefined;
+        let groupName = undefined;
         for (let x of window.inviteesState) {
             if (x.id == id) {
-                size = x.size;
+                size = 1;
                 name = x.name;
+                groupID = x.groupID;
+                groupName = x.groupName;
                 break;
             }
         }
         if (checked) {
             // add the party to the list of those who are disliked
             const tmp = window.dislikedInvitees;
-            tmp.push({id: id, name: name, size: size});
+            tmp.push({id: id, name: name, groupID: groupID, groupName: groupName});
             window.setDisliked(tmp);
         }
         else {
@@ -68,7 +72,7 @@ export function SurveyDislikes() {
             const tmp = [];
             for (let x of window.dislikedInvitees) {
                 if (x.id != id) {
-                    tmp.push({id: x.id, name: x.name, size: x.size})
+                    tmp.push({id: x.id, name: x.name, groupName: x.groupName, groupID: x.groupID})
                 }
             }
             window.setDisliked(tmp);
@@ -82,11 +86,11 @@ export function SurveyDislikes() {
                 <div className='survey' style={{ height: 400 }}>
                     <DataGrid rows={rows} columns={columns} disableColumnMenu={true} hideFooter={true} disableSelectionOnClick={true} rowHeight={80} />
                 </div>
-                <Button variant='outlined' className='generalButton' onClick={prevPage}>
+                {/* <Button variant='outlined' className='generalButton' onClick={prevPage}>
                             Go Back
                 </Button>
                 <Button variant='outlined' className='generalButton' onClick={nextPage}>
                             Continue
-                </Button>
+                </Button> */}
     </>);
 }

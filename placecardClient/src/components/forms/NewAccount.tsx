@@ -2,20 +2,53 @@ import './Forms.css'
 import { useHistory } from "react-router-dom";
 import validator from 'validator';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import { Button, InputAdornment, TextField } from '@mui/material';
+import React from 'react';
+import { FaGoogle } from 'react-icons/fa';
+import OAuthDialogList from "../firebase/OAuthDialogList";
 
-export function NewAccount() {
-    const history = useHistory();
+
+    let validFirst = true;
+    let validLast = true;
+    let validPhone = true;
+    let validEmail = true;
+    let validPass = true;
+    let validConfirm = true;
+
+    /* we don't want to show/hide errors before they press submit for the first time */
+    let firstTime = true;
+
+    /* variables that hold the textfield input */
     let firstName = '';
     let lastName = '';
     let phone = '';
     let email = '';
     let password = '';
     let confirm = '';
-    let firstTime = true;
 
-    // the following togglePassword and toggleConfirm functions make the eye
-    // appear with or without a slash and change the password from visible to invisible
-    // or vice versa
+export function NewAccount() {
+    const history = useHistory();
+    const [ open, setOpen ] = React.useState(false);
+
+    const closeDialogBox = () => {
+        setOpen(false);
+    };
+
+    const openDialogBox = () => {
+        setOpen(true);
+    };
+
+    /* Variables to keep track of if each textField shows an error */
+    const [firstError, setFirstError] = React.useState(!validFirst);
+    const [lastError, setLastError] = React.useState(!validLast);
+    const [phoneError, setPhoneError] = React.useState(!validPhone);
+    const [emailError, setEmailError] = React.useState(!validEmail);
+    const [passError, setPassError] = React.useState(!validPass);
+    const [confirmError, setConfirmError] = React.useState(!validConfirm);
+
+
+    /* the following togglePassword and toggleConfirm functions make the eye appear with 
+        or without a slash and change the password from visible to invisible or vice versa */
     let toggleOnPassword = () => {
         togglePassword('passNoEye');
     };
@@ -29,74 +62,117 @@ export function NewAccount() {
         togglePassword('confirmEye');
     }
 
-    // functions that will show/remove errors based on user's input
-    let validateFirstName = (event: any) => {
-        if (!firstTime) {
+    /* functions that will show/remove errors based on user's input */
+    let validateFirstName = (event: any, val?: string) => {
+        if (val !=  undefined) {
+            firstName = val;
+        }
+        else {
             firstName = validator.trim(event.target.value);
+        }
+        if (!firstTime || val != undefined) {
             const valid = !validator.isEmpty(firstName) && validator.isAlphanumeric(firstName.replace('-', '')) && validator.isByteLength(firstName, {min: 2, max: undefined});
-            validateHelper('firstNameError', valid);
+            validFirst = valid;
+            setFirstError(!valid);
             checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
     }
 
-    let validateLastName = (event: any) => {
-        if (!firstTime) {
+    let validateLastName = (event: any, val?: string) => {
+        if (val !=  undefined) {
+            lastName = val;
+        }
+        else {
             lastName = validator.trim(event.target.value);
+        }
+        if (!firstTime || val != undefined) {
             const valid = !validator.isEmpty(lastName) && validator.isAlphanumeric(lastName.replace('-', '')) && validator.isByteLength(lastName, {min: 2, max: undefined});
-            validateHelper('lastNameError', valid);
+            validLast = valid;
+            setLastError(!valid);
             checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
     }
 
-    let validatePhone = (event: any) => {
-        if (!firstTime) {
+    let validatePhone = (event: any, val?: string) => {
+        if (val !=  undefined) {
+            phone = val;
+        }
+        else {
             phone = validator.trim(event.target.value);
+        }
+        if (!firstTime || val != undefined) {
             const regex = new RegExp('[0-9]{3}-[0-9]{3}-[0-9]{4}');
             const valid = (validator.isWhitelisted(phone, '0123456789') && phone.length == 10) || 
             (validator.isWhitelisted(phone, '0123456789-') && phone.length == 12 && regex.test(phone)) ||
             (phone.length == 0);
-            validateHelper('phoneError', valid);
+            validPhone = valid;
+            setPhoneError(!valid);
             checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
     }
 
-    let validateEmail = (event: any) => {
-        if (!firstTime) {
+    let validateEmail = (event: any, val?: string) => {
+        if (val !=  undefined) {
+            email = val;
+        }
+        else {
             email = validator.trim(event.target.value);
+        }
+        if (!firstTime || val != undefined) {
             const valid = validator.isEmail(email);
-            validateHelper('emailError', valid);
+            validEmail = valid;
+            setEmailError(!valid);
             checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
     }
 
-    let validatePass = (event: any) => {
-        if (!firstTime) {
+    let validatePass = (event: any, val?: string) => {
+        if (val !=  undefined) {
+            password = val;
+        }
+        else {
             password = event.target.value;
+        }
+        if (!firstTime || val != undefined) {
             const valid = (validator.isWhitelisted(password.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%&* ') &&
             validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 0, returnScore: false }));
-            validateHelper('passError', valid);
+            validPass = valid;
+            setPassError(!valid);
             if (confirm != password) {
-                validateHelper('confirmError', false);
+                validConfirm = false;
+                setConfirmError(true);
             }
             else {
-                validateHelper('confirmError', true);
+                validConfirm = true;
+                setConfirmError(false);
             }
             checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
     }
 
-    let validateConfirm = (event: any) => {
-        if (!firstTime) {
+    let validateConfirm = (event: any, val?: string) => {
+        if (val !=  undefined) {
+            confirm = val;
+        }
+        else {
             confirm = event.target.value;
+        }
+        if (!firstTime || val != undefined) {
             const valid = confirm == password;
-            validateHelper('confirmError', valid);
+            validConfirm = valid;
+            setConfirmError(!valid);
             checkAllErrors(firstName, lastName, phone, email, password, confirm);
         }
     }
 
-    // takes care of validation and sending data to the database when the "Next" button is pressed
+    /* takes care of validation and sending data to the database when the "Next" button is pressed */
     let handleSubmit = async (event: any) => {
         event.preventDefault();
+        /* Logged in using google, go to next page */
+        if (window.loggedInState) {
+            history.push('/createEvent');
+            return;
+        }
         const x = document.getElementById('sendAccountError');
         if (x != null) {
             x.style.display = 'none';
@@ -108,7 +184,8 @@ export function NewAccount() {
                 window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
             }
         }
-        // get data from form and fill variables
+    
+        /* get data from form and fill variables */
         firstName = validator.trim(event?.target?.firstName?.value);
         lastName = validator.trim(event?.target?.lastName?.value);
         phone = validator.trim(event?.target?.phone?.value);
@@ -116,14 +193,20 @@ export function NewAccount() {
         password = event?.target?.password?.value;
         confirm = event?.target?.confirm?.value;
 
-        // begin validation process
-        errorFound = validate(firstName, lastName, phone, email, password, confirm);
+        /* begin validation process */
+        validateFirstName(null, firstName);
+        validateLastName(null, lastName);
+        validatePhone(null, phone);
+        validateEmail(null, email);
+        validatePass(null, password);
+        validateConfirm(null, confirm);
+        errorFound = !(validFirst && validLast && validPhone && validEmail && validPass && validConfirm);
         if (!errorFound) { 
-            // if form is good, create the new account
+            /* if form is good, create the new account */
             try {
                 // TODO: uncomment when backend is ready
                 // await sendAccount(firstName, lastName, phone, email, password);
-                // if sendEvent is successful, go to next page after setting window variables
+                /* if sendEvent is successful, go to next page after setting window variables */
                 window.setFirstName(firstName);
                 window.setLastName(lastName);
                 window.setPhone(phone);
@@ -139,7 +222,7 @@ export function NewAccount() {
                 }
             }
         }
-        // if there is an error, tell the user
+        /* if there is an error, tell the user */
         else {
             const y = document.getElementById('accountFormError');
             if (y != null) {
@@ -157,39 +240,100 @@ export function NewAccount() {
         <p className='subtitle pageError' id='accountFormError'>Please fix the errors.</p>
         <p className='subtitle pageError' id='sendAccountError'>Something went wrong. Please try again.</p>
         <form className='vertical-form' onSubmit={handleSubmit}>
-            <label>First Name
-                <span id='firstNameError' className='formError'>Please make sure your first name is at least two characters and contains only letters, numbers, and hyphens.</span>
-                <input type="text" name='firstName' onChange={validateFirstName}/>
-            </label>
-            <label>Last Name
-                <span id='lastNameError' className='formError'>Please make sure your last name is at least two characters and contains only letters, numbers, and hyphens.</span>
-                <input type="text" name='lastName' onChange={validateLastName}/>
-            </label>
-            <label>Phone Number (optional)
-                <span id='phoneError' className='formError'>Please make sure your phone number contains only numbers and hyphens and is of the form xxx-xxx-xxxx.</span>
-                <input type="tel" name='phone' placeholder='555-555-5555' onChange={validatePhone}/>
-            </label>
-            <label>Email
-                <span id='emailError' className='formError'>Please enter a valid email.</span>
-                <input type="text" name='email' onChange={validateEmail}/>
-            </label>
-            <label>Password
-                <span id='passError' className='formError'>Password must be at least 8 characters including at least one uppercase letter, one lowercase letter, and one number. Spaces and the following special symbols are allowed: [ ! @ # $ % & * ]</span>
-                <section className='passwordHolder'>    
-                    <input type="password" name='password' id='passInp' onChange={validatePass}/>         
-                    <AiFillEyeInvisible className='passEye' id='passNoEye' onClick={ toggleOnPassword }/>
-                    <AiFillEye className='passEye yesEye' id='passEye' onClick={ toggleOffPassword }/>
-                </section>           
-            </label>
-            <label>Confirm Password
-                <span id='confirmError' className='formError'>Passwords don't match.</span>
-                <section className='passwordHolder'>    
-                    <input type="password" name='confirm' id='passConfirm' onChange={validateConfirm}/>         
-                    <AiFillEyeInvisible className='passEye' id='confirmNoEye' onClick={ toggleOnConfirm }/>
-                    <AiFillEye className='passEye yesEye' id='confirmEye' onClick={ toggleOffConfirm }/>
-                </section>  
-            </label>
-            <button type='submit' className='rectangleButton smallerButton'>Next</button>
+            <section className='formBox'>
+                <TextField 
+                    variant='outlined' 
+                    size='small'
+                    type="text" 
+                    label='First Name' 
+                    name='firstName'
+                    defaultValue={window.loggedInState ? window.firstNameState : ''}
+                    disabled={window.loggedInState}
+                    error={firstError} 
+                    helperText={firstError ? 'At least two characters (alphanumeric only)' : ''}  
+                    onChange={validateFirstName}/>
+                
+                <TextField 
+                    variant='outlined' 
+                    size='small'
+                    type="text" 
+                    label='Last Name' 
+                    name='lastName' 
+                    defaultValue={window.loggedInState ? window.lastNameState : ''}
+                    disabled={window.loggedInState}
+                    error={lastError} 
+                    helperText={lastError ? 'At least two characters (alphanumeric only)' : ''} 
+                    onChange={validateLastName}/>
+
+                <TextField 
+                    variant='outlined' 
+                    size='small'
+                    type="tel" 
+                    label='Phone Number (optional)' 
+                    name='phone' 
+                    placeholder='555-555-5555' 
+                    defaultValue={window.loggedInState ? window.phoneState : ''}
+                    disabled={window.loggedInState}
+                    error={phoneError} 
+                    helperText={phoneError ? 'xxx-xxx-xxxx' : ''} 
+                    onChange={validatePhone}/>
+
+                <TextField 
+                    variant='outlined' 
+                    size='small'
+                    type="text"
+                    label='Email' 
+                    name='email'
+                    defaultValue={window.loggedInState ? window.emailState : ''}
+                    disabled={window.loggedInState}
+                    error={emailError} 
+                    helperText={emailError ? 'Please enter a valid email' : ''}  
+                    onChange={validateEmail}/>
+                
+                {window.loggedInState ? <></> : <>
+                <TextField 
+                    id='passInp'
+                    variant='outlined'
+                    size='small'
+                    type="password" 
+                    autoComplete='true'
+                    name='password' 
+                    label='Password' 
+                    error={passError} 
+                    helperText={passError ? <>At least 8 characters. Must contain: <br/>1. One uppercase letter <br/>2. One lowercase letter <br/>3. One number <br/>Can contain spaces and the following special symbols: [ ! @ # $ % & * ] </> : ''}  
+                    onChange={validatePass}
+                    InputProps={{endAdornment:
+                        <InputAdornment position="end">  
+                            <AiFillEyeInvisible className='passEye' id='passNoEye' onClick={ toggleOnPassword }/>
+                            <AiFillEye className='passEye yesEye' id='passEye' onClick={ toggleOffPassword }/>
+                        </InputAdornment>}}/>       
+                
+                    <TextField 
+                        id='passConfirm' 
+                        variant='outlined'
+                        size='small'
+                        type="password" 
+                        autoComplete='true'
+                        label='Confirm Password' 
+                        name='confirm' 
+                        error={confirmError} 
+                        helperText={confirmError ? 'Passwords don\'t match' : ''} 
+                        onChange={validateConfirm}
+                        InputProps={{endAdornment:
+                            <InputAdornment position="end">  
+                                <AiFillEyeInvisible className='passEye' id='confirmNoEye' onClick={ toggleOnConfirm }/>
+                                <AiFillEye className='passEye yesEye' id='confirmEye' onClick={ toggleOffConfirm }/>
+                            </InputAdornment>}}/>
+                    </>}
+                </section>
+            {window.loggedInState ? <p className='successMessage'>Success!</p> : 
+                <Button className='basicBtn fitBtn smallMargin' variant='text' onClick={openDialogBox}><FaGoogle className='iconBtn'/> Sign up with your Google Account.</Button>}
+            <OAuthDialogList
+                open={open}
+                onClose={closeDialogBox}
+                title='Sign up for'
+            />
+            <Button type='submit' className='basicBtn' variant='contained'>Next</Button>
         </form>
     </>
     );
@@ -224,17 +368,16 @@ async function sendAccount(first_name: string, last_name: string, phone: string,
  */
 function toggleHelper(iconID: string, inputID: string, backupElem: HTMLElement | null, type:string) {
     let x = document.getElementById(iconID);
-    // show the correct icon
+    /* show the correct icon */
     if (x) {
         x.style.display = 'inline-block';
-        // change the type of the input
+        /* change the type of the input */
         let y = document.getElementById(inputID);
         if (y) {
             y.setAttribute('type', type);
-            console.log(y);
         }
     }
-    // if something went wrong, show the old element
+    /* if something went wrong, show the old element */
     else {
         if (backupElem) {
             backupElem.style.display = 'inline-block';
@@ -266,78 +409,6 @@ function togglePassword(id: string) {
 }
 
 /*
- * Displays the error with id 'id'. Returns true so that
- * errorFound is set properly.
- */
-function showError(id: string): boolean {
-    let x = document.getElementById(id);
-    if (x != null) {
-        x.style.display = 'inline-block';
-    } 
-    return true;
-}
-
-/* 
- * Validates the information in the form
- */
-function validate(firstName: string, lastName: string, phone: string, email: string, password: string, confirm: string) {
-    let errorFound = false;
-    /* Make sure the first name is at least two characters, remove extra white space, and check for alphanumeric only */
-    if (!(!validator.isEmpty(firstName) && validator.isAlphanumeric(firstName.replace('-', '')) && validator.isByteLength(firstName, {min: 2, max: undefined}))) {
-        errorFound = showError('firstNameError');
-    }
-
-    /* Make sure the last name is at least two characters, remove extra white space, and check for alphanumeric only */
-    if (!(!validator.isEmpty(lastName) && validator.isAlphanumeric(lastName.replace('-', '')) && validator.isByteLength(lastName, {min: 2, max: undefined}))) {
-        errorFound = showError('lastNameError');
-    }
-
-    /* Make sure the phone number, if given, is valid */
-    const regex = new RegExp('[0-9]{3}-[0-9]{3}-[0-9]{4}');
-    if ( !((validator.isWhitelisted(phone, '0123456789') && phone.length == 10) || 
-            (validator.isWhitelisted(phone, '0123456789-') && phone.length == 12 && regex.test(phone)) ||
-            (phone.length == 0))) {
-        errorFound = showError('phoneError');
-    }
-
-    /* Make sure there is a valid email */
-    if (!validator.isEmail(email)) {
-        errorFound = showError('emailError');
-    }
-
-    /* Make sure the password is valid */
-    if (! (validator.isWhitelisted(password.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%&* ') &&
-        validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1,  minSymbols: 0, returnScore: false }))) {
-        errorFound = showError('passError');
-    }
-
-    /* Make sure the confirmation password equals the original password */
-    if (confirm != password) {
-        errorFound = showError('confirmError');
-    }
-    return errorFound;
-}
-
-/* 
- * Removes redundancy from validation functions by performing the
- * show/hide of errors given the id of that error and the boolean
- * that must be checked
- */
-function validateHelper(id: string, valid: boolean) {
-    let x = document.getElementById(id);
-    if (valid) {
-        if (x != null) {
-            x.style.display = 'none';
-        }             
-    }
-    else {
-        if (x != null) {
-            x.style.display = 'inline-block';
-        } 
-    }
-}
-
-/*
  * Checks to see if there are any errors in order to show
  * or hide the error at the top of the page
  */
@@ -350,13 +421,13 @@ function checkAllErrors(firstName: string, lastName: string, phone: string, emai
     validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 0, returnScore: false })) && confirm == password;
     
     let x = document.getElementById('accountFormError');
-    // if there's an error, keep the item visible
+    /* if there's an error, keep the error visible */
     if (!error) {
         if (x != null) {
             x.style.display = 'inline-block';
         }
     }
-    // otherwise, hide it
+    /* otherwise, hide it */
     else {
         if (x != null) {
             x.style.display = 'none';

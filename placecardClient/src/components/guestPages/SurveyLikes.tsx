@@ -55,18 +55,21 @@ export function SurveyLikes() {
         const checked = event.target.checked;
         // find the size and name of the party
         let size = 1;
-        let name = ''
+        let name = '';
+        let groupName = undefined;
+        let groupID = undefined;
         for (let x of window.inviteesState) {
             if (x.id == id) {
-                size = x.size;
                 name = x.name;
+                groupName = x.groupName;
+                groupID = x.groupID;
                 break;
             }
         }
         if (checked) {
             // add the party to the list of those who are liked
             const tmp = window.likedInvitees;
-            tmp.push({id: id, name: name, size: size});
+            tmp.push({id: id, name: name, groupName: groupName, groupID: groupID});
             window.setLiked(tmp);
         }
         else {
@@ -74,7 +77,7 @@ export function SurveyLikes() {
             const tmp = [];
             for (let x of window.likedInvitees) {
                 if (x.id != id) {
-                    tmp.push({id: x.id, name: x.name, size: x.size})
+                    tmp.push({id: x.id, name: x.name, groupName: x.groupName, groupID: x.groupID})
                 }
             }
             window.setLiked(tmp);
@@ -87,11 +90,11 @@ export function SurveyLikes() {
                 <div className='survey' style={{ height: 400 }}>
                     <DataGrid rows={rows} columns={columns} disableColumnMenu={true} hideFooter={true} disableSelectionOnClick={true} rowHeight={80} />
                 </div>
-                <Button variant='outlined' className='generalButton' onClick={prevPage}>
+                {/* <Button variant='outlined' className='generalButton' onClick={prevPage}>
                             Go Back
                 </Button>
                 <Button variant='outlined' className='generalButton' onClick={nextPage}>
                             Continue
-                </Button>
+                </Button> */}
     </>);
 }

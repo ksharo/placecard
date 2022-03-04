@@ -1,0 +1,9 @@
+.logoImage {
+    max-width: 300px;
+    max-height: 100px;
+}
+
+.loginDialogText {
+    max-width: 300px;
+    margin-top: 20px !important;
+}

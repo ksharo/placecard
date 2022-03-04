@@ -1,3 +1,9 @@
 .spaceTop {
     margin-top: 48px;
 }
+
+.confBtn {
+    margin: 30px auto auto auto !important;
+    background-color: var(--highlight) !important;
+    color: white !important;
+}

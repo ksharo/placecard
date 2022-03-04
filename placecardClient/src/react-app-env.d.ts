@@ -39,20 +39,32 @@ interface Window {
 
     lovedInvitees: Invitee[];
     setLoved: any;
+
+    curGroupID: string | undefined;
+    setGroupID: any;
 }
 
 interface PlacecardEvent {
-    id: string;
+    id: string | ObjectId;
     name: string;
     date: string;
+    time?: string;
     location: string;
-    numAttend: number;
     perTable: number;
-    guestList: string[];
+    guestList: Invitee[];
+    tables: Table[];
 }
 
 interface Invitee {
     id: string;
     name: string;
-    size: number;
+    groupID?: string; 
+    groupName?: string;
+    contact?: string;
+}
+
+interface Table {
+    id: string;
+    name: string;
+    guests: Invitee[];
 }

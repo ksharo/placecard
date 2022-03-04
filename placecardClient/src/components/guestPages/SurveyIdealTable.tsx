@@ -9,17 +9,19 @@ export function SurveyIdealTable() {
     const partySize = 6;
     let curSize = 0;
     for (let x of window.lovedInvitees) {
-        curSize += x.size;
+        curSize += 1;
     }
     const [sizeLeft, setSizeLeft] = React.useState(perTable - (partySize + curSize));
     const names: Invitee[] = [];
     for (let x of window.likedInvitees) {
-        names.push({name: x.name, id: x.id, size: x.size});
+        names.push({name: x.name, id: x.id, groupName: x.groupName, groupID: x.groupID});
     }
     const makeRows = () => {
         let arr: Array<any> = [];
         names.map((name, ind) => {
-            arr[ind] = { id: ind, col0: name.name, col1: name.size, col2: name.id};
+            arr[ind] = { id: ind, col0: name.name, 
+                // col1: 'Group: ' + (name.groupName==undefined ? 'None' : name.groupName), 
+                col2: name.id};
         });
         return arr;
     };
@@ -27,16 +29,16 @@ export function SurveyIdealTable() {
 
     const columns: GridColDef[] = [
         {
-            field: 'col0', headerName: 'Party Name', headerAlign: 'center', flex: 2,
+            field: 'col0', headerName: 'Party Name', headerAlign: 'center', flex: 4,
         },
+        // {
+        //     field: 'col1', headerName: 'Group', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 3,  
+        // },
         {
-            field: 'col1', headerName: 'Party Size', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 1,  
-        },
-        {
-            field: 'col2', headerName: 'Include at table', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 1,
+            field: 'col2', headerName: 'Include at table', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 2,
             renderCell: (params) => { return (<section className='checkboxWithError'>
             <Checkbox id={'checkbox' + params.value} checked={isChecked(params.value)} onClick={updateLoves}></Checkbox>
-            <p id={'warning'+params.value} className='hiddenError'>Party too big.</p>
+            <p id={'warning'+params.value} className='hiddenError'>Table is full.</p>
             </section>) }
         }
     ];
@@ -64,11 +66,15 @@ export function SurveyIdealTable() {
         const checked = event.target.checked;
         // find the size and name of the party
         let size = 1;
-        let name = ''
+        let name = '';
+        let groupName = undefined;
+        let groupID = undefined;
         for (let x of window.inviteesState) {
             if (x.id == id) {
-                size = x.size;
+                size = 1;
                 name = x.name;
+                groupName = x.groupName;
+                groupID = x.groupID;
                 break;
             }
         }
@@ -76,12 +82,12 @@ export function SurveyIdealTable() {
             // check that the size is not too much
             let curSize = 0;
             for (let x of window.lovedInvitees) {
-                curSize += x.size;
+                curSize += 1;
             }
             if (curSize + partySize + size <= perTable) {
                 // add the party to the list of those who are loved
                 const tmp = window.lovedInvitees;
-                tmp.push({id: id, name: name, size: size});
+                tmp.push({id: id, name: name, groupName: groupName, groupID: groupID});
                 window.setLoved(tmp);
                 setSizeLeft(perTable - (curSize + partySize + size));
             }
@@ -103,7 +109,7 @@ export function SurveyIdealTable() {
             const tmp = [];
             for (let x of window.lovedInvitees) {
                 if (x.id != id) {
-                    tmp.push({id: x.id, name: x.name, size: x.size})
+                    tmp.push({id: x.id, name: x.name, groupName: x.groupName, groupID: x.groupID })
                 }
             }
             setSizeLeft(sizeLeft + size);
@@ -117,11 +123,11 @@ export function SurveyIdealTable() {
                 <div className='survey' style={{ height: 400 }}>
                     <DataGrid rows={rows} columns={columns} disableColumnMenu={true} hideFooter={true} disableSelectionOnClick={true} rowHeight={80} />
                 </div>
-                <Button variant='outlined' className='generalButton' onClick={prevPage}>
+                {/* <Button variant='outlined' className='generalButton' onClick={prevPage}>
                             Go Back
                 </Button>
                 <Button variant='outlined' className='generalButton' onClick={nextPage}>
                             Continue
-                </Button>
+                </Button> */}
     </>);
 }
