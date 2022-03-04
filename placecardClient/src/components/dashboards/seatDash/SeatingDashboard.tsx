@@ -6,7 +6,7 @@ import './SeatingDashboard.css';
 import { AppBar, CardActions, CardHeader, IconButton, InputAdornment, Switch, 
     TextField, Toolbar, Tooltip, Typography } from "@mui/material";
 import { AiFillEdit } from 'react-icons/ai';
-import { IoIosSave } from "react-icons/io";
+import { IoIosClose, IoIosSave } from "react-icons/io";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import moment from 'moment';
 import React, { useEffect, useLayoutEffect } from "react";
@@ -347,6 +347,15 @@ export function SeatingDashboard() {
 
     };
 
+    const clearSearch = () => {
+        const e = document.getElementById('searchBar');
+        if (e != null) {
+            (e as HTMLInputElement).value='';
+        }
+        searchTerm = '';
+        searchedUnseated(unseated);
+    }
+
     const search = (event: any, search? : string) => {
         if (search == undefined) {
             searchTerm = event.target.value.toLowerCase().trim();
@@ -590,11 +599,18 @@ export function SeatingDashboard() {
                                 <TextField
                                 placeholder='Search Guests'
                                 className='searchBar' 
+                                id='searchBar'
                                 size='small' 
                                 onChange={search}
                                 InputProps={{startAdornment:
                                     <InputAdornment position="start">  
                                         <FaSearch/>
+                                    </InputAdornment>, 
+                                endAdornment:
+                                    searchTerm.trim() != ''  && <InputAdornment position="end">  
+                                        <IconButton className='smallClose' onClick={clearSearch}>
+                                            <IoIosClose/>
+                                        </IconButton>
                                     </InputAdornment>}}>
                                 </TextField>
                             </section>
