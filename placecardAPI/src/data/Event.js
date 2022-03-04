@@ -42,13 +42,15 @@ async function getEvent(eventId) {
 
 async function getUserEvents(userId) {
     // Create INVALID USER ID MESSAGE
-    checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
-    checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
+    // checkPrecondition(userId, isUndefined, INVALID_EVENT_ID_MESSAGE);
+    // checkPrecondition(userId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
 
     const eventCollection = await events();
-    const userObjectId = ObjectId(userId);
+    // User id is currently a string in database, but should be objectId
+    // const userObjectId = ObjectId(userId);
     const queryParameters = {
-        _userId: userObjectId,
+        // _userId: userObjectId,
+        _userId: userId,
     };
     const userEvents = await eventCollection.find(queryParameters).toArray();
     // Do we need to check if events array is empty for a user?
