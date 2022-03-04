@@ -16,6 +16,9 @@ interface Window {
     phoneState: string;
     setPhone: any;
 
+    uidState: string;
+    setUID: any;
+
     profPicState: any;
     setProfPic: any;
 
@@ -46,6 +49,7 @@ interface Window {
 
 interface PlacecardEvent {
     id: string | ObjectId;
+    uid: string | ObjectId;
     name: string;
     date: string;
     time?: string;

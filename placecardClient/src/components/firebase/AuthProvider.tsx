@@ -23,7 +23,7 @@ const FirebaseAuthProvider = ({ children } : any) => {
             window.setLastName(name[name.length-1]);
             window.setPhone(user.phoneNumber);
             window.setEmail(user.email);
-
+            window.setUID(user.uid);
         }
         setFirebaseUser(user);
     };

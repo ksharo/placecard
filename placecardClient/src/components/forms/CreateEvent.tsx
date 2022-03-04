@@ -4,6 +4,7 @@ import validator from 'validator';
 import {uuid} from "uuidv4";
 import { Button, TextField } from '@mui/material';
 import React from 'react';
+import { ObjectId } from 'mongodb';
 
 
     let validName = true;
@@ -124,13 +125,13 @@ export function CreateEvent(){
             /* if form is good, sendEvent */
             try {
                 const initTable = [{id: uuid(), name: 'Table 1', guests: []}];
-                const result = await sendEvent(name, date, time, location, initTable, per_table);
+                const result = await sendEvent(name, window.uidState, date, time, location, initTable, per_table);
                 if (result.status == 200) {
                     const data = await result.json();
                     const id: string = data._id;
                     /* if sendEvent is successful, go to next page after adding event to global list */
                     const eventsList = window.eventsState;
-                    eventsList.push({id: id, name: name, date: date, time: time, location: location, perTable: per_table, tables: initTable, guestList: []});
+                    eventsList.push({id: id, uid: window.uidState, name: name, date: date, time: time, location: location, perTable: per_table, tables: initTable, guestList: []});
                     window.setEvents(eventsList);
                     history.push('/uploadGuestList');
                 }
@@ -223,7 +224,7 @@ export function CreateEvent(){
     );
 }
 
-async function sendEvent(name: string, date: string, time: string, location: string, initTable: Table[], per_table: number) {
+async function sendEvent(name: string, uid: string, date: string, time: string, location: string, initTable: Table[], per_table: number) {
     // location cannot be empty string when sent to database
     if (location == '') {
         location = 'N/A';
@@ -237,6 +238,7 @@ async function sendEvent(name: string, date: string, time: string, location: str
         // TODO: Simon change date to date and time info 
         body: JSON.stringify({
             event_name: name,
+            _userId: uid,
             event_start_time: Number(Date.parse(new Date(date + " " + time).toString())),
             location: location,
             attendees_per_table: Number(per_table),

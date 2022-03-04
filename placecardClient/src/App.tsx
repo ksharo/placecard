@@ -82,18 +82,23 @@ function App() {
   [window.likedInvitees, window.setLiked] = React.useState([]);
   [window.lovedInvitees, window.setLoved] = React.useState([]);
   [window.curGroupID, window.setGroupID] = React.useState('223');  
+  [window.uidState, window.setUID] = React.useState('BUTVFngo8WfgLdD0LJycLEz97ph2');
   useEffect(() => {
-    const getEvent = async() => {
-      const eventFetch = await fetch('http://192.168.50.48:3001/events/6222666115cdbb7e25bc388f');
-      const post = await eventFetch.json();
-      const event = {'id': post._id, 'name': post.event_name, 'date': (new Date(post.event_start_time)).toLocaleString().split(',')[0], 'time': (new Date(post.event_start_time)).toTimeString().split(' ')[0], 'location': post.location, 'tables': seedTables, 'perTable': post.attendees_per_table , 'guestList': seedGuests};
+    const getEvents = async() => {
+      const eventFetch = await fetch('http://192.168.50.48:3001/events/users/'+window.uidState);
+      const fetchedEvents = await eventFetch.json();
       const events = [...window.eventsState]; 
-      events.push(event);
+      for (let post of fetchedEvents) { 
+        const event = {'id': post._id, 'uid': post._userId, 'name': post.event_name, 'date': (new Date(post.event_start_time)).toLocaleString().split(',')[0], 'time': (new Date(post.event_start_time)).toTimeString().split(' ')[0], 'location': post.location, 'tables': seedTables, 'perTable': post.attendees_per_table , 'guestList': seedGuests};
+        events.push(event);
+      }
       window.setEvents(events);
-      window.setActiveEvent(event);
+      if (events.length > 0) {
+        window.setActiveEvent(events[0]);
+      }
     };
-    getEvent();
-  }, [window.loggedInState]);
+    getEvents();
+  }, [window.uidState]);
   
   // let seedEvent1: PlacecardEvent = { 'id': '62225aebb824bfc14bbaf071', 'name': 'newName', 'date': '01/29/2022', 'location': 'N/A', 'perTable': 2, 'tables': seedTables, 'guestList': seedGuests};
   
