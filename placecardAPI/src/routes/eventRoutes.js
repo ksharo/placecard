@@ -47,6 +47,35 @@ router.get("/:eventId", async (req, res) => {
     }
 });
 
+router.get("/users/:userId", async (req, res) => {
+    let userId = req.params.userId.trim();
+    try {
+        checkPrecondition(userId, _.isUndefined, INVALID_EVENT_ID_MESSAGE);
+        checkPrecondition(userId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
+    } catch (e) {
+        // Create error type for INVALID USER ID later
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_EVENT_ID,
+            statusCodes.BAD_REQUEST,
+            res
+        );
+    }
+
+    try {
+        const userEvents = await events.getUserEvents(userId);
+        return res.json(userEvents);
+    } catch (e) {
+        // Create error type for USER EVENTS NOT FOUND later
+        return createErrorResponse(
+            generateErrorMessage(e),
+            ERROR_TYPES.EVENT_NOT_FOUND,
+            statusCodes.NOT_FOUND,
+            res
+        );
+    }
+});
+
 router.post("/newEvent", async (req, res) => {
     const newEvent = req.body;
     try {
