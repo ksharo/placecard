@@ -16,7 +16,7 @@ const schema = Joi.object({
     attendees_per_table: Joi.number()
         .integer()
         .greater(0)
-        .max(Joi.ref("expected_number_of_attendees"))
+        // .max(Joi.ref("expected_number_of_attendees"))
         .required(),
     guest_list: Joi.array().required(),
 }).strict();
