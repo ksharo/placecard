@@ -13,12 +13,21 @@ import React, { useEffect, useLayoutEffect } from "react";
 import {uuid} from "uuidv4";
 import { FaExclamationCircle, FaSearch } from "react-icons/fa";
 
+// TODO: with undo, make sure that the data history
+// resets future once something has been undone and then
+// some new action has been taken
+// ALSO: make sure everything gets deep copied in functions like
+// move groups together, seat unseated groups, etc.
 
 const unseatedID = uuid();
 let searchTerm = '';
 let seatGroupsTogether = false;
-let dataHistory: any[] = [];
-let timePoint = 0;
+let dataHistory: {past: any[], present: any[], future: any[]} = {
+    past: [],
+    present: [],
+    future: []
+};
+// let timePoint = 0;
 
 export function SeatingDashboard() {
     const history = useHistory();
@@ -67,8 +76,8 @@ export function SeatingDashboard() {
     const [tablesData, setTablesData] = React.useState(origTables);
     const [unseated, setUnseated] = React.useState(tmpUnseated);
     const [allData, setData] = React.useState([tablesData, unseated]);
-    if (dataHistory.length == 0) {
-        dataHistory.push(allData);
+    if (dataHistory.present.length == 0) {
+        dataHistory.present = allData;
     }
 
     const [editing, toggleEditing] = React.useState(editList);
@@ -80,19 +89,10 @@ export function SeatingDashboard() {
     }, [unseated]);
 
     useEffect(() => {
-        if (dataHistory[dataHistory.length-1][0] != allData[0] || dataHistory[dataHistory.length-1][1] != allData[1] ) {
-            dataHistory.push(allData);
+        if (dataHistory.present.length > 0) {
+            dataHistory.past.push([JSON.parse(JSON.stringify(dataHistory.present))]);
+            dataHistory.present = allData;
         }
-        // cleans from duplicates
-        let tmpHistory = [dataHistory[0]];
-        for (let i = 0; i < dataHistory.length; i++) {
-            if (tmpHistory[tmpHistory.length-1][0] != dataHistory[i][0] || tmpHistory[tmpHistory.length-1][1] != dataHistory[i][1]) {
-                tmpHistory.push(dataHistory[i]);
-            }
-        }
-        dataHistory = [...tmpHistory];
-        timePoint = dataHistory.length-1;
-        console.log(timePoint, dataHistory);
     }, [allData]);
 
     const renameTable = (table: Table, open: boolean) => {
@@ -111,6 +111,8 @@ export function SeatingDashboard() {
     }
 
     const onDragEnd = (result: any) => {
+        let newTables = tablesData;
+        let newUnseated = unseated;
         // make sure that result is in the right format
         if (!result.destination) return;
         const { source, destination } = result;
@@ -170,7 +172,7 @@ export function SeatingDashboard() {
                         }
                     }
                     setUnseated(tmpNotSeated);
-                    setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
+                    newUnseated = tmpNotSeated;
                 }
                 for (let x of tmpTables) {
                     if (x.id == source.droppableId)  {
@@ -181,7 +183,7 @@ export function SeatingDashboard() {
                     }
                 }
                 setTablesData([...tmpTables]);
-                setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
+                newTables = [...tmpTables];
             }
             else {
                 if (source.droppableId == unseatedID) {
@@ -243,8 +245,9 @@ export function SeatingDashboard() {
                     }
                     setTablesData([...tmpTables]);
                     setUnseated([...sourceItems]);
+                    newUnseated = [...sourceItems];
                     setSeated(seated + 1);
-                    setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
+                    newTables = [...tmpTables];
                 }
                 else if (destination.droppableId == unseatedID) {
                     // find the data at the to/from columns
@@ -292,8 +295,9 @@ export function SeatingDashboard() {
                     }
                     setTablesData([...tmpTables]);
                     setUnseated([...destItems]);
+                    newUnseated = [...destItems];
                     setSeated(seated - 1);
-                    setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
+                    newTables = [...tmpTables];
                 }
             }
         }
@@ -329,9 +333,17 @@ export function SeatingDashboard() {
                     }
                 }
                 setTablesData([...tmpTables]);
-                setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
+                newTables = [...tmpTables]
             }
         }
+
+        newTables = JSON.parse(JSON.stringify(newTables));
+        for (let x of newTables) {
+            x = JSON.parse(JSON.stringify(x));
+            x.guests = [...x.guests];
+        }
+        setData([newTables, [...newUnseated]]);
+
     };
 
     const search = (event: any, search? : string) => {
@@ -429,12 +441,9 @@ export function SeatingDashboard() {
                 // find all the guests with groupID
                 const tmpGuests = [...x.guests];
                 for (let y of tmpGuests) {
-                    console.log(y);
                     if (y.groupID == groupID) {
-                        console.log(y);
                         // remove them from their table
                         const [removed] = tmpTables[tmpTables.indexOf(x)].guests.splice(x.guests.indexOf(y), 1);
-                        console.log(tmpTables[tmpTables.indexOf(x)]);
                         // keep track of the guest
                         guestsToAdd.push(removed);
                     }
@@ -475,14 +484,34 @@ export function SeatingDashboard() {
     };
 
     const undo = () => {
-        timePoint -= 1;
-        console.log('hi?');
-        if (timePoint >= 0) {
-            console.log(timePoint, dataHistory);
-            let tmpTables = [...dataHistory[timePoint][0]];
-            setTablesData(JSON.parse(JSON.stringify(tmpTables)));
-            console.log(tmpTables);
-            setUnseated([...dataHistory[timePoint][1]]);
+        if (dataHistory.past.length > 0) {
+            dataHistory.future.push(dataHistory.present);
+            dataHistory.present = dataHistory.past.pop();
+            if (dataHistory.present.length == 1) {
+                dataHistory.present = dataHistory.present[0]
+            }
+            const tmpTables = JSON.parse(JSON.stringify(dataHistory.present[0]));
+            for (let x of tmpTables) {
+                x = JSON.parse(JSON.stringify(x));
+                x.guests = [...x.guests];
+            }
+            setTablesData(tmpTables);
+            setUnseated(JSON.parse(JSON.stringify(dataHistory.present[1])));
+        }
+    };
+    const redo = () => {
+        if (dataHistory.future.length > 0) {
+            dataHistory.past.push(dataHistory.present);
+            dataHistory.present = dataHistory.future.pop();
+            if (dataHistory.present.length == 1) {
+                dataHistory.present = dataHistory.present[0]
+            }
+            const tmpTables = JSON.parse(JSON.stringify(dataHistory.present[0]));
+            for (let x of tmpTables) {
+                x.guests = [...x.guests];
+            }
+            setTablesData(tmpTables);            
+            setUnseated(JSON.parse(JSON.stringify(dataHistory.present[1])));
         }
     };
 
@@ -589,8 +618,9 @@ export function SeatingDashboard() {
                                 <Switch defaultChecked={false} onChange={toggleGroupMode}/>
                                 Move Groups Together
                             </label>
-                            <Button variant='text' className='whiteTxtBtn' size='small' onClick={undo}>Undo</Button>
-                            <Button variant='text' className='whiteTxtBtn' size='small' onClick={clearAll}>Redo</Button>
+                            <Button variant='text' className='whiteTxtBtn' size='small' onClick={undo} disabled={dataHistory.past.length==0}>Undo</Button>
+                            <Button variant='text' className='whiteTxtBtn' size='small' onClick={redo} disabled={dataHistory.future.length==0}>Redo</Button>
+                            &#160;&#160;|&#160;&#160;
                             <Button variant='text' className='whiteTxtBtn' size='small' onClick={clearAll}>Clear All</Button>
                             &#160;&#160;|&#160;&#160;
                             <Button variant='text' className='whiteTxtBtn' size='medium'>Generate New Plan</Button>
