@@ -1,10 +1,4 @@
-.guestTableHeader{
-	display: grid;
-	grid-template-columns: [first] auto [second] auto [third] auto [fourth] 124px [fifth] 70px [sixth] 70px;
-	text-align: left;
-	column-gap: 10px;
-	row-gap: 10px;
-}
+
 
 #guestListFileUpload {
 	display: none;
@@ -157,4 +151,27 @@
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
+}
+.guestTableHeader, .resultTable{
+	display: grid;
+	/* grid-template-columns: [first] auto [second] auto [third] auto [fourth] 124px [fifth] 70px [sixth] 70px; */
+    grid-template-columns: [first] 20px [second] auto [third] auto [fourth] 124px [fifth] 70px;
+	text-align: left;
+	/* column-gap: 10px;
+	row-gap: 10px; */
+}
+
+
+/* .resultTable {
+	display: grid;
+	grid-template-columns: [first] 20px [second] auto [third] auto [fourth] 124px [fifth] 70px;
+	text-align: left;
+} */
+
+.firstCol{
+	grid-column: 1/ span 2;
+}
+
+.subgroupMember{
+	grid-column: 2;
 }
