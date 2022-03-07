@@ -1,0 +1,212 @@
+.box {
+    border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    text-align: left !important;
+    width: 80%;
+    height: 80%;
+    min-width: 500px;
+    max-width: 800px;
+    align-self: center;
+    font-size: 14px;
+    margin-top: 0px !important;
+}
+
+.box * {
+    padding-bottom: 6px;
+    padding-top: 6px;
+    padding-left: 4px;
+    margin: 0;
+}
+
+.box textarea {
+    border: 1px solid black;
+    padding-left: 2px;
+    padding-right: 2px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.centered {
+    display: flex;
+    flex-direction: column;
+}
+
+.details {
+    padding: 1px 1px 1px 16px;
+}
+
+.customInput {
+    margin-left: 16px;
+    margin-right: 80px;
+    padding-bottom: 80px;
+}
+
+.signature {
+    margin-left: 4px;
+    margin-right: 80px;
+    margin-bottom: 10px;
+}
+
+.horizontalFlex {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.verticalFlex {
+    margin-right: 50px;
+    margin-left: 50px;
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+    text-align: center;
+}
+
+.verticalFlex a {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-size: 16px;
+}
+
+.innerBox {
+    width: 40%;
+    height: 50%;
+    min-width: 400px;
+    min-height: 300px;
+    margin: auto;
+    margin-top: 5%;
+    background-color: white;
+}
+
+.biggerBox {
+    height: 60%;
+    min-height: 480px;
+}
+
+.hiddenBoxes {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    z-index: 5;
+}
+
+.smallButton {
+    margin: 40px 30px 0px 30px;
+    padding: 10px 25px 10px 25px;
+    font-size: 20px;
+}
+
+.smallBoxTitle {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.profilePage {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 24px;
+}
+
+.profileElem {
+    font-size: 18px;
+    padding: 8px 8px 12px 8px;
+    font-weight: bold;
+}
+
+.bottomButtons {
+    margin: 0px 4px 0px 4px;
+}
+
+.profileData {
+    font-weight: normal;
+    padding-left: 10px;
+    font-size: 16px;
+}
+
+.editable {
+    display: none;
+    border: 1px solid black;
+    margin: 0px 8px 0px 8px;
+}
+
+.homeButton {
+    width: 100px;
+    margin: 24px auto 24px auto !important;
+    font-size: 24px !important;
+}
+
+#editProfileError {
+    margin-bottom: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+.editProfError {
+    color: red;
+    font-size: 12px;
+    margin-left: 6px;
+    display: none;
+}
+
+.picButton {
+    margin: 0px 620px 12px 0px !important;
+    padding-top: 0 !important;
+}
+
+#editProfPic {
+    display: none;
+}
+
+#fileChooser {
+    background-color: rgba(228, 228, 228, 0.555);
+    border: 0.3px solid black;
+    text-align: center;
+    padding: 5px !important;
+    margin-left: 10px !important;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+#fileChooser:hover {
+    background-color: rgba(228, 228, 228, 0.888);
+    cursor: pointer;
+}
+
+.closeHorizontalFlex {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.passInputs input {
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
+.passInputs label {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    width: 55%;
+    min-width: 180px;
+    margin: auto auto 10px auto;
+  }
+
+.passInputs {
+    margin-bottom: 25px;
+}
+
+.passChangeFooter {
+    margin: auto 24px auto 24px;
+}
+
+.closeBox {
+    display: flex !important;
+    margin: 5px!important;
+}

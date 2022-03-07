@@ -1,5 +1,7 @@
-const eventsData = require('./Event');
+const eventsData = require("./Event");
+const guestsData = require("./Guest");
 
 module.exports = {
-    events: eventsData
+  events: eventsData,
+  guests: guestsData,
 };
