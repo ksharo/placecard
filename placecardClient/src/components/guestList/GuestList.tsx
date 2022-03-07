@@ -8,14 +8,13 @@ import { TextField, Switch, Checkbox } from "@mui/material";
 import './GuestList.css'
 
 
-
 export function GuestList(){
 	const title			= 'Add a Guest List For Your Event'
 	const pageDescription	= 'Download our guest list template, fill it out, and drop it back here'
 
 	const tableTitle		= 'Enter Guest List Manually'
 	const tableDescription	= 'You only need to provide one method of contact for each guest'
-	const history = useHistory();
+	const history			= useHistory();
 
 	interface guestListDataInterface {
 		individualName?:	string;
@@ -26,9 +25,23 @@ export function GuestList(){
 		groupMembers:		any[]
 	}
 
-	const [guestListData, setGuestListData] = useState<guestListDataInterface[]>([])
+	const [guestListData, setGuestListData]					= useState<guestListDataInterface[]>([])
+	const [userFile, setUserFile] 						= useState(undefined);
 
-	const [userFile, setUserFile] = useState(undefined);
+	const [individualAddPopupState, setIndividualAddPopupState]	= useState(false)
+	const [groupAddPopupState, setGroupAddPopupState]			= useState(false)
+
+	const [currIndiName, setCurrIndiName]					= useState("")
+	const [currIndiContact, setCurrIndiContact]				= useState("")
+	const [currPlusOneName, setCurrPlusOneName]				= useState("")
+	const [currIndiSendSurvey, setCurrIndiSendSurvey]			= useState(true)
+
+	const [currGrpName, setCurrGrpName]					= useState("")
+	const [currGrpContact, setCurGrpContact]				= useState('')
+	const [currGrpSize, setCurrGrpSize]					= useState("2")
+	const [currGrpSendSurvey, setCurrGrpSendSurvey]			= useState(true)
+	const [currGrpMembers, setCurrGrpMembers]				= useState(["", ""])
+
 
 	const fileSelected = (event: any) => {
 		const selectedFile = event.target.files[0];
@@ -93,18 +106,13 @@ export function GuestList(){
 		history.push('/editSurvey');
 	}
 
-	const [currIndiName, setCurrIndiName]			= useState("")
-	const [currIndiContact, setCurrIndiContact]		= useState("")
-	const [currPlusOneName, setCurrPlusOneName]		= useState("")
-	const [currIndiSendSurvey, setCurrIndiSendSurvey]	= useState(true)
-
 	function addIndiToTable(){
 		setGuestListData([...guestListData, {
-			"groupName": currPlusOneName ? (currIndiName + " and PlusOne") : currIndiName,
-			"groupContact": currIndiContact,
-			"groupSize": currGrpSize,
-			"sendSurvey": currIndiSendSurvey,
-			"groupMembers": currPlusOneName ? [currIndiName, currPlusOneName] : []
+			"groupName":		currPlusOneName ? (currIndiName + " and PlusOne") : currIndiName,
+			"groupContact":	currIndiContact,
+			"groupSize":		currGrpSize,
+			"sendSurvey":		currIndiSendSurvey,
+			"groupMembers":	currPlusOneName ? [currIndiName, currPlusOneName] : []
 		}])
 		console.log("name", currIndiName, "contact", currIndiContact, "+1", currPlusOneName, 'sendSurve??', currIndiSendSurvey)
 		setCurrIndiName("")
@@ -113,6 +121,49 @@ export function GuestList(){
 		setCurrIndiSendSurvey(true)
 	}
 
+	function addGrpToTable(){
+		setGuestListData([...guestListData, {
+			"groupName":		currGrpName,
+			"groupContact":	currGrpContact,
+			"groupSize":		currGrpSize,
+			"sendSurvey":		currGrpSendSurvey,
+			"groupMembers":	currGrpMembers
+		}])
+		console.log(currGrpName, currGrpContact, currGrpSize, currGrpSendSurvey, currGrpMembers)
+		setCurrGrpName("")
+		setCurGrpContact("")
+		setCurrGrpSize("2")
+		setCurrGrpSendSurvey(true)
+		setCurrGrpMembers(["", ""])
+	}
+
+	function updateGrpMembers(index: number, event: any) {
+		setCurrGrpMembers((prev) => {
+			return prev.map((item, i) => {
+				if (i !== index) {
+					return item;
+				}
+				return event.target.value
+			})
+		})
+	}
+
+	function changeGrpSize(newNum: string) {
+		setCurrGrpSize(newNum)
+		let newNumInt = parseInt(newNum)
+		if (!isNaN(newNumInt)){
+			let difference = 0
+			if ((difference = newNumInt - currGrpMembers.length) > 0 ){
+				const arr = currGrpMembers.concat(Array(difference).fill(""));
+				setCurrGrpMembers(arr)
+			}
+			else if (difference < 0){
+				const arr = currGrpMembers
+				arr.splice(newNumInt)
+				setCurrGrpMembers(arr)
+			}
+		}
+	}
 
 	function individualPopOut() {
 		return(
@@ -160,51 +211,56 @@ export function GuestList(){
 		)
 	}
 
-	const [currGrpName, setCurrGrpName]			= useState("")
-	const [currGrpContact, setCurGrpContact]		= useState('')
-	const [currGrpSize, setCurrGrpSize]			= useState("2")
-	const [currGrpSendSurvey, setCurrGrpSendSurvey]	= useState(true)
+	function groupPopOut(){
+		return(
+			<section className="buttonPopOut">
+				<section className="groupInfo">
+					{/* <AnimatedInput  label="Group Name" placeholder={fullNameList}></AnimatedInput> */}
+					{/* <TypeWriterPlaceholder></TypeWriterPlaceholder> */}
+					<TextField
+						placeholder={namePlaceholder}
+						label="Group Name"
+						value={currGrpName}
+						onChange={e => setCurrGrpName(e.target.value)}
+					/>
+					<TextField
+						placeholder="Email or Phone Number"
+						label="Group Contact"
+						value={currGrpContact}
+						onChange={e=>setCurGrpContact(e.target.value)}
+					/>
+					<TextField
+						type="number"
+						label="Group Size"
+						value={currGrpSize}
+						// onChange={e=>setCurrGrpSize(parseInt(e.target.value))}
+						onChange={e=>changeGrpSize(e.target.value)}
+					/>
+					<section>
+						Send Survey?
+						<Switch
+							checked={currGrpSendSurvey}
+							onChange={e => setCurrGrpSendSurvey(e.target.checked)}
+						/>
+					</section>
+				</section>
+				<p>Leave member name blank if you do not know the member's name</p>
+				<section className="groupMembers">
+					{currGrpMembers.map((name, i) => (
+						<TextField
+							label="Member Name"
+							placeholder="Leave Blank if Unknown"
+							value={name}
+							onChange={event=>updateGrpMembers(i, event)}
+						/>
+					))}
+				</section>
 
-
-	const [currGrpMembers, setCurrGrpMembers]		= useState(["", ""])
-	// const [currGrpMembers, setCurrGrpMembers]		= useState([{"name": ""}, {"name": ""}])
-
-	// const handleInputChange = (e) => {
-	// 	const { name, value } = e.target;
-	// 	setCurrGrpMembers({
-	// 		...values,
-	// 		[name]: value,
-	// 	});
-	// };
-
-
-
-	function addGrpToTable(){
-		setGuestListData([...guestListData, {
-			"groupName": currGrpName,
-			"groupContact": currGrpContact,
-			"groupSize": currGrpSize,
-			"sendSurvey": currGrpSendSurvey,
-			"groupMembers": currGrpMembers
-		}])
-		console.log(currGrpName, currGrpContact, currGrpSize, currGrpSendSurvey, currGrpMembers)
-		setCurrGrpName("")
-		setCurGrpContact("")
-		setCurrGrpSize("2")
-		setCurrGrpSendSurvey(true)
-		setCurrGrpMembers(["", ""])
-	}
-
-
-	const updateGrpMembers = (index: number, event: any) => {
-		setCurrGrpMembers((prev) => {
-			return prev.map((item, i) => {
-				if (i !== index) {
-					return item;
-				}
-				return event.target.value
-			})
-		})
+				<section className="addButtonGroup">
+					<Button color="primary" variant="contained" onClick={()=>addGrpToTable()}>Add</Button>
+				</section>
+			</section>
+		)
 	}
 
 	const [namePlaceholder, setNamePlaceholder]		= useState("Appleseed Family")
@@ -271,79 +327,6 @@ export function GuestList(){
 
 	//#endregion
 
-	function changeGrpSize (newNum: string) {
-		setCurrGrpSize(newNum)
-		let newNumInt = parseInt(newNum)
-		if (!isNaN(newNumInt)){
-			let difference = 0
-			if ((difference = newNumInt - currGrpMembers.length) > 0 ){
-				const arr = currGrpMembers.concat(Array(difference).fill(""));
-				setCurrGrpMembers(arr)
-			}
-			else if (difference < 0){
-				const arr = currGrpMembers
-				arr.splice(newNumInt)
-				setCurrGrpMembers(arr)
-			}
-		}
-	}
-
-	function groupPopOut(){
-		return(
-			<section className="buttonPopOut">
-				<section className="groupInfo">
-					{/* <AnimatedInput  label="Group Name" placeholder={fullNameList}></AnimatedInput> */}
-					{/* <TypeWriterPlaceholder></TypeWriterPlaceholder> */}
-					<TextField
-						placeholder={namePlaceholder}
-						label="Group Name"
-						value={currGrpName}
-						onChange={e => setCurrGrpName(e.target.value)}
-					/>
-					<TextField
-						placeholder="Email or Phone Number"
-						label="Group Contact"
-						value={currGrpContact}
-						onChange={e=>setCurGrpContact(e.target.value)}
-					/>
-					<TextField
-						type="number"
-						label="Group Size"
-						value={currGrpSize}
-						// onChange={e=>setCurrGrpSize(parseInt(e.target.value))}
-						onChange={e=>changeGrpSize(e.target.value)}
-					/>
-					<section>
-						Send Survey?
-						<Switch
-							checked={currGrpSendSurvey}
-							onChange={e => setCurrGrpSendSurvey(e.target.checked)}
-						/>
-					</section>
-				</section>
-				<p>Leave member name blank if you do not know the member's name</p>
-				<section className="groupMembers">
-					{currGrpMembers.map((name, i) => (
-						<TextField
-							label="Member Name"
-							placeholder="Leave Blank if Unknown"
-							value={name}
-							onChange={event=>updateGrpMembers(i, event)}
-						/>
-					))}
-				</section>
-
-				<section className="addButtonGroup">
-					<Button color="primary" variant="contained" onClick={()=>addGrpToTable()}>Add</Button>
-				</section>
-			</section>
-		)
-	}
-
-	const [individualAddPopupState, setIndividualAddPopupState] = useState(false)
-	const [groupAddPopupState, setGroupAddPopupState] = useState(false)
-
-
 	return(
 		<>
 			<section>
@@ -388,8 +371,8 @@ export function GuestList(){
 					<button className="addButton" id="addCoupleOrGroupButton" type="button" onClick={() => {setGroupAddPopupState(!groupAddPopupState); setIndividualAddPopupState(false)} }>Add Couple or Group</button>
 				</section>
 
-				{ individualAddPopupState && individualPopOut()}
-				{ groupAddPopupState && groupPopOut()}
+				{ individualAddPopupState && individualPopOut() }
+				{ groupAddPopupState && groupPopOut() }
 
 				<section className = "manualGuestListSection">
 					<h3>{tableTitle}</h3>
@@ -415,26 +398,7 @@ export function GuestList(){
 								</>
 							))}
 
-							{/* <span className="firstCol">Jayson Infante</span>
-							<span>jaysonAy@g.com</span>
-							<span>True</span>
-							<span>Delete</span>
-
-							<span className="firstCol">Caleb,Chloe,Abby Group</span>
-							<span>calebonthemove@gmail.com</span>
-							<span>True</span>
-							<span>Delete</span>
-							<span className="subgroupMember">Caleb</span>
-							<span className="subgroupMember">Chloe</span>
-							<span className="subgroupMember">Abby</span>
-
-							<span className="firstCol">Matt brantl</span>
-							<span>mb@g.com</span>
-							<span>True</span>
-							<span>Delete</span> */}
 						</section>
-						{/* <GuestListTable></GuestListTable> */}
-
 					</section>
 				</section>
 
