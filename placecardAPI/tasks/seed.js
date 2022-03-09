@@ -32,13 +32,26 @@ const guestNames = uniqueNamesGenerator({
   dictionaries: [names]
 })
 
-const emailNumber = NumberDictionary.generate({min: 100, max: 999})
+const emailNumber = NumberDictionary.generate({min: 100, max: 999});
 const emails = uniqueNamesGenerator({
   dictionaries: [adjectives, colors, emailNumber, ['@gmail.com']],
   length: 4,
   separator: "",
   style: "capital"
 })
+
+const phoneNumber = NumberDictionary.generate({min: 0, max: 9});
+const phones = uniqueNamesGenerator({
+  dictionaries: [phoneNumber, phoneNumber, phoneNumber, ['-'], phoneNumber, phoneNumber, phoneNumber, ['-'], phoneNumber, phoneNumber, phoneNumber, phoneNumber],
+  length: 12,
+  separator: ""
+});
+
+const ageNumber = NumberDictionary.generate({min: 3, max: 99});
+const ages = uniqueNamesGenerator({
+  dictionaries: [ageNumber],
+  length: 1
+});
 
 
 
@@ -48,8 +61,8 @@ let eventSeed = [];
 let guestsSeed = [];
 
 
-function generateData() {
-
+function generateEvents( numEvents ) {
+  
 }
 
 async function main() {
