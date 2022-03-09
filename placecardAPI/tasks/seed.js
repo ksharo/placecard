@@ -5,13 +5,13 @@ const guests = data.guests;
 
 const { uniqueNamesGenerator, Config, countries, names, adjectives, colors, starWars, NumberDictionary } = require('unique-names-generator');
 
-const eventName = uniqueNamesGenerator({
+let eventName = uniqueNamesGenerator({
   dictionaries: [adjectives, starWars],
   length: 2,
   separator: " "
 });
 
-const tableNames = uniqueNamesGenerator({
+let tableNames = uniqueNamesGenerator({
   dictionaries: [adjectives, colors],
   length: 2,
   separator: " "
@@ -21,19 +21,22 @@ function randomDate(start, end) {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
 
-const location = uniqueNamesGenerator({
+let randomLocation = uniqueNamesGenerator({
   dictionaries: [countries]
 });
 
-const attendeesPerTable = NumberDictionary.generate({ min: 4, max: 16 });
+let attendeesPerTable = NumberDictionary.generate({ min: 4, max: 16 });
 
 
-const guestNames = uniqueNamesGenerator({
-  dictionaries: [names]
+let guestNames = uniqueNamesGenerator({
+  dictionaries: [names, names],
+  length: 2,
+  separator: " ",
+  style: "capital"
 })
 
 const emailNumber = NumberDictionary.generate({min: 100, max: 999});
-const emails = uniqueNamesGenerator({
+let emails = uniqueNamesGenerator({
   dictionaries: [adjectives, colors, emailNumber, ['@gmail.com']],
   length: 4,
   separator: "",
@@ -41,17 +44,18 @@ const emails = uniqueNamesGenerator({
 })
 
 const phoneNumber = NumberDictionary.generate({min: 0, max: 9});
-const phones = uniqueNamesGenerator({
+let phones = uniqueNamesGenerator({
   dictionaries: [phoneNumber, phoneNumber, phoneNumber, ['-'], phoneNumber, phoneNumber, phoneNumber, ['-'], phoneNumber, phoneNumber, phoneNumber, phoneNumber],
   length: 12,
   separator: ""
 });
 
-const ageNumber = NumberDictionary.generate({min: 3, max: 99});
-const ages = uniqueNamesGenerator({
-  dictionaries: [ageNumber],
+const partySizeNumber = NumberDictionary.generate({min: 1, max: 10});
+let partySizes = uniqueNamesGenerator({
+  dictionaries: [partySizeNumber],
   length: 1
 });
+
 
 
 
@@ -62,13 +66,254 @@ let guestsSeed = [];
 
 
 function generateEvents( numEvents ) {
-  
+
 }
 
 async function main() {
   const db = await dbConnection.connectToDb();
 
-  
+  db.collection("events").drop();
+  db.collection("guests").drop();
+
+  let master_event_schema = {
+    event_name: "Event 1",
+    tables: [],
+    event_start_time: 1646857962,
+    location: "Hoboken",
+    attendees_per_table: 8,
+    guest_list: []
+  }
+
+  // console.log(master_event_schema);
+
+  await events.createEvent(master_event_schema);
+
+  let guestsSchemas = [
+    {
+      first_name: "Guest",
+      last_name: "One",
+      email: "GuestOne@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Two",
+      email: "GuestTwo@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Three",
+      email: "GuestThree@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Four",
+      email: "GuestFour@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Five",
+      email: "GuestFive@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Six",
+      email: "GuestSix@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Seven",
+      email: "GuestSeven@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Eight",
+      email: "GuestEight@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Nine",
+      email: "GuestNine@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Ten",
+      email: "GuestTen@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Eleven",
+      email: "GuestEleven@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Twelve",
+      email: "GuestTwelve@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Thirteen",
+      email: "GuestThirteen@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Fourteen",
+      email: "GuestFourteen@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Fifteen",
+      email: "GuestFifteen@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Sixteen",
+      email: "GuestSixteen@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Seventeen",
+      email: "GuestSeventeen@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Eighteen",
+      email: "GuestEighteen@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Nineteen",
+      email: "GuestNineteen@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    },
+    {
+      first_name: "Guest",
+      last_name: "Twenty",
+      email: "GuestTwenty@gmail.com",
+      party_size: 1,
+      survey_response: {
+        disliked: [],
+        liked: [],
+        ideal: []
+      }
+    }
+  ]
+
+  await Promise.all( guestsSchemas.map( async (guestSchema) => {
+    await guests.createGuest(guestSchema);
+  }));
 
   console.log("Done seeding database");
 
