@@ -36,42 +36,58 @@ export function SeatingDashboard() {
     }  
     
     const editList: boolean[] = [];
-    for (let x in (window.activeEvent? window.activeEvent.tables : [])) {
+    for (let _ in (window.activeEvent? window.activeEvent.tables : [])) {
         editList.push(false);
     }
 
     let origTables: Table[] = [];
-    const tmpUnseated: Invitee[] = [];
+    let tmpUnseated: Invitee[] = [];
     const idList: string[] = [];
 
     let survComp = 0;
     let perTable = -1;
     let num_attend = 0;
-    let tables = Math.ceil(num_attend / perTable);
-    let seats = tables*perTable;
+    let tables = ((window.activeEvent != null) ? window.activeEvent.tables.length : 0);
+    let tmpSeats = tables*perTable;
 
-    if (window.activeEvent != undefined) {
-        origTables = window.activeEvent.tables;
-        for (let x of origTables) {
-            idList.push(x.id);
-        }
-        perTable = window.activeEvent.perTable;
-        num_attend = window.activeEvent.guestList.length;
-        tables = Math.ceil(num_attend / perTable);
-        seats = tables*perTable;
-        for (let x of window.activeEvent.guestList) {
-            let isUnseated = true;
-            for (let t of window.activeEvent.tables) {
-                if (t.guests.includes(x)) {
-                    isUnseated = false;
-                    break;
+    const setVariables = () => {
+        dataHistory.past = [];
+        dataHistory.present = [];
+        dataHistory.future = [];
+        if (window.activeEvent != undefined && window.activeEvent != null) {
+            tmpUnseated = [];
+            origTables = window.activeEvent.tables;
+            for (let x of origTables) {
+                idList.push(x.id);
+            }
+            perTable = window.activeEvent.perTable;
+            tables = ((window.activeEvent != null) ? window.activeEvent.tables.length : 0);
+            num_attend = window.activeEvent.guestList.length;
+            tmpSeats = tables*perTable;
+            const guests = window.activeEvent.guestList;
+            for (let i = 0; i < guests.length; i++) {
+                let x = guests[i];
+                let isUnseated = true;
+                if (window.activeEvent) {
+                    for (let t of window.activeEvent.tables) {
+                        if (t.guests.includes(x)) {
+                            isUnseated = false;
+                            break;
+                        }
+                    }
+                    if (isUnseated) {
+                        tmpUnseated.push(x);
+                    }
                 }
             }
-            if (isUnseated) {
-                tmpUnseated.push(x);
-            }
+            setUnseated([...tmpUnseated]);
+            setTablesData(origTables);
+            setData([origTables, [...tmpUnseated]]);
+            setSeated(num_attend - tmpUnseated.length);
+            setSeats(tmpSeats);
         }
     }
+
 
     const [tablesData, setTablesData] = React.useState(origTables);
     const [unseated, setUnseated] = React.useState(tmpUnseated);
@@ -83,8 +99,18 @@ export function SeatingDashboard() {
     const [editing, toggleEditing] = React.useState(editList);
     const [shownUnseated, searchedUnseated] = React.useState([...tmpUnseated]);
     const [seated, setSeated] = React.useState(num_attend - unseated.length);
+    const [seats, setSeats] = React.useState(tmpSeats);
 
+
+    // if (tmpUnseated.length == 0) {
+    //     console.log('here')
+    //     setVariables();
+    // }
+    // else {
+    //     console.log('why not', tmpUnseated)
+    // }
     useLayoutEffect(() => {   
+        console.log('setting shownunseated');
         search(null, searchTerm);
     }, [unseated]);
 
@@ -95,6 +121,18 @@ export function SeatingDashboard() {
             dataHistory.future = [];
         }
     }, [allData]);
+
+    // in case there is a delay in getting the data
+    useEffect(() => {
+        if (window.activeEvent != undefined) {            
+            setVariables();
+            setUnseated(tmpUnseated);
+            console.log('final'+tmpUnseated);
+            // console.log('endGuests', window.activeEvent.guestList)
+            setTablesData(origTables);
+            setData([origTables, tmpUnseated]);
+        }
+    }, [window.activeEvent, window.inviteesState])
 
     const renameTable = (table: Table, open: boolean) => {
         editList[idList.indexOf(table.id)] = open; 
@@ -724,7 +762,7 @@ export function SeatingDashboard() {
                                                             );
                                                         }}
                                                     </Droppable>
-                                                    <CardActions className={table.guests.length > perTable ? 'overFull' : 'tableFillLevel'}>Seated: {table.guests.length} / {perTable}</CardActions>
+                                                    <CardActions className={table.guests.length > (window.activeEvent ? window.activeEvent.perTable : 1) ? 'overFull' : 'tableFillLevel'}>Seated: {table.guests.length} / {(window.activeEvent? window.activeEvent.perTable : 1)}</CardActions>
                                                 </Card>
                                             </Grid>
                                         )

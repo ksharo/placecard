@@ -312,7 +312,7 @@ async function updateEvent(id: string, name: string, date: string, time: string,
             guest_list: guestList
             })
         };
-    return fetch('http://192.168.50.48:3001/events/updateEvent/'+id.toString(), requestOptions);
+    return fetch('http://localhost:3001/events/updateEvent/'+id.toString(), requestOptions);
 }
 
 /*

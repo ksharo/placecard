@@ -69,7 +69,7 @@ async function createEvent(newEventConfig) {
     checkPrecondition(newEventConfig, isUndefined, EVENT_UNDEFINED_MESSAGE);
     checkPrecondition(newEventConfig, isEmpty, EVENT_EMPTY_MESSAGE);
 
-    newEventConfig.tables = [];
+    // newEventConfig.tables = [];
     validateSchema(newEventConfig, EVENT_TYPE);
 
     // TODO: Validate the event time is greater than the current time

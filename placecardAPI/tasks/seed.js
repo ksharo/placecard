@@ -4,6 +4,7 @@ const events = data.events;
 const guests = data.guests;
 
 const { uniqueNamesGenerator, Config, countries, names, adjectives, colors, starWars, NumberDictionary } = require('unique-names-generator');
+const { ObjectId } = require("mongodb");
 
 let eventName = uniqueNamesGenerator({
   dictionaries: [adjectives, starWars],
@@ -74,19 +75,6 @@ async function main() {
 
   db.collection("events").drop();
   db.collection("guests").drop();
-
-  let master_event_schema = {
-    event_name: "Event 1",
-    tables: [],
-    event_start_time: 1646857962,
-    location: "Hoboken",
-    attendees_per_table: 8,
-    guest_list: []
-  }
-
-  // console.log(master_event_schema);
-
-  await events.createEvent(master_event_schema);
 
   let guestsSchemas = [
     {
@@ -311,9 +299,48 @@ async function main() {
     }
   ]
 
+  const allGuests = [];
   await Promise.all( guestsSchemas.map( async (guestSchema) => {
-    await guests.createGuest(guestSchema);
+    const newGuest = await guests.createGuest(guestSchema);
+    allGuests.push(newGuest._id);
   }));
+
+  let table_list = [
+    {
+      'id': new ObjectId(),
+      'name': 'Table 1',
+      'guests': []
+    },
+    {
+      'id': new ObjectId(),
+      'name': 'Table 2',
+      'guests': []
+    },
+    {
+      'id': new ObjectId(),
+      'name': 'Table 3',
+      'guests': []
+    },
+    {
+      'id': new ObjectId(),
+      'name': 'Table 4',
+      'guests': []
+    }
+  ];
+
+  let master_event_schema = {
+    event_name: "Event 1",
+    _userId: "BUTVFngo8WfgLdD0LJycLEz97ph2",
+    tables: table_list,
+    event_start_time: 2223646857962,
+    location: "Hoboken",
+    attendees_per_table: 8,
+    guest_list: allGuests
+  }
+
+
+  await events.createEvent(master_event_schema);
+
 
   console.log("Done seeding database");
 

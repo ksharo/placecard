@@ -29,7 +29,7 @@ def seatParties(origChart, parties, loves, likes, dislikes, tableNames, perTable
         if isRespondent(x, loves, likes, dislikes):
             respondents.append(x)
 
-    if len(respondents) <= 2*len(tableNames):
+    if len(respondents) <= 0:
         seatingChart = baseCase(seatingChart, seatedParties, parties, loves, likes, dislikes, perTable, respondents)
     else:
         # try different algorithms and choose the highest scoring one
@@ -839,7 +839,7 @@ def justRandom(origChart, parties, perTable, tableNames):
     random.shuffle(unseated)
     for x in unseated:
         for t in tableNames:
-            if tableSize(seatingChart[t]) + parties[x] <= perTable:
+            if tableSize(seatingChart[t], parties) + parties[x] <= perTable:
                 for _ in range(parties[x]):
                     seatingChart[t].append(x)
                 break
@@ -887,6 +887,10 @@ def baseCase(origChart, seatedParties, parties, loves, likes, dislikes, perTable
             (bestChart, unseated, seatedParties) = seatingHelper(table, x, possibleFriends, bestChart, unseated, seatedParties)
 
     return bestChart
+
+def groupCase(origChart, seatedParties, parties, loves, likes, dislikes, perTable):
+    '''Seats many already-formed groups'''
+    return
 
 ########## Cases For Many Respondents ##########
 def placecardFastAlgorithm(origChart, seatedParties, parties, loves, likes, dislikes, perTable, timeSpent):
@@ -1158,25 +1162,118 @@ def refineChart(seatingChart, parties, seatedParties, dislikes, perTable):
 
 
 if __name__ == '__main__':
-    for _ in range(1):
-        data = prepData('SCS.csv')
-        parties = data['parties']
-        loves = data['superLikes']
-        likes = data['likes']
-        dislikes = data['dislikes']
-        tableNames = ['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5', 'Table 6', 'Table 7', 'Table 8', 'Table 9', 'Table 10', 'Table 11']
-        perTable = 10
-        seatingChart = seatParties({}, parties, loves, likes, dislikes, tableNames, perTable, 3)
-        people = []
-        for x in seatingChart:
-            for y in seatingChart[x]:
-                people.append(y)
-        print(json.dumps(seatingChart, indent = 4))
-        print(scoreChart(seatingChart, parties, loves, likes, dislikes))
+    # for _ in range(1):
+    #     data = prepData('SCS.csv')
+    #     parties = data['parties']
+    #     loves = data['superLikes']
+    #     likes = data['likes']
+    #     dislikes = data['dislikes']
+    #     tableNames = ['Table 1', 'Table 2', 'Table 3', 'Table 4', 'Table 5', 'Table 6', 'Table 7', 'Table 8', 'Table 9', 'Table 10', 'Table 11']
+    #     perTable = 10
+    #     seatingChart = seatParties({}, parties, loves, likes, dislikes, tableNames, perTable, 3)
+    #     people = []
+    #     for x in seatingChart:
+    #         for y in seatingChart[x]:
+    #             people.append(y)
+    #     print(json.dumps(seatingChart, indent = 4))
+    #     print(scoreChart(seatingChart, parties, loves, likes, dislikes))
     # for x in seatingChart:
     #     print(x)
     #     print(json.dumps(scoreTable(seatingChart[x], parties, loves, likes, dislikes), indent=4))
+    file = open('FDB_names.csv')
+    csvReader = csv.reader(file, delimiter=',')
+    header = next(csvReader)
+    emails = {}
+    emailNames = {}
+    partyDict = {}
+    likesDict = {}
+    superLikesDict = {}
+    dislikesDict = {}
+    groupDict = {}
 
+    for line in csvReader:
+        email = line[4].lower()
+        if email != '' and email != 'Email (of yourself)':
+            emails[email] = line[2].strip() + " " + line[3].strip()
+            emailNames[email] = line[2].strip() + " " + line[3].strip()
+            partyDict[email] = 1
+            likesDict[email] = []
+            superLikesDict[email] = []
+            dislikesDict[email] = []
+
+    file.close()
+    file = open('FDB_Likes.csv')
+    csvReader = csv.reader(file, delimiter=',')
+    header = next(csvReader)
+
+    for line in csvReader:
+        likes = []
+        liker = line[13].lower().split(',')
+        if (len(liker) > 1):
+            liker = liker[1].strip()
+        else:
+            liker = liker[0].strip()
+        if liker.strip() != '' and liker.strip() != 'email (of yourself)':
+            for x in range(14, 23):
+                if (line[x].strip()==''):
+                    break
+                else:
+                    liked = line[x].split(',')
+                    if (len(liked) > 1):
+                        liked = liked[1].strip()
+                    else:
+                        liked = liked[0].strip()
+                    likes.append(liked.lower())
+            partyDict[liker] = len(likes) + 1
+            groupDict[liker] = likes
+            for x in likes:
+                if x in emails:
+                    emails.pop(x)
+                    partyDict.pop(x)
+                    likesDict.pop(x)
+                    dislikesDict.pop(x)
+                    superLikesDict.pop(x)
+    # print(json.dumps(groupDict, indent=4))
+        # likesDict[liker] = likes
+    # print(likesDict)
+    for x in partyDict:
+        likesDict[x] = []
+        dislikesDict[x] = []
+        superLikesDict[x] = []
+    tableNames = []
+    for x in range(1, 66):
+        tableNames.append('Table ' + str(x))
+
+    perTable = 10
+    parties = partyDict
+    seatingChart = seatParties({}, partyDict, likesDict, superLikesDict, dislikesDict, tableNames, perTable, 3)
+    newChart = {}
+    for x in seatingChart:
+        people = seatingChart[x]
+        nameTable = []
+        i = 0
+        curEmail = ''
+        for p in people:
+            if p == 'empty':
+                pass
+            if p == curEmail:
+                i += 1
+                if groupDict[curEmail][i-1] != 'empty':
+                    nameTable.append(emailNames[groupDict[curEmail][i-1]])
+            else:
+                curEmail = p
+                i = 0
+                nameTable.append(emailNames[p])
+        newChart[x] = nameTable
+    # for x in seatingChart:
+    #     people = seatingChart[x]
+    #     nameTable = []
+    #     for p in people:
+    #         nameTable.append(emails[p])
+    #     newChart[x] = nameTable
+    print(json.dumps(newChart, indent = 4))
+    # print(scoreChart(seatingChart, partyDict, likesDict, superLikesDict, dislikesDict))
+    # print(bestChartScoreFast(list(parties.keys()), parties, likesDict, superLikesDict, dislikesDict, perTable))
 
 # TODO: 
 # even out tables at the end of placecardSecondary and see if swapping can be achieved

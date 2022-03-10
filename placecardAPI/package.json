@@ -24,8 +24,8 @@
   },
   "devDependencies": {
     "cors": "^2.8.5",
-    "unique-names-generator": "^4.7.1",
     "eslint": "^8.7.0",
-    "eslint-config-google": "^0.14.0"
+    "eslint-config-google": "^0.14.0",
+    "unique-names-generator": "^4.7.1"
   }
 }

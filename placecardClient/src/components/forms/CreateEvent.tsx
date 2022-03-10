@@ -246,7 +246,7 @@ async function sendEvent(name: string, uid: string, date: string, time: string, 
             guest_list: []
             })
         };
-    return fetch('http://192.168.50.48:3001/events/newEvent', requestOptions);
+    return fetch('http://localhost:3001/events/newEvent', requestOptions);
 }
 
 /*
