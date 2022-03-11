@@ -37,6 +37,7 @@
 .introSection {
     margin: auto auto auto 5%;
     text-align: left;
+    width: 360px;
 }
 
 @keyframes slideLeft {
@@ -85,6 +86,9 @@
 
     .instructionStep {
         margin: 30px auto;
+    }
+    .introSection {
+        width: fit-content;
     }
 }
 

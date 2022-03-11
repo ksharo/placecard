@@ -17,9 +17,9 @@ export function Home() {
             <section className='eyeCatcher'>
                 <section className='gradientCover'>
                     <section className='introSection'>
-                        <h1 className='homeTitle'>Welcome to Placecard</h1>
-                        <h4>A modernly versatile seating-chart application</h4>
-                        <Button variant='contained' onClick={getStartedBtn} color='info'>Get Started!</Button>
+                        <h1 className='homeTitle'>The easy way to create a seating chart</h1>
+                        <h4>Crowdsource to automatically create your seating chart based on guest preferences</h4>
+                        <Button variant='contained' onClick={getStartedBtn} color='info'>Get Started - it's free</Button>
                     </section>
                 </section>
                 <img id='mainImage' src={mainImg}/>
@@ -35,7 +35,7 @@ export function Home() {
                         <section className='stepCard'>
                             <BsFillCloudArrowUpFill className='howToIcons'/>
                             <h2 className='stepCardTitle'>Upload Guest List</h2>
-                            <p>Enter some basic information about your event and share your guest list with us to get started.</p>
+                            <p>Upload your list from excel or use our guest list builder.</p>
                         </section>
                     </section>
                     <section className='instructionStep'>
@@ -45,7 +45,7 @@ export function Home() {
                         <section className='stepCard'>
                             <RiSurveyFill className='howToIcons'/>
                             <h2 className='stepCardTitle'>Send Survey</h2>
-                            <p>Customize a message inviting your guests to fill out our seating survey and send it to whoever you want!</p>
+                            <p>Your guests take a quick seating preference survey.</p>
                         </section>
                     </section>
                     <section className='instructionStep'>
@@ -54,8 +54,9 @@ export function Home() {
                         </section>
                         <section className='stepCard'>
                             <FaUmbrellaBeach className='howToIcons'/>
-                            <h2 className='stepCardTitle'>Placecard Magic!</h2>
-                            <p>Sit back, relax, and let Placecard do the rest of the work! We will seat guests based on their responses, but feel free to edit on your own as well!</p>
+                            <h2 className='stepCardTitle'>Sit Back and Relax</h2>
+                            <p>Placecard automatically creates your seating chart based on survey responses.</p>
+                                <p>(Manually edit the chart anytime, giving you full control and final say.)</p>
                         </section>
                     </section>
                 </section>
