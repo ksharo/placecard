@@ -14,16 +14,7 @@ export function SurveyIdealTable() {
     const [sizeLeft, setSizeLeft] = React.useState(perTable - (partySize + curSize));
     const names: Invitee[] = [];
     for (let x of window.likedInvitees) {
-        if (window.curGuest != undefined && window.curGuest.id != x.id) {
-            if (window.curGuest.groupID != undefined && window.curGuest.groupID != '') {
-                if (x.groupID != window.curGuest.groupID) {
-                    names.push({name: x.name, id: x.id, groupName: x.groupName, groupID: x.groupID});
-                }
-            }
-            else {
-                names.push({name: x.name, id: x.id, groupName: x.groupName, groupID: x.groupID});
-            }
-        }
+        names.push({name: x.name, id: x.id, groupName: x.groupName, groupID: x.groupID});
     }
     const makeRows = () => {
         let arr: Array<any> = [];

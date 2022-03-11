@@ -16,7 +16,11 @@ export function EditSurveyResponses() {
     const ourSize = 6; // TODO change to global
 
     const unusedInvitees = window.inviteesState.filter( (x) => {
-        return !(window.lovedInvitees.map(y => y.id).includes(x.id) || window.likedInvitees.map(z => z.id).includes(x.id) || window.dislikedInvitees.map(t => t.id).includes(x.id));
+        return !(window.lovedInvitees.map(y => y.id).includes(x.id) 
+        || window.likedInvitees.map(z => z.id).includes(x.id) 
+        || window.dislikedInvitees.map(t => t.id).includes(x.id)
+        || (window.curGuest == undefined || window.curGuest.id == x.id) 
+        || (window.curGuest.groupID != undefined && window.curGuest.groupID != '' && window.curGuest.groupID == x.groupID));
     });
 
     const disliked = [...window.dislikedInvitees];
