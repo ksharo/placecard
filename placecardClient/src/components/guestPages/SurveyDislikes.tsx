@@ -6,7 +6,16 @@ export function SurveyDislikes() {
     const history = useHistory();
     const names: {name: string, id: string}[] = [];
     for (let x of window.inviteesState) {
-        names.push({name: x.name, id: x.id});
+        if (window.curGuest != undefined && window.curGuest.id != x.id) {
+            if (window.curGuest.groupID != undefined && window.curGuest.groupID != '') {
+                if (x.groupID != window.curGuest.groupID) {
+                    names.push({name: x.name, id: x.id});
+                }
+            }
+            else {
+                names.push({name: x.name, id: x.id});
+            }
+        }
     }
     const makeRows = () => {
         let arr: Array<any> = [];

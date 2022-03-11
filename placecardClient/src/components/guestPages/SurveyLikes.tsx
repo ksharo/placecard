@@ -10,9 +10,19 @@ export function SurveyLikes() {
     for (let x of window.dislikedInvitees) {
         disIds.push(x.id);
     }
+    
     for (let x of window.inviteesState) {
         if (!disIds.includes(x.id)) {
-            names.push({name: x.name, id: x.id});
+            if (window.curGuest != undefined && window.curGuest.id != x.id) {
+                if (window.curGuest.groupID != undefined && window.curGuest.groupID != '') {
+                    if (x.groupID != window.curGuest.groupID) {
+                        names.push({name: x.name, id: x.id});
+                    }
+                }
+                else {
+                    names.push({name: x.name, id: x.id});
+                }
+            }
         }
     }
     const makeRows = () => {

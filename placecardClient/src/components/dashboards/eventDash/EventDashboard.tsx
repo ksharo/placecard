@@ -11,6 +11,13 @@ export function EventDashboard() {
     const goHome = () => {
         history.push('/userHome');
     }
+    /* Get the number of seated people */
+    let seated = 0;
+    if (window.activeEvent != null) {
+        for (let x of window.activeEvent.tables) {
+            seated += x.guests.length;
+        }
+    }
     return (
         <>
         {window.activeEvent == null ? 
@@ -25,7 +32,7 @@ export function EventDashboard() {
             <section id='edit-cards'>
                 <DetailsCard name={window.activeEvent.name} date={moment(window.activeEvent.date).format('DD MMMM YYYY')} location={window.activeEvent.location} guests={window.activeEvent.guestList==undefined ? 'Error' : window.activeEvent.guestList.length.toString()} perTable={window.activeEvent.perTable.toString()}></DetailsCard>
                 <EditCard numSent='200' numRec='123'></EditCard>
-                <SeatCard tables={window.activeEvent.tables==undefined ? 'Error' : window.activeEvent.tables.length.toString()} seats={(window.activeEvent.tables==undefined ? 'Error' : window.activeEvent.tables.length*window.activeEvent.perTable).toString()} invitees={window.activeEvent.guestList==undefined ? 'Error' : window.activeEvent.guestList.length.toString()} seated='2'></SeatCard>
+                <SeatCard tables={window.activeEvent.tables==undefined ? 'Error' : window.activeEvent.tables.length.toString()} seats={(window.activeEvent.tables==undefined ? 'Error' : window.activeEvent.tables.length*window.activeEvent.perTable).toString()} invitees={window.activeEvent.guestList==undefined ? 'Error' : window.activeEvent.guestList.length.toString()} seated={seated.toString()}></SeatCard>
             </section>
             <Button onClick={goHome} variant='contained' className='basicBtn fitBtn lowBtn'>
                     Return Home

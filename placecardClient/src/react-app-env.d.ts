@@ -45,6 +45,9 @@ interface Window {
 
     curGroupID: string | undefined;
     setGroupID: any;
+
+    curGuest: Invitee | undefined;
+    setCurGuest: any;
 }
 
 interface PlacecardEvent {

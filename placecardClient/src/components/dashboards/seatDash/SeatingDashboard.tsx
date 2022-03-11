@@ -56,7 +56,16 @@ export function SeatingDashboard() {
         dataHistory.future = [];
         if (window.activeEvent != undefined && window.activeEvent != null) {
             tmpUnseated = [];
-            origTables = window.activeEvent.tables;
+            origTables = [...window.activeEvent.tables];
+            // for (let x of origTables) {
+            //     for (let y of x.guests) {
+            //         if (typeof(y) == 'string') {
+            //             y = window.activeEvent.guestList.filter( (guest) => {
+            //                 return guest.id == y;
+            //             })[0];
+            //         }
+            //     }
+            // }
             for (let x of origTables) {
                 idList.push(x.id);
             }
@@ -70,7 +79,8 @@ export function SeatingDashboard() {
                 let isUnseated = true;
                 if (window.activeEvent) {
                     for (let t of window.activeEvent.tables) {
-                        if (t.guests.includes(x)) {
+                        const guestIDs = t.guests.map( (guest) => {return guest.id});
+                        if (guestIDs.includes(x.id)) {
                             isUnseated = false;
                             break;
                         }
@@ -101,16 +111,7 @@ export function SeatingDashboard() {
     const [seated, setSeated] = React.useState(num_attend - unseated.length);
     const [seats, setSeats] = React.useState(tmpSeats);
 
-
-    // if (tmpUnseated.length == 0) {
-    //     console.log('here')
-    //     setVariables();
-    // }
-    // else {
-    //     console.log('why not', tmpUnseated)
-    // }
     useLayoutEffect(() => {   
-        console.log('setting shownunseated');
         search(null, searchTerm);
     }, [unseated]);
 
@@ -122,13 +123,24 @@ export function SeatingDashboard() {
         }
     }, [allData]);
 
+    useEffect(() => {
+        executeUpdate();
+    }, [tablesData]);
+
+    const executeUpdate = async() => {
+        try {
+            await updateEvent(tablesData);
+        }
+        catch (e) {
+            console.error(e);
+        }
+    };
+
     // in case there is a delay in getting the data
     useEffect(() => {
         if (window.activeEvent != undefined) {            
             setVariables();
             setUnseated(tmpUnseated);
-            console.log('final'+tmpUnseated);
-            // console.log('endGuests', window.activeEvent.guestList)
             setTablesData(origTables);
             setData([origTables, tmpUnseated]);
         }
@@ -777,4 +789,39 @@ export function SeatingDashboard() {
         }
         </>
     );
+}
+
+function updateEvent(tablesData: Table[]) {
+    if (window.activeEvent != null && window.activeEvent != undefined) {
+        const tables = [];
+        if (tablesData.length == 0) {
+            return;
+        }
+        for (let x of tablesData) {
+            const tmpGuests = [];
+            for (let g of x.guests) {
+                if (g == undefined || g.id == undefined) {
+                    return;
+                }
+                tmpGuests.push(g.id);
+            }
+            tables.push({name: x.name, id: x.id, guests: tmpGuests})
+        }
+        const requestOptions = {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                    // _userId: window.activeEvent.uid,
+                    // event_name: window.activeEvent.name,
+                    tables: [...tables],
+                    // event_start_time: Number(Date.parse(new Date(window.activeEvent.date + " " + window.activeEvent.time).toString())),
+                    // location: window.activeEvent.location,
+                    // attendees_per_table: window.activeEvent.perTable,
+                    // guest_list: window.inviteesState
+                })
+            };
+        return fetch('http://localhost:3001/events/updateTables/'+window.activeEvent.id, requestOptions);
+    }
 }

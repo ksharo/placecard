@@ -61,7 +61,7 @@ const seedGuests: Invitee[] = [
   {id: '44', name: 'Gil Austria'}, 
   {id: '55', name: 'Jayson Infante'}
   ];
-const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
+// const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
 // const seedEvent1 = getEvent().then((result) => {return result});
 // const seedEvent2: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Bouncy Porpoise', 'date': '07/07/7777', 'location': 'Olive Garden', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
 // const seedEvent3: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Running Bagel', 'date': '04/02/2097', 'location': '', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};  
@@ -81,7 +81,8 @@ function App() {
   [window.dislikedInvitees, window.setDisliked] = React.useState([]);
   [window.likedInvitees, window.setLiked] = React.useState([]);
   [window.lovedInvitees, window.setLoved] = React.useState([]);
-  [window.curGroupID, window.setGroupID] = React.useState('223');  
+  [window.curGroupID, window.setGroupID] = React.useState(undefined);  
+  [window.curGuest, window.setCurGuest] = React.useState(undefined);  
   [window.uidState, window.setUID] = React.useState('BUTVFngo8WfgLdD0LJycLEz97ph2');
   useEffect(() => {
     const getEvents = async() => {
@@ -91,6 +92,7 @@ function App() {
         const events = []; 
         for (let post of fetchedEvents) { 
           const guests: Invitee[] = [];
+          const tables: any[] = post.tables;
           for (let guestID of post.guest_list) {
             try {
               const guestFetch = await fetch('http://localhost:3001/guests/'+guestID);
@@ -98,44 +100,30 @@ function App() {
               const newGuest = {
                 id: fetchedGuest._id,
                 name: fetchedGuest.first_name + ' ' + fetchedGuest.last_name,
-                // groupID?: string; 
-                // groupName?: string;
-                // contact?: string;
+                groupID: fetchedGuest.group_id,
+                groupName: fetchedGuest.group_name,
+                contact: fetchedGuest.email,
               }
               guests.push(newGuest);
+              for (let x of tables) {
+                if (x.guests.includes(newGuest.id)) {
+                  x.guests[x.guests.indexOf(newGuest.id)] = newGuest;
+                  break;
+                }
+              }
             }
             catch (e){
               console.error("Error: could not fetch guest with id " + guestID + ". " + e);
             }
           }
-          // const guests = post.guest_list.map( async (guestID: string) => {
-          //   console.log(guestID);
-          //   try {
-          //     const guestFetch = await fetch('http://localhost:3001/guests/'+guestID);
-          //     const fetchedGuest = await guestFetch.json();
-          //     const newGuest = {
-          //       id: fetchedGuest._id,
-          //       name: fetchedGuest.first_name + ' ' + fetchedGuest.last_name,
-          //       // groupID?: string; 
-          //       // groupName?: string;
-          //       // contact?: string;
-          //     }
-          //     return newGuest;
-          //   }
-          //   catch (e){
-          //     console.error("Error: could not fetch guest with id " + guestID + ". " + e);
-          //   }
-          // });
-          const event = {'id': post._id, 'uid': post._userId, 'name': post.event_name, 'date': (new Date(post.event_start_time)).toLocaleString().split(',')[0], 'time': (new Date(post.event_start_time)).toTimeString().split(' ')[0], 'location': post.location, 'tables': post.tables, 'perTable': post.attendees_per_table , 'guestList': guests};
+          const event = {'id': post._id, 'uid': post._userId, 'name': post.event_name, 'date': (new Date(post.event_start_time)).toLocaleString().split(',')[0], 'time': (new Date(post.event_start_time)).toTimeString().split(' ')[0], 'location': post.location, 'tables': tables, 'perTable': post.attendees_per_table , 'guestList': guests};
           events.push(event);
-          console.log(event.guestList);
         }
       window.setEvents(events);
       if (events.length > 0) {
         window.setActiveEvent(events[0]);
         window.setInvitees(events[0].guestList);
       }
-      console.log(events);
     }
       catch (e){
         console.error('Error: Could not load events for user. ' + e);
