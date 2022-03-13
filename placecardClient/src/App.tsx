@@ -23,8 +23,8 @@ import { SeatingDashboard } from './components/dashboards/seatDash/SeatingDashbo
 import { GuestConfirmation } from './components/guestPages/GuestConfirmation';
 // import { SurveyPt1WithAges } from './components/guestPages/oldPages/SurveyPt1WithAges';
 // import { SurveyPt2 } from './components/guestPages/oldPages/SurveyPt2Original';
-import { SurveyPt1 } from './components/guestPages/SurveyPt1';
-import { SurveyPt2 } from './components/guestPages/SurveyPt2';
+// import { SurveyPt1 } from './components/guestPages/SurveyPt1';
+// import { SurveyPt2 } from './components/guestPages/SurveyPt2';
 import { SurveyConf } from './components/confirmationPages/SurveyConf';
 import { SentConf } from './components/confirmationPages/SentConf';
 import { EditDetails } from './components/editPages/EditDetails';
@@ -36,6 +36,7 @@ import { SurveyIdealTable } from './components/guestPages/SurveyIdealTable';
 import { SurveyLikes } from './components/guestPages/SurveyLikes';
 import { SurveyInstructions } from './components/guestPages/SurveyInstructions';
 import { EditSurveyResponses } from './components/guestPages/EditSurveyResponses';
+import { EditGuestList } from './components/editPages/EditGuestList';
 
 function App() {
   [window.loggedInState, window.setLoggedIn] = React.useState(true);
@@ -84,8 +85,9 @@ function App() {
             <Route exact path='/uploadGuestList' component={ GuestList }/>
             <Route exact path='/seatDash' component={ SeatingDashboard }/>
             <Route exact path='/beginSurvey' component={ GuestConfirmation }/>
-            <Route exact path='/surveyPt1' component={ SurveyPt1 }/>
-            <Route exact path='/surveyPt2' component={ SurveyPt2 }/>
+            <Route exact path='/editGuestList' component={ EditGuestList }/>
+            {/* <Route exact path='/surveyPt1' component={ SurveyPt1 }/>
+            <Route exact path='/surveyPt2' component={ SurveyPt2 }/> */}
             {/* <Route exact path='/surveyPt1' component={ SurveyPt1SitTogether }/> */}
             <Route exact path='/surveyInstructions' component={ SurveyInstructions }/>
             <Route exact path='/surveyDislikes' component={ SurveyDislikes }/>
