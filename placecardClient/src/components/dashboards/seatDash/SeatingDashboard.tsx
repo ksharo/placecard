@@ -664,11 +664,12 @@ export function SeatingDashboard() {
                                     </InputAdornment>}}>
                                 </TextField>
                             </section>
-                            {shownUnseated.length == 0 ? unseated.length == 0 ? <p>All guests have been seated!</p> : <p className='wrappedP'>No guests found for search term {searchTerm}</p> : 
                             <Droppable droppableId={unseatedID} key={unseatedID}>
                                 {(provided, snapshot) => {
                                     return (
                                         <section className={`unseatedSection ${snapshot.isDraggingOver ? "overBackground" : ""}`} {...provided.droppableProps} ref={provided.innerRef}>
+                                            {shownUnseated.length == 0 ? unseated.length == 0 ? <p>All guests have been seated!</p> : <p className='wrappedP'>No guests found for search term {searchTerm}</p> : 
+                                            <>
                                             {shownUnseated.map((guest: Invitee, index) => {
                                                 return (
                                                     <Draggable key={guest.id} draggableId={guest.id} index={index}>
@@ -686,13 +687,12 @@ export function SeatingDashboard() {
                                                     </Draggable>
                                                 );
                                             })
-                                            }
+                                            }</>}
                                             {provided.placeholder}
                                         </section>
                                     );
                                 }}
                             </Droppable>
-                            }
                         </section>
                     </Card>
                 </Grid>

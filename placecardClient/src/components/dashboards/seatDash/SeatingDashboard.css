@@ -277,6 +277,7 @@ ul {
     color: white;
     padding: 8px 12px !important;
     font-size: 22px;
+    width: 100%;
 }
 
 .cardHeader * {
