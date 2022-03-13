@@ -1,5 +1,6 @@
 import { Button } from "@mui/material";
 import React from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import { SurveyConf } from "../confirmationPages/SurveyConf";
 import { EditSurveyResponses } from "./EditSurveyResponses";
 import { SurveyDislikes } from "./SurveyDislikes";
@@ -8,8 +9,13 @@ import { SurveyIdealTable } from "./SurveyIdealTable";
 import { SurveyInstructions } from "./SurveyInstructions";
 import { SurveyLikes } from "./SurveyLikes";
 
-let startPage = 0;
 export function FullSurvey (props?: {preview: boolean}) {
+    const history = useHistory();
+    const queryString = useLocation().search;
+    // gets query string if you do /takeSurvey?page=aaaaaa
+    const pageString = new URLSearchParams(queryString).get('page');
+    let pageNum = Number(pageString);
+    let startPage = pageNum;
     const [curPage, setPage] = React.useState(startPage);
     const pages = [
         <SurveyInstructions></SurveyInstructions>,
@@ -41,11 +47,13 @@ export function FullSurvey (props?: {preview: boolean}) {
 
     const nextPage = () => {
         startPage += 1;
+        history.push('/takeSurvey?page='+startPage);
         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
         setPage(curPage + 1);
     };
     const prevPage = () => {
         startPage -= 1;
+        history.push('/takeSurvey?page='+startPage);
         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
         setPage(curPage - 1);
     };
