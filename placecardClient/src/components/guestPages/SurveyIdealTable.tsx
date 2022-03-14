@@ -1,4 +1,4 @@
-import { Button, Checkbox } from "@mui/material";
+import { Button, Checkbox, CircularProgress } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid, AutoSizerProps } from "@mui/x-data-grid";
 import React from "react";
 import { useHistory } from "react-router-dom";
@@ -117,11 +117,33 @@ export function SurveyIdealTable() {
         }
     }
 
+    const loadingCircle = () => {
+        return (
+        <section className='loadingCircle'>
+            {window.curGuest != undefined ? <p>No Guests</p> : 
+            <>
+                <p>Loading...</p>
+                <CircularProgress size={24} />
+            </>
+            }
+        </section>
+        )
+    }
+
     return (<>
                 <h1 className='title'>Seating Survey - Part IV</h1>
                 <p className='subtitle'>Create your ideal table! Choose up to {sizeLeft} of the parties you are comfortable <br/>with (from the previous page) to fill up your table.</p>
                 <div className='survey' style={{ height: 400 }}>
-                    <DataGrid rows={rows} columns={columns} disableColumnMenu={true} hideFooter={true} disableSelectionOnClick={true} rowHeight={80} />
+                    <DataGrid 
+                        rows={rows} 
+                        columns={columns} 
+                        disableColumnMenu={true} 
+                        hideFooter={true} 
+                        disableSelectionOnClick={true} 
+                        components={{
+                            NoRowsOverlay: loadingCircle,
+                        }}
+                        rowHeight={80} />
                 </div>
                 {/* <Button variant='outlined' className='generalButton' onClick={prevPage}>
                             Go Back

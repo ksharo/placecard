@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-import { Button, Checkbox, TextField } from "@mui/material";
+import { Button, Checkbox, CircularProgress, TextField } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
 
 
@@ -79,6 +79,14 @@ export function SurveyGroupPage() {
             el?.toggleAttribute('disabled', true);
         }
     }
+    const loadingCircle = () => {
+        return (
+        <section className='higherLoadingCircle'>
+            <p>Loading...</p>
+            <CircularProgress size={24} />
+        </section>
+        )
+    }
     return (
         <>
             <h1 className='title'>Seating Survey - Part I</h1>
@@ -87,7 +95,16 @@ export function SurveyGroupPage() {
                 <p className='subtitle'>Your are the only member in your group.</p>
                 <p className='subtitle'>Your answers to this survey will only count for you. Please review your data below.</p>
                 <div className='survey' style={{ height: 140 }}>
-                <DataGrid rows={singleRow} columns={lessColumns} disableColumnMenu={true} hideFooter={true} disableSelectionOnClick={true} rowHeight={80} />
+                <DataGrid 
+                    rows={singleRow} 
+                    columns={lessColumns} 
+                    disableColumnMenu={true} 
+                    hideFooter={true} 
+                    disableSelectionOnClick={true} 
+                    components={{
+                        NoRowsOverlay: loadingCircle,
+                    }}
+                    rowHeight={80} />
                 </div>
             </>
             :
@@ -97,7 +114,16 @@ export function SurveyGroupPage() {
             If you want to separate your group so that other members can answer independently, please provide their 
             contact information below.</p>
             <div className='survey' style={{ height: 400 }}>
-                <DataGrid rows={rows} columns={columns} disableColumnMenu={true} hideFooter={true} disableSelectionOnClick={true} rowHeight={80} />
+                <DataGrid 
+                    rows={rows} 
+                    columns={columns} 
+                    disableColumnMenu={true} 
+                    hideFooter={true} 
+                    components={{
+                        NoRowsOverlay: loadingCircle,
+                    }}
+                    disableSelectionOnClick={true} 
+                    rowHeight={80} />
             </div>
             </>
             }

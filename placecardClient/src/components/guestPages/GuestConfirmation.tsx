@@ -8,8 +8,9 @@ import { ObjectId } from "mongodb";
 export function GuestConfirmation() {
     const history = useHistory();
     const queryString = useLocation().search;
-    // gets query string if you do /beginSurvey?guestId=aaaaaa
+    // gets query string if you do /beginSurvey?guestId=aaaaaa&eventId=12345
     const guestID = new URLSearchParams(queryString).get('guestId');
+    const eventID = new URLSearchParams(queryString).get('eventId');
 
     const goHome = () => {
         history.push('/');
@@ -20,7 +21,7 @@ export function GuestConfirmation() {
         const contact = validator.trim(event?.target?.contactInfo?.value).toLowerCase();
         try {
             const guestInfo = await fetch('http://localhost:3001/guests/'+guestID);
-            const eventInfo = await fetch('http://localhost:3001/events/guests/'+guestID);
+            const eventInfo = await fetch('http://localhost:3001/events/'+eventID);
             const eventData = await eventInfo.json();
             const guests = [];
             for (let guestID of eventData.guest_list) {
@@ -53,7 +54,7 @@ export function GuestConfirmation() {
                 window.setCurGuest(newGuest);
                 if ((data.email.toLowerCase() == contact || data.phone_number == contact) && contact != '' && contact != undefined) {
                     // TODO: set current guest info to this guest
-                    history.push('/takeSurvey');
+                    history.push('/takeSurvey/?page=0&guestId='+guestID+'&eventId='+eventID);
                 }
                 else {
                     const contactErr = document.getElementById('wrongContactError');

@@ -1,4 +1,4 @@
-import { Checkbox, Button } from "@mui/material";
+import { Checkbox, Button, CircularProgress } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
 import { useHistory } from "react-router-dom";
 
@@ -93,12 +93,34 @@ export function SurveyLikes() {
             window.setLiked(tmp);
         }
     }
+
+    const loadingCircle = () => {
+        return (
+        <section className='loadingCircle'>
+            {window.curGuest != undefined ? <p>No Guests</p> : 
+            <>
+                <p>Loading...</p>
+                <CircularProgress size={24} />
+            </>
+            }
+        </section>
+        )
+    }
     return (<>
                 <h1 className='title'>Seating Survey - Part III</h1>
                 <p className='subtitle'>Which of these parties do you feel comfortable sitting with?</p>
 
                 <div className='survey' style={{ height: 400 }}>
-                    <DataGrid rows={rows} columns={columns} disableColumnMenu={true} hideFooter={true} disableSelectionOnClick={true} rowHeight={80} />
+                    <DataGrid 
+                        rows={rows} 
+                        columns={columns} 
+                        disableColumnMenu={true} 
+                        hideFooter={true} 
+                        disableSelectionOnClick={true} 
+                        components={{
+                            NoRowsOverlay: loadingCircle,
+                        }}
+                        rowHeight={80} />
                 </div>
                 {/* <Button variant='outlined' className='generalButton' onClick={prevPage}>
                             Go Back
