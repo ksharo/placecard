@@ -1,9 +1,7 @@
-import { Button, Checkbox, CircularProgress } from "@mui/material";
-import { DataGrid, GridArrowUpwardIcon, GridColDef, GridRowsProp } from "@mui/x-data-grid";
-import { useHistory } from "react-router-dom";
+import { Checkbox, CircularProgress } from "@mui/material";
+import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 
 export function SurveyDislikes() {
-    const history = useHistory();
     const names: {name: string, id: string}[] = [];
     for (let x of window.inviteesState) {
         if (window.curGuest != undefined && window.curGuest.id != x.id) {
@@ -37,12 +35,6 @@ export function SurveyDislikes() {
         }
     ];
 
-    const prevPage = () => {
-        history.push('/editGroup');
-    }
-    const nextPage = () => {
-        history.push('/surveyLikes');
-    }
     const isChecked = (id: string) => {
         for (let x of window.dislikedInvitees) {
             if (x.id == id) {
@@ -104,11 +96,6 @@ export function SurveyDislikes() {
     return (<>
                 <h1 className='title'>Seating Survey - Part II</h1>
                 <p className='subtitle'>Which of these parties do you want to avoid sitting with?</p>
-
-                {/* {window.curGuest == undefined ? 
-                
-                <CircularProgress size={24} />
-                : */}
                 <div className='survey' style={{ height: 400 }}>
                     <DataGrid rows={rows} 
                         columns={columns} 
@@ -120,12 +107,5 @@ export function SurveyDislikes() {
                         }}
                         rowHeight={80} />
                 </div>
-                {/* } */}
-                {/* <Button variant='outlined' className='generalButton' onClick={prevPage}>
-                            Go Back
-                </Button>
-                <Button variant='outlined' className='generalButton' onClick={nextPage}>
-                            Continue
-                </Button> */}
     </>);
 }

@@ -1,8 +1,7 @@
-import { Button, Card, CardHeader, IconButton, InputAdornment, TextField } from "@mui/material";
-import React, { useLayoutEffect, useState } from "react";
+import { Card, CardHeader, IconButton, InputAdornment, TextField } from "@mui/material";
+import React, { useEffect, useLayoutEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import {uuid} from "uuidv4";
-import { useHistory } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 
@@ -13,9 +12,8 @@ const lovedID = uuid();
 const othersID = uuid();
 
 export function EditSurveyResponses() {
-    const history = useHistory();
-    const perTable = 10; // TODO change to global
-    const ourSize = 6; // TODO change to global
+    const perTable = window.activeEvent == undefined ? 0 : window.activeEvent.perTable;
+    let ourSize = window.curGuest == undefined ? 0 : window.curGuest.groupSize == undefined ? 1 : window.curGuest.groupSize;
 
     const unusedInvitees = window.inviteesState.filter( (x) => {
         return !(window.lovedInvitees.map(y => y.id).includes(x.id) 
@@ -64,10 +62,18 @@ export function EditSurveyResponses() {
     const [shownColumns, setShown] = React.useState(JSON.parse(JSON.stringify(origColumns)));
     const [searchTerms, setSearch] = React.useState(origSearches);
 
+    useLayoutEffect( () => {
+        ourSize = window.curGuest == undefined ? 0 : window.curGuest.groupSize == undefined ? 1 : window.curGuest.groupSize;
+        setSpace(perTable-ourSize-loved.length);
+    }, [window.curGuest])
 
     useLayoutEffect(() => {   
         search(null);
     }, [columns]);
+
+    useEffect(() => {
+
+    }, [window.inviteesState])
 
     const onDragEnd = (result: any, columns: any, setColumns: any) => {
         // make sure that result is in the right format
@@ -204,12 +210,6 @@ export function EditSurveyResponses() {
             setColumns(newColumns);
         }
     }
-    const prevPage = () => {
-        history.push('/surveyIdealTable');
-    };
-    const nextPage = () => {
-        history.push('/doneSurvey');
-    };
 
     const search = (event: any) => {
         if (event != null) {
@@ -322,12 +322,6 @@ export function EditSurveyResponses() {
                     })}
                 </DragDropContext>
             </section>
-            {/* <Button variant='contained' className='generalButton' onClick={prevPage}>
-                Go Back
-            </Button>
-            <Button variant='contained' className='generalButton' onClick={nextPage}>
-                Finish!
-            </Button> */}
         </>
       );
 }

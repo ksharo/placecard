@@ -341,7 +341,6 @@ async function main() {
 
   await events.createEvent(master_event_schema);
 
-
   console.log("Done seeding database");
 
   await dbConnection.closeConnection();

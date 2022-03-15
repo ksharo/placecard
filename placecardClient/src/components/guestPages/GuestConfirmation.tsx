@@ -41,6 +41,17 @@ export function GuestConfirmation() {
                     console.error("Error: could not fetch guest with id " + guestID + ". " + e);
                 }
             }
+            window.setActiveEvent({
+                id: undefined,
+                uid: undefined,
+                name: undefined,
+                date: undefined,
+                time: undefined,
+                location: undefined,
+                perTable: eventData.attendees_per_table,
+                guestList: undefined,
+                tables: undefined,
+            });
             window.setInvitees(guests);
             if (guestInfo.status == 200) {
                 const data = await guestInfo.json();

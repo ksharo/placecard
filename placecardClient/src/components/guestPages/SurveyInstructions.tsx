@@ -1,11 +1,4 @@
-import { Button } from "@mui/material";
-import { useHistory } from "react-router-dom";
-
 export function SurveyInstructions() {
-    const history = useHistory();
-    const handleClick = () => {
-        history.push('/editGroup');
-    };
     return (
         <>
             <h1 className='title'>Survey Instructions</h1>
@@ -19,9 +12,6 @@ export function SurveyInstructions() {
                     <li>Finally, you will be asked to review your selection and submit.</li>
                 </ol>
             </section>
-            {/* <Button variant='contained' className='basicBtn' onClick={handleClick}>
-                        Continue
-            </Button> */}
         </>
     )
 }

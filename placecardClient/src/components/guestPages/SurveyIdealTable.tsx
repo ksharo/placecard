@@ -1,12 +1,10 @@
-import { Button, Checkbox, CircularProgress } from "@mui/material";
-import { GridRowsProp, GridColDef, DataGrid, AutoSizerProps } from "@mui/x-data-grid";
-import React from "react";
-import { useHistory } from "react-router-dom";
+import { Checkbox, CircularProgress } from "@mui/material";
+import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
+import React, { useEffect, useLayoutEffect } from "react";
 
 export function SurveyIdealTable() {
-    const history = useHistory();
-    const perTable = 10;
-    const partySize = 6;
+    const perTable = window.activeEvent == undefined ? 0 : window.activeEvent.perTable;
+    let partySize = window.curGuest == undefined ? 0 : window.curGuest.groupSize == undefined ? 1 : window.curGuest.groupSize;
     let curSize = 0;
     for (let x of window.lovedInvitees) {
         curSize += 1;
@@ -20,20 +18,21 @@ export function SurveyIdealTable() {
         let arr: Array<any> = [];
         names.map((name, ind) => {
             arr[ind] = { id: ind, col0: name.name, 
-                // col1: 'Group: ' + (name.groupName==undefined ? 'None' : name.groupName), 
                 col2: name.id};
         });
         return arr;
     };
     let rows: GridRowsProp = makeRows();
 
+    useLayoutEffect( () => {
+        partySize = window.curGuest == undefined ? 0 : window.curGuest.groupSize == undefined ? 1 : window.curGuest.groupSize;
+        setSizeLeft(perTable - (partySize + curSize));
+    }, [window.curGuest])
+
     const columns: GridColDef[] = [
         {
             field: 'col0', headerName: 'Party Name', headerAlign: 'center', flex: 4,
         },
-        // {
-        //     field: 'col1', headerName: 'Group', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 3,  
-        // },
         {
             field: 'col2', headerName: 'Include at table', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 2,
             renderCell: (params) => { return (<section className='checkboxWithError'>
@@ -42,14 +41,6 @@ export function SurveyIdealTable() {
             </section>) }
         }
     ];
-
-    const prevPage = () => {
-        history.push('/surveyLikes');
-    }
-
-    const nextPage = () => {
-        history.push('/editSurveyResponses');
-    }
 
     const isChecked = (id: string) => {
         for (let x of window.lovedInvitees) {
@@ -145,11 +136,5 @@ export function SurveyIdealTable() {
                         }}
                         rowHeight={80} />
                 </div>
-                {/* <Button variant='outlined' className='generalButton' onClick={prevPage}>
-                            Go Back
-                </Button>
-                <Button variant='outlined' className='generalButton' onClick={nextPage}>
-                            Continue
-                </Button> */}
     </>);
 }

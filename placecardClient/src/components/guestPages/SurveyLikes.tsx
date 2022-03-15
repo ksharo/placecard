@@ -1,9 +1,7 @@
-import { Checkbox, Button, CircularProgress } from "@mui/material";
+import { Checkbox, CircularProgress } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
-import { useHistory } from "react-router-dom";
 
 export function SurveyLikes() {
-    const history = useHistory();
     const names: {name: string, id: string}[] = [];
     const disIds: string[] = [];
     // don't include disliked invitees here
@@ -44,13 +42,6 @@ export function SurveyLikes() {
             renderCell: (params) => { return (<Checkbox id={'checkbox' + params.value} checked={isChecked(params.value)} onClick={updateLikes}></Checkbox>) }
         }
     ];
-
-    const prevPage = () => {
-        history.push('/surveyDislikes');
-    }
-    const nextPage = () => {
-        history.push('/surveyIdealTable');
-    }
     const isChecked = (id: string) => {
         for (let x of window.likedInvitees) {
             if (x.id == id) {
@@ -122,11 +113,5 @@ export function SurveyLikes() {
                         }}
                         rowHeight={80} />
                 </div>
-                {/* <Button variant='outlined' className='generalButton' onClick={prevPage}>
-                            Go Back
-                </Button>
-                <Button variant='outlined' className='generalButton' onClick={nextPage}>
-                            Continue
-                </Button> */}
     </>);
 }

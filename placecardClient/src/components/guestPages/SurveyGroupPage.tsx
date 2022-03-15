@@ -1,10 +1,8 @@
-import { useHistory } from "react-router-dom";
-import { Button, Checkbox, CircularProgress, TextField } from "@mui/material";
+import { Checkbox, CircularProgress, TextField } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
 
 
 export function SurveyGroupPage() {
-    const history = useHistory();
 
     // get the names of everyone in the current group
     // TODO: make edits for when someone doesn't have a group!
@@ -59,15 +57,6 @@ export function SurveyGroupPage() {
             renderCell: (params) => { return (<TextField variant='outlined' size='small' label='Email' value={params.value} type='email' disabled={true}></TextField>) }
         }
     ];
-
-    const prevPage = () => {
-        history.push('/surveyInstructions');
-    }
-    const nextPage = () => {
-        // TODO: push information about groups to database. 
-        // ALSO check if they checked everything
-        history.push('/surveyDislikes');
-    }
     // updates the input boxes to enable or disable those checked/unchecked
     const updateInputs = (event: any) => {
         let id = event.target.id.substring(8);
@@ -127,12 +116,6 @@ export function SurveyGroupPage() {
             </div>
             </>
             }
-            {/* <Button variant='contained' className='basicBtn generalButton' onClick={prevPage}>
-                Go Back
-            </Button>
-            <Button variant='contained' className='basicBtn generalButton' onClick={nextPage}>
-                Continue
-            </Button> */}
         </>
     );
 
