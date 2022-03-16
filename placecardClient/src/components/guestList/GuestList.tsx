@@ -1,4 +1,4 @@
-import { GuestListTable } from "./GuestListTable"
+import { GuestListTable, GuestListDataInterface } from "./GuestListTable"
 import { useRef, useState, useEffect, InputHTMLAttributes } from "react";
 import { useHistory } from "react-router-dom";
 import { Button } from "@mui/material";
@@ -16,16 +16,16 @@ export function GuestList(){
 	const tableDescription	= 'You only need to provide one method of contact for each guest'
 	const history			= useHistory();
 
-	interface guestListDataInterface {
-		individualName?:	string;
-		groupName?:		string;
-		groupContact:		string;
-		groupSize:		string;
-		sendSurvey:		boolean;
-		groupMembers:		any[]
-	}
+	// interface guestListDataInterface {
+	// 	individualName?:	string;
+	// 	groupName?:		string;
+	// 	groupContact:		string;
+	// 	groupSize:		string;
+	// 	sendSurvey:		boolean;
+	// 	groupMembers:		any[]
+	// }
 
-	const [guestListData, setGuestListData]					= useState<guestListDataInterface[]>([])
+	const [guestListData, setGuestListData]					= useState<GuestListDataInterface[]>([])
 	const [userFile, setUserFile] 						= useState(undefined);
 
 	const [individualAddPopupState, setIndividualAddPopupState]	= useState(false)
@@ -377,8 +377,8 @@ export function GuestList(){
 				<section className = "manualGuestListSection">
 					<h3>{tableTitle}</h3>
 					<p>{tableDescription}</p>
-					{/* <GuestListTable></GuestListTable> */}
-					<section className="guestTable">
+					<GuestListTable tableData={guestListData}/>
+					{/* <section className="guestTable">
 						<section className="resultTable">
 
 							<span className="firstCol">Name of Individual/Party</span>
@@ -399,7 +399,7 @@ export function GuestList(){
 							))}
 
 						</section>
-					</section>
+					</section> */}
 				</section>
 
 				{/* <section className = "manualGuestListSection">
