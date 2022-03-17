@@ -611,7 +611,7 @@ export function SeatingDashboard() {
                 {/* Header Code  */}
                 <Grid container className='dashBody firstCard' spacing={0} columns={26}>
                     <Grid item xs={4}>
-                        <h3 className='seatStat'>{survComp}%</h3>
+                        <h3 className='seatStat'>{window.activeEvent.respondents == undefined || window.activeEvent.surveys == undefined ? '0' : Math.floor((window.activeEvent.respondents/window.activeEvent.surveys.length)*100)}%</h3>
                         <p className='statLabel'>Survey Completion</p>
                     </Grid>
                     <Grid item xs={4}>

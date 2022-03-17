@@ -229,7 +229,6 @@ async function sendEvent(name: string, uid: string, date: string, time: string, 
     if (location == '') {
         location = 'N/A';
     }
-    console.log(Date.parse(new Date(date + " " + time).toString()));
     const requestOptions = {
         method: 'POST',
         headers: {

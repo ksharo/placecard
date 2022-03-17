@@ -20,6 +20,7 @@ const schema = Joi.object({
         // .max(Joi.ref("expected_number_of_attendees"))
         .required(),
     guest_list: Joi.array().required(),
+    surveys_sent: Joi.array()
 }).strict();
 
 module.exports = schema;

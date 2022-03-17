@@ -1,4 +1,4 @@
-import { Card, CardHeader, IconButton, InputAdornment, TextField } from "@mui/material";
+import { Card, CardHeader, CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
 import React, { useEffect, useLayoutEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import {uuid} from "uuidv4";
@@ -15,7 +15,7 @@ export function EditSurveyResponses() {
     const perTable = window.activeEvent == undefined ? 0 : window.activeEvent.perTable;
     let ourSize = window.curGuest == undefined ? 0 : window.curGuest.groupSize == undefined ? 1 : window.curGuest.groupSize;
 
-    const unusedInvitees = window.inviteesState.filter( (x) => {
+    let unusedInvitees = window.inviteesState.filter( (x) => {
         return !(window.lovedInvitees.map(y => y.id).includes(x.id) 
         || window.likedInvitees.map(z => z.id).includes(x.id) 
         || window.dislikedInvitees.map(t => t.id).includes(x.id)
@@ -30,11 +30,11 @@ export function EditSurveyResponses() {
         [othersID]: '',
     };
 
-    const disliked = [...window.dislikedInvitees];
-    const liked = window.likedInvitees.filter( (x) => {
+    let disliked = [...window.dislikedInvitees];
+    let liked = window.likedInvitees.filter( (x) => {
         return !window.lovedInvitees.map(y => y.id).includes(x.id);
     });
-    const loved = [...window.lovedInvitees];
+    let loved = [...window.lovedInvitees];
     // create columns with headers and unique ids
     const origColumns = {
         [dislikedID]: {
@@ -72,7 +72,38 @@ export function EditSurveyResponses() {
     }, [columns]);
 
     useEffect(() => {
-
+        unusedInvitees = window.inviteesState.filter( (x) => {
+            return !(window.lovedInvitees.map(y => y.id).includes(x.id) 
+            || window.likedInvitees.map(z => z.id).includes(x.id) 
+            || window.dislikedInvitees.map(t => t.id).includes(x.id)
+            || (window.curGuest == undefined || window.curGuest.id == x.id) 
+            || (window.curGuest.groupID != undefined && window.curGuest.groupID != '' && window.curGuest.groupID == x.groupID));
+        });
+        disliked = [...window.dislikedInvitees];
+        liked = window.likedInvitees.filter( (x) => {
+            return !window.lovedInvitees.map(y => y.id).includes(x.id);
+        });
+        loved = [...window.lovedInvitees];
+        const newColumns = {
+            [dislikedID]: {
+                name: 'Avoid Sitting With',
+                items: disliked
+            },
+            [likedID]: {
+                name: 'Comfortable Sitting With',
+                items: liked
+            },
+            [lovedID]: {
+                name: 'Ideal Table',
+                items: loved
+            },
+            [othersID]: {
+                name: 'Others',
+                items: unusedInvitees
+            }
+        }
+        setColumns(newColumns);
+        search(null);
     }, [window.inviteesState])
 
     const onDragEnd = (result: any, columns: any, setColumns: any) => {
@@ -285,6 +316,7 @@ export function EditSurveyResponses() {
                                     }}>
                                 </TextField>
                             </section>
+                            {!((window.dislikedInvitees.length == 1 && window.dislikedInvitees[0].id == 'none') || (window.likedInvitees.length == 1 && window.likedInvitees[0].id == 'none') || (window.lovedInvitees.length == 1 && window.lovedInvitees[0].id == 'none')) ?
                             <Droppable droppableId={columnId} key={columnId}>
                             {(provided, snapshot) => {
                                 return (
@@ -316,7 +348,16 @@ export function EditSurveyResponses() {
                                 </section>
                                 );
                             }}
-                            </Droppable>
+                            </Droppable> :
+                            <section className='loadingCircle'>
+                                {window.curGuest != undefined ? <p>No Guests</p> : 
+                                <>
+                                    <p>Loading...</p>
+                                    <CircularProgress size={24} />
+                                </>
+                                }
+                            </section>
+                        }
                         </Card>
                     );
                     })}

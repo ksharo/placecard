@@ -3,7 +3,6 @@ import TextField from '@mui/material/TextField';
 import './guestPages.css';
 import { Button } from "@mui/material";
 import validator from "validator";
-import { ObjectId } from "mongodb";
 
 export function GuestConfirmation() {
     const history = useHistory();
@@ -62,9 +61,11 @@ export function GuestConfirmation() {
                     groupName: data.group_name,
                     contact: data.email,
                 };
-                window.setCurGuest(newGuest);
                 if ((data.email.toLowerCase() == contact || data.phone_number == contact) && contact != '' && contact != undefined) {
-                    // TODO: set current guest info to this guest
+                    window.setCurGuest(newGuest);
+                    window.setDisliked(data.survey_response.disliked);
+                    window.setLiked(data.survey_response.liked);
+                    window.setLoved(data.survey_response.ideal);
                     history.push('/takeSurvey/?page=0&guestId='+guestID+'&eventId='+eventID);
                 }
                 else {
@@ -83,8 +84,9 @@ export function GuestConfirmation() {
                 }
             }
         }
-        catch {
+        catch (e) {
             const linkErr = document.getElementById('wrongLinkError');
+            console.error(e);
             if (linkErr != null) {
                 linkErr.style.display = 'block';
                 window.scrollTo({top: 0, left: 0, behavior: 'smooth'});

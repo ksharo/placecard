@@ -335,7 +335,8 @@ async function main() {
     event_start_time: 2223646857962,
     location: "Hoboken",
     attendees_per_table: 8,
-    guest_list: allGuests
+    guest_list: allGuests,
+    surveys_sent: allGuests
   }
 
 

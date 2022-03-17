@@ -62,6 +62,9 @@ export function FullSurvey (props?: {preview: boolean}) {
                         groupName: data.group_name,
                         contact: data.email,
                     };
+                    window.setDisliked(data.survey_response.disliked);
+                    window.setLiked(data.survey_response.liked);
+                    window.setLoved(data.survey_response.ideal);
                     window.setCurGuest(newGuest);
                 }
             }
@@ -108,14 +111,23 @@ export function FullSurvey (props?: {preview: boolean}) {
         </>)
     }
 
-    // TODO: add routes to update survey responses on next page and prevPage
-    const nextPage = () => {
+    const nextPage = async () => {
+        /* check for default values to make sure that we don't overwrite with bad data */
+        if (!((window.dislikedInvitees.length == 1 && window.dislikedInvitees[0].id == 'none') || (window.likedInvitees.length == 1 && window.likedInvitees[0].id == 'none') || (window.lovedInvitees.length == 1 && window.lovedInvitees[0].id == 'none'))) {
+            // TODO add error checking here!!!
+            await updateGuest();
+        }
         startPage += 1;
         history.push('/takeSurvey?page='+startPage+'&guestId='+guestID+'&eventId='+eventID);
         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
         setPage(curPage + 1);
     };
-    const prevPage = () => {
+
+    const prevPage = async () => {
+        /* check for default values to make sure that we don't overwrite with bad data */
+        if (!((window.dislikedInvitees.length == 1 && window.dislikedInvitees[0].id == 'none') || (window.likedInvitees.length == 1 && window.likedInvitees[0].id == 'none') || (window.lovedInvitees.length == 1 && window.lovedInvitees[0].id == 'none'))) {
+            await updateGuest();
+        }
         startPage -= 1;
         history.push('/takeSurvey?page='+startPage+'&guestId='+guestID+'&eventId='+eventID);
         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
@@ -142,3 +154,28 @@ export function FullSurvey (props?: {preview: boolean}) {
     );
 
 }
+
+function updateGuest() {
+    if (window.curGuest != undefined) {
+        const requestOptions = {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                    // _userId: window.activeEvent.uid,
+                    // event_name: window.activeEvent.name,
+                    survey_response: {
+                        disliked: window.dislikedInvitees,
+                        liked: window.likedInvitees,
+                        ideal: window.lovedInvitees
+                    },
+                    // event_start_time: Number(Date.parse(new Date(window.activeEvent.date + " " + window.activeEvent.time).toString())),
+                    // location: window.activeEvent.location,
+                    // attendees_per_table: window.activeEvent.perTable,
+                    // guest_list: window.inviteesState
+                })
+            };
+            return fetch('http://localhost:3001/guests/updateSurveyResponses/'+window.curGuest.id, requestOptions);
+        }
+    }

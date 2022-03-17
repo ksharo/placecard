@@ -158,4 +158,47 @@ router.delete("/:guestId", async (req, res) => {
     }
 });
 
+router.patch("/updateSurveyResponses/:id", async (req, res) => {
+    const updatedResponses = req.body.survey_response;
+    // try {
+    //     checkPrecondition(updatedEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
+    //     checkPrecondition(updatedEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
+    //     validateSchema(updatedEvent, SCHEMA_TYPES.EVENT);
+    // } catch (e) {
+    //     console.log(e)
+    //     return createErrorResponse(
+    //         e.message,
+    //         ERROR_TYPES.INVALID_EVENT,
+    //         statusCodes.BAD_REQUEST,
+    //         res
+    //     );
+    // }
+    const guestId = req.params.id;
+    // try {
+    //     checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID);
+    //     checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID);
+    // } catch (e) {
+    //     console.log(e)
+    //     return createErrorResponse(
+    //         e.message,
+    //         ERROR_TYPES.INVALID_EVENT_ID,
+    //         INVALID_EVENT_ID,
+    //         res
+    //     );
+    // }
+
+    try {
+        const guest = await guests.updateResponses(guestId, updatedResponses);
+        return res.json(guest);
+    } catch (e) {
+        console.log(e);
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.UPDATE_ERROR,
+            statusCodes.INTERNAL_SERVER,
+            res
+        );
+    }
+});
+
 module.exports = router;

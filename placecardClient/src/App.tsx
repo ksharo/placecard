@@ -78,9 +78,9 @@ function App() {
   [window.eventsState, window.setEvents] = React.useState([]);
   [window.activeEvent, window.setActiveEvent] = React.useState(null);
   [window.inviteesState, window.setInvitees] = React.useState([]);
-  [window.dislikedInvitees, window.setDisliked] = React.useState([]);
-  [window.likedInvitees, window.setLiked] = React.useState([]);
-  [window.lovedInvitees, window.setLoved] = React.useState([]);
+  [window.dislikedInvitees, window.setDisliked] = React.useState([{id:'none', name:''}]);
+  [window.likedInvitees, window.setLiked] = React.useState([{id:'none', name:''}]);
+  [window.lovedInvitees, window.setLoved] = React.useState([{id:'none', name:''}]);
   [window.curGroupID, window.setGroupID] = React.useState(undefined);  
   [window.curGuest, window.setCurGuest] = React.useState(undefined);  
   [window.uidState, window.setUID] = React.useState('BUTVFngo8WfgLdD0LJycLEz97ph2');
@@ -90,6 +90,7 @@ function App() {
         const eventFetch = await fetch('http://localhost:3001/events/users/'+window.uidState);
         const fetchedEvents = await eventFetch.json();
         const events = []; 
+        let respondents = 0;
         for (let post of fetchedEvents) { 
           const guests: Invitee[] = [];
           const tables: any[] = post.tables;
@@ -104,6 +105,9 @@ function App() {
                 groupName: fetchedGuest.group_name,
                 contact: fetchedGuest.email,
               }
+              if (fetchedGuest.survey_response.disliked.length != 0 || fetchedGuest.survey_response.ideal.length != 0 || fetchedGuest.survey_response.liked.length != 0 ) {
+                respondents += 1;
+              }
               guests.push(newGuest);
               for (let x of tables) {
                 if (x.guests.includes(newGuest.id)) {
@@ -116,7 +120,7 @@ function App() {
               console.error("Error: could not fetch guest with id " + guestID + ". " + e);
             }
           }
-          const event = {'id': post._id, 'uid': post._userId, 'name': post.event_name, 'date': (new Date(post.event_start_time)).toLocaleString().split(',')[0], 'time': (new Date(post.event_start_time)).toTimeString().split(' ')[0], 'location': post.location, 'tables': tables, 'perTable': post.attendees_per_table , 'guestList': guests};
+          const event = {'id': post._id, 'uid': post._userId, 'name': post.event_name, 'date': (new Date(post.event_start_time)).toLocaleString().split(',')[0], 'time': (new Date(post.event_start_time)).toTimeString().split(' ')[0], 'location': post.location, 'tables': tables, 'perTable': post.attendees_per_table , 'guestList': guests, 'respondents': respondents, 'surveys': post.surveys_sent};
           events.push(event);
         }
       window.setEvents(events);

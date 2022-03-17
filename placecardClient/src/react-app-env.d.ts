@@ -60,6 +60,8 @@ interface PlacecardEvent {
     perTable: number;
     guestList: Invitee[];
     tables: Table[];
+    respondents?: number;
+    surveys?: string[];
 }
 
 interface Invitee {

@@ -1,5 +1,5 @@
 const { isUndefined, isEmpty } = require("lodash");
-const { guests, events } = require("../../config/mongoConfig/mongoCollections");
+const { guests } = require("../../config/mongoConfig/mongoCollections");
 const { checkPrecondition, validateSchema } = require("../utils/preconditions");
 const {
     INVALID_GUEST_ID_MESSAGE,
@@ -110,9 +110,33 @@ async function deleteGuest(guestId) {
     return true;
 }
 
+async function updateResponses(guestId, newResponses) {
+    const guestCollection = await guests();
+    const guestObjectId = ObjectId(guestId);
+
+    const queryParameters = {
+        _id: guestObjectId,
+    };
+    const updatedDocument = {
+        $set: {"survey_response": newResponses},
+    };
+    const updateInfo = await guestCollection.updateOne(
+        queryParameters,
+        updatedDocument
+    );
+    if (updateInfo.matchedCount === 0) {
+        throw new Error(
+            generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE)
+        );
+    }
+    const updatedGuest = await this.getGuest(guestId);
+    return updatedGuest;
+}
+
 module.exports = {
     getGuest,
     createGuest,
     updateGuest,
     deleteGuest,
+    updateResponses
 };
