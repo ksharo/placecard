@@ -90,7 +90,7 @@ export function UserDashboard() {
         <>
             <h1 className='title'>Welcome back, {window.firstNameState}!</h1>
             <section className='userDashContent'>
-                <div style={{'height':Math.min(500, (60+(rows.length*52)))}} className='table'>
+                <div style={{'height':Math.min(500, (60+(Math.max(1, rows.length)*52)))}} className='table'>
                     <DataGrid
                         rows={rows}
                         columns={columns}

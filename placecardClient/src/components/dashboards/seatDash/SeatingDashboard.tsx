@@ -550,7 +550,7 @@ export function SeatingDashboard() {
             return t.id == tableId;
         });
         tablesData[tablesData.indexOf(ourTable[0])].guests = tablesData[tablesData.indexOf(ourTable[0])].guests.concat(guestsToAdd);
-
+        setSeated(seated + guestsToAdd.length);
         setTablesData(tablesData);
 
         // set unseated to value without these people
@@ -616,19 +616,19 @@ export function SeatingDashboard() {
                     </Grid>
                     <Grid item xs={4}>
                         <h3 className='seatStat'>{tables}</h3>
-                        <p className='statLabel'>Total Tables</p>
+                        <p className='statLabel'>Total Table{tables==1 ? '' : 's'}</p>
                     </Grid>
                     <Grid item xs={4}>
                         <h3 className='seatStat'>{seats}</h3>
-                        <p className='statLabel'>Total Seats</p>
+                        <p className='statLabel'>Total Seat{seats==1 ? '' : 's'}</p>
                     </Grid>
                     <Grid item xs={4}>
                         <h3 className='seatStat'>{seated}</h3>
-                        <p className='statLabel'>Seated Guests</p>
+                        <p className='statLabel'>Seated Guest{seated==1 ? '' : 's'}</p>
                     </Grid>
                     <Grid item xs={4}>
                         <h3 className='seatStat'>{seats - seated}</h3>
-                        <p className='statLabel'>Available Seats</p>
+                        <p className='statLabel'>Available Seat{seats-seated==1 ? '' : 's'}</p>
                     </Grid>
                     <Grid item xs={1}>
                     </Grid>

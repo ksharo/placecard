@@ -76,6 +76,8 @@ async function main() {
   db.collection("events").drop();
   db.collection("guests").drop();
 
+  const groupId = (new ObjectId()).toString();
+
   let guestsSchemas = [
     {
       first_name: "Guest",
@@ -180,7 +182,9 @@ async function main() {
       first_name: "Guest",
       last_name: "Ten",
       email: "GuestTen@gmail.com",
-      party_size: 1,
+      party_size: 3,
+      group_id: groupId,
+      group_name: 'Group One',
       survey_response: {
         disliked: [],
         liked: [],
@@ -191,7 +195,9 @@ async function main() {
       first_name: "Guest",
       last_name: "Eleven",
       email: "GuestEleven@gmail.com",
-      party_size: 1,
+      party_size: 3,
+      group_id: groupId,
+      group_name: 'Group One',
       survey_response: {
         disliked: [],
         liked: [],
@@ -202,7 +208,9 @@ async function main() {
       first_name: "Guest",
       last_name: "Twelve",
       email: "GuestTwelve@gmail.com",
-      party_size: 1,
+      party_size: 3,
+      group_id: groupId,
+      group_name: 'Group One',
       survey_response: {
         disliked: [],
         liked: [],
