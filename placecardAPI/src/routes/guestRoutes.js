@@ -106,7 +106,59 @@ router.put("/updateGuest", async (req, res) => {
     try {
         const guestId = updatedGuest._id;
         delete updatedGuest._id;
-        const updatedGuestRet = await guests.updateGuest(guestId, updatedGuest);
+        const updatedGuestRet = await guests.updateGuest(
+            guestId,
+            updatedGuest,
+            "PUT"
+        );
+        return res.json(updatedGuestRet);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.UPDATE_ERROR,
+            statusCodes.INTERNAL_SERVER,
+            res
+        );
+    }
+});
+
+router.patch("/updateGuest", async (req, res) => {
+    const updatedGuest = req.body;
+
+    try {
+        checkPrecondition(updatedGuest, _.isUndefined, GUEST_UNDEFINED_MESSAGE);
+        checkPrecondition(updatedGuest, _.isEmpty, GUEST_EMPTY_MESSAGE);
+        validateSchema(updatedGuest, SCHEMA_TYPES.GUESTPATCH);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_GUEST,
+            statusCodes.BAD_REQUEST,
+            res
+        );
+    }
+
+    try {
+        const guestId = updatedGuest._id;
+        checkPrecondition(guestId, _.isUndefined, INVALID_GUEST_ID_MESSAGE);
+        checkPrecondition(guestId, isInvalidObjectId, INVALID_GUEST_ID_MESSAGE);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_GUEST_ID,
+            INVALID_GUEST_ID,
+            res
+        );
+    }
+
+    try {
+        const guestId = updatedGuest._id;
+        delete updatedGuest._id;
+        const updatedGuestRet = await guests.updateGuest(
+            guestId,
+            updatedGuest,
+            "PATCH"
+        );
         return res.json(updatedGuestRet);
     } catch (e) {
         return createErrorResponse(
