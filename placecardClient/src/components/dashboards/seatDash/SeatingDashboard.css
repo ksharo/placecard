@@ -277,6 +277,12 @@ ul {
     color: white;
     padding: 8px 12px !important;
     font-size: 22px;
+    position:sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.fullCardHeader {
     width: 100%;
 }
 

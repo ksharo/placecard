@@ -295,7 +295,7 @@ export function EditSurveyResponses() {
                     {Object.entries(shownColumns).map(([columnId, column]:[any, any]) => {
                     return (
                         <Card className='wholeColumnStyle' key={columnId}>
-                            <CardHeader title={column['name']} subheader={column.name=='Ideal Table' ? <p className='unstyledSubheader'>Space Left: {spaceUsed}</p> : <p className='emptySpace unstyledSubheader'></p>} className='cardHeader smallHeader'></CardHeader>
+                            <CardHeader title={column['name']} subheader={column.name=='Ideal Table' ? <p className='unstyledSubheader'>Space Left: {spaceUsed}</p> : <p className='emptySpace unstyledSubheader'></p>} className='cardHeader fullCardHeader smallHeader'></CardHeader>
                             <section className='stickySearch'>
                                 <TextField
                                 placeholder='Search Guests'
