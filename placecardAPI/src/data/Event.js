@@ -19,6 +19,8 @@ const {
     generateNotFoundMessage,
 } = require("../utils/errors");
 const EVENT_TYPE = require("../constants/schemaTypes").SCHEMA_TYPES.EVENT;
+const EVENT_TYPE_PATCH = require("../constants/schemaTypes").SCHEMA_TYPES
+    .EVENTPATCH;
 const { validateSchema, checkPrecondition } = require("../utils/preconditions");
 
 async function getEvent(eventId) {
@@ -87,12 +89,16 @@ async function createEvent(newEventConfig) {
     return newEvent;
 }
 
-async function updateEvent(eventId, updatedEventConfig) {
+async function updateEvent(eventId, updatedEventConfig, updateType) {
     checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
     checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
     checkPrecondition(updatedEventConfig, isUndefined, EVENT_UNDEFINED_MESSAGE);
     checkPrecondition(updatedEventConfig, isEmpty, EVENT_UNDEFINED_MESSAGE);
-    validateSchema(updatedEventConfig, EVENT_TYPE);
+    if (updateType === "PUT") {
+        validateSchema(updatedEventConfig, EVENT_TYPE);
+    } else {
+        validateSchema(updatedEventConfig, EVENT_TYPE_PATCH);
+    }
 
     const eventCollection = await events();
     const eventObjectId = ObjectId(eventId);
