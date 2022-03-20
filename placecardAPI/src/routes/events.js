@@ -47,6 +47,25 @@ router.get("/:eventId", async (req, res) => {
     }
 });
 
+/* Returns all the guests for a specified event */
+router.get("/guests/:eventId", async (req, res) => {
+    let eventId = req.params.eventId.trim();
+    try {
+        const event = await events.getEvent(eventId);
+        const ids = event.guest_list;
+        const guests = await events.getGuests(ids);
+        return res.json(guests);
+    }
+    catch (e) {
+        return createErrorResponse(
+            generateErrorMessage(e),
+            ERROR_TYPES.EVENT_NOT_FOUND,
+            statusCodes.NOT_FOUND,
+            res
+        );
+    }
+});
+
 router.get("/users/:userId", async (req, res) => {
     let userId = req.params.userId.trim();
     // try {

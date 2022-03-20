@@ -13,7 +13,7 @@ const schema = Joi.object({
     last_name: Joi.string(),
     // Only one is required between email/phone
     email: Joi.string().email(),
-    phone_number: Joi.string(),
+    // phone_number: Joi.string(),
     party_size: Joi.number().integer(),
     associated_table_number: Joi.number().integer(),
     group_id: Joi.string(),
