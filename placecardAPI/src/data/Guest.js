@@ -1,5 +1,4 @@
 const { isUndefined, isEmpty } = require("lodash");
-const { guests } = require("../../config/mongoConfig/mongoCollections");
 const { checkPrecondition, validateSchema } = require("../utils/preconditions");
 const {
     INVALID_GUEST_ID_MESSAGE,
@@ -15,6 +14,8 @@ const {
 } = require("../utils/mongoDocument");
 const { ObjectId } = require("mongodb");
 const GUEST_TYPE = require("../constants/schemaTypes").SCHEMA_TYPES.GUEST;
+const GUEST_TYPE_PATCH = require("../constants/schemaTypes").SCHEMA_TYPES
+    .GUESTPATCH;
 const {
     generateNotFoundMessage,
     generateCRUDErrorMessage,
@@ -60,12 +61,16 @@ async function createGuest(guestConfig) {
     return newGuest;
 }
 
-async function updateGuest(guestId, updatedGuestConfig) {
+async function updateGuest(guestId, updatedGuestConfig, updateType) {
     checkPrecondition(guestId, isUndefined, INVALID_GUEST_ID_MESSAGE);
     checkPrecondition(guestId, isInvalidObjectId, INVALID_GUEST_ID_MESSAGE);
     checkPrecondition(updatedGuestConfig, isUndefined, INVALID_GUEST);
     checkPrecondition(updatedGuestConfig, isEmpty, INVALID_GUEST);
-    validateSchema(updatedGuestConfig, GUEST_TYPE);
+    if (updateType === "PUT") {
+        validateSchema(updatedGuestConfig, GUEST_TYPE);
+    } else {
+        validateSchema(updatedGuestConfig, GUEST_TYPE_PATCH);
+    }
 
     const guestCollection = await guests();
     const guestObjectId = ObjectId(guestId);
@@ -110,33 +115,9 @@ async function deleteGuest(guestId) {
     return true;
 }
 
-async function updateResponses(guestId, newResponses) {
-    const guestCollection = await guests();
-    const guestObjectId = ObjectId(guestId);
-
-    const queryParameters = {
-        _id: guestObjectId,
-    };
-    const updatedDocument = {
-        $set: {"survey_response": newResponses},
-    };
-    const updateInfo = await guestCollection.updateOne(
-        queryParameters,
-        updatedDocument
-    );
-    if (updateInfo.matchedCount === 0) {
-        throw new Error(
-            generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE)
-        );
-    }
-    const updatedGuest = await this.getGuest(guestId);
-    return updatedGuest;
-}
-
 module.exports = {
     getGuest,
     createGuest,
     updateGuest,
     deleteGuest,
-    updateResponses
 };

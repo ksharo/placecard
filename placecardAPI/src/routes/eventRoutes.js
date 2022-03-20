@@ -77,36 +77,6 @@ router.get("/users/:userId", async (req, res) => {
     }
 });
 
-router.get("/guests/:guestId", async (req, res) => {
-    let guestId = req.params.guestId.trim();
-    // try {
-    //     checkPrecondition(userId, _.isUndefined, INVALID_EVENT_ID_MESSAGE);
-    //     checkPrecondition(userId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
-    // } catch (e) {
-    //     // Create error type for INVALID USER ID later
-    //     return createErrorResponse(
-    //         e.message,
-    //         ERROR_TYPES.INVALID_EVENT_ID,
-    //         statusCodes.BAD_REQUEST,
-    //         res
-    //     );
-    // }
-
-    try {
-        const guestEvent = await events.getGuestEvent(guestId);
-        return res.json(guestEvent);
-    } catch (e) {
-        console.log(e);
-        // Create error type for USER EVENTS NOT FOUND later
-        return createErrorResponse(
-            generateErrorMessage(e),
-            ERROR_TYPES.EVENT_NOT_FOUND,
-            statusCodes.NOT_FOUND,
-            res
-        );
-    }
-});
-
 router.post("/newEvent", async (req, res) => {
     const newEvent = req.body;
     try {
@@ -142,7 +112,6 @@ router.put("/updateEvent/:id", async (req, res) => {
         checkPrecondition(updatedEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
         validateSchema(updatedEvent, SCHEMA_TYPES.EVENT);
     } catch (e) {
-        console.log(e)
         return createErrorResponse(
             e.message,
             ERROR_TYPES.INVALID_EVENT,
@@ -155,7 +124,6 @@ router.put("/updateEvent/:id", async (req, res) => {
         checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID);
         checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID);
     } catch (e) {
-        console.log(e)
         return createErrorResponse(
             e.message,
             ERROR_TYPES.INVALID_EVENT_ID,
@@ -165,10 +133,9 @@ router.put("/updateEvent/:id", async (req, res) => {
     }
 
     try {
-        const event = await events.updateEvent(eventId, updatedEvent);
+        const event = await events.updateEvent(eventId, updatedEvent, "PUT");
         return res.json(event);
     } catch (e) {
-        console.log(e);
         return createErrorResponse(
             e.message,
             ERROR_TYPES.UPDATE_ERROR,
@@ -178,40 +145,39 @@ router.put("/updateEvent/:id", async (req, res) => {
     }
 });
 
-router.patch("/updateTables/:id", async (req, res) => {
-    const updatedTables = req.body.tables;
-    // try {
-    //     checkPrecondition(updatedEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
-    //     checkPrecondition(updatedEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
-    //     validateSchema(updatedEvent, SCHEMA_TYPES.EVENT);
-    // } catch (e) {
-    //     console.log(e)
-    //     return createErrorResponse(
-    //         e.message,
-    //         ERROR_TYPES.INVALID_EVENT,
-    //         statusCodes.BAD_REQUEST,
-    //         res
-    //     );
-    // }
-    const eventId = req.params.id;
-    // try {
-    //     checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID);
-    //     checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID);
-    // } catch (e) {
-    //     console.log(e)
-    //     return createErrorResponse(
-    //         e.message,
-    //         ERROR_TYPES.INVALID_EVENT_ID,
-    //         INVALID_EVENT_ID,
-    //         res
-    //     );
-    // }
+router.patch("/updateEvent/:id", async (req, res) => {
+    const updatedEvent = req.body;
 
     try {
-        const event = await events.updateTables(eventId, updatedTables);
+        checkPrecondition(updatedEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
+        checkPrecondition(updatedEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
+        validateSchema(updatedEvent, SCHEMA_TYPES.EVENTPATCH);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_EVENT,
+            statusCodes.BAD_REQUEST,
+            res
+        );
+    }
+
+    const eventId = req.params.id;
+    try {
+        checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID);
+        checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_EVENT_ID,
+            INVALID_EVENT_ID,
+            res
+        );
+    }
+
+    try {
+        const event = await events.updateEvent(eventId, updatedEvent, "PATCH");
         return res.json(event);
     } catch (e) {
-        console.log(e);
         return createErrorResponse(
             e.message,
             ERROR_TYPES.UPDATE_ERROR,
@@ -220,7 +186,6 @@ router.patch("/updateTables/:id", async (req, res) => {
         );
     }
 });
-
 
 router.delete("/:eventId", async (req, res) => {
     const eventId = req.params.eventId.trim();

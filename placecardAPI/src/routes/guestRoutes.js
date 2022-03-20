@@ -106,7 +106,59 @@ router.put("/updateGuest", async (req, res) => {
     try {
         const guestId = updatedGuest._id;
         delete updatedGuest._id;
-        const updatedGuestRet = await guests.updateGuest(guestId, updatedGuest);
+        const updatedGuestRet = await guests.updateGuest(
+            guestId,
+            updatedGuest,
+            "PUT"
+        );
+        return res.json(updatedGuestRet);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.UPDATE_ERROR,
+            statusCodes.INTERNAL_SERVER,
+            res
+        );
+    }
+});
+
+router.patch("/updateGuest", async (req, res) => {
+    const updatedGuest = req.body;
+
+    try {
+        checkPrecondition(updatedGuest, _.isUndefined, GUEST_UNDEFINED_MESSAGE);
+        checkPrecondition(updatedGuest, _.isEmpty, GUEST_EMPTY_MESSAGE);
+        validateSchema(updatedGuest, SCHEMA_TYPES.GUESTPATCH);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_GUEST,
+            statusCodes.BAD_REQUEST,
+            res
+        );
+    }
+
+    try {
+        const guestId = updatedGuest._id;
+        checkPrecondition(guestId, _.isUndefined, INVALID_GUEST_ID_MESSAGE);
+        checkPrecondition(guestId, isInvalidObjectId, INVALID_GUEST_ID_MESSAGE);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_GUEST_ID,
+            INVALID_GUEST_ID,
+            res
+        );
+    }
+
+    try {
+        const guestId = updatedGuest._id;
+        delete updatedGuest._id;
+        const updatedGuestRet = await guests.updateGuest(
+            guestId,
+            updatedGuest,
+            "PATCH"
+        );
         return res.json(updatedGuestRet);
     } catch (e) {
         return createErrorResponse(
@@ -152,49 +204,6 @@ router.delete("/:guestId", async (req, res) => {
         return createErrorResponse(
             e.message,
             ERROR_TYPES.GUEST_NOT_FOUND,
-            statusCodes.INTERNAL_SERVER,
-            res
-        );
-    }
-});
-
-router.patch("/updateSurveyResponses/:id", async (req, res) => {
-    const updatedResponses = req.body.survey_response;
-    // try {
-    //     checkPrecondition(updatedEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
-    //     checkPrecondition(updatedEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
-    //     validateSchema(updatedEvent, SCHEMA_TYPES.EVENT);
-    // } catch (e) {
-    //     console.log(e)
-    //     return createErrorResponse(
-    //         e.message,
-    //         ERROR_TYPES.INVALID_EVENT,
-    //         statusCodes.BAD_REQUEST,
-    //         res
-    //     );
-    // }
-    const guestId = req.params.id;
-    // try {
-    //     checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID);
-    //     checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID);
-    // } catch (e) {
-    //     console.log(e)
-    //     return createErrorResponse(
-    //         e.message,
-    //         ERROR_TYPES.INVALID_EVENT_ID,
-    //         INVALID_EVENT_ID,
-    //         res
-    //     );
-    // }
-
-    try {
-        const guest = await guests.updateResponses(guestId, updatedResponses);
-        return res.json(guest);
-    } catch (e) {
-        console.log(e);
-        return createErrorResponse(
-            e.message,
-            ERROR_TYPES.UPDATE_ERROR,
             statusCodes.INTERNAL_SERVER,
             res
         );
