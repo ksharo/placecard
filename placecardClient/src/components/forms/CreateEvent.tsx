@@ -131,8 +131,10 @@ export function CreateEvent(){
                     const id: string = data._id;
                     /* if sendEvent is successful, go to next page after adding event to global list */
                     const eventsList = window.eventsState;
-                    eventsList.push({id: id, uid: window.uidState, name: name, date: date, time: time, location: location, perTable: per_table, tables: initTable, guestList: []});
+                    const newEvent = {id: id, uid: window.uidState, name: name, date: date, time: time, location: location, perTable: per_table, tables: initTable, guestList: []}
+                    eventsList.push(newEvent);
                     window.setEvents(eventsList);
+                    window.setActiveEvent(newEvent);
                     history.push('/uploadGuestList');
                 }
                 else {
