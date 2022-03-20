@@ -47,12 +47,14 @@ router.get("/:guestId", async (req, res) => {
 });
 
 router.post("/newGuest", async (req, res) => {
+    console.log("Here")
     const newGuest = req.body;
     try {
         checkPrecondition(newGuest, _.isUndefined, GUEST_UNDEFINED_MESSAGE);
         checkPrecondition(newGuest, _.isEmpty, GUEST_EMPTY_MESSAGE);
         validateSchema(newGuest, SCHEMA_TYPES.GUEST);
     } catch (e) {
+        console.log('1', e);
         return createErrorResponse(
             e.message,
             ERROR_TYPES.INVALID_GUEST,
@@ -65,6 +67,7 @@ router.post("/newGuest", async (req, res) => {
         const createdGuest = await guests.createGuest(newGuest);
         return res.json(createdGuest);
     } catch (e) {
+        console.log('2', e);
         return createErrorResponse(
             e.message,
             ERROR_TYPES.INSERT_ERROR,
