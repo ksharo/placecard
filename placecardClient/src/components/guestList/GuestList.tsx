@@ -1,5 +1,5 @@
 import { GuestListTable, GuestListDataInterface } from "./GuestListTable"
-import { useRef, useState, useEffect, InputHTMLAttributes } from "react";
+import { useRef, useState, useEffect, InputHTMLAttributes, useLayoutEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Button } from "@mui/material";
 import { MdUploadFile } from 'react-icons/md';
@@ -25,6 +25,12 @@ export function GuestList(){
 	// 	sendSurvey:		boolean;
 	// 	groupMembers:		any[]
 	// }
+// "groupName":		currGrpName,
+// 			"groupContact":	currGrpContact,
+// 			"groupSize":		currGrpSize,
+// 			"sendSurvey":		currGrpSendSurvey,
+// 			"groupMembers":	currGrpMembers
+	/* initialize guest list data */
 
 	const [guestListData, setGuestListData]					= useState<GuestListDataInterface[]>([])
 	const [userFile, setUserFile] 						= useState(undefined);
@@ -43,6 +49,23 @@ export function GuestList(){
 	const [currGrpSendSurvey, setCurrGrpSendSurvey]			= useState(true)
 	const [currGrpMembers, setCurrGrpMembers]				= useState(["", ""])
 
+	useLayoutEffect( () => {
+		const startingGuests: GuestListDataInterface[] = [...guestListData];
+		if (window.activeEvent != null) {
+			for (let guest of window.activeEvent.guestList) {
+				const newGuest: GuestListDataInterface = {
+					individualName: guest.name,
+					groupName: guest.groupName,
+					groupContact: guest.contact,
+					groupSize: guest.groupSize?.toString(),
+					sendSurvey: true,
+					groupMembers: []
+				};
+				startingGuests.push(newGuest);
+			}
+			setGuestListData(startingGuests);
+		}
+	}, [window.activeEvent]);
 
 	const fileSelected = (event: any) => {
 		const selectedFile = event.target.files[0];
@@ -120,28 +143,31 @@ export function GuestList(){
 		const grpName = currIndiName + (currPlusOneName ? " and " + currPlusOneName : "");
 		const grpSize = currPlusOneName ? 2 : 1;
 		const res = await sendGuest(currIndiName, currIndiContact, grpName, grpID, grpSize);
-		if (!res.ok) {
+		const guestData = await res?.json();
+		if (res != undefined && !res.ok) {
 			const message = `An error has occured: ${res.status} - ${res.statusText}`;
 			throw new Error(message);
 		}
 		else{
 			console.log("success!")
+			updateGlobalEvent(guestData);
 		}
 		if (currPlusOneName) {
 			const resPlusOne = await sendGuest(currPlusOneName, currIndiContact, grpName, grpID, grpSize);
-			if (!resPlusOne.ok) {
+			const plusOneData = await resPlusOne?.json();
+			if (resPlusOne != undefined && !resPlusOne.ok) {
 				const message = `An error has occured: ${resPlusOne.status} - ${resPlusOne.statusText}`;
 				throw new Error(message);
 			}
 			else{
 				console.log("success!")
+				updateGlobalEvent(plusOneData);
 			}
 		}
 		setCurrIndiName("")
 		setCurrIndiContact("")
 		setCurrPlusOneName("")
 		setCurrIndiSendSurvey(true)
-		// return fetch('http://localhost:3001/guests/newGuest', requestOptions)
 	}
 
 	async function addGrpToTable(){
@@ -156,12 +182,14 @@ export function GuestList(){
 		const grpID = (new ObjectId()).toString();
 		for (let x of currGrpMembers) {
 			const res = await sendGuest(x, currGrpContact, currGrpName, grpID, Number(currGrpSize));
-			if (!res.ok) {
+			const guestData = await res?.json();
+			if (res != undefined && !res.ok) {
 				const message = `An error has occured: ${res.status} - ${res.statusText}`;
 				throw new Error(message);
 			}
 			else{
 				console.log("success!")
+				updateGlobalEvent(guestData);
 			}
 		}
 		setCurrGrpName("")
@@ -450,38 +478,55 @@ export function GuestList(){
 }
 
 function sendGuest(name: string, contact: string, groupName: string, groupId: string, groupSize: number) {
-	const nameSplit = name.split(" ");
-		let firstName='';
-		let lastName = '--';
-		if (nameSplit.length > 1) {
-			firstName = nameSplit.slice(0, nameSplit.length-1).join(" ");
-			lastName = nameSplit[nameSplit.length-1];
-		}
-		else {
-			firstName = nameSplit[0];
-	}
-	const requestOptions = {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({
-			"first_name":				firstName,
-			"last_name":				lastName,
-			"email":					contact,
-			"party_size":				groupSize,
-			"associated_table_number":	-1,
-			"group_id":				(new ObjectId()).toString(),
-			"group_name":				groupName,
-			"survey_response":			{
-				"disliked":	[],
-				"liked":		[],
-				"ideal":		[]
+	if (window.activeEvent != undefined && window.activeEvent != null) {
+		const nameSplit = name.split(" ");
+			let firstName='';
+			let lastName = '--';
+			if (nameSplit.length > 1) {
+				firstName = nameSplit.slice(0, nameSplit.length-1).join(" ");
+				lastName = nameSplit[nameSplit.length-1];
 			}
-		}),
+			else {
+				firstName = nameSplit[0];
+		}
+		const requestOptions = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				"first_name":				firstName,
+				"last_name":				lastName,
+				"email":					contact,
+				"party_size":				groupSize,
+				"associated_table_number":	-1,
+				"group_id":				(new ObjectId()).toString(),
+				"group_name":				groupName,
+				"survey_response":			{
+					"disliked":	[],
+					"liked":		[],
+					"ideal":		[]
+				}
+			}),
+		}
+
+		return fetch('http://localhost:3001/guests/newGuest/'+window.activeEvent.id, requestOptions)
 	}
+}
 
-	console.log(requestOptions)
-
-	return fetch('http://localhost:3001/guests/newGuest', requestOptions)
-
-
+function updateGlobalEvent(guestData: any) {
+	if (window.activeEvent != null) {
+		const curGuests = [...window.activeEvent.guestList];
+		const newGuest = {
+			id: guestData._id,
+			name: guestData.first_name + ' ' + guestData.last_name,
+			groupID: guestData.group_id,
+			groupName: guestData.group_name,
+			groupSize: guestData.party_size,
+			contact: guestData.email,
+		};
+		curGuests.push(newGuest);
+		const tmpEvent = window.activeEvent;
+		tmpEvent.guestList = curGuests;
+		window.setActiveEvent(tmpEvent);
+		/* TODO: replace in eventList! */
+	}
 }

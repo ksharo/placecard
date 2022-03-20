@@ -6,8 +6,8 @@ import './GuestTable.css'
 export interface GuestListDataInterface {
 	individualName?:	string;
 	groupName?:		string;
-	groupContact:		string;
-	groupSize:		string;
+	groupContact:		string | undefined;
+	groupSize:		string | undefined;
 	sendSurvey:		boolean;
 	groupMembers:		any[]
 }

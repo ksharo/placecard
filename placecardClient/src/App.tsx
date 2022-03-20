@@ -29,25 +29,6 @@ import { FirebaseAuthProvider } from "./components/firebase/AuthProvider";
 import { FullSurvey } from './components/guestPages/FullSurvey';
 import { EditGuestList } from './components/editPages/EditGuestList';
 
-const seedGuests: Invitee[] = [
-  {id: '00', name: 'Danielle Sharo', groupName: 'Sharo Family', groupID: '123'}, 
-  {id: '02', name: 'Jeremiah Sharo', groupName: 'Sharo Family', groupID: '123'}, 
-  {id: '03', name: 'Beth Sharo', groupName: 'Sharo Family', groupID: '123'}, 
-  {id: '04', name: 'Rob Sharo', groupName: 'Sharo Family', groupID: '123'}, 
-  {id: '11', name: 'Chloe Choy', groupName: 'Choy Family', groupID:'223'},
-  {id: '12', name: 'Abby Choy', groupName: 'Choy Family', groupID:'223'},
-  {id: '13', name: 'Mabel Choy', groupName: 'Choy Family', groupID:'223'},
-  {id: '14', name: 'Wing Choy', groupName: 'Choy Family', groupID:'223'},
-  {id: '22', name: 'Alex Rubino'}, 
-  {id: '33', name: 'Simon Gao'}, 
-  {id: '44', name: 'Gil Austria'}, 
-  {id: '55', name: 'Jayson Infante'}
-  ];
-// const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
-// const seedEvent1 = getEvent().then((result) => {return result});
-// const seedEvent2: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Bouncy Porpoise', 'date': '07/07/7777', 'location': 'Olive Garden', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
-// const seedEvent3: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Running Bagel', 'date': '04/02/2097', 'location': '', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};  
-
 function App() {
   document.title = 'Placecard';
   [window.loggedInState, window.setLoggedIn] = React.useState(true);
@@ -63,17 +44,17 @@ function App() {
   [window.dislikedInvitees, window.setDisliked] = React.useState([{id:'none', name:''}]);
   [window.likedInvitees, window.setLiked] = React.useState([{id:'none', name:''}]);
   [window.lovedInvitees, window.setLoved] = React.useState([{id:'none', name:''}]);
-  [window.curGroupID, window.setGroupID] = React.useState(undefined);  
-  [window.curGuest, window.setCurGuest] = React.useState(undefined);  
-  [window.uidState, window.setUID] = React.useState('BUTVFngo8WfgLdD0LJycLEz97ph2');
+  [window.curGroupID, window.setGroupID] = React.useState(undefined);
+  [window.curGuest, window.setCurGuest] = React.useState(undefined);
+  [window.uidState, window.setUID] = React.useState('');
   useEffect(() => {
     const getEvents = async() => {
       try {
         const eventFetch = await fetch('http://localhost:3001/events/users/'+window.uidState);
         const fetchedEvents = await eventFetch.json();
-        const events = []; 
+        const events = [];
         let respondents = 0;
-        for (let post of fetchedEvents) { 
+        for (let post of fetchedEvents) {
           const guests: Invitee[] = [];
           const tables: any[] = post.tables;
           for (let guestID of post.guest_list) {
@@ -142,7 +123,7 @@ function App() {
    * Pages:
    * Home: redesigned :)
    * New Account: redesigned :)
-   * Begin Survey: redesigned :) 
+   * Begin Survey: redesigned :)
    * Survey Instructions
    * Survey Group Page
    * Survey Dislikes
@@ -150,10 +131,10 @@ function App() {
    * Survey Ideal Table
    * Edit Survey Responses
    * Survey Confirmation: redesigned :)
-   * Not Found 
+   * Not Found
    * Edit Profile
    * Edit Details: redesigned :)
-   * Create Event: redesigned :) 
+   * Create Event: redesigned :)
    * user dashboard: redesigned :)
    * guest list
    * edit survey: redesigned :)
@@ -169,7 +150,7 @@ function App() {
           <section className='content'>
           <Header/>
           <Switch>
-            <Route exact path='/' component={ Home }/> 
+            <Route exact path='/' component={ Home }/>
             <Route exact path='/newAccount' component={ NewAccount }/>
             <Route exact path='/beginSurvey' component={ GuestConfirmation }/>
             {/* <Route exact path='/surveyPt1' component={ SurveyPt1WithAges }/> */}
