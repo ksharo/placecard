@@ -1,5 +1,6 @@
 const { isUndefined, isEmpty } = require("lodash");
 const { checkPrecondition, validateSchema } = require("../utils/preconditions");
+const { guests } = require("../../config/mongoConfig/mongoCollections");
 const {
     INVALID_GUEST_ID_MESSAGE,
     GUEST_EMPTY_MESSAGE,

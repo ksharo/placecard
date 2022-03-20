@@ -163,19 +163,14 @@ function updateGuest() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                    // _userId: window.activeEvent.uid,
-                    // event_name: window.activeEvent.name,
-                    survey_response: {
-                        disliked: window.dislikedInvitees,
-                        liked: window.likedInvitees,
-                        ideal: window.lovedInvitees
-                    },
-                    // event_start_time: Number(Date.parse(new Date(window.activeEvent.date + " " + window.activeEvent.time).toString())),
-                    // location: window.activeEvent.location,
-                    // attendees_per_table: window.activeEvent.perTable,
-                    // guest_list: window.inviteesState
+                _id: window.curGuest.id,
+                survey_response: {
+                    disliked: window.dislikedInvitees,
+                    liked: window.likedInvitees,
+                    ideal: window.lovedInvitees
+                },
                 })
             };
-            return fetch('http://localhost:3001/guests/updateSurveyResponses/'+window.curGuest.id, requestOptions);
+            return fetch('http://localhost:3001/guests/updateGuest', requestOptions);
         }
     }

@@ -813,15 +813,9 @@ function updateEvent(tablesData: Table[]) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                    // _userId: window.activeEvent.uid,
-                    // event_name: window.activeEvent.name,
                     tables: [...tables],
-                    // event_start_time: Number(Date.parse(new Date(window.activeEvent.date + " " + window.activeEvent.time).toString())),
-                    // location: window.activeEvent.location,
-                    // attendees_per_table: window.activeEvent.perTable,
-                    // guest_list: window.inviteesState
                 })
             };
-        return fetch('http://localhost:3001/events/updateTables/'+window.activeEvent.id, requestOptions);
+        return fetch('http://localhost:3001/events/updateEvent/'+window.activeEvent.id, requestOptions);
     }
 }

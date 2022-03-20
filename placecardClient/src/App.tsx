@@ -7,13 +7,11 @@ import { CreateEvent } from './components/forms/CreateEvent';
 /* Import Shared Components */
 import { Footer } from './components/shared/Footer';
 import { Header } from './components/shared/Header';
-import { ObjectId } from 'mongodb';
 import {
   BrowserRouter as Router,
   Redirect,
   Route,
   Switch,
-  useHistory,
 } from "react-router-dom";
 import { EventDashboard } from './components/dashboards/eventDash/EventDashboard';
 import { UserDashboard } from './components/dashboards/userDash/UserDashboard';
@@ -22,31 +20,14 @@ import { GuestList } from './components/guestList/GuestList';
 import { EditSurvey } from './components/editPages/EditSurvey';
 import { SeatingDashboard } from './components/dashboards/seatDash/SeatingDashboard';
 import { GuestConfirmation } from './components/guestPages/GuestConfirmation';
-// import { SurveyPt1WithAges } from './components/guestPages/oldPages/SurveyPt1WithAges';
-// import { SurveyPt2 } from './components/guestPages/oldPages/SurveyPt2Original';
-import { SurveyConf } from './components/confirmationPages/SurveyConf';
 import { SentConf } from './components/confirmationPages/SentConf';
 import { EditDetails } from './components/editPages/EditDetails';
 import { EditProfile } from './components/editPages/EditProfile';
 import React, { useEffect } from 'react';
-// import { SurveyPt1SitTogether } from './components/guestPages/oldPages/SurveyPt1SitTogether';
-import { SurveyDislikes } from './components/guestPages/SurveyDislikes';
-import { SurveyIdealTable } from './components/guestPages/SurveyIdealTable';
-import { SurveyLikes } from './components/guestPages/SurveyLikes';
-import { SurveyInstructions } from './components/guestPages/SurveyInstructions';
-import { EditSurveyResponses } from './components/guestPages/EditSurveyResponses';
-import { SurveyGroupPage } from './components/guestPages/SurveyGroupPage';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { createBrowserHistory } from "history";
 import { FirebaseAuthProvider } from "./components/firebase/AuthProvider";
 import { FullSurvey } from './components/guestPages/FullSurvey';
-import { async } from '@firebase/util';
 
-// const getEvent = async () => {
-//   const fetchData = await fetch('http://localhost:3001/events/6222666115cdbb7e25bc388f');
-//   const post = await fetchData.json();
-//   return {'id': post._id, 'name': post.name, 'date': post.event_start_time.toLocaleString().split(',')[0], 'time': post.event_start_time.toLocaleString().split(',')[1], 'location': post.location, 'tables': post.tables, 'perTable': post.attendees_per_table , 'guestList': post.guest_list};
-// }
 const seedGuests: Invitee[] = [
   {id: '00', name: 'Danielle Sharo', groupName: 'Sharo Family', groupID: '123'}, 
   {id: '02', name: 'Jeremiah Sharo', groupName: 'Sharo Family', groupID: '123'}, 
@@ -135,40 +116,6 @@ function App() {
     };
     getEvents();
   }, [window.uidState]);
-  
-  // let seedEvent1: PlacecardEvent = { 'id': '62225aebb824bfc14bbaf071', 'name': 'newName', 'date': '01/29/2022', 'location': 'N/A', 'perTable': 2, 'tables': seedTables, 'guestList': seedGuests};
-  
-  // .then(data => {
-    //   return data.json();
-    // })
-    // .then(post => {
-    //   
-    //   const seedEvent2: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Bouncy Porpoise', 'date': '07/07/7777', 'location': 'Olive Garden', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
-    //   const seedEvent3: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Running Bagel', 'date': '04/02/2097', 'location': '', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
-    // });
-  // const event1 = await fetch('http://localhost:3001/events/62225aebb824bfc14bbaf071');
-  // let eventTxt = await event1.text();
-  // eventTxt = eventTxt.json()
-  // console.log(eventTxt);
-  // const seedEvent1: PlacecardEvent = {'id': eventTxt._id, 'name': event1.body.name, 'date': event1.body.date.toLocaleString().split(',')[0], 'location': event1.body.location };
-  // const seedEvent1: PlacecardEvent = { 'id': '62225aebb824bfc14bbaf071', 'name': 'newName', 'date': '01/29/2022', 'location': 'N/A', 'perTable': 2, 'tables': seedTables, 'guestList': seedGuests};
-  
-
-  // [window.loggedInState, window.setLoggedIn] = React.useState(true);
-  // [window.firstNameState, window.setFirstName] = React.useState('Apple');
-  // [window.lastNameState, window.setLastName] = React.useState('Zebra');
-  // [window.phoneState, window.setPhone] = React.useState('555-555-5555');
-  // [window.emailState, window.setEmail] = React.useState('email@email.com');
-  // [window.profPicState, window.setProfPic] = React.useState(null);
-  // [window.profPicNameState, window.setProfPicName] = React.useState('None');
-  // [window.eventsState, window.setEvents] = React.useState([seedEvent1, seedEvent2, seedEvent3]);
-  // [window.activeEvent, window.setActiveEvent] = React.useState(seedEvent1);
-  // [window.inviteesState, window.setInvitees] = React.useState(seedGuests);
-  // [window.dislikedInvitees, window.setDisliked] = React.useState([]);
-  // [window.likedInvitees, window.setLiked] = React.useState([]);
-  // [window.lovedInvitees, window.setLoved] = React.useState([]);
-  // [window.curGroupID, window.setGroupID] = React.useState('223');
-
 
   const theme = createTheme({
     palette: {

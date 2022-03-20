@@ -298,18 +298,15 @@ async function updateEvent(id: string, name: string, date: string, time: string,
         location = 'N/A';
     }
     const requestOptions = {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
             event_name: name,
-            _userId: window.uidState,
             event_start_time: Number(Date.parse(new Date(date + " " + time).toString())),
             location: location,
             attendees_per_table: Number(per_table),
-            tables: tables,
-            guest_list: guestList
             })
         };
     return fetch('http://localhost:3001/events/updateEvent/'+id.toString(), requestOptions);
