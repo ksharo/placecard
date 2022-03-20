@@ -27,6 +27,7 @@ import React, { useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { FirebaseAuthProvider } from "./components/firebase/AuthProvider";
 import { FullSurvey } from './components/guestPages/FullSurvey';
+import { EditGuestList } from './components/editPages/EditGuestList';
 
 const seedGuests: Invitee[] = [
   {id: '00', name: 'Danielle Sharo', groupName: 'Sharo Family', groupID: '123'}, 
@@ -193,6 +194,7 @@ function App() {
             <Route exact path='/userHome' component={ UserDashboard }/>
             {/* { window.loggedInState && (<Route exact path='/userHome' component={ UserDashboard }/>)} */}
             <Route exact path='/uploadGuestList' component={ GuestList }/>
+            <Route exact path='/editGuestList' component={ EditGuestList }/>
             {/* { window.loggedInState && (<Route exact path='/uploadGuestList' component={ GuestList }/>)} */}
             <Route exact path='/editSurvey' component={ EditSurvey }/>
             {/* { window.loggedInState && (<Route exact path='/editSurvey' component={ EditSurvey }/>)} */}

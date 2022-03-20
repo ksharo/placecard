@@ -1,0 +1,4 @@
+.guestTableHader{
+	display:flex;
+	flex-direction: row;
+}
