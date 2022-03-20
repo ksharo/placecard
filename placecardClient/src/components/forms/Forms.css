@@ -16,6 +16,10 @@
     text-align: left;
   }
 
+  .noShadow {
+    box-shadow: 0;
+  }
+
   .MuiOutlinedInput-notchedOutline {
     border: 3px solid var(--borderColor);
     border-radius: 7px;

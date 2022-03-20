@@ -327,7 +327,7 @@ export function NewAccount() {
                     </>}
                 </section>
             {window.loggedInState ? <p className='successMessage'>Success!</p> : 
-                <Button className='basicBtn fitBtn smallMargin' variant='text' onClick={openDialogBox}><FaGoogle className='iconBtn'/> Sign up with your Google Account.</Button>}
+                <Button className='basicBtn fitBtn smallMargin noShadow' variant='text' onClick={openDialogBox}><FaGoogle className='iconBtn'/> Sign up with your Google Account.</Button>}
             <OAuthDialogList
                 open={open}
                 onClose={closeDialogBox}
