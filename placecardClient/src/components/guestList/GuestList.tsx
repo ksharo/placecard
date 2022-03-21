@@ -5,6 +5,7 @@ import { Button } from "@mui/material";
 import { MdUploadFile } from 'react-icons/md';
 import { HiTrash } from 'react-icons/hi';
 import { TextField, Switch, Checkbox } from "@mui/material";
+import { ObjectId } from 'mongodb';
 import './GuestList.css'
 
 
@@ -77,7 +78,7 @@ export function GuestList(){
 				let guest = {
 					first_name:	event.target["name"+i].value,
 					email: 		event.target["email"+i].value,
-					phone_number: 	event.target["phone"+i].value,
+					// phone_number: 	event.target["phone"+i].value,
 					party_size: 	event.target["partySize"+i].value,
 					isVip: 		event.target["isVip"+i].checked,
 				}
@@ -106,22 +107,44 @@ export function GuestList(){
 		history.push('/editSurvey');
 	}
 
-	function addIndiToTable(){
+	async function addIndiToTable(){
 		setGuestListData([...guestListData, {
-			"groupName":		currPlusOneName ? (currIndiName + " and PlusOne") : currIndiName,
+			"groupName":		currPlusOneName ? (currIndiName + " & " + currPlusOneName) : currIndiName,
 			"groupContact":	currIndiContact,
 			"groupSize":		currGrpSize,
 			"sendSurvey":		currIndiSendSurvey,
 			"groupMembers":	currPlusOneName ? [currIndiName, currPlusOneName] : []
 		}])
-		console.log("name", currIndiName, "contact", currIndiContact, "+1", currPlusOneName, 'sendSurve??', currIndiSendSurvey)
+		console.log("name", currIndiName, "contact", currIndiContact, "+1", currPlusOneName, 'sendSurvey?', currIndiSendSurvey)
+		const grpID = (new ObjectId()).toString();
+		const grpName = currIndiName + (currPlusOneName ? " and " + currPlusOneName : "");
+		const grpSize = currPlusOneName ? 2 : 1;
+		const res = await sendGuest(currIndiName, currIndiContact, grpName, grpID, grpSize);
+		if (!res.ok) {
+			const message = `An error has occured: ${res.status} - ${res.statusText}`;
+			throw new Error(message);
+		}
+		else{
+			console.log("success!")
+		}
+		if (currPlusOneName) {
+			const resPlusOne = await sendGuest(currPlusOneName, currIndiContact, grpName, grpID, grpSize);
+			if (!resPlusOne.ok) {
+				const message = `An error has occured: ${resPlusOne.status} - ${resPlusOne.statusText}`;
+				throw new Error(message);
+			}
+			else{
+				console.log("success!")
+			}
+		}
 		setCurrIndiName("")
 		setCurrIndiContact("")
 		setCurrPlusOneName("")
 		setCurrIndiSendSurvey(true)
+		// return fetch('http://localhost:3001/guests/newGuest', requestOptions)
 	}
 
-	function addGrpToTable(){
+	async function addGrpToTable(){
 		setGuestListData([...guestListData, {
 			"groupName":		currGrpName,
 			"groupContact":	currGrpContact,
@@ -130,6 +153,17 @@ export function GuestList(){
 			"groupMembers":	currGrpMembers
 		}])
 		console.log(currGrpName, currGrpContact, currGrpSize, currGrpSendSurvey, currGrpMembers)
+		const grpID = (new ObjectId()).toString();
+		for (let x of currGrpMembers) {
+			const res = await sendGuest(x, currGrpContact, currGrpName, grpID, Number(currGrpSize));
+			if (!res.ok) {
+				const message = `An error has occured: ${res.status} - ${res.statusText}`;
+				throw new Error(message);
+			}
+			else{
+				console.log("success!")
+			}
+		}
 		setCurrGrpName("")
 		setCurGrpContact("")
 		setCurrGrpSize("2")
@@ -413,4 +447,41 @@ export function GuestList(){
 
 		</>
 	);
+}
+
+function sendGuest(name: string, contact: string, groupName: string, groupId: string, groupSize: number) {
+	const nameSplit = name.split(" ");
+		let firstName='';
+		let lastName = '--';
+		if (nameSplit.length > 1) {
+			firstName = nameSplit.slice(0, nameSplit.length-1).join(" ");
+			lastName = nameSplit[nameSplit.length-1];
+		}
+		else {
+			firstName = nameSplit[0];
+	}
+	const requestOptions = {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+			"first_name":				firstName,
+			"last_name":				lastName,
+			"email":					contact,
+			"party_size":				groupSize,
+			"associated_table_number":	-1,
+			"group_id":				(new ObjectId()).toString(),
+			"group_name":				groupName,
+			"survey_response":			{
+				"disliked":	[],
+				"liked":		[],
+				"ideal":		[]
+			}
+		}),
+	}
+
+	console.log(requestOptions)
+
+	return fetch('http://localhost:3001/guests/newGuest', requestOptions)
+
+
 }

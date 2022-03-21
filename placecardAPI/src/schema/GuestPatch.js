@@ -10,10 +10,10 @@ const surveyResponseSchema = Joi.object({
 const schema = Joi.object({
     _id: Joi.string(),
     first_name: Joi.string().min(2),
-    last_name: Joi.string().min(2),
+    last_name: Joi.string(),
     // Only one is required between email/phone
     email: Joi.string().email(),
-    phone_number: Joi.string(),
+    // phone_number: Joi.string(),
     party_size: Joi.number().integer(),
     associated_table_number: Joi.number().integer(),
     group_id: Joi.string(),

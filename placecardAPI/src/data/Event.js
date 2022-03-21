@@ -22,6 +22,7 @@ const EVENT_TYPE = require("../constants/schemaTypes").SCHEMA_TYPES.EVENT;
 const EVENT_TYPE_PATCH = require("../constants/schemaTypes").SCHEMA_TYPES
     .EVENTPATCH;
 const { validateSchema, checkPrecondition } = require("../utils/preconditions");
+const { guests } = require("../../config/mongoConfig/mongoCollections");
 
 async function getEvent(eventId) {
     checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
@@ -88,6 +89,23 @@ async function createEvent(newEventConfig) {
     return newEvent;
 }
 
+async function addGuest(eventId, guestId) {
+    try {
+        const event = await this.getEvent(eventId);
+        const guests = [...event.guest_list];
+        guests.push(guestId);
+        const updatedConfig = {guest_list: guests};
+        await updateEvent(eventId, updatedConfig, 'PATCH');
+        return;
+    }
+    catch (e) {
+        console.log(e);
+        throw new Error(
+            generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE)
+        );
+    }
+}
+
 async function updateEvent(eventId, updatedEventConfig, updateType) {
     checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
     checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
@@ -119,8 +137,24 @@ async function updateEvent(eventId, updatedEventConfig, updateType) {
             generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE)
         );
     }
-    const updatedEvent = await this.getEvent(eventId);
+    const updatedEvent = await getEvent(eventId);
     return updatedEvent;
+}
+
+async function getGuests(ids) {
+    const guestCollection = await guests();
+    try {
+        ids = ids.map( (id) => {
+            return ObjectId(id);
+        });
+        const matchingGuests = await guestCollection.find( { "_id" : { "$in" : ids } } );
+        return matchingGuests.toArray();
+    }
+    catch (e) {
+        throw new Error(
+            generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE)
+        );
+    }
 }
 
 async function deleteEvent(eventId) {
@@ -149,4 +183,6 @@ module.exports = {
     createEvent,
     updateEvent,
     deleteEvent,
+    getGuests,
+    addGuest
 };
