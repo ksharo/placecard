@@ -44,10 +44,9 @@ function App() {
   [window.dislikedInvitees, window.setDisliked] = React.useState([{id:'none', name:''}]);
   [window.likedInvitees, window.setLiked] = React.useState([{id:'none', name:''}]);
   [window.lovedInvitees, window.setLoved] = React.useState([{id:'none', name:''}]);
-  [window.curGroupID, window.setGroupID] = React.useState(undefined);  
-  [window.curGuest, window.setCurGuest] = React.useState(undefined);  
-  [window.uidState, window.setUID] = React.useState('BUTVFngo8WfgLdD0LJycLEz97ph2');
-  
+  [window.curGroupID, window.setGroupID] = React.useState(undefined);
+  [window.curGuest, window.setCurGuest] = React.useState(undefined);
+  [window.uidState, window.setUID] = React.useState('');
   useEffect(() => {
     const getEvents = async () => {
       try {
@@ -55,7 +54,7 @@ function App() {
         const fetchedEvents = await eventFetch.json();
         const events: PlacecardEvent[] = []; 
         let respondents = 0;
-        for (let post of fetchedEvents) { 
+        for (let post of fetchedEvents) {
           const guests: Invitee[] = [];
           const tables: any[] = post.tables;
           for (let guestID of post.guest_list) {
@@ -125,7 +124,7 @@ function App() {
    * Pages:
    * Home: redesigned :)
    * New Account: redesigned :)
-   * Begin Survey: redesigned :) 
+   * Begin Survey: redesigned :)
    * Survey Instructions
    * Survey Group Page
    * Survey Dislikes
@@ -133,10 +132,10 @@ function App() {
    * Survey Ideal Table
    * Edit Survey Responses
    * Survey Confirmation: redesigned :)
-   * Not Found 
+   * Not Found
    * Edit Profile
    * Edit Details: redesigned :)
-   * Create Event: redesigned :) 
+   * Create Event: redesigned :)
    * user dashboard: redesigned :)
    * guest list
    * edit survey: redesigned :)
@@ -152,7 +151,7 @@ function App() {
           <section className='content'>
           <Header/>
           <Switch>
-            <Route exact path='/' component={ Home }/> 
+            <Route exact path='/' component={ Home }/>
             <Route exact path='/newAccount' component={ NewAccount }/>
             <Route exact path='/beginSurvey' component={ GuestConfirmation }/>
             {/* <Route exact path='/surveyPt1' component={ SurveyPt1WithAges }/> */}
