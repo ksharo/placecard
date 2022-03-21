@@ -9,9 +9,9 @@ export interface GuestListDataInterface {
 	groupContact:		string | undefined;
 	groupSize:		string | undefined;
 	sendSurvey:		boolean;
-	groupMembers:		any[]
+	groupMembers:		any[];
+	id?: 			string
 }
-
 
 export function GuestListTable(props: {tableData:GuestListDataInterface[]}) {
 
