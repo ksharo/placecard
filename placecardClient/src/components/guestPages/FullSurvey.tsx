@@ -1,4 +1,5 @@
 import { Button } from "@mui/material";
+import { ObjectId } from "mongodb";
 import React from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { SurveyConf } from "../confirmationPages/SurveyConf";
@@ -9,7 +10,7 @@ import { SurveyIdealTable } from "./SurveyIdealTable";
 import { SurveyInstructions } from "./SurveyInstructions";
 import { SurveyLikes } from "./SurveyLikes";
 
-export function FullSurvey (props?: {preview: boolean}) {
+export function FullSurvey (props?: {preview: boolean, hostView?: boolean}) {
     const history = useHistory();
     const queryString = useLocation().search;
     // gets query string if you do /takeSurvey?page=aaaaaa&guestId=aaaaaa&eventId=12345
@@ -17,7 +18,7 @@ export function FullSurvey (props?: {preview: boolean}) {
     const guestID = new URLSearchParams(queryString).get('guestId');
     const eventID = new URLSearchParams(queryString).get('eventId');
     const setupSurvey = async () => {
-        if (window.curGuest == undefined || window.inviteesState.length == 0) {
+        if ((props == undefined || props.hostView == false) && (window.curGuest == undefined || window.inviteesState.length == 0)) {
             try {
                 const guestInfo = await fetch('http://localhost:3001/guests/'+guestID);
                 const eventInfo = await fetch('http://localhost:3001/events/'+eventID);
@@ -76,6 +77,14 @@ export function FullSurvey (props?: {preview: boolean}) {
                 }
             }
         }
+        if (props != undefined && props.hostView && window.curGuest == undefined) {
+            const newGuest = {
+                id: new ObjectId(),
+                name: window.firstNameState + ' ' + window.lastNameState,
+                contact: window.emailState
+            }
+            window.setCurGuest(newGuest);
+        }
     }
 
     setupSurvey();
@@ -112,26 +121,42 @@ export function FullSurvey (props?: {preview: boolean}) {
     }
 
     const nextPage = async () => {
-        /* check for default values to make sure that we don't overwrite with bad data */
-        if (!((window.dislikedInvitees.length == 1 && window.dislikedInvitees[0].id == 'none') || (window.likedInvitees.length == 1 && window.likedInvitees[0].id == 'none') || (window.lovedInvitees.length == 1 && window.lovedInvitees[0].id == 'none'))) {
-            // TODO add error checking here!!!
-            await updateGuest();
+        /* Make sure that on preview we don't switch pages accidentally! */
+        if (props == undefined || !props.preview) {
+            /* check for default values to make sure that we don't overwrite with bad data */
+            if (!((window.dislikedInvitees.length == 1 && window.dislikedInvitees[0].id == 'none') || (window.likedInvitees.length == 1 && window.likedInvitees[0].id == 'none') || (window.lovedInvitees.length == 1 && window.lovedInvitees[0].id == 'none'))) {
+                // TODO add error checking here!!!
+                await updateGuest();
+            }
+            startPage += 1;
+            history.push('/takeSurvey?page='+startPage+'&guestId='+guestID+'&eventId='+eventID);
+            window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+            setPage(curPage + 1);
         }
-        startPage += 1;
-        history.push('/takeSurvey?page='+startPage+'&guestId='+guestID+'&eventId='+eventID);
-        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
-        setPage(curPage + 1);
+        else {
+            startPage += 1;
+            window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+            setPage(curPage + 1);
+        }
     };
 
     const prevPage = async () => {
-        /* check for default values to make sure that we don't overwrite with bad data */
-        if (!((window.dislikedInvitees.length == 1 && window.dislikedInvitees[0].id == 'none') || (window.likedInvitees.length == 1 && window.likedInvitees[0].id == 'none') || (window.lovedInvitees.length == 1 && window.lovedInvitees[0].id == 'none'))) {
-            await updateGuest();
+        /* Make sure that on preview we don't switch pages accidentally! */
+        if (props == undefined || !props.preview) {
+            /* check for default values to make sure that we don't overwrite with bad data */
+            if (!((window.dislikedInvitees.length == 1 && window.dislikedInvitees[0].id == 'none') || (window.likedInvitees.length == 1 && window.likedInvitees[0].id == 'none') || (window.lovedInvitees.length == 1 && window.lovedInvitees[0].id == 'none'))) {
+                await updateGuest();
+            }
+            startPage -= 1;
+            history.push('/takeSurvey?page='+startPage+'&guestId='+guestID+'&eventId='+eventID);
+            window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+            setPage(curPage - 1);
         }
-        startPage -= 1;
-        history.push('/takeSurvey?page='+startPage+'&guestId='+guestID+'&eventId='+eventID);
-        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
-        setPage(curPage - 1);
+        else {
+            startPage -= 1;
+            window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+            setPage(curPage - 1);
+        }
     };
     return (
         <>

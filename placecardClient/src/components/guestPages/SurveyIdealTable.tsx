@@ -1,6 +1,6 @@
 import { Checkbox, CircularProgress } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useLayoutEffect } from "react";
 
 export function SurveyIdealTable() {
     const perTable = window.activeEvent == undefined ? 0 : window.activeEvent.perTable;

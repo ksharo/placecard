@@ -29,25 +29,6 @@ import { FirebaseAuthProvider } from "./components/firebase/AuthProvider";
 import { FullSurvey } from './components/guestPages/FullSurvey';
 import { EditGuestList } from './components/editPages/EditGuestList';
 
-const seedGuests: Invitee[] = [
-  {id: '00', name: 'Danielle Sharo', groupName: 'Sharo Family', groupID: '123'}, 
-  {id: '02', name: 'Jeremiah Sharo', groupName: 'Sharo Family', groupID: '123'}, 
-  {id: '03', name: 'Beth Sharo', groupName: 'Sharo Family', groupID: '123'}, 
-  {id: '04', name: 'Rob Sharo', groupName: 'Sharo Family', groupID: '123'}, 
-  {id: '11', name: 'Chloe Choy', groupName: 'Choy Family', groupID:'223'},
-  {id: '12', name: 'Abby Choy', groupName: 'Choy Family', groupID:'223'},
-  {id: '13', name: 'Mabel Choy', groupName: 'Choy Family', groupID:'223'},
-  {id: '14', name: 'Wing Choy', groupName: 'Choy Family', groupID:'223'},
-  {id: '22', name: 'Alex Rubino'}, 
-  {id: '33', name: 'Simon Gao'}, 
-  {id: '44', name: 'Gil Austria'}, 
-  {id: '55', name: 'Jayson Infante'}
-  ];
-// const seedTables: Table[] = [{id: '0', name: 'Table 1', guests: []}, {id: '1', name: 'Table 2', guests: []}, {id: '2', name: 'Table 3', guests: []}];
-// const seedEvent1 = getEvent().then((result) => {return result});
-// const seedEvent2: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Bouncy Porpoise', 'date': '07/07/7777', 'location': 'Olive Garden', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};
-// const seedEvent3: PlacecardEvent = { 'id': new ObjectId(), 'name': 'Running Bagel', 'date': '04/02/2097', 'location': '', 'perTable': 4, 'tables': seedTables, 'guestList': seedGuests};  
-
 function App() {
   document.title = 'Placecard';
   [window.loggedInState, window.setLoggedIn] = React.useState(true);
@@ -66,12 +47,13 @@ function App() {
   [window.curGroupID, window.setGroupID] = React.useState(undefined);  
   [window.curGuest, window.setCurGuest] = React.useState(undefined);  
   [window.uidState, window.setUID] = React.useState('BUTVFngo8WfgLdD0LJycLEz97ph2');
+  
   useEffect(() => {
-    const getEvents = async() => {
+    const getEvents = async () => {
       try {
         const eventFetch = await fetch('http://localhost:3001/events/users/'+window.uidState);
         const fetchedEvents = await eventFetch.json();
-        const events = []; 
+        const events: PlacecardEvent[] = []; 
         let respondents = 0;
         for (let post of fetchedEvents) { 
           const guests: Invitee[] = [];
@@ -104,8 +86,9 @@ function App() {
           }
           const event = {'id': post._id, 'uid': post._userId, 'name': post.event_name, 'date': (new Date(post.event_start_time)).toLocaleString().split(',')[0], 'time': (new Date(post.event_start_time)).toTimeString().split(' ')[0], 'location': post.location, 'tables': tables, 'perTable': post.attendees_per_table , 'guestList': guests, 'respondents': respondents, 'surveys': post.surveys_sent};
           events.push(event);
+          console.log(events)
         }
-      window.setEvents(events);
+      window.setEvents([...events]);
       if (events.length > 0) {
         window.setActiveEvent(events[0]);
         window.setInvitees(events[0].guestList);

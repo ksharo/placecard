@@ -42,7 +42,7 @@ export function EditSurvey () {
             <Card className='surveyPreview' onClick={dontClose}>
                 <CardHeader className='innerBoxHeader' action={<IconButton onClick={closePreview}><AiFillCloseCircle className='closeBtn'/></IconButton>} title='Preview Survey'/>
                     <CardContent>
-                        <FullSurvey preview={true}></FullSurvey>
+                        <FullSurvey preview={true} hostView={true}></FullSurvey>
                     </CardContent>
                     <CardActions className='previewFooter'>
                         <Button color='info' variant='contained' className='basicBtn fitBtn' onClick={closePreview}>Close Preview</Button>
