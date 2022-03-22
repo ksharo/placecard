@@ -1,25 +1,34 @@
 {
   "name": "placecardapi",
   "version": "1.0.0",
-  "description": "API service for placecard",
+  "description": "API service for Placecard",
   "main": "index.js",
   "scripts": {
-    "test": "mocha 'test/**/*.js'",
+    "lint": "eslint --ext .js *.js src/**/*.js tasks/seed.js tests/**/*.js --fix",
+    "test": "nyc --reporter=text mocha ./tests/**/*.js --exit",
     "start": "node server.js",
-    "seed": "node ./tasks/seed.js"
+    "seed": "node ./tasks/seed.js",
+    "build": "gulp build"
   },
-  "author": "",
+  "author": "Placecard Senior Design Group 2021-2022",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^7.6.1",
     "chai": "^4.3.4",
+    "dotenv": "^14.3.2",
     "express": "^4.17.1",
+    "firebase-admin": "^10.0.2",
+    "gulp": "^4.0.2",
+    "gulp-mocha": "^8.0.0",
     "joi": "^17.4.2",
     "lodash": "^4.17.21",
     "mocha": "^9.1.4",
     "mongodb": "^4.2.1",
+    "nyc": "^15.1.0",
     "sinon": "^12.0.1"
   },
   "devDependencies": {
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "eslint": "^8.10.0"
   }
 }

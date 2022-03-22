@@ -1,20 +1,23 @@
 const { isUndefined, isEmpty } = require("lodash");
 const { guests, events } = require("../../config/mongoConfig/mongoCollections");
 const { checkPrecondition, validateSchema } = require("../utils/preconditions");
-const { 
-    INVALID_GUEST_ID_MESSAGE, 
-    GUEST_EMPTY_MESSAGE, 
+const {
+    INVALID_GUEST_ID_MESSAGE,
+    GUEST_EMPTY_MESSAGE,
     NO_GUEST_FOUND_MESSAGE,
     INSERT_ERROR_MESSAGE,
     DELETE_ERROR_MESSAGE,
-    UPDATE_ERROR_MESSAGE
+    UPDATE_ERROR_MESSAGE,
 } = require("../constants/errorMessages");
-const { convertIdToString, isInvalidObjectId } = require("../utils/mongoDocument");
+const {
+    convertIdToString,
+    isInvalidObjectId,
+} = require("../utils/mongoUtils");
 const { ObjectId } = require("mongodb");
 const GUEST_TYPE = require("../constants/schemaTypes").SCHEMA_TYPES.GUEST;
 const {
     generateNotFoundMessage,
-    generateCRUDErrorMessage
+    generateCRUDErrorMessage,
 } = require("../utils/errors");
 const { INVALID_GUEST } = require("../constants/errorTypes");
 
@@ -24,25 +27,31 @@ async function getGuest(guestId) {
 
     const guestCollection = await guests();
     const queryParameters = {
-        _id: ObjectId(guestId)
+        _id: ObjectId(guestId),
     };
     const guest = await guestCollection.findOne(queryParameters);
-    checkPrecondition(guest,isUndefined, generateNotFoundMessage(NO_GUEST_FOUND_MESSAGE));
+    checkPrecondition(
+        guest,
+        isUndefined,
+        generateNotFoundMessage(NO_GUEST_FOUND_MESSAGE)
+    );
 
     return convertIdToString(guest);
 }
 
 async function createGuest(guestConfig) {
-    checkPrecondition(guestConifg, isUndefined, INVALID_GUEST_ID_MESSAGE);
+    checkPrecondition(guestConfig, isUndefined, INVALID_GUEST_ID_MESSAGE);
     checkPrecondition(guestConfig, isEmpty, GUEST_EMPTY_MESSAGE);
 
     validateSchema(guestConfig, GUEST_TYPE);
 
     const guestCollection = await guests();
-    const insertInfo  = await guestCollection.insertOne(guestConfig);
+    const insertInfo = await guestCollection.insertOne(guestConfig);
 
     if (insertInfo.insertedCount === 0) {
-        throw new Error(generateCRUDErrorMessage(INSERT_ERROR_MESSAGE, GUEST_TYPE));
+        throw new Error(
+            generateCRUDErrorMessage(INSERT_ERROR_MESSAGE, GUEST_TYPE)
+        );
     }
 
     const newId = insertInfo.insertedId.toString();
@@ -58,25 +67,28 @@ async function updateGuest(guestId, updatedGuestConfig) {
     checkPrecondition(updatedGuestConfig, isEmpty, INVALID_GUEST);
     validateSchema(updatedGuestConfig, GUEST_TYPE);
 
-    const guestCollection = await events();
+    const guestCollection = await guests();
     const guestObjectId = ObjectId(guestId);
 
     const queryParameters = {
-        _id: guestObjectId
+        _id: guestObjectId,
     };
     const updatedDocument = {
-        $set: {
-            updatedGuestConfig
-        }
+        $set: updatedGuestConfig,
     };
-    
-    const updateInfo = await guestCollection.updateOne(queryParameters, updatedDocument);
-    if (updateInfo.matchedCount === 0 || updateInfo.modifiedCount === 0) {
-        throw new Error(generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, GUEST_TYPE));
+    const updateInfo = await guestCollection.updateOne(
+        queryParameters,
+        updatedDocument
+    );
+
+    if (!updateInfo.matchedCount && !updateInfo.modifiedCount) {
+        throw new Error(
+            generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, GUEST_TYPE)
+        );
     }
 
-    const updatedEvent = await this.getEvent(eventId);
-    return updatedEvent;
+    const updatedGuest = await this.getGuest(guestId);
+    return updatedGuest;
 }
 
 async function deleteGuest(guestId) {
@@ -85,12 +97,14 @@ async function deleteGuest(guestId) {
     const guestCollection = await guests();
     const guestObjectId = ObjectId(guestId);
     const queryParameters = {
-        _id: guestObjectId
+        _id: guestObjectId,
     };
 
     const deleteResult = await guestCollection.deleteOne(queryParameters);
     if (deleteResult.deletedCount === 0) {
-        throw new Error(generateCRUDErrorMessage(DELETE_ERROR_MESSAGE, GUEST_TYPE));
+        throw new Error(
+            generateCRUDErrorMessage(DELETE_ERROR_MESSAGE, GUEST_TYPE)
+        );
     }
 
     return true;
@@ -100,5 +114,5 @@ module.exports = {
     getGuest,
     createGuest,
     updateGuest,
-    deleteGuest
+    deleteGuest,
 };

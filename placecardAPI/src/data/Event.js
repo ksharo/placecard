@@ -1,7 +1,7 @@
-const { isUndefined, isEmpty } = require("lodash");
+const { isUndefined, isEmpty, isNull } = require("lodash");
 const { ObjectId } = require("mongodb");
-const { events } = require("../../config/mongoConfig/mongoCollections");
-const { convertIdToString, isInvalidObjectId } = require("../utils/mongoDocument");
+const mongoCollections = require("../../config/mongoConfig/mongoCollections");
+const { convertIdToString, isInvalidObjectId } = require("../utils/mongoUtils");
 const {
   INVALID_EVENT_ID_MESSAGE,
   NO_EVENT_FOUND_MESSAGE,
@@ -21,17 +21,18 @@ const { validateSchema, checkPrecondition } = require("../utils/preconditions");
 async function getEvent(eventId) {
   checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
   checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
-
-  const eventCollection = await events();
+  
+  const eventCollection = await mongoCollections.events();
   const eventObjectId = ObjectId(eventId);
   const queryParameters = {
     _id: eventObjectId,
   };
+  
   const event = await eventCollection.findOne(queryParameters);
   checkPrecondition(
     event,
-    isUndefined,
-    generateNotFoundMessage(NO_EVENT_FOUND_MESSAGE)
+    isNull,
+    generateNotFoundMessage(NO_EVENT_FOUND_MESSAGE, eventId)
   );
 
   return convertIdToString(event);
@@ -47,7 +48,7 @@ async function createEvent(newEventConfig) {
     validateSchema(newEventConfig, EVENT_TYPE);
 
     // TODO: Validate the event time is greater than the current time
-    const eventCollection = await events();
+    const eventCollection = await mongoCollections.events();
     const insertInfo = await eventCollection.insertOne(newEventConfig);
 
     if (insertInfo.insertedCount === 0) {
@@ -55,7 +56,6 @@ async function createEvent(newEventConfig) {
     }
     const newId = insertInfo.insertedId.toString();
     const newEvent = await this.getEvent(newId);
-
     return newEvent;
 }
 
@@ -63,25 +63,18 @@ async function updateEvent(eventId, updatedEventConfig) {
     checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
     checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
     checkPrecondition(updatedEventConfig, isUndefined, EVENT_UNDEFINED_MESSAGE)
-    checkPrecondition(updatedEventConfig, isEmpty, EVENT_UNDEFINED_MESSAGE);
+    checkPrecondition(updatedEventConfig, isEmpty, EVENT_EMPTY_MESSAGE);
     validateSchema(updatedEventConfig, EVENT_TYPE)
 
-    const eventCollection = await events();
+    const eventCollection = await mongoCollections.events();
     const eventObjectId = ObjectId(eventId);
 
     const queryParameters = {
          _id: eventObjectId
     };
+    
     const updatedDocument = {
-        $set: {
-            event_name: updatedEventConfig.event_name,
-            tables: updatedEventConfig.tables,
-            event_time: updatedEventConfig.event_time,
-            location: updatedEventConfig.location,
-            expected_number_of_attendees: updatedEventConfig.expected_number_of_attendees,
-            attendees_per_table: updatedEventConfig.attendees_per_table,
-            guest_list: updatedEventConfig.guest_list
-        }
+        $set: updatedEventConfig
     };
 
     const updateInfo = await eventCollection.updateOne(queryParameters, updatedDocument);
@@ -94,8 +87,9 @@ async function updateEvent(eventId, updatedEventConfig) {
 
 async function deleteEvent(eventId) {
   checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
+  checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
 
-  const eventCollection = await events();
+  const eventCollection = await mongoCollections.events();
   const eventObjectId = ObjectId(eventId);
 
   const queryParameters = {
