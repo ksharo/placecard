@@ -4,10 +4,11 @@
 	margin:auto
 }
 
-.resultTable{
+.resultTable {
 	border-collapse: collapse;
 	width: 100%;
-	border: 1.5px solid blue;
+	border-radius: 15px;
+	overflow: hidden;
 }
 
 .subgroupMemberList{
@@ -16,7 +17,7 @@
 }
 
 .headingRow{
-	background-color: blue;
+	background-color: var(--secondary);
 }
 
 thead{
@@ -34,4 +35,9 @@ tbody .groupSummary td{
 
 tbody tr:last-child.groupDropdown td {
     	padding-bottom: 12px;
+}
+
+tbody tr{
+	border-left: 3px solid var(--secondary);
+	border-right: 2px solid var(--secondary);
 }
