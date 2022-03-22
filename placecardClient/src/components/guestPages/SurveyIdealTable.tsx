@@ -36,7 +36,7 @@ export function SurveyIdealTable() {
         {
             field: 'col2', headerName: 'Include at table', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 2,
             renderCell: (params) => { return (<section className='checkboxWithError'>
-            <Checkbox id={'checkbox' + params.value} checked={isChecked(params.value)} onClick={updateLoves}></Checkbox>
+            <Checkbox id={'checkbox' + params.value} defaultChecked={isChecked(params.value)} onClick={updateLoves}></Checkbox>
             <p id={'warning'+params.value} className='hiddenError'>Table is full.</p>
             </section>) }
         }

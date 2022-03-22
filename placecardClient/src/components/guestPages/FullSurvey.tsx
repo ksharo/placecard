@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import { ObjectId } from "mongodb";
-import React from "react";
+import React, { useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { SurveyConf } from "../confirmationPages/SurveyConf";
 import { EditSurveyResponses } from "./EditSurveyResponses";
@@ -82,8 +82,22 @@ export function FullSurvey (props?: {preview: boolean, hostView?: boolean}) {
                 contact: window.emailState
             }
             window.setCurGuest(newGuest);
+            window.setDisliked([]);
+            window.setLiked([]);
+            window.setLoved([]);
         }
     }
+
+    useEffect( () => {
+        if (props != undefined && props.hostView) {
+            const newGuest = {
+                id: new ObjectId(),
+                name: window.firstNameState + ' ' + window.lastNameState,
+                contact: window.emailState
+            }
+            window.setCurGuest(newGuest);
+        }
+    }, [window.uidState, window.firstNameState, window.lastNameState])
 
     setupSurvey();
     

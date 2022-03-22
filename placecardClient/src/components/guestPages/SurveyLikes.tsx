@@ -39,7 +39,7 @@ export function SurveyLikes() {
         },
         {
             field: 'col1', headerName: 'Would sit with', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 1,
-            renderCell: (params) => { return (<Checkbox id={'checkbox' + params.value} checked={isChecked(params.value)} onClick={updateLikes}></Checkbox>) }
+            renderCell: (params) => { return (<Checkbox id={'checkbox' + params.value} defaultChecked={isChecked(params.value)} onClick={updateLikes}></Checkbox>) }
         }
     ];
     const isChecked = (id: string) => {

@@ -31,7 +31,7 @@ export function SurveyDislikes() {
         },
         {
             field: 'col1', headerName: 'Do not sit with', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 1,
-            renderCell: (params) => { return (<Checkbox id={'checkbox' + params.value} checked={isChecked(params.value)} onClick={updateDislikes}></Checkbox>) }
+            renderCell: (params) => { return (<Checkbox id={'checkbox' + params.value} defaultChecked={isChecked(params.value)} onClick={updateDislikes}></Checkbox>) }
         }
     ];
 
