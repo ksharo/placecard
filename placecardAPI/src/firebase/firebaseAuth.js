@@ -1,4 +1,3 @@
-const _ = require("lodash");
 const { getAuth } = require("firebase-admin/auth");
 
 

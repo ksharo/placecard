@@ -1,9 +1,9 @@
 const expect = require("chai").expect;
 const { ObjectId } = require("mongodb");
 const { isString } = require("lodash");
-const mongoDocumentFile = require("../../src/utils/mongoDocument");
+const mongoDocumentFile = require("../../src/utils/mongoUtils");
 
-describe("mongoDocument.js tests", function() {
+describe("mongoUtils.js tests", function() {
     const validObjectId = "61aecad54d001a2e61933618";
 
     describe("convertIdToString function tests", () => {

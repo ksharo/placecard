@@ -9,7 +9,7 @@ const { validateSchema } = require("../utils/preconditions");
 const { checkPrecondition } = require("../utils/preconditions");
 const statusCodes = require("../constants/statusCodes");
 const ERROR_TYPES = require("../constants/errorTypes");
-const { isInvalidObjectId } = require("../utils/mongoDocument");
+const { isInvalidObjectId } = require("../utils/mongoUtils");
 const { INVALID_EVENT_ID } = require("../constants/errorTypes");
 
 router.get("/:eventId", async (req, res) => {
@@ -82,7 +82,7 @@ router.delete("/:eventId", async (req, res) => {
     }
 
     try {
-        const event = await events.getEvent(eventId);
+        await events.getEvent(eventId);
     } catch (e) {
         return createErrorResponse(e.message, ERROR_TYPES.EVENT_NOT_FOUND, statusCodes.NOT_FOUND, res);
     }
