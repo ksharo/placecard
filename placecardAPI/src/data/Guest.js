@@ -12,7 +12,7 @@ const {
 const {
     convertIdToString,
     isInvalidObjectId,
-} = require("../utils/mongoDocument");
+} = require("../utils/mongoUtils");
 const { ObjectId } = require("mongodb");
 const GUEST_TYPE = require("../constants/schemaTypes").SCHEMA_TYPES.GUEST;
 const GUEST_TYPE_PATCH = require("../constants/schemaTypes").SCHEMA_TYPES

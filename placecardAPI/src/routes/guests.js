@@ -16,7 +16,7 @@ const { validateSchema } = require("../utils/preconditions");
 const { checkPrecondition } = require("../utils/preconditions");
 const statusCodes = require("../constants/statusCodes");
 const ERROR_TYPES = require("../constants/errorTypes");
-const { isInvalidObjectId } = require("../utils/mongoDocument");
+const { isInvalidObjectId } = require("../utils/mongoUtils");
 const { INVALID_GUEST_ID } = require("../constants/errorTypes");
 
 router.get("/:guestId", async (req, res) => {

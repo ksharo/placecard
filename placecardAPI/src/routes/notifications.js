@@ -11,7 +11,7 @@ const { sendEmailRequest } = require("../notifications/sendGridEmail");
 const { createSuccessResponse } = require("../utils/apiResponse");
 const { SCHEMA_TYPES } = require("../constants/schemaTypes");
 const { validateSchema } = require("../utils/preconditions");
-const { isInvalidObjectId } = require("../utils/mongoDocument");
+const { isInvalidObjectId } = require("../utils/mongoUtils");
 const events = require("../data/Event");
 
 router.use("/email",async (req, res, next) => {

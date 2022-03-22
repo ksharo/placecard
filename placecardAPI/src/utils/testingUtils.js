@@ -1,13 +1,34 @@
-function checkThrowError(func, args) {
+async function checkThrowError(func, args) {
     let error = undefined;
     try {
-        func(...args);
+        await func(...args);
     } catch (e) {
         error = e;
     }
     return error;
 }
 
+function mockGetCollection(stubConfigs) {
+    return async () => {
+        return {
+            ...stubConfigs
+        };
+    }
+}
+
+function mockUpdate(currentObject, updatedConfig) {
+    const updatedObject = Object.entries(updatedConfig).reduce((prevObject, [key, value]) => {
+        return {
+            ...prevObject,
+            [key]: value
+        }
+    }, {...currentObject});
+
+    return updatedObject;
+}
+
 module.exports = {
-    checkThrowError
+    checkThrowError,
+    mockGetCollection,
+    mockUpdate
 };
