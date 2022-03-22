@@ -19,10 +19,10 @@ export function GuestListTable(props: {tableData:GuestListDataInterface[]}) {
 		<section className="guestTable">
 			<section className="resultTable">
 
-				<span className="firstCol">Name of Individual/Party</span>
-				<span>Contact</span>
-				<span>Send Survey</span>
-				<span>Delete</span>
+				<span className="firstCol headerCol">Name of Individual/Party</span>
+				<span className="headerCol">Contact</span>
+				<span className="headerCol">Send Survey</span>
+				<span className="headerCol">Delete</span>
 
 				{props.tableData.map((obj, i) => (
 					<>

@@ -54,6 +54,7 @@ export function GuestList(){
 		const startingGuests: GuestListDataInterface[] = [...guestListData];
 		const startingGroups: any = {};
 		if (window.activeEvent != null) {
+			// loop over guest list to fillout guestListData state
 			for (let guest of window.activeEvent.guestList) {
 				/* single people */
 				if (guest.groupName == undefined || guest.groupName.trim() == "") {
@@ -84,6 +85,7 @@ export function GuestList(){
 					}
 				}
 			}
+			// loop over gue
 			for (let groupID of Object.keys(startingGroups)) {
 				const group = startingGroups[groupID];
 				const newGroup: GuestListDataInterface = {
