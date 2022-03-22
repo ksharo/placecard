@@ -1,6 +1,9 @@
 // import { useState } from "react"
 // import { GuestListRow } from "./GuestListRow"
 // import { Button } from "@mui/material";
+import Collapse from '@mui/material/Collapse';
+import { useState } from 'react';
+
 import './GuestTable.css'
 
 export interface GuestListDataInterface {
@@ -13,11 +16,73 @@ export interface GuestListDataInterface {
 	id?: 			string
 }
 
-export function GuestListTable(props: {tableData:GuestListDataInterface[]}) {
+function GuestListTableRow(props: {guest:GuestListDataInterface}){
+	const [open, setOpen] = useState(false)
 
 	return(
+		<>
+			<tr>
+				<td className="firstCol" onClick={() => setOpen(!open)}>{props.guest.groupName}</td>
+				<td>{props.guest.groupContact}</td>
+				<td>{props.guest.sendSurvey.toString()}</td>
+				<td>Delete</td>
+			</tr>
+			<tr>
+				<td colSpan={4}>
+					<Collapse in={open} timeout="auto" unmountOnExit>
+						<ul className='subgroupMemberList'>
+							{props.guest.groupMembers.map((memberName, _) =>(
+								<li className="subgroupMember" >{memberName}</li>
+							))}
+						</ul>
+					</Collapse>
+				</td>
+			</tr>
+		</>
+	)
+}
+
+
+export function GuestListTable(props: {tableData:GuestListDataInterface[]}) {
+	return(
 		<section className="guestTable">
-			<section className="resultTable">
+			<table className="resultTable">
+
+				<thead>
+					<tr>
+						<th className="firstCol headerCol">Name of Individual/Party</th>
+						<th className="headerCol">Contact</th>
+						<th className="headerCol">Send Survey</th>
+						<th className="headerCol">Delete</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{props.tableData.map((obj, i) => (
+						<GuestListTableRow guest={obj}/>
+						// <>
+							// 	<tr>
+							// 		<td className="firstCol">{obj.groupName}</td>
+							// 		<td>{obj.groupContact}</td>
+							// 		<td>{obj.sendSurvey.toString()}</td>
+							// 		<td>Delete</td>
+							// 	</tr>
+							// 	<tr>
+							// 		<Collapse in={open} timeout="auto" unmountOnExit>
+							// 			{obj.groupMembers.map((memberName, _) =>(
+							// 				<td className="subgroupMember">{memberName}</td>
+							// 			))}
+							// 		</Collapse>
+							// 	</tr>
+						// </>
+					))}
+				</tbody>
+
+			</table>
+
+
+
+			{/* <section className="resultTable">
 
 				<span className="firstCol headerCol">Name of Individual/Party</span>
 				<span className="headerCol">Contact</span>
@@ -36,7 +101,7 @@ export function GuestListTable(props: {tableData:GuestListDataInterface[]}) {
 					</>
 				))}
 
-			</section>
+			</section> */}
 		</section>
 	)
 	// const [rows, setRows] = useState([
