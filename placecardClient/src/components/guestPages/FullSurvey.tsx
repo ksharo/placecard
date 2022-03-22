@@ -24,24 +24,20 @@ export function FullSurvey (props?: {preview: boolean, hostView?: boolean}) {
                 const eventInfo = await fetch('http://localhost:3001/events/'+eventID);
                 const eventData = await eventInfo.json();
                 const guests = [];
-                for (let guestID of eventData.guest_list) {
-                    try {
-                        const guestFetch = await fetch('http://localhost:3001/guests/'+guestID);
-                        const fetchedGuest = await guestFetch.json();
-                        const newGuest = {
-                            id: fetchedGuest._id,
-                            name: fetchedGuest.first_name + ' ' + fetchedGuest.last_name,
-                            groupID: fetchedGuest.group_id,
-                            groupName: fetchedGuest.group_name,
-                            groupSize: fetchedGuest.party_size,
-                            contact: fetchedGuest.email,
-                        }
-                        guests.push(newGuest);
+                const guestFetch = await fetch('http://localhost:3001/events/guests/'+eventID);
+                const fetchedGuests = await guestFetch.json();
+                for (let guest of fetchedGuests) {
+                    const newGuest = {
+                        id: guest._id,
+                        name: guest.first_name + ' ' + guest.last_name,
+                        groupID: guest.group_id,
+                        groupName: guest.group_name,
+                        groupSize: guest.party_size,
+                        contact: guest.email,
                     }
-                    catch (e) {
-                        console.error("Error: could not fetch guest with id " + guestID + ". " + e);
-                    }
+                    guests.push(newGuest);
                 }
+                
                 window.setActiveEvent({
                     id: undefined,
                     uid: undefined,
@@ -61,12 +57,14 @@ export function FullSurvey (props?: {preview: boolean, hostView?: boolean}) {
                         name: data.first_name + " " + data.last_name,
                         groupID: data.group_id,
                         groupName: data.group_name,
+                        groupSize: data.party_size,
                         contact: data.email,
                     };
                     window.setDisliked(data.survey_response.disliked);
                     window.setLiked(data.survey_response.liked);
                     window.setLoved(data.survey_response.ideal);
                     window.setCurGuest(newGuest);
+                    window.setGroupID(data.group_id);
                 }
             }
             catch {

@@ -72,7 +72,6 @@ export function UserDashboard() {
               daysLeftString = 'Event has ended.';
           }
           if (daysLeft >= 0 || viewAll) {
-              console.log("satisfy")
               rows.push({
                   id: event.id,
                   eventName: event.name,

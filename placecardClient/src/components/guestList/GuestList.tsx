@@ -59,6 +59,7 @@ export function GuestList(){
 				if (guest.groupName == undefined || guest.groupName.trim() == "") {
 					const newGuest: GuestListDataInterface = {
 						individualName: guest.name,
+						groupName: guest.name,
 						groupContact: guest.contact,
 						groupSize: guest.groupSize?.toString(),
 						sendSurvey: true,
@@ -123,7 +124,6 @@ export function GuestList(){
 		event.preventDefault()
 		if(event && event.target && event.target.numGuestsAdded && event.target.numGuestsAdded.value){
 			let numRows =  event?.target?.numGuestsAdded?.value
-			console.log("num Rows:", numRows)
 			let guestList: any = {}
 			for(let i = 0; i < numRows; i++ ){
 				let guest = {
@@ -136,7 +136,6 @@ export function GuestList(){
 				guestList['guest'+ i] = guest
 			}
 
-			console.log(guestList);
 		}
 
 		let data = new FormData();
@@ -145,7 +144,6 @@ export function GuestList(){
 		}
 
 		if(userFile && userFile['name']){
-			console.log(userFile['name'])
 			const requestOptions = {
 				method: 'POST',
 				headers: {
@@ -166,10 +164,9 @@ export function GuestList(){
 			"sendSurvey":		currIndiSendSurvey,
 			"groupMembers":	currPlusOneName ? [currIndiName, currPlusOneName] : []
 		}])
-		console.log("name", currIndiName, "contact", currIndiContact, "+1", currPlusOneName, 'sendSurvey?', currIndiSendSurvey)
-		const grpName =  (currPlusOneName ? currIndiName + " and " + currPlusOneName : "");
+		const grpName =  (currPlusOneName ? currIndiName + " and " + currPlusOneName : undefined);
 		const grpSize = currPlusOneName ? 2 : 1;
-		const res = await sendGuest(currIndiName, currIndiContact, grpName, currGrpId, grpSize);
+		const res = await sendGuest(currIndiName, currIndiContact, grpName, currGrpId, grpSize, currIndiSendSurvey);
 		const guestData = await res?.json();
 		if (res != undefined && !res.ok) {
 			const message = `An error has occured: ${res.status} - ${res.statusText}`;
@@ -179,7 +176,7 @@ export function GuestList(){
 			console.log("success!")
 		}
 		if (currPlusOneName) {
-			const resPlusOne = await sendGuest(currPlusOneName, currIndiContact, grpName, currGrpId, grpSize);
+			const resPlusOne = await sendGuest(currPlusOneName, currIndiContact, grpName, currGrpId, grpSize, currIndiSendSurvey);
 			const plusOneData = await resPlusOne?.json();
 			if (resPlusOne != undefined && !resPlusOne.ok) {
 				const message = `An error has occured: ${resPlusOne.status} - ${resPlusOne.statusText}`;
@@ -206,10 +203,9 @@ export function GuestList(){
 			"sendSurvey":		currGrpSendSurvey,
 			"groupMembers":	currGrpMembers
 		}])
-		console.log(currGrpName, currGrpContact, currGrpSize, currGrpSendSurvey, currGrpMembers)
 		const allData = [];
 		for (let x of currGrpMembers) {
-			const res = await sendGuest(x, currGrpContact, currGrpName, currGrpId, Number(currGrpSize));
+			const res = await sendGuest(x, currGrpContact, currGrpName, currGrpId, Number(currGrpSize), currGrpSendSurvey);
 			const guestData = await res?.json();
 			if (res != undefined && !res.ok) {
 				const message = `An error has occured: ${res.status} - ${res.statusText}`;
@@ -410,7 +406,6 @@ export function GuestList(){
 
 			return () => {
 				// setTimeout(function(){clearInterval(intr), 3000})
-					console.log('hi', placeholderIndex)
 				clearInterval(intr)
 			}
 		},);
@@ -509,7 +504,7 @@ export function GuestList(){
 	);
 }
 
-function sendGuest(name: string, contact: string, groupName: string, groupId: string, groupSize: number) {
+function sendGuest(name: string, contact: string, groupName: string | undefined, groupId: string, groupSize: number, sendSurvey: boolean) {
 	if (window.activeEvent != undefined && window.activeEvent != null) {
 		const nameSplit = name.split(" ");
 			let firstName='';
@@ -521,28 +516,32 @@ function sendGuest(name: string, contact: string, groupName: string, groupId: st
 			else {
 				firstName = nameSplit[0];
 		}
-		const requestOptions = {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				"first_name":				firstName,
-				"last_name":				lastName,
-				"email":					contact,
-				"party_size":				groupSize,
-				"associated_table_number":	-1,
-				"group_id":				groupId,
-				"group_name":				groupName,
-				"survey_response":			{
-					"disliked":	[],
-					"liked":		[],
-					"ideal":		[]
-				}
-			}),
+		let body: any = {
+			"first_name":				firstName,
+			"last_name":				lastName,
+			"email":					contact,
+			"party_size":				groupSize,
+			"associated_table_number":	-1,
 		}
-
-		return fetch('http://localhost:3001/guests/newGuest/'+window.activeEvent.id, requestOptions)
+		if (groupName != undefined) {
+			body["group_id"] = 			groupId;
+			body["group_name"] = 		groupName;
+		}
+		if (sendSurvey) {
+			body["survey_response"] = {
+				"disliked":	[],
+				"liked":		[],
+				"ideal":		[]
+			}
+		}
+			const requestOptions = {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(body),
+			}
+			return fetch('http://localhost:3001/guests/newGuest/'+window.activeEvent.id, requestOptions)
+		}
 	}
-}
 
 function updateGlobalEvent(guestData: any) {
 	if (window.activeEvent != null) {

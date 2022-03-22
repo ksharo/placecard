@@ -12,6 +12,7 @@ import moment from 'moment';
 import React, { useEffect, useLayoutEffect } from "react";
 import {uuid} from "uuidv4";
 import { FaExclamationCircle, FaSearch } from "react-icons/fa";
+import { ObjectId } from "mongodb";
 
 // TODO: with undo, make sure that the data history
 // resets future once something has been undone and then
@@ -28,51 +29,56 @@ let dataHistory: {past: any[], present: any[], future: any[]} = {
     future: []
 };
 // let timePoint = 0;
-
+const editList: boolean[] = [];
+for (let _ in (window.activeEvent? window.activeEvent.tables : [])) {
+    editList.push(false);
+}
 export function SeatingDashboard() {
     const history = useHistory();
     let handleClick =  () => {
         history.push('/eventDash');
     }  
-    
-    const editList: boolean[] = [];
-    for (let _ in (window.activeEvent? window.activeEvent.tables : [])) {
-        editList.push(false);
-    }
 
     let origTables: Table[] = [];
     let tmpUnseated: Invitee[] = [];
-    const idList: string[] = [];
 
     let survComp = 0;
     let perTable = -1;
     let num_attend = 0;
     let tables = ((window.activeEvent != null) ? window.activeEvent.tables.length : 0);
     let tmpSeats = tables*perTable;
-
+    const [editing, toggleEditing] = React.useState(editList);
+    const [idList, setIds]: [string[], any] = React.useState([]);
     const setVariables = () => {
+        const tmpIds: string[] = [];
         dataHistory.past = [];
         dataHistory.present = [];
         dataHistory.future = [];
         if (window.activeEvent != undefined && window.activeEvent != null) {
             tmpUnseated = [];
             origTables = [...window.activeEvent.tables];
-            // for (let x of origTables) {
-            //     for (let y of x.guests) {
-            //         if (typeof(y) == 'string') {
-            //             y = window.activeEvent.guestList.filter( (guest) => {
-            //                 return guest.id == y;
-            //             })[0];
-            //         }
-            //     }
-            // }
             for (let x of origTables) {
-                idList.push(x.id);
+                tmpIds.push(x.id);
             }
             perTable = window.activeEvent.perTable;
             tables = ((window.activeEvent != null) ? window.activeEvent.tables.length : 0);
             num_attend = window.activeEvent.guestList.length;
             tmpSeats = tables*perTable;
+            let tmpEdit = [...editList];
+            while (tmpSeats < num_attend) {
+                const id = (new ObjectId()).toString();
+                const newTable: Table = {
+                    id: id,
+                    name: 'Table ' + (tables+1).toString(),
+                    guests: []
+                }
+                origTables.push(newTable);
+                tables += 1;
+                tmpSeats += perTable;
+                tmpEdit.push(false);
+                tmpIds.push(id);
+            }
+            toggleEditing(tmpEdit);
             const guests = window.activeEvent.guestList;
             for (let i = 0; i < guests.length; i++) {
                 let x = guests[i];
@@ -91,6 +97,7 @@ export function SeatingDashboard() {
                 }
             }
             setUnseated([...tmpUnseated]);
+            setIds([...tmpIds]);
             setTablesData(origTables);
             setData([origTables, [...tmpUnseated]]);
             setSeated(num_attend - tmpUnseated.length);
@@ -106,7 +113,6 @@ export function SeatingDashboard() {
         dataHistory.present = allData;
     }
 
-    const [editing, toggleEditing] = React.useState(editList);
     const [shownUnseated, searchedUnseated] = React.useState([...tmpUnseated]);
     const [seated, setSeated] = React.useState(num_attend - unseated.length);
     const [seats, setSeats] = React.useState(tmpSeats);
@@ -150,11 +156,12 @@ export function SeatingDashboard() {
         editList[idList.indexOf(table.id)] = open; 
         toggleEditing([...editList]); 
         if (open == false) {
-            for (let x of origTables) {
+            const tmpTables = JSON.parse(JSON.stringify(tablesData));
+            for (let x of tmpTables) {
                 if (table.id == x.id) {
                     x.name = (document.getElementById('tableName'+table.id) as HTMLInputElement).value;
-                    setTablesData(origTables);
-                    setData([JSON.parse(JSON.stringify(tablesData)), [...unseated]]);
+                    setTablesData([...tmpTables]);
+                    setData([tmpTables, [...unseated]]);
                     break;
                 }
             }
@@ -539,6 +546,7 @@ export function SeatingDashboard() {
     const seatUnseatedGroup = (tableId: string, groupID: string | undefined) => {
         const guestsToAdd: Invitee[] = [];
         const tmpNotSeated = [...unseated];
+        let tmpTables = [...tablesData];
         for (let x of unseated) {
             if (x.groupID == groupID) {
                 const [removed] = tmpNotSeated.splice(tmpNotSeated.indexOf(x), 1);
@@ -549,18 +557,18 @@ export function SeatingDashboard() {
         const ourTable = tablesData.filter( (t) => {
             return t.id == tableId;
         });
-        tablesData[tablesData.indexOf(ourTable[0])].guests = tablesData[tablesData.indexOf(ourTable[0])].guests.concat(guestsToAdd);
+        tmpTables[tmpTables.indexOf(ourTable[0])].guests = tmpTables[tmpTables.indexOf(ourTable[0])].guests.concat(guestsToAdd);
         setSeated(seated + guestsToAdd.length);
-        setTablesData(tablesData);
+        setTablesData(tmpTables);
 
         // set unseated to value without these people
         setUnseated(tmpNotSeated);
-        const newTables = JSON.parse(JSON.stringify(tablesData));
+        const newTables = JSON.parse(JSON.stringify(tmpTables));
         for (let x of newTables) {
             x = JSON.parse(JSON.stringify(x));
             x.guests = [...x.guests];
         }
-        setData([newTables, [...unseated]]);
+        setData([newTables, [...tmpNotSeated]]);
     };
 
     const undo = () => {

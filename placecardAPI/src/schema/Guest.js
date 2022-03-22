@@ -18,7 +18,7 @@ const schema = Joi.object({
     associated_table_number: Joi.number().integer(),
     group_id: Joi.string(),
     group_name: Joi.string(),
-    survey_response: surveyResponseSchema.required(),
+    survey_response: surveyResponseSchema,
 }).strict();
 
 module.exports = schema;

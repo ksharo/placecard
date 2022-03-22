@@ -89,12 +89,16 @@ async function createEvent(newEventConfig) {
     return newEvent;
 }
 
-async function addGuest(eventId, guestId) {
+async function addGuest(eventId, guestId, sendSurvey) {
     try {
         const event = await this.getEvent(eventId);
         const guests = [...event.guest_list];
+        const surveys = event.surveys_sent ? [...event.surveys_sent] : [];
         guests.push(guestId);
-        const updatedConfig = {guest_list: guests};
+        if (sendSurvey) {
+            surveys.push(guestId);
+        }
+        const updatedConfig = {guest_list: guests, surveys_sent: surveys};
         await updateEvent(eventId, updatedConfig, 'PATCH');
         return;
     }
@@ -132,13 +136,19 @@ async function updateEvent(eventId, updatedEventConfig, updateType) {
         queryParameters,
         updatedDocument
     );
-    if (updateInfo.matchedCount === 0 || updateInfo.modifiedCount === 0) {
+    if (updateInfo.matchedCount === 0 || (updateType === "PUT" && updateInfo.modifiedCount === 0)) {
         throw new Error(
             generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE)
         );
     }
-    const updatedEvent = await getEvent(eventId);
-    return updatedEvent;
+    try {
+        const updatedEvent = await this.getEvent(eventId);
+        return updatedEvent;
+    }
+    catch { 
+        const updatedEvent = await getEvent(eventId);
+        return updatedEvent;
+    }
 }
 
 async function getGuests(ids) {

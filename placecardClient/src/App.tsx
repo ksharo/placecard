@@ -50,52 +50,56 @@ function App() {
   useEffect(() => {
     const getEvents = async () => {
       try {
-        const eventFetch = await fetch('http://localhost:3001/events/users/'+window.uidState);
-        const fetchedEvents = await eventFetch.json();
-        const events: PlacecardEvent[] = []; 
-        let respondents = 0;
-        for (let post of fetchedEvents) {
-          const guests: Invitee[] = [];
-          const tables: any[] = post.tables;
-          for (let guestID of post.guest_list) {
+        if (window.uidState != undefined && window.uidState.trim() != '') {
+          const eventFetch = await fetch('http://localhost:3001/events/users/'+window.uidState);
+          const fetchedEvents = await eventFetch.json();
+          const events: PlacecardEvent[] = []; 
+          for (let post of fetchedEvents) {
+            const tables: any[] = post.tables;
+            const guests: Invitee[] = [];
+            let respondents = 0;
             try {
-              const guestFetch = await fetch('http://localhost:3001/guests/'+guestID);
-              const fetchedGuest = await guestFetch.json();
-              const newGuest = {
-                id: fetchedGuest._id,
-                name: fetchedGuest.first_name + ' ' + fetchedGuest.last_name,
-                groupID: fetchedGuest.group_id,
-                groupName: fetchedGuest.group_name,
-                contact: fetchedGuest.email,
-              }
-              if (fetchedGuest.survey_response.disliked.length != 0 || fetchedGuest.survey_response.ideal.length != 0 || fetchedGuest.survey_response.liked.length != 0 ) {
-                respondents += 1;
-              }
-              guests.push(newGuest);
-              for (let x of tables) {
-                if (x.guests.includes(newGuest.id)) {
-                  x.guests[x.guests.indexOf(newGuest.id)] = newGuest;
-                  break;
+              const guestFetch = await fetch('http://localhost:3001/events/guests/'+post._id);
+              const fetchedGuests = await guestFetch.json();
+              for (let guest of fetchedGuests) {
+                const newGuest = {
+                  id: guest._id,
+                  name: guest.first_name + ' ' + guest.last_name,
+                  groupID: guest.group_id,
+                  groupName: guest.group_name,
+                  groupSize: guest.party_size,
+                  contact: guest.email,
+                }
+                if (guest.survey_response != undefined && (guest.survey_response.disliked.length != 0 || guest.survey_response.ideal.length != 0 || guest.survey_response.liked.length != 0 )) {
+                  respondents += Number(guest.party_size);
+                }
+                guests.push(newGuest);
+                for (let x of tables) {
+                  if (x.guests.includes(newGuest.id)) {
+                    x.guests[x.guests.indexOf(newGuest.id)] = newGuest;
+                    break;
+                  }
                 }
               }
+              const event = {'id': post._id, 'uid': post._userId, 'name': post.event_name, 'date': (new Date(post.event_start_time)).toLocaleString().split(',')[0], 'time': (new Date(post.event_start_time)).toTimeString().split(' ')[0], 'location': post.location, 'tables': tables, 'perTable': post.attendees_per_table , 'guestList': guests, 'respondents': respondents, 'surveys': post.surveys_sent};
+              events.push(event);
             }
-            catch (e){
-              console.error("Error: could not fetch guest with id " + guestID + ". " + e);
+            catch (e) {
+              console.error("Error: could not fetch guests for event with id " + post._id + ". " + e);
             }
           }
-          const event = {'id': post._id, 'uid': post._userId, 'name': post.event_name, 'date': (new Date(post.event_start_time)).toLocaleString().split(',')[0], 'time': (new Date(post.event_start_time)).toTimeString().split(' ')[0], 'location': post.location, 'tables': tables, 'perTable': post.attendees_per_table , 'guestList': guests, 'respondents': respondents, 'surveys': post.surveys_sent};
-          events.push(event);
-          console.log(events)
+
+        window.setEvents([...events]);
+        if (events.length > 0) {
+          window.setActiveEvent(events[0]);
+          window.setInvitees(events[0].guestList);
         }
-      window.setEvents([...events]);
-      if (events.length > 0) {
-        window.setActiveEvent(events[0]);
-        window.setInvitees(events[0].guestList);
       }
     }
-      catch (e){
-        console.error('Error: Could not load events for user. ' + e);
-      }
+    catch (e){
+      console.error('Error: Could not load events for user. ' + e);
+    }
+
     };
     getEvents();
   }, [window.uidState]);
