@@ -1,3 +1,5 @@
+import { useHistory } from "react-router-dom";
+import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { GuestListTable, GuestListDataInterface } from "../guestList/GuestListTable"
 import './editGuestList.css';
@@ -15,7 +17,7 @@ export function EditGuestList() {
 				/* single people */
 				if (guest.groupName == undefined || guest.groupName.trim() == "") {
 					const newGuest: GuestListDataInterface = {
-						individualName: guest.name,
+						groupName: guest.name,
 						groupContact: guest.contact,
 						groupSize: guest.groupSize?.toString(),
 						sendSurvey: true,
@@ -60,11 +62,16 @@ export function EditGuestList() {
 		}
 	}, [window.activeEvent]);
 
+    const history = useHistory();
+    let handleClick =  () => {
+        history.push('/eventDash');
+    }  
 
 	return (
 		<>
+			<h1 className='title'>Edit Your Guest List</h1>
 			<GuestListTable tableData={guestListData}/>
-
+			<Button variant='contained' onClick={handleClick}>Return to Dashboard</Button>
 		</>
 	)
 }
