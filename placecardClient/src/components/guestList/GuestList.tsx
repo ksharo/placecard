@@ -17,20 +17,6 @@ export function GuestList(){
 	const tableDescription	= 'You only need to provide one method of contact for each guest'
 	const history			= useHistory();
 
-	// interface guestListDataInterface {
-	// 	individualName?:	string;
-	// 	groupName?:		string;
-	// 	groupContact:		string;
-	// 	groupSize:		string;
-	// 	sendSurvey:		boolean;
-	// 	groupMembers:		any[]
-	// }
-// "groupName":		currGrpName,
-// 			"groupContact":	currGrpContact,
-// 			"groupSize":		currGrpSize,
-// 			"sendSurvey":		currGrpSendSurvey,
-// 			"groupMembers":	currGrpMembers
-	/* initialize guest list data */
 
 	const [guestListData, setGuestListData]					= useState<GuestListDataInterface[]>([])
 	const [userFile, setUserFile] 						= useState(undefined);
@@ -50,10 +36,12 @@ export function GuestList(){
 	const [currGrpMembers, setCurrGrpMembers]				= useState(["", ""])
 	const [currGrpId, setCurrGrpId] 						= useState((new ObjectId()).toString());
 
+	/* initialize guest list data */
 	useLayoutEffect( () => {
 		const startingGuests: GuestListDataInterface[] = [...guestListData];
 		const startingGroups: any = {};
 		if (window.activeEvent != null) {
+			// loop over guest list to fillout guestListData state
 			for (let guest of window.activeEvent.guestList) {
 				/* single people */
 				if (guest.groupName == undefined || guest.groupName.trim() == "") {
@@ -85,6 +73,7 @@ export function GuestList(){
 					}
 				}
 			}
+			// loop over gue
 			for (let groupID of Object.keys(startingGroups)) {
 				const group = startingGroups[groupID];
 				const newGroup: GuestListDataInterface = {
@@ -353,8 +342,9 @@ export function GuestList(){
 		)
 	}
 
+	//#region Typewriter effect
+
 	const [namePlaceholder, setNamePlaceholder]		= useState("Appleseed Family")
-	//#region
 	let fullNameList= 'AppleseedFamily'
 
 	// for(let i = 0; i < fullNameList.length; i++){
@@ -467,36 +457,7 @@ export function GuestList(){
 					<h3>{tableTitle}</h3>
 					<p>{tableDescription}</p>
 					<GuestListTable tableData={guestListData}/>
-					{/* <section className="guestTable">
-						<section className="resultTable">
-
-							<span className="firstCol">Name of Individual/Party</span>
-							<span>Contact</span>
-							<span>Send Survey</span>
-							<span>Delete</span>
-
-							{guestListData.map((obj, i) => (
-								<>
-									<span className="firstCol">{obj.groupName}</span>
-									<span>{obj.groupContact}</span>
-									<span>{obj.sendSurvey.toString()}</span>
-									<span>Delete</span>
-									{obj.groupMembers.map((memberName, _) =>(
-										<span className="subgroupMember">{memberName}</span>
-									))}
-								</>
-							))}
-
-						</section>
-					</section> */}
 				</section>
-
-				{/* <section className = "manualGuestListSection">
-					<h3>{tableTitle}</h3>
-					<p>{tableDescription}</p>
-					<GuestListTable></GuestListTable>
-				</section> */}
-
 				<Button type="submit" color="primary" variant="contained">Next</Button>
 			</form>
 

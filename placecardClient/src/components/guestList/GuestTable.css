@@ -1,16 +1,43 @@
-.resultTable{
-	display: grid;
-	/* grid-template-columns: [first] auto [second] auto [third] auto [fourth] 124px [fifth] 70px [sixth] 70px; */
-    grid-template-columns: [first] 20px [second] auto [third] auto [fourth] 124px [fifth] 70px;
+.guestTable{
+	max-width: 1000px;
 	text-align: left;
-	/* column-gap: 10px;
-	row-gap: 10px; */
+	margin:auto
+}
+
+.resultTable {
+	border-collapse: collapse;
+	width: 100%;
+	border-radius: 15px;
+	overflow: hidden;
+}
+
+.subgroupMemberList{
+	list-style: none;
+	padding-left: 38px;
+}
+
+.headingRow{
+	background-color: var(--secondary);
+}
+
+thead{
+	color: white;
+   	 height: 50px;
 }
 
 .firstCol{
-	grid-column: 1/ span 2;
+	padding-left: 21px;
 }
 
-.subgroupMember{
-	grid-column: 2;
+tbody .groupSummary td{
+	padding-top: 12px;
+}
+
+tbody tr:last-child.groupDropdown td {
+    	padding-bottom: 12px;
+}
+
+tbody tr{
+	border-left: 3px solid var(--secondary);
+	border-right: 2px solid var(--secondary);
 }
