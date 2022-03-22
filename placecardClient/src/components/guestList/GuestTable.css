@@ -1,30 +1,9 @@
-.resultTable{
-	display: grid;
-	/* grid-template-columns: [first] auto [second] auto [third] auto [fourth] 124px [fifth] 70px [sixth] 70px; */
-    	grid-template-columns: [first] 35px [second] auto [third] auto [fourth] 124px [fifth] 70px;
-	text-align: left;
-	/* column-gap: 10px;
-	row-gap: 10px; */
-	padding: 6px;
-	grid-template-rows: [first] 40px;
-}
-
-.firstCol{
-	grid-column: 1/ span 2;
-	padding-left: 15px;
-}
-
-.subgroupMember{
-	grid-column: 2;
-}
-
 .guestTable{
 	max-width: 1000px;
+	text-align: left;
 }
 
-.headerCol{
-	background-color: blue;
-	color: white;
-	display: flex;
-	align-items: center;
+.subgroupMemberList{
+	list-style: none;
+	padding-left: 15px;
 }
