@@ -9,6 +9,7 @@ import { SurveyGroupPage } from "./SurveyGroupPage";
 import { SurveyIdealTable } from "./SurveyIdealTable";
 import { SurveyInstructions } from "./SurveyInstructions";
 import { SurveyLikes } from "./SurveyLikes";
+import moment from "moment";
 
 export function FullSurvey (props?: {preview: boolean, hostView?: boolean}) {
     const history = useHistory();
@@ -41,10 +42,10 @@ export function FullSurvey (props?: {preview: boolean, hostView?: boolean}) {
                 window.setActiveEvent({
                     id: undefined,
                     uid: undefined,
-                    name: undefined,
-                    date: undefined,
-                    time: undefined,
-                    location: undefined,
+                    name: eventData.event_name,
+                    date: (new Date(eventData.event_start_time)).toLocaleString().split(',')[0],
+                    time: moment(new Date(eventData.event_start_time)).format('h:mm a'),
+                    location: eventData.location,
                     perTable: eventData.attendees_per_table,
                     guestList: undefined,
                     tables: undefined,

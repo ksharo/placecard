@@ -1,6 +1,7 @@
 import { useHistory, useLocation } from "react-router-dom";
 import TextField from '@mui/material/TextField';
 import './guestPages.css';
+import moment from "moment";
 import { Button } from "@mui/material";
 import validator from "validator";
 
@@ -39,10 +40,10 @@ export function GuestConfirmation() {
             window.setActiveEvent({
                 id: undefined,
                 uid: undefined,
-                name: undefined,
-                date: undefined,
-                time: undefined,
-                location: undefined,
+                name: eventData.event_name,
+                date: (new Date(eventData.event_start_time)).toLocaleString().split(',')[0],
+                time: moment(new Date(eventData.event_start_time)).format('h:mm a'),
+                location: eventData.location,
                 perTable: eventData.attendees_per_table,
                 guestList: undefined,
                 tables: undefined,

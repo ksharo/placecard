@@ -50,7 +50,7 @@ function App() {
   useEffect(() => {
     const getEvents = async () => {
       try {
-        if (window.uidState != undefined && window.uidState.trim() != '') {
+        if (window.location.href.indexOf('takeSurvey') == -1 && window.location.href.indexOf('beginSurvey') == -1 && window.uidState != undefined && window.uidState.trim() != '') {
           const eventFetch = await fetch('http://localhost:3001/events/users/'+window.uidState);
           const fetchedEvents = await eventFetch.json();
           const events: PlacecardEvent[] = []; 
@@ -90,7 +90,7 @@ function App() {
           }
 
         window.setEvents([...events]);
-        if (events.length > 0) {
+        if (events.length > 0 && window.activeEvent == null) {
           window.setActiveEvent(events[0]);
           window.setInvitees(events[0].guestList);
         }

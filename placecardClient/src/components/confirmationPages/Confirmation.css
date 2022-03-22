@@ -7,3 +7,21 @@
     background-color: var(--highlight) !important;
     color: white !important;
 }
+
+.eventDetailsCard {
+    width: 400px;
+    height: 300px;
+    padding-bottom: 0px;
+    margin: 10px auto 0px auto;
+    grid-template-rows: [header] 25% [main] 75%;
+    display: grid;
+    text-align: left
+}
+
+.detailsCardHeader * {
+    padding: 16px 0px;
+}
+
+.detailsCardContent {
+    height: fit-content;
+}
