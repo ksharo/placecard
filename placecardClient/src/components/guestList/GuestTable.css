@@ -1,9 +1,37 @@
 .guestTable{
 	max-width: 1000px;
 	text-align: left;
+	margin:auto
+}
+
+.resultTable{
+	border-collapse: collapse;
+	width: 100%;
+	border: 1.5px solid blue;
 }
 
 .subgroupMemberList{
 	list-style: none;
-	padding-left: 15px;
+	padding-left: 38px;
+}
+
+.headingRow{
+	background-color: blue;
+}
+
+thead{
+	color: white;
+   	 height: 50px;
+}
+
+.firstCol{
+	padding-left: 21px;
+}
+
+tbody .groupSummary td{
+	padding-top: 12px;
+}
+
+tbody tr:last-child.groupDropdown td {
+    	padding-bottom: 12px;
 }

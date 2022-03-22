@@ -21,13 +21,13 @@ function GuestListTableRow(props: {guest:GuestListDataInterface}){
 
 	return(
 		<>
-			<tr>
+			<tr className='groupSummary'>
 				<td className="firstCol" onClick={() => setOpen(!open)}>{props.guest.groupName}</td>
 				<td>{props.guest.groupContact}</td>
 				<td>{props.guest.sendSurvey.toString()}</td>
 				<td>Delete</td>
 			</tr>
-			<tr>
+			<tr className='groupDropdown'>
 				<td colSpan={4}>
 					<Collapse in={open} timeout="auto" unmountOnExit>
 						<ul className='subgroupMemberList'>
@@ -49,11 +49,11 @@ export function GuestListTable(props: {tableData:GuestListDataInterface[]}) {
 			<table className="resultTable">
 
 				<thead>
-					<tr>
-						<th className="firstCol headerCol">Name of Individual/Party</th>
-						<th className="headerCol">Contact</th>
-						<th className="headerCol">Send Survey</th>
-						<th className="headerCol">Delete</th>
+					<tr className="headingRow">
+						<th className='firstCol'>Name of Individual/Party</th>
+						<th >Contact</th>
+						<th >Send Survey</th>
+						<th >Delete</th>
 					</tr>
 				</thead>
 
