@@ -10,10 +10,14 @@
         "ecmaVersion": "latest"
     },
     "rules": {
-        "no-unused-vars": ["warning"],
         "no-empty": ["error"],
+        "no-new-object": 2,
+        "no-array-constructor": 2,
+        "no-unused-vars": 1,
+        "no-var": 2,
         "quotes": ["error", "double", {"allowTemplateLiterals": true}],
         "eqeqeq": ["error"],
-        "semi-style": ["error"]
+        "semi-style": ["error"],
+        "eol-last": 1
     }
 }

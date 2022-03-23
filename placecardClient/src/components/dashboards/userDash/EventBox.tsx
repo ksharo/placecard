@@ -6,13 +6,13 @@ import Button from '@mui/material/Button';
 import { useHistory } from "react-router-dom";
 import './EventBox.css';
 
-export function EventBox(props: {id: string, name: string; date: string; location: string; numAttend: number; perTable: number}) {
+export function EventBox(props: {id: string, name: string; date: string; location: string; numAttend: number; perTable: number; guestList: Invitee[]; tables: Table[]}) {
     const history = useHistory();
     const handleClick = () => {
-        window.setActiveEvent({id: props.id, name: props.name, date: props.date, location: props.location, numAttend: props.numAttend, perTable: props.perTable});
+        window.setActiveEvent({id: props.id, name: props.name, date: props.date, location: props.location, numAttend: props.numAttend, perTable: props.perTable, guestList: props.guestList, tables: props.tables});
         history.push('/eventDash');
     };
-    const numTables = props.numAttend/props.perTable;
+    const numTables = Math.ceil(props.numAttend/props.perTable);
     const daysLeft = Math.ceil(((new Date(props.date)).valueOf() - (new Date()).valueOf())/100000000);
     let daysLeftString = daysLeft.toString() + " Days Left!";
     if (daysLeft == 0) {

@@ -1,9 +1,9 @@
+require("dotenv").config();
+
 const express = require("express");
 const app = express();
 const configRoutes = require("./src/routes");
 const PORT = 3001;
-
-require("dotenv").config();
 
 app.use(express.json());
 configRoutes(app);

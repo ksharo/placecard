@@ -16,6 +16,9 @@ interface Window {
     phoneState: string;
     setPhone: any;
 
+    uidState: string;
+    setUID: any;
+
     profPicState: any;
     setProfPic: any;
 
@@ -39,20 +42,42 @@ interface Window {
 
     lovedInvitees: Invitee[];
     setLoved: any;
+
+    curGroupID: string | undefined;
+    setGroupID: any;
+
+    curGuest: Invitee | undefined;
+    setCurGuest: any;
+
+    firstTime: boolean | undefined;
+    setFirstTime: any;
 }
 
 interface PlacecardEvent {
-    id: string;
+    id: string | ObjectId;
+    uid: string | ObjectId;
     name: string;
     date: string;
+    time?: string;
     location: string;
-    numAttend: number;
     perTable: number;
-    guestList: string[];
+    guestList: Invitee[];
+    tables: Table[];
+    respondents?: number;
+    surveys?: string[];
 }
 
 interface Invitee {
     id: string;
     name: string;
-    size: number;
+    groupID?: string; 
+    groupName?: string;
+    groupSize?: number;
+    contact?: string;
+}
+
+interface Table {
+    id: string;
+    name: string;
+    guests: Invitee[];
 }

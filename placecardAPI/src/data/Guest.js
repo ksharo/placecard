@@ -1,6 +1,6 @@
 const { isUndefined, isEmpty } = require("lodash");
-const { guests, events } = require("../../config/mongoConfig/mongoCollections");
 const { checkPrecondition, validateSchema } = require("../utils/preconditions");
+const { guests } = require("../../config/mongoConfig/mongoCollections");
 const {
     INVALID_GUEST_ID_MESSAGE,
     GUEST_EMPTY_MESSAGE,
@@ -12,9 +12,11 @@ const {
 const {
     convertIdToString,
     isInvalidObjectId,
-} = require("../utils/mongoDocument");
+} = require("../utils/mongoUtils");
 const { ObjectId } = require("mongodb");
 const GUEST_TYPE = require("../constants/schemaTypes").SCHEMA_TYPES.GUEST;
+const GUEST_TYPE_PATCH = require("../constants/schemaTypes").SCHEMA_TYPES
+    .GUESTPATCH;
 const {
     generateNotFoundMessage,
     generateCRUDErrorMessage,
@@ -60,12 +62,16 @@ async function createGuest(guestConfig) {
     return newGuest;
 }
 
-async function updateGuest(guestId, updatedGuestConfig) {
+async function updateGuest(guestId, updatedGuestConfig, updateType) {
     checkPrecondition(guestId, isUndefined, INVALID_GUEST_ID_MESSAGE);
     checkPrecondition(guestId, isInvalidObjectId, INVALID_GUEST_ID_MESSAGE);
     checkPrecondition(updatedGuestConfig, isUndefined, INVALID_GUEST);
     checkPrecondition(updatedGuestConfig, isEmpty, INVALID_GUEST);
-    validateSchema(updatedGuestConfig, GUEST_TYPE);
+    if (updateType === "PUT") {
+        validateSchema(updatedGuestConfig, GUEST_TYPE);
+    } else {
+        validateSchema(updatedGuestConfig, GUEST_TYPE_PATCH);
+    }
 
     const guestCollection = await guests();
     const guestObjectId = ObjectId(guestId);

@@ -10,15 +10,15 @@ const surveyResponseSchema = Joi.object({
 const schema = Joi.object({
     _id: Joi.string(),
     first_name: Joi.string().min(2).required(),
-    last_name: Joi.string().min(2).required(),
+    last_name: Joi.string(),
+    // Only one is required between email/phone
     email: Joi.string().email().required(),
-    phone_number: Joi.string().required(),
-    age: Joi.number().integer().required(),
-    is_locked: Joi.boolean(),
+    // phone_number: Joi.string(),
     party_size: Joi.number().integer().required(),
     associated_table_number: Joi.number().integer(),
-    children: Joi.array().required(),
-    survey_response: surveyResponseSchema.required(),
+    group_id: Joi.string(),
+    group_name: Joi.string(),
+    survey_response: surveyResponseSchema,
 }).strict();
 
 module.exports = schema;
