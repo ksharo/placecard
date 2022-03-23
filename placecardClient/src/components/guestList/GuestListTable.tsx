@@ -1,7 +1,7 @@
 import Collapse from '@mui/material/Collapse';
 import { useState } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -58,7 +58,7 @@ function GuestListTableRow(props: {tableData:GuestListDataInterface[], guest:Gue
 					props.mode === "New" ?
 						<>
 							<td className="firstCol" onClick={() => setOpen(!open)}>
-								<IconButton>{open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>
+								{props.guest.groupMembers.length > 0 && <IconButton className='guestListIcon'>{open ? <KeyboardArrowDownIcon/> : <KeyboardArrowRightIcon/>}</IconButton>}
 							</td>
 							<td>
 								{editing?
@@ -76,16 +76,16 @@ function GuestListTableRow(props: {tableData:GuestListDataInterface[], guest:Gue
 							</td>
 							<td><Checkbox checked={props.guest.sendSurvey} onChange={(e) => updateRowData("sendSurvey", e.target.checked)}/></td>
 							<td>
-								<IconButton onClick={() => setEditing(!editing)} aria-label={editing? "Save edits" : "Edit row"}>
+								<IconButton className='guestListIcon' onClick={() => setEditing(!editing)} aria-label={editing? "Save edits" : "Edit row"}>
 									{editing? <SaveIcon/> : <EditIcon/>}
 								</IconButton>
 							</td>
-							<td><IconButton onClick={() => deleteRowData()} aria-label="Delete row"><DeleteIcon/></IconButton></td>
+							<td><IconButton className='guestListIcon' onClick={() => deleteRowData()} aria-label="Delete row"><DeleteIcon/></IconButton></td>
 						</>
 					:
 						<>
 							<td className="firstCol" onClick={() => setOpen(!open)}>
-								<IconButton>{open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>
+								{props.guest.groupMembers.length > 0 && <IconButton className='guestListIcon'>{open ? <KeyboardArrowDownIcon/> : <KeyboardArrowRightIcon/>}</IconButton>}
 							</td>
 							<td>
 								{editing?
@@ -101,14 +101,14 @@ function GuestListTableRow(props: {tableData:GuestListDataInterface[], guest:Gue
 									props.guest.groupContact
 								}
 							</td>
-							<td>{props.guest.surveyStatus}</td>
-							<td><IconButton aria-label="Send reminder"><NotificationsIcon/></IconButton></td>
+							<td>{window.activeEvent != null && window.activeEvent.surveys != undefined && window.activeEvent.surveys.indexOf(props.guest.id != undefined ? props.guest.id : '') != -1 ? (window.activeEvent.respondents != undefined && window.activeEvent.respondents.indexOf(props.guest.id != undefined ? props.guest.id : '') != -1 ? 'Completed' : 'Pending') : 'Not Sent'}</td>
+							<td><IconButton className='guestListIcon' aria-label="Send reminder"><NotificationsIcon/></IconButton></td>
 							<td>
-								<IconButton onClick={() => setEditing(!editing)} aria-label={editing? "Save edits" : "Edit row"}>
+								<IconButton className='guestListIcon' onClick={() => setEditing(!editing)} aria-label={editing? "Save edits" : "Edit row"}>
 									{editing? <SaveIcon/> : <EditIcon/>}
 								</IconButton>
 							</td>
-							<td><IconButton onClick={() => deleteRowData()} aria-label="Delete row"><DeleteIcon/></IconButton></td>
+							<td><IconButton className='guestListIcon' onClick={() => deleteRowData()} aria-label="Delete row"><DeleteIcon/></IconButton></td>
 						</>
 				}
 

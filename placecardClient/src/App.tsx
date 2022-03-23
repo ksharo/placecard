@@ -59,7 +59,7 @@ function App() {
           for (let post of fetchedEvents) {
             const tables: any[] = post.tables;
             const guests: Invitee[] = [];
-            let respondents = 0;
+            let respondents = [];
             try {
               const guestFetch = await fetch('http://localhost:3001/events/guests/'+post._id);
               const fetchedGuests = await guestFetch.json();
@@ -73,7 +73,7 @@ function App() {
                   contact: guest.email,
                 }
                 if (guest.survey_response != undefined && (guest.survey_response.disliked.length != 0 || guest.survey_response.ideal.length != 0 || guest.survey_response.liked.length != 0 )) {
-                  respondents += Number(guest.party_size);
+                  respondents.push(guest._id);
                 }
                 guests.push(newGuest);
                 for (let x of tables) {

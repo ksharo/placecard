@@ -63,7 +63,7 @@ interface PlacecardEvent {
     perTable: number;
     guestList: Invitee[];
     tables: Table[];
-    respondents?: number;
+    respondents?: string[];
     surveys?: string[];
 }
 
