@@ -412,7 +412,7 @@ export function GuestList(){
 				<section className = "manualGuestListSection">
 					<h3>{tableTitle}</h3>
 					<p>{tableDescription}</p>
-					<GuestListTable tableData={guestListData}/>
+					<GuestListTable tableData={guestListData} setTableData={setGuestListData} mode="New"/>
 				</section>
 				<Button type="submit" color="primary" variant="contained">Next</Button>
 			</form>

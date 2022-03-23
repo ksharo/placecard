@@ -71,12 +71,13 @@ export function EditGuestList() {
 	return (
 		<>
 			<h1 className='title'>Edit Your Guest List</h1>
-			<GuestListTable tableData={guestListData}/>
+			<GuestListTable tableData={guestListData} setTableData={setGuestListData} mode="SurveySent"/>
 			<section>
 				<span>OR</span><hr/>
 			</section>
 			<UploadFile/>
 			<Button variant='contained' onClick={handleClick}>Return to Dashboard</Button>
+
 		</>
 	)
 }
