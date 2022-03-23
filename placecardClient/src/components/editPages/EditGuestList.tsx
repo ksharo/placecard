@@ -63,7 +63,7 @@ export function EditGuestList() {
 
 	return (
 		<>
-			<GuestListTable tableData={guestListData}/>
+			<GuestListTable tableData={guestListData} setTableData={setGuestListData} mode="SurveySent"/>
 
 		</>
 	)
