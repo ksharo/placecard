@@ -45,7 +45,8 @@ const schema = Joi.object({
         // .max(Joi.ref("expected_number_of_attendees"))
         ,
     guest_list: Joi.array(),
-    surveys_sent: Joi.array()
+    surveys_sent: Joi.array(),
+    last_viewed: Joi.number().integer()
 }).strict();
 
 module.exports = schema;

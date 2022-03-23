@@ -3,17 +3,40 @@ import { EventBox } from "./EventBox";
 import './UserDashboard.css';
 import { DataGrid } from '@mui/x-data-grid';
 import moment from 'moment';
-import { Button, IconButton, Switch } from "@mui/material";
+import { Button, CircularProgress, IconButton, Switch } from "@mui/material";
 import { AiFillPlusCircle } from "react-icons/ai";
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import { HiTrash } from 'react-icons/hi';
 
 
 export function UserDashboard() {
     const [viewAll, setView] = React.useState(false);
     const history = useHistory();
-    const handleClick = (event: PlacecardEvent) => {
+    const handleClick = async (event: PlacecardEvent) => {
         window.setActiveEvent(event);
+        // get the event again so that we update the time
+        const result = await fetch('http://localhost:3001/events/'+event.id);
+        if (result.ok) {
+            const data = await result.json();
+            const updatedEvent = {
+                'id': data._id, 
+                'uid': data._userId, 
+                'name': data.event_name, 
+                'date': (new Date(data.event_start_time)).toLocaleString().split(',')[0], 
+                'time': (new Date(data.event_start_time)).toTimeString().split(' ')[0], 
+                'location': data.location, 
+                'tables': event.tables, 
+                'perTable': data.attendees_per_table, 
+                'guestList': event.guestList, 
+                'respondents': event.respondents, 
+                'surveys': data.surveys_sent
+            }
+            window.setActiveEvent(updatedEvent);
+            window.setInvitees(event.guestList);
+        }
+        else {
+            console.error('Could not update event');
+        }
         history.push('/eventDash');
     };
 
@@ -75,7 +98,7 @@ export function UserDashboard() {
               rows.push({
                   id: event.id,
                   eventName: event.name,
-                  countdown: daysLeftString,
+                  countdown: !isNaN(Number(daysLeftString)) ? Number(daysLeftString) : (daysLeftString),
                   date: moment(event.date).format('MM / DD / YYYY') ,
                   dashboards: event,
                   deletes: event.id
@@ -118,9 +141,22 @@ export function UserDashboard() {
         }
     }
 
+    const loadingCircle = () => {
+        return (
+        <section className='loadingCircle'>
+            {window.eventsState == rowsState ? <p>No Events</p> : 
+            <>
+                <p>Loading...</p>
+                <CircularProgress size={24} />
+            </>
+            }
+        </section>
+        )
+    }
+
     return (
         <>
-            <h1 className='title'>Welcome back, {window.firstNameState}!</h1>
+            <h1 className='title'>Welcome back{window.firstNameState.trim() == '' ? '!' : ', ' + window.firstNameState + '!'}</h1>
             <section className='userDashContent'>
                 <div style={{'height': tableHeight}} className='table'>
                     <DataGrid
@@ -129,6 +165,14 @@ export function UserDashboard() {
                         disableColumnMenu={true} 
                         hideFooter={true} 
                         disableSelectionOnClick={true}
+                        initialState={{
+                            sorting: {
+                              sortModel: [{ field: 'countdown', sort: 'asc' }],
+                            },
+                        }}
+                        components={{
+                            NoRowsOverlay: loadingCircle,
+                        }}
                     />
                 </div>
 

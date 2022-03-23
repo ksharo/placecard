@@ -1,6 +1,10 @@
-import { Checkbox, CircularProgress } from "@mui/material";
+import { Checkbox, CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
+import React from "react";
+import { FaSearch } from "react-icons/fa";
+import { IoIosClose } from "react-icons/io";
 
+let searchTerm = '';
 export function SurveyDislikes() {
     const names: {name: string, id: string}[] = [];
     for (let x of window.inviteesState) {
@@ -23,7 +27,8 @@ export function SurveyDislikes() {
         return arr;
     };
 
-    let rows: GridRowsProp = makeRows();
+    let startRows: GridRowsProp = makeRows();
+    const [rows, setRows] = React.useState([...startRows]);
 
     const columns: GridColDef[] = [
         {
@@ -93,9 +98,50 @@ export function SurveyDislikes() {
         )
     }
 
+    const search = (event: any) => {
+        searchTerm = event.target.value.toLowerCase().trim();
+        if (searchTerm.trim() == '') {
+            setRows([...startRows]);
+            return;
+        }
+        const newRows = rows.filter( (x) => {
+            return (x.col0.toLowerCase()).includes(searchTerm);
+        });
+        setRows([...newRows]);
+    }
+
+    const clearSearch = () => {
+        const e = document.getElementById('searchBar');
+        if (e != null) {
+            (e as HTMLInputElement).value='';
+        }
+        searchTerm = '';
+        setRows([...startRows]);
+    }
+    
     return (<>
                 <h1 className='title'>Seating Survey - Part II</h1>
                 <p className='subtitle'>Which of these parties do you want to avoid sitting with?</p>
+                <section className='stickySearch smallSearch'>
+                    <TextField
+                        placeholder='Search Guests'
+                        className='searchBar' 
+                        id='searchBar'
+                        size='small' 
+                        onChange={search}
+                        InputProps={{
+                            startAdornment:
+                                <InputAdornment position="start">  
+                                    <FaSearch/>
+                                </InputAdornment>, 
+                            endAdornment:
+                                searchTerm.trim() != ''  && <InputAdornment position="end">  
+                                    <IconButton className='smallClose' onClick={clearSearch}>
+                                        <IoIosClose/>
+                                    </IconButton>
+                                </InputAdornment>}}>
+                    </TextField>
+                </section>
                 <div className='survey' style={{ height: 400 }}>
                     <DataGrid rows={rows} 
                         columns={columns} 

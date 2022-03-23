@@ -27,7 +27,8 @@ describe("preconditions.js tests", function() {
             location: "Las Vegas",
             attendees_per_table: 10,
             guest_list: [],
-            surveys_sent: []
+            surveys_sent: [],
+            last_viewed: 1646262300
         };
 
         it("should not return an error on success", async () => {

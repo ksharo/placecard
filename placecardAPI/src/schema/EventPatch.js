@@ -9,7 +9,8 @@ const schema = Joi.object({
     location: Joi.string(),
     attendees_per_table: Joi.number().integer().greater(0),
     guest_list: Joi.array(),
-    surveys_sent: Joi.array()
+    surveys_sent: Joi.array(),
+    last_viewed: Joi.number().integer()
 }).strict();
 
 module.exports = schema;

@@ -1,16 +1,14 @@
 import { GuestListTable, GuestListDataInterface } from "./GuestListTable"
-import { useRef, useState, useEffect, InputHTMLAttributes, useLayoutEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Button } from "@mui/material";
-import { MdUploadFile } from 'react-icons/md';
-import { HiTrash } from 'react-icons/hi';
-import { TextField, Switch, Checkbox } from "@mui/material";
+import { TextField, Switch } from "@mui/material";
 import { ObjectId } from 'mongodb';
 import './GuestList.css'
-
+import { UploadFile } from "../shared/UploadFile";
 
 export function GuestList(){
-	const title			= 'Add a Guest List For Your Event'
+	const title				= 'Add a Guest List For Your Event'
 	const pageDescription	= 'Download our guest list template, fill it out, and drop it back here'
 
 	const tableTitle		= 'Enter Guest List Manually'
@@ -19,7 +17,6 @@ export function GuestList(){
 
 
 	const [guestListData, setGuestListData]					= useState<GuestListDataInterface[]>([])
-	const [userFile, setUserFile] 						= useState(undefined);
 
 	const [individualAddPopupState, setIndividualAddPopupState]	= useState(false)
 	const [groupAddPopupState, setGroupAddPopupState]			= useState(false)
@@ -92,22 +89,6 @@ export function GuestList(){
 		}
 	}, [window.activeEvent]);
 
-	const fileSelected = (event: any) => {
-		const selectedFile = event.target.files[0];
-		setUserFile(selectedFile)
-     	// const reader = new FileReader();
-		let data = new FormData();
-          data.append('file', selectedFile);
-
-		// const requestOptions = {
-		// 	method: 'POST',
-		// 	headers: {
-		// 		'Content-Type': 'application/json'
-		// 	}
-		// };
-		// return fetch('http://localhost:3001/guestList/fileUpload', requestOptions);
-	}
-
 
 	const toCustomizeSurvey = (event: any) => {
 		event.preventDefault()
@@ -128,19 +109,19 @@ export function GuestList(){
 		}
 
 		let data = new FormData();
-		if (userFile != undefined) {
-          	data.append('file', userFile);
-		}
+		// if (userFile != undefined) {
+        //   	data.append('file', userFile);
+		// }
 
-		if(userFile && userFile['name']){
-			const requestOptions = {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			};
-			return fetch('http://localhost:3001/guestList/fileUpload', requestOptions);
-		}
+		// if(userFile && userFile['name']){
+		// 	const requestOptions = {
+		// 		method: 'POST',
+		// 		headers: {
+		// 			'Content-Type': 'application/json'
+		// 		}
+		// 	};
+		// 	return fetch('http://localhost:3001/guestList/fileUpload', requestOptions);
+		// }
 
 		history.push('/editSurvey');
 	}
@@ -413,32 +394,7 @@ export function GuestList(){
 				<p className='subtitle'>{pageDescription}</p>
 			</section>
 
-			<section className='fileUploadSection'>
-				<section className="fileUploadButtonSection">
-					<MdUploadFile className="uploadFileIcon"/>
-
-					<section>
-						<p>Drag your file here or click here to upload</p>
-						<label>{userFile != undefined ? userFile['name'] : "No File Selected"}</label>
-						{/* <button type="button" id ="buttonTestTag">
-							<i className="fas fa-file-upload" />
-							<span> Upload files</span>
-						</button> */}
-					</section>
-				</section>
-
-				<section id="dragDropContainer">
-					<input
-						id = "inputTestTag"
-						type="file"
-						ref={useRef(null)}
-						title=""
-						value=""
-						onChange={fileSelected}
-						accept=".xls,.xlsx,.csv"
-					/>
-				</section>
-			</section>
+			<UploadFile/>
 
 			<section>
 				<span>OR</span><hr/>
@@ -456,7 +412,7 @@ export function GuestList(){
 				<section className = "manualGuestListSection">
 					<h3>{tableTitle}</h3>
 					<p>{tableDescription}</p>
-					<GuestListTable tableData={guestListData}/>
+					<GuestListTable tableData={guestListData} setTableData={setGuestListData} mode="New"/>
 				</section>
 				<Button type="submit" color="primary" variant="contained">Next</Button>
 			</form>
@@ -516,9 +472,24 @@ function updateGlobalEvent(guestData: any) {
 			contact: guestData.email,
 		};
 		curGuests.push(newGuest);
+		const curSurveys = window.activeEvent.surveys ? [...window.activeEvent.surveys] : [];
+		curSurveys.push(guestData._id);
 		const tmpEvent = window.activeEvent;
 		tmpEvent.guestList = curGuests;
+		tmpEvent.surveys = curSurveys;
+		// see if we need to add tables to the event
+		const num_attend = curGuests.length;
+		const tmpSeats = window.activeEvent.tables.length * window.activeEvent.perTable;
+		if (tmpSeats < num_attend) {
+			const id = (new ObjectId()).toString();
+			const newTable: Table = {
+				id: id,
+				name: 'Table ' + (window.activeEvent.tables.length+1).toString(),
+				guests: []
+			}
+			tmpEvent.tables.push(newTable);
+		}
 		window.setActiveEvent(tmpEvent);
-		/* TODO: replace in eventList! */
+		window.setInvitees(curGuests);
 	}
 }

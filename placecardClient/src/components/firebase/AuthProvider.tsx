@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState, useContext } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { getFirebaseAuth } from "../../utils/firebase/firebase"
+import { useHistory } from "react-router-dom";
 
 const FirebaseAuthContext = createContext(undefined);
 
@@ -11,6 +12,7 @@ function useAuthContext() {
 const FirebaseAuthProvider = ({ children } : any) => {
     const firebaseAuth = getFirebaseAuth();
     const [firebaseUser, setFirebaseUser] = useState(undefined);
+    const history = useHistory();
 
     const toggleUser = (user: any) => {
         console.log("User: ", user);
@@ -24,6 +26,7 @@ const FirebaseAuthProvider = ({ children } : any) => {
             window.setPhone(user.phoneNumber);
             window.setEmail(user.email);
             window.setUID(user.uid);
+            window.setFirstTime(user.metadata.createdAt == user.metadata.lastLoginAt);
         }
         setFirebaseUser(user);
     };

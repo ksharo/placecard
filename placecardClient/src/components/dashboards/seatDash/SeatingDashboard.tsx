@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import './SeatingDashboard.css';
 import { AppBar, CardActions, CardHeader, IconButton, InputAdornment, Switch, 
     TextField, Toolbar, Tooltip, Typography } from "@mui/material";
-import { AiFillEdit } from 'react-icons/ai';
+import { AiFillEdit, AiFillMinusCircle, AiFillPlusCircle } from 'react-icons/ai';
 import { IoIosClose, IoIosSave } from "react-icons/io";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import moment from 'moment';
@@ -13,12 +13,6 @@ import React, { useEffect, useLayoutEffect } from "react";
 import {uuid} from "uuidv4";
 import { FaExclamationCircle, FaSearch } from "react-icons/fa";
 import { ObjectId } from "mongodb";
-
-// TODO: with undo, make sure that the data history
-// resets future once something has been undone and then
-// some new action has been taken
-// ALSO: make sure everything gets deep copied in functions like
-// move groups together, seat unseated groups, etc.
 
 const unseatedID = uuid();
 let searchTerm = '';
@@ -42,7 +36,7 @@ export function SeatingDashboard() {
     let origTables: Table[] = [];
     let tmpUnseated: Invitee[] = [];
 
-    let survComp = 0;
+    // let survComp = 0;
     let perTable = -1;
     let num_attend = 0;
     let tables = ((window.activeEvent != null) ? window.activeEvent.tables.length : 0);
@@ -116,6 +110,7 @@ export function SeatingDashboard() {
     const [shownUnseated, searchedUnseated] = React.useState([...tmpUnseated]);
     const [seated, setSeated] = React.useState(num_attend - unseated.length);
     const [seats, setSeats] = React.useState(tmpSeats);
+    const [disabled, setDisabled] = React.useState(false);
 
     useLayoutEffect(() => {   
         search(null, searchTerm);
@@ -131,6 +126,15 @@ export function SeatingDashboard() {
 
     useEffect(() => {
         executeUpdate();
+        if (tablesData != undefined) {
+            const emptyTables = tablesData.filter( (table) => {return table.guests.length == 0});
+            if (emptyTables == undefined || emptyTables.length == 0) {
+                setDisabled(true);
+            }
+            else {
+                setDisabled(false);
+            }
+        }
     }, [tablesData]);
 
     const executeUpdate = async() => {
@@ -604,6 +608,48 @@ export function SeatingDashboard() {
         }
     };
 
+    const addTable = () => {
+        if (window.activeEvent != null) {
+            let tmpTables = [...window.activeEvent.tables];
+            const id = (new ObjectId()).toString();
+            tables = ((window.activeEvent != null) ? window.activeEvent.tables.length : 0);
+            const newTable: Table = {
+                id: id,
+                name: 'Table ' + (tables+1).toString(),
+                guests: []
+            }
+            tables += 1;
+            window.activeEvent.tables.push(newTable);
+            tmpTables.push(newTable);
+            setTablesData(tmpTables);
+            tmpTables = JSON.parse(JSON.stringify(tmpTables));
+            for (let x of tmpTables) {
+                x = JSON.parse(JSON.stringify(x));
+                x.guests = [...x.guests];
+            }
+            setData([tmpTables, [...unseated]]);
+        }
+    };
+
+    const deleteTable = () => {
+        if (window.activeEvent != null) {
+            let emptyTables = tablesData.filter( (table) => {return table.guests.length==0});
+            let toDelete = emptyTables[emptyTables.length-1];
+            let tmpTables = [...tablesData];
+            tmpTables = JSON.parse(JSON.stringify(tmpTables));
+            let newTables: Table[] = [];
+            for (let x of tmpTables) {
+                if (x.id != toDelete.id) {
+                    x = JSON.parse(JSON.stringify(x));
+                    x.guests = [...x.guests];
+                    newTables.push(x);
+                }
+            }
+            setTablesData(newTables);
+            setData([[...newTables], [...unseated]]);
+        }
+    };
+
     return (
         <>
             {window.activeEvent == null ? 
@@ -623,8 +669,20 @@ export function SeatingDashboard() {
                         <p className='statLabel'>Survey Completion</p>
                     </Grid>
                     <Grid item xs={4}>
-                        <h3 className='seatStat'>{tables}</h3>
-                        <p className='statLabel'>Total Table{tables==1 ? '' : 's'}</p>
+                        <h3 className='seatStat'>
+                            <Tooltip title={disabled ? "Must have an empty table to delete!" : ""}>
+                                <span className='editTableNum'>
+                                    <IconButton className='editTableNum' onClick={deleteTable} disabled={disabled}>
+                                        <AiFillMinusCircle/>
+                                    </IconButton>
+                                </span>
+                            </Tooltip>
+                            <span className='spacedSpan'>{tablesData.length}</span>
+                            <IconButton className='editTableNum' onClick={addTable}>
+                                <AiFillPlusCircle/>
+                            </IconButton>
+                        </h3>
+                        <p className='statLabel'>Total Table{tablesData.length==1 ? '' : 's'}</p>
                     </Grid>
                     <Grid item xs={4}>
                         <h3 className='seatStat'>{seats}</h3>
@@ -652,8 +710,8 @@ export function SeatingDashboard() {
                 <Grid item xs={1} sm={1} md={3}>
                     <Card className='seatDashCard'>
                         <CardHeader title='Unseated Guests' className='cardHeader'/>
-                        <section className='guestTable'>
-                            <section className='stickySearch'>
+                        <section className='guestTable centeredCell'>
+                            <section className='stickySearch centeredCell'>
                                 <TextField
                                 placeholder='Search Guests'
                                 className='searchBar' 
@@ -676,7 +734,7 @@ export function SeatingDashboard() {
                                 {(provided, snapshot) => {
                                     return (
                                         <section className={`unseatedSection ${snapshot.isDraggingOver ? "overBackground" : ""}`} {...provided.droppableProps} ref={provided.innerRef}>
-                                            {shownUnseated.length == 0 ? unseated.length == 0 ? <p>All guests have been seated!</p> : <p className='wrappedP'>No guests found for search term {searchTerm}</p> : 
+                                            {shownUnseated.length == 0 ? unseated.length == 0 ? <p className='centeredCell'>All guests have been seated!</p> : <p className='wrappedP'>No guests found for search term {searchTerm}</p> : 
                                             <>
                                             {shownUnseated.map((guest: Invitee, index) => {
                                                 return (

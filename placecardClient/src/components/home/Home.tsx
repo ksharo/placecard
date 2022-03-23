@@ -6,12 +6,32 @@ import {FaUmbrellaBeach} from 'react-icons/fa'
 
 import './Home.css';
 import { useHistory } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import OAuthDialogList from '../firebase/OAuthDialogList';
 
 export function Home() {
     const history = useHistory();
-    const getStartedBtn = () => {
-        history.push('newAccount');
-    }
+    const [ signupOpen, setOpenSignup ] = useState(false);
+
+    const closeSignupDialogBox = () => {
+        setOpenSignup(false);
+    };
+
+    const openSignupDialogBox = () => {
+        setOpenSignup(true);
+    };
+
+    useEffect( () => {
+        // user's first time! send them to createEvent
+        if (window.firstTime === true) {
+            history.push('/createEvent');
+        }
+        // otherwise to their dashboard if they are at the home screen
+        else if (window.firstTime === false) {
+            history.push('/userHome');
+        }
+    }, [window.firstTime]);
+
     return (
         <>
             <section className='eyeCatcher'>
@@ -19,7 +39,7 @@ export function Home() {
                     <section className='introSection'>
                         <h1 className='homeTitle'>The easy way to create a seating chart</h1>
                         <h4>Crowdsource to automatically create your seating chart based on guest preferences</h4>
-                        <Button variant='contained' onClick={getStartedBtn} color='info'>Get Started - it's free</Button>
+                        <Button variant='contained' onClick={openSignupDialogBox} color='info'>Get Started - it's free</Button>
                     </section>
                 </section>
                 <img id='mainImage' src={mainImg}/>
@@ -61,6 +81,11 @@ export function Home() {
                     </section>
                 </section>
             </section>
+            <OAuthDialogList
+                open={signupOpen}
+                onClose={closeSignupDialogBox}
+                title='Sign up for'
+            />
         </>
     )
 }
