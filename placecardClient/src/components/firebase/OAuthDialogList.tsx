@@ -11,8 +11,9 @@ export interface OAuthDialogListProps {
     onClose: () => void
 };
 
-const OAuthDialogList = (props: OAuthDialogListProps) => {
-    const { open, onClose } = props;
+const OAuthDialogList = (props: {open: any, onClose:any, title: String}) => {
+    const open: any = props.open;
+    const onClose: any = props.onClose;
 
     const authList = PROVIDER_NAMES.map((providerName) => {
         return <CustomOAuthBox authBoxConfig={ authBoxConfigs[providerName] }/> 
@@ -20,7 +21,7 @@ const OAuthDialogList = (props: OAuthDialogListProps) => {
 
     return (
         <Dialog onClose={onClose} open={open}>
-            <DialogTitle>Sign in to</DialogTitle>
+            <DialogTitle>{props.title}</DialogTitle>
             <DialogContent>
                 <Box
                     className="logoImage"

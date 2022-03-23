@@ -15,7 +15,7 @@
     justify-content: space-between;
 }
 
-.header {
+.pageHeader {
     margin: 20px 24px auto 24px;
 }
 
@@ -30,39 +30,42 @@
   }
 
 .guestTable {
+    min-height: 500px;
     max-height: 700px;
     overflow: scroll;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
 
-.guestTable button{
+.guestTable button {
     box-shadow: none;
     color: white;
     margin-left: 10px;
 }
 
-.tableTitle {
-    background-color: rgb(75, 75, 75);
-    color: white;
-    font-size: 24px;
-}
-
-.dashBody {
-    padding: 0px 24px 0px 24px;
-}
-
 .tableHeader {
-    background-color: black !important;
-    color: white !important;
+    background-color: white !important;
+    color: var(--main) !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
-.tableHeader button {
-    color: white;
+.smallHR {
+    width: 80%;
+    padding: 0;
+    margin: 0 auto;
+}
+
+.cornerText {
+    font-size: 10px;
+    float: left;
+    color: var(--mainGrey);
 }
 
 .tableBox {
     margin: 6px;
+    border: 1px solid var(--borderColor);
 }
 
 .seatingChart::-webkit-scrollbar {
@@ -105,4 +108,231 @@ ul {
 
 .centeredContent {
     justify-content: center;
+}
+
+.tableInSeatDash {
+    min-height: 200px;
+    height: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+}
+
+.unseatedSection {
+    min-height: 500px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.overBackground {
+    background-color: rgb(245, 245, 245);
+}
+
+.guestName {
+    padding: 4px;
+    background-color: white;
+    color: var(--footerColor);
+    border: 1px solid var(--borderColor);
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0 20px 15px 20px;
+}
+
+.guestName:last-child {
+    margin-bottom: 0;
+}
+
+.placedGuest {
+    box-shadow: 4px 4px 10px rgb(0 0 0 / 10%);
+    filter: brightness(100%);
+    animation-duration: 0.25s;
+    animation-name: putDown;
+}
+
+.draggingGuest {
+    filter: brightness(85%);
+    box-shadow: 7px 7px 20px rgb(0 0 0 / 15%);
+    animation-duration: 0.25s;
+    animation-name: pickUp;
+}
+
+@keyframes pickUp {
+    from {
+        filter: brightness(100%);
+        box-shadow: 4px 4px 10px rgb(0 0 0 / 10%);
+    }
+
+    to {
+        filter: brightness(85%);
+        box-shadow: 7px 7px 20px rgb(0 0 0 / 15%);
+    }
+}
+@keyframes putDown {
+    from {
+        filter: brightness(85%);
+        box-shadow: 7px 7px 20px rgb(0 0 0 / 15%);
+    }
+    to {
+        filter: brightness(100%);
+        box-shadow: 4px 4px 10px rgb(0 0 0 / 10%);
+    }
+}
+
+.overFull {
+    color: red !important;
+    background-color: var(--borderColor);
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.tableFillLevel {
+    background-color: var(--borderColor);
+    font-size: 16px;
+    color: black !important;
+}
+
+.topTableHeader {
+    margin-bottom: 0 !important;
+    text-align: center;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100%;
+    display: flex !important;
+    justify-content: space-between;
+}
+
+.topTableHeader * {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+    text-align: center;
+    padding: 6px !important;
+}
+
+.tableOptions {
+    display: flex !important;
+    justify-content: space-between;
+    align-content: center;
+    margin: 0px 30px;
+}
+
+.clearButton {
+    height: 30px !important;
+    color: black !important;
+    background-color: white !important;
+    align-self: center !important;
+}
+
+.seatingChartHead {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.noShadow {
+    box-shadow: none !important;
+}
+
+.whiteTxtBtn {
+    color: white !important;
+    font-size: 14px !important;
+}
+.greyTxtBtn {
+    color: var(--mainGrey) !important;
+    font-size: 14px !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.fullLengthSection {
+    width: 80%;
+    max-width: 1200px;
+    min-width: 800px;
+    margin: auto;
+}
+
+.tableName {
+    display: flex;
+    flex-direction: row;
+    max-width: 100%;
+}
+
+.firstCard {
+    padding-top: 20px;
+}
+
+.topCard {
+    margin: 48px auto;
+}
+
+.tableTitle {
+    background-color: var(--secondary);
+    color: white;
+    font-size: 22px;
+}
+
+.cardHeader {
+    background-color: var(--secondary);
+    text-align: left;
+    color: white;
+    padding: 8px 12px !important;
+    font-size: 22px;
+    position:sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.fullCardHeader {
+    width: 100%;
+}
+
+.cardHeader * {
+    font-size: 22px;
+}
+
+.seatDashCard {
+    box-shadow: 4px 4px 4px rgba(172, 171, 171, 0.384);
+    border: 1px solid var(--borderColor);
+}
+
+.searchBar {
+    width: 85%;
+}
+
+.stickySearch {
+    position: sticky !important;
+    top: 0px;
+    z-index: 1;
+    background-color: white;
+    box-shadow: 0px 3px 3px rgba(167, 165, 165, 0.253);
+    height: 64px;
+    width: 100%;
+}
+
+.wrappedP {
+    overflow: wrap;
+    padding: 2px;
+}
+
+.switchLabel {
+    color: white;
+    font-size: 10px;
+    padding-right: 40px;
+}
+
+.infoError {
+    color: var(--highlight) !important;
+    float: right;
+    width: 14px;
+    height: 14px;
+    padding: 0 !important;
+    cursor: help !important;
+}
+
+.smallClose {
+    color: black !important;
+    padding: 0 !important;
+    width: 24px;
+    box-shadow: none !important;
+    height: 24px;
 }

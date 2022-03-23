@@ -21,13 +21,13 @@ describe("preconditions.js tests", function() {
 
     describe("validateSchema function tests", () => {
         const originalEvent = {
+            _userId: "abcd",
             event_name: "Bachelor's Party",
             event_start_time: 1646262357,
-            event_end_time: 1646362357,
             location: "Las Vegas",
-            expected_number_of_attendees: 100,
             attendees_per_table: 10,
-            guest_list: []
+            guest_list: [],
+            surveys_sent: []
         };
 
         it("should not return an error on success", async () => {

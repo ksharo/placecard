@@ -17,13 +17,13 @@ describe("data/event.js tests", function() {
 
     const testEvent = {
         _id: ObjectId(validId),
+        _userId: "abcd",
         event_name: "A Birthday Party",
         event_start_time: 1646262357,
-        event_end_time: 1646362357,
         location: "New York, New York",
-        expected_number_of_attendees: 200,
         attendees_per_table: 10,
-        guest_list: []
+        guest_list: [],
+        surveys_sent: []
     };
 
     const validQueryParams = {
@@ -56,7 +56,6 @@ describe("data/event.js tests", function() {
     const updatedEventConfig = {
         event_name: "Updated Event Name",
         event_start_time: 164627000,
-        event_end_time: 164827000,
         location: "Hoboken, New Jersey"
     };
 

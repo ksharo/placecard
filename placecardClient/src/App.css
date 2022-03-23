@@ -1,5 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arvo:wght@700&display=swap');
+
+:root {
+  --main: #00A6A0;
+  --lighter: #03c9c2;
+  --secondary: #1F6BAE;
+  --highlight: #F57A75;
+  --borderColor: #cfcfcf;
+  --mainGrey: #5e5e5e;
+  --footerColor: #18283A;
+}
+
 body, html, input, button {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Ubuntu', sans-serif;
 }
 
 body {
@@ -30,13 +43,19 @@ button:hover {
 
 .title {
   letter-spacing: 2px;
-  font-size: 42px;
-  margin: 20px auto 6px auto;
+  font-size: 36px;
+  margin: 40px auto 6px auto;
+  color: var(--secondary);
 }
 
 .subtitle {
   font-size: 16px;
   margin: 12px auto 24px auto;
+  color: var(--mainGrey);
+  max-width: 70%;
+  min-width: 400px;
+  width: 50%;
+  overflow-wrap: normal;
 }
 
 .rectangleButton {
@@ -85,5 +104,75 @@ button:hover {
 }
 
 .content {
-  padding-bottom: 70px;
+  padding-bottom: 250px;
+}
+
+/* input {
+  /* box-shadow: 3px 3px 5px rgba(0,0,0,0.2); */
+  /* border-radius: 2px; */
+  /* border: 2px solid rgb(228, 228, 228) !important; */
+/* } */ 
+
+label {
+  color: var(--secondary);
+}
+
+.basicBtn {
+  width: 140px;
+  margin: 20px auto !important;
+  font-weight: bold !important;
+  letter-spacing: 1px;
+  font-size: 16px !important;
+}
+
+.fitBtn {
+  width: fit-content;
+} 
+
+.lowBtn {
+  margin-top: 60px !important;
+} 
+
+.highBtn {
+  margin: 8px auto !important;
+}
+
+.iconBtn {
+  color: var(--secondary) !important;
+  margin: 0px 8px;
+}
+
+.blueBtn {
+  background-color: var(--secondary) !important;
+  color: white !important;
+}
+
+.smallBtnFnt {
+  font-size: 14px !important;
+}
+
+.smallMargin {
+  margin: 8px auto 0px auto !important;
+}
+
+button {
+  box-shadow: 2px 3px 3px rgba(73, 73, 73, 0.363) !important;
+}
+
+.lowText {
+  margin: 50px auto 10px auto;
+}
+
+.spacedBottom {
+  margin-bottom: 32px !important;
+}
+
+.lowTitle {
+  padding-top: 24px;
+}
+
+.textLink {
+  color: var(--highlight);
+  text-decoration: underline;
+  cursor: pointer;
 }

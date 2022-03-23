@@ -1,14 +1,55 @@
-.header-footer {
-  background-color: lightgrey;
+.header {
+  background-color: white;
+  border-bottom: 2px solid hsla(0, 0%, 81%, 0.87);
+  box-shadow: 0px 10px 0px rgba(207, 207, 207, 0.192);
+  margin: 0 !important;
   height: 70px;
   width: 100%;
   display: flex;
   justify-content: space-between;
+  align-content: center;
+  padding: 0;
+  z-index: 2;
+}
+
+.stickTop {
+  position: sticky;
+  top: 0;
+}
+
+.footer {
+  background-color: var(--footerColor);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  padding: 24px 0px;
+}
+
+.contactInfo {
+  color: var(--main);
+  margin: 16px 0px 2px 0px;
+}
+
+.copyright {
+  margin-top: 32px;
+  color:rgba(255, 253, 253, 0.3)
 }
 
 .logo {
-  height: 100px;
+  height: 30px;
   align-self: center;
+  margin: 0px 0px 0px 10px;
+  padding: 0;
+}
+
+.socialIcons {
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  width: 8%;
+  padding-top: 12px;
+  margin: auto;
 }
 
 #login {
@@ -36,6 +77,9 @@ input {
   margin: auto 20px auto 0px;
   cursor: pointer;
   box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+  color: var(--secondary) !important;
+  border: 1px solid var(--main);
+  background-color: white !important;
 }
 
 .profilePic:hover {
@@ -44,7 +88,7 @@ input {
 }
 
 #fullName {
-  background-color: grey;
+  background-color: var(--secondary);
   color: white;
 }
 
@@ -53,9 +97,28 @@ footer {
   bottom: 0;
 }
 
+.peachLine {
+  background-color: var(--highlight);
+  border: 0px;
+  width: 60%;
+  min-width: 400px;
+  max-width: 80% !important;
+  height: 3px;
+  border-radius: 3px;
+  margin: 30px auto;
+}
+
+.lowImg {
+  margin: 10px auto 0px auto;
+}
+
+.highTitle {
+  margin-top: 0px;
+}
+
 .profileBox {
-  padding-top: 18px;
-  padding-right: 16px;
+  display: flex;
+  align-content: center;
 }
 
 .profileAvatarButton {
@@ -65,4 +128,19 @@ footer {
 .profileMenuDropdown {
   padding-right: 8px;
   padding-left: 8px;
+}
+
+.greyBtn {
+  background-color: #efefef !important;
+  color: var(--secondary) !important;
+}
+
+.loginBtns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 260px;
+  margin: 0px 10px 0px 0px;
+  padding: 0px;
+  align-content: center;
 }
