@@ -152,3 +152,17 @@
 	flex-direction: column;
 	gap: 20px;
 }
+
+.downloadTemplate {
+	color: var(--main);
+	text-decoration: none;
+	display: flex;
+	flex-direction: row;
+	justify-content: right;
+	width: 780px;
+	margin: 20px auto;
+}
+
+.downloadTemplate * {
+	align-self: center;
+}

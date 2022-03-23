@@ -7,7 +7,8 @@ import { HiTrash } from 'react-icons/hi';
 import { TextField, Switch, Checkbox } from "@mui/material";
 import { ObjectId } from 'mongodb';
 import './GuestList.css'
-
+import template from '../../assets/Placecard_Guestlist_Template.png';
+import { AiOutlineFileExcel } from "react-icons/ai";
 
 export function GuestList(){
 	const title			= 'Add a Guest List For Your Event'
@@ -411,12 +412,15 @@ export function GuestList(){
 			<section>
 				<h1 className='title'>{title}</h1>
 				<p className='subtitle'>{pageDescription}</p>
+				<a href={template} className='downloadTemplate' download="Placecard_Guestlist_Template.xlsx">
+						<AiOutlineFileExcel size={30}/> 
+						<span>Download our Template!</span>
+				</a>
 			</section>
 
 			<section className='fileUploadSection'>
 				<section className="fileUploadButtonSection">
 					<MdUploadFile className="uploadFileIcon"/>
-
 					<section>
 						<p>Drag your file here or click here to upload</p>
 						<label>{userFile != undefined ? userFile['name'] : "No File Selected"}</label>
