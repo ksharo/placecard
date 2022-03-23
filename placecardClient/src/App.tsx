@@ -32,8 +32,8 @@ import { EditGuestList } from './components/editPages/EditGuestList';
 function App() {
   document.title = 'Placecard';
   [window.loggedInState, window.setLoggedIn] = React.useState(true);
-  [window.firstNameState, window.setFirstName] = React.useState('Apple');
-  [window.lastNameState, window.setLastName] = React.useState('Zebra');
+  [window.firstNameState, window.setFirstName] = React.useState('');
+  [window.lastNameState, window.setLastName] = React.useState('');
   [window.phoneState, window.setPhone] = React.useState('555-555-5555');
   [window.emailState, window.setEmail] = React.useState('email@email.com');
   [window.profPicState, window.setProfPic] = React.useState(null);
@@ -81,7 +81,19 @@ function App() {
                   }
                 }
               }
-              const event = {'id': post._id, 'uid': post._userId, 'name': post.event_name, 'date': (new Date(post.event_start_time)).toLocaleString().split(',')[0], 'time': (new Date(post.event_start_time)).toTimeString().split(' ')[0], 'location': post.location, 'tables': tables, 'perTable': post.attendees_per_table , 'guestList': guests, 'respondents': respondents, 'surveys': post.surveys_sent};
+              const event = {
+                'id': post._id, 
+                'uid': post._userId, 
+                'name': post.event_name, 
+                'date': (new Date(post.event_start_time)).toLocaleString().split(',')[0], 
+                'time': (new Date(post.event_start_time)).toTimeString().split(' ')[0], 
+                'location': post.location, 
+                'tables': tables, 
+                'perTable': post.attendees_per_table , 
+                'guestList': guests, 
+                'respondents': respondents, 
+                'surveys': post.surveys_sent
+              };
               events.push(event);
             }
             catch (e) {

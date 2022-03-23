@@ -652,8 +652,8 @@ export function SeatingDashboard() {
                 <Grid item xs={1} sm={1} md={3}>
                     <Card className='seatDashCard'>
                         <CardHeader title='Unseated Guests' className='cardHeader'/>
-                        <section className='guestTable'>
-                            <section className='stickySearch'>
+                        <section className='guestTable centeredCell'>
+                            <section className='stickySearch centeredCell'>
                                 <TextField
                                 placeholder='Search Guests'
                                 className='searchBar' 
@@ -676,7 +676,7 @@ export function SeatingDashboard() {
                                 {(provided, snapshot) => {
                                     return (
                                         <section className={`unseatedSection ${snapshot.isDraggingOver ? "overBackground" : ""}`} {...provided.droppableProps} ref={provided.innerRef}>
-                                            {shownUnseated.length == 0 ? unseated.length == 0 ? <p>All guests have been seated!</p> : <p className='wrappedP'>No guests found for search term {searchTerm}</p> : 
+                                            {shownUnseated.length == 0 ? unseated.length == 0 ? <p className='centeredCell'>All guests have been seated!</p> : <p className='wrappedP'>No guests found for search term {searchTerm}</p> : 
                                             <>
                                             {shownUnseated.map((guest: Invitee, index) => {
                                                 return (

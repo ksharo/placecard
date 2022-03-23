@@ -34,8 +34,10 @@ router.get("/:eventId", async (req, res) => {
     }
 
     try {
-        const event = await events.getEvent(eventId);
-        return res.json(event);
+        // const event = await events.getEvent(eventId);
+        const updatedConfig = {last_viewed: Number(Date.parse(new Date()))};
+        const updatedEvent = await events.updateEvent(eventId, updatedConfig, "PUT");
+        return res.json(updatedEvent);
     } catch (e) {
         return createErrorResponse(
             generateErrorMessage(e),
@@ -97,6 +99,7 @@ router.get("/users/:userId", async (req, res) => {
 
 router.post("/newEvent", async (req, res) => {
     const newEvent = req.body;
+    newEvent.last_viewed = Number(Date.parse(new Date()));
     try {
         checkPrecondition(newEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
         checkPrecondition(newEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);

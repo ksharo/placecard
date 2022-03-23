@@ -54,7 +54,7 @@ async function getUserEvents(userId) {
         // _userId: userObjectId,
         _userId: userId,
     };
-    const userEvents = await eventCollection.find(queryParameters).toArray();
+    const userEvents = await eventCollection.find(queryParameters).sort( { last_viewed: -1 }).toArray();
     // Do we need to check if events array is empty for a user?
     // checkPrecondition(
     //     userEvents,

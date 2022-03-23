@@ -23,7 +23,8 @@ describe("data/event.js tests", function() {
         location: "New York, New York",
         attendees_per_table: 10,
         guest_list: [],
-        surveys_sent: []
+        surveys_sent: [],
+        last_viewed: 1646262300
     };
 
     const validQueryParams = {
