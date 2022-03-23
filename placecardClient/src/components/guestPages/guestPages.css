@@ -3,6 +3,15 @@
     margin: 20px 100px 10px 100px;
 }
 
+.smallSearch {
+    width: 600px;
+    margin: auto;
+    display: flex;
+    justify-content: left;
+    box-shadow: none;
+    padding: none;
+}
+
 .lowSub {
     margin-top: 70px;
     padding: 0px 70px 0px 70px;

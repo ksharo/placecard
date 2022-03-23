@@ -18,6 +18,7 @@ export function FullSurvey (props?: {preview: boolean, hostView?: boolean}) {
     const pageString = new URLSearchParams(queryString).get('page');
     const guestID = new URLSearchParams(queryString).get('guestId');
     const eventID = new URLSearchParams(queryString).get('eventId');
+    console.log(pageString, guestID, eventID);
     const setupSurvey = async () => {
         if ((pageString != undefined || (props == undefined || props.hostView == false)) && (window.curGuest == undefined || window.inviteesState.length == 0)) {
             try {
@@ -50,6 +51,7 @@ export function FullSurvey (props?: {preview: boolean, hostView?: boolean}) {
                     guestList: undefined,
                     tables: undefined,
                 });
+                console.log(eventData.attendees.per_table);
                 window.setInvitees(guests);
                 if (guestInfo.status == 200) {
                     const data = await guestInfo.json();
