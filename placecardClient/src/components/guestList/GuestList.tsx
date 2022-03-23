@@ -521,6 +521,18 @@ function updateGlobalEvent(guestData: any) {
 		const tmpEvent = window.activeEvent;
 		tmpEvent.guestList = curGuests;
 		tmpEvent.surveys = curSurveys;
+		// see if we need to add tables to the event
+		const num_attend = curGuests.length;
+		const tmpSeats = window.activeEvent.tables.length * window.activeEvent.perTable;
+		if (tmpSeats < num_attend) {
+			const id = (new ObjectId()).toString();
+			const newTable: Table = {
+				id: id,
+				name: 'Table ' + (window.activeEvent.tables.length+1).toString(),
+				guests: []
+			}
+			tmpEvent.tables.push(newTable);
+		}
 		window.setActiveEvent(tmpEvent);
 		window.setInvitees(curGuests);
 	}

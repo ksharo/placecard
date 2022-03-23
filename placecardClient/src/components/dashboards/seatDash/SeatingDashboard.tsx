@@ -42,7 +42,7 @@ export function SeatingDashboard() {
     let origTables: Table[] = [];
     let tmpUnseated: Invitee[] = [];
 
-    let survComp = 0;
+    // let survComp = 0;
     let perTable = -1;
     let num_attend = 0;
     let tables = ((window.activeEvent != null) ? window.activeEvent.tables.length : 0);
@@ -623,8 +623,8 @@ export function SeatingDashboard() {
                         <p className='statLabel'>Survey Completion</p>
                     </Grid>
                     <Grid item xs={4}>
-                        <h3 className='seatStat'>{tables}</h3>
-                        <p className='statLabel'>Total Table{tables==1 ? '' : 's'}</p>
+                        <h3 className='seatStat'>{tablesData.length}</h3>
+                        <p className='statLabel'>Total Table{tablesData.length==1 ? '' : 's'}</p>
                     </Grid>
                     <Grid item xs={4}>
                         <h3 className='seatStat'>{seats}</h3>

@@ -130,7 +130,7 @@ export function EditDetails(){
                 if (window.activeEvent != null) {
                     const result = await updateEvent(window.activeEvent.id, name, date, time, location, per_table, window.activeEvent.tables, window.activeEvent.guestList);
                     /* if sendEvent is successful, go back to dashboard after updating globals */
-                    if (result.status == 200) {
+                    if (result && result.status == 200) {
                         const activeEvent = {id: window.activeEvent.id, uid: window.uidState, name: name, date: date, time: time, location: location, perTable: per_table, tables: window.activeEvent.tables, guestList: window.activeEvent.guestList};
                         /* first change list */
                         const events = [...window.eventsState];
@@ -297,19 +297,41 @@ async function updateEvent(id: string, name: string, date: string, time: string,
     if (location == '') {
         location = 'N/A';
     }
-    const requestOptions = {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            event_name: name,
-            event_start_time: Number(Date.parse(new Date(date + " " + time).toString())),
-            location: location,
-            attendees_per_table: Number(per_table),
+    if (window.activeEvent != null && window.activeEvent != undefined) {
+        let tables = window.activeEvent.tables;
+        if (per_table < window.activeEvent.perTable) {
+            const num_attend = window.activeEvent.guestList.length;
+            let tmpSeats = tables.length * per_table;
+            while (tmpSeats < num_attend) {
+                const id = (new ObjectId()).toString();
+                const newTable: Table = {
+                    id: id,
+                    name: 'Table ' + (tables.length+1).toString(),
+                    guests: []
+                }
+                tables.push(newTable);
+                tmpSeats += per_table;
+            }
+        }
+        let tmpEvent = window.activeEvent;
+        tmpEvent.perTable = per_table;
+        
+        window.setActiveEvent(tmpEvent);
+        const requestOptions = {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                event_name: name,
+                event_start_time: Number(Date.parse(new Date(date + " " + time).toString())),
+                location: location,
+                attendees_per_table: Number(per_table),
+                tables: tables,
             })
         };
-    return fetch('http://localhost:3001/events/updateEvent/'+id.toString(), requestOptions);
+        return fetch('http://localhost:3001/events/updateEvent/'+id.toString(), requestOptions);
+    }
 }
 
 /*
