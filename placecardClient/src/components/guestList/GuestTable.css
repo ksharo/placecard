@@ -21,6 +21,10 @@
 	padding-left: 38px;
 }
 
+.guestListIcon {
+	box-shadow: none !important;
+}
+
 .headingRow {
 	background-color: var(--secondary);
 }

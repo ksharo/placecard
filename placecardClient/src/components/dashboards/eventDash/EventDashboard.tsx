@@ -31,7 +31,7 @@ export function EventDashboard() {
             <p className='subtitle'>Welcome to your event dashboard</p>          
             <section id='edit-cards'>
                 <DetailsCard name={window.activeEvent.name} date={moment(window.activeEvent.date).format('DD MMMM YYYY')} location={window.activeEvent.location} guests={window.activeEvent.guestList==undefined ? 'Error' : window.activeEvent.guestList.length.toString()} perTable={window.activeEvent.perTable.toString()}></DetailsCard>
-                <EditCard numSent={window.activeEvent.surveys != undefined ? window.activeEvent.surveys.length?.toString() : '0'} numRec={window.activeEvent.respondents != undefined ? window.activeEvent.respondents?.toString() : '0'}></EditCard>
+                <EditCard numSent={window.activeEvent.surveys != undefined ? window.activeEvent.surveys.length?.toString() : '0'} numRec={window.activeEvent.respondents != undefined ? window.activeEvent.respondents?.length.toString() : '0'}></EditCard>
                 <SeatCard tables={window.activeEvent.tables==undefined ? 'Error' : window.activeEvent.tables.length.toString()} seats={(window.activeEvent.tables==undefined ? 'Error' : window.activeEvent.tables.length*window.activeEvent.perTable).toString()} invitees={window.activeEvent.guestList==undefined ? 'Error' : window.activeEvent.guestList.length.toString()} seated={seated.toString()}></SeatCard>
             </section>
             <Button onClick={goHome} variant='contained' className='basicBtn fitBtn lowBtn'>
