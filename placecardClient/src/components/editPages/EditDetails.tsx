@@ -131,7 +131,19 @@ export function EditDetails(){
                     const result = await updateEvent(window.activeEvent.id, name, date, time, location, per_table, window.activeEvent.tables, window.activeEvent.guestList);
                     /* if sendEvent is successful, go back to dashboard after updating globals */
                     if (result && result.status == 200) {
-                        const activeEvent = {id: window.activeEvent.id, uid: window.uidState, name: name, date: date, time: time, location: location, perTable: per_table, tables: window.activeEvent.tables, guestList: window.activeEvent.guestList};
+                        const activeEvent = {
+                            id: window.activeEvent.id, 
+                            uid: window.uidState, 
+                            name: name, 
+                            date: date, 
+                            time: time, 
+                            location: location, 
+                            perTable: per_table, 
+                            tables: window.activeEvent.tables, 
+                            guestList: window.activeEvent.guestList, 
+                            respondents: window.activeEvent.respondents, 
+                            surveys: window.activeEvent.surveys
+                        };
                         /* first change list */
                         const events = [...window.eventsState];
                         const curEvent = window.activeEvent;
@@ -315,7 +327,7 @@ async function updateEvent(id: string, name: string, date: string, time: string,
         }
         let tmpEvent = window.activeEvent;
         tmpEvent.perTable = per_table;
-        
+
         window.setActiveEvent(tmpEvent);
         const requestOptions = {
             method: 'PATCH',
