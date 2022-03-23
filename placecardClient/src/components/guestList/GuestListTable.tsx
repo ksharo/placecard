@@ -5,10 +5,12 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import SaveIcon from '@mui/icons-material/Save';
 
 import './GuestTable.css'
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
+import { TextField } from '@mui/material';
 
 export interface GuestListDataInterface {
 	individualName?:	string;
@@ -23,32 +25,90 @@ export interface GuestListDataInterface {
 
 export type GuestListTableMode = "SurveySent" | "New"
 
-function GuestListTableRow(props: {guest:GuestListDataInterface, setTableData:Function, index:number, mode?:GuestListTableMode}){
+function GuestListTableRow(props: {tableData:GuestListDataInterface[], guest:GuestListDataInterface, setTableData:Function, index:number, mode?:GuestListTableMode}){
 	const [open, setOpen]		= useState(false)
 	const [editing, setEditing]	= useState(false)
 
+	function updateRowData(key: string, value: any){
+		props.setTableData(
+			[
+				...props.tableData.slice(0, props.index),
+				{
+					...props.tableData[props.index],
+					[key]: value,
+				},
+				...props.tableData.slice(props.index+1)
+			]
+		)
+	}
+
+	function deleteRowData(){
+		props.setTableData(
+			[
+				...props.tableData.slice(0, props.index),
+				...props.tableData.slice(props.index+1)
+			]
+		)
+	}
+
 	return(
 		<>
-			<tr className='groupSummary' onClick={() => setOpen(!open)}>
+			<tr className='groupSummary'>
 				{
 					props.mode === "New" ?
 						<>
-							<td className="firstCol" onClick={() => setOpen(!open)}>{open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</td>
-							<td>{props.guest.groupName}</td>
-							<td>{props.guest.groupContact}</td>
-							<td><Checkbox checked={props.guest.sendSurvey} onClick={() => console.log("checked")}/></td>
-							<td><IconButton aria-label="Edit row"><EditIcon/></IconButton></td>
-							<td><IconButton aria-label="Delete row"><DeleteIcon/></IconButton></td>
+							<td className="firstCol" onClick={() => setOpen(!open)}>
+								<IconButton>{open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>
+							</td>
+							<td>
+								{editing?
+									<TextField value={props.guest.groupName} onChange={(e) => updateRowData("groupName", e.target.value)} size="small"></TextField>
+									:
+									props.guest.groupName
+								}
+							</td>
+							<td>
+								{editing?
+									<TextField value={props.guest.groupContact} onChange={(e) => updateRowData("groupContact", e.target.value)} size="small"></TextField>
+									:
+									props.guest.groupContact
+								}
+							</td>
+							<td><Checkbox checked={props.guest.sendSurvey} onChange={(e) => updateRowData("sendSurvey", e.target.checked)}/></td>
+							<td>
+								<IconButton onClick={() => setEditing(!editing)} aria-label={editing? "Save edits" : "Edit row"}>
+									{editing? <SaveIcon/> : <EditIcon/>}
+								</IconButton>
+							</td>
+							<td><IconButton onClick={() => deleteRowData()} aria-label="Delete row"><DeleteIcon/></IconButton></td>
 						</>
 					:
 						<>
-							<td className="firstCol" onClick={() => setOpen(!open)}>{open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</td>
-							<td>{props.guest.groupName}</td>
-							<td>{props.guest.groupContact}</td>
+							<td className="firstCol" onClick={() => setOpen(!open)}>
+								<IconButton>{open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}</IconButton>
+							</td>
+							<td>
+								{editing?
+									<TextField value={props.guest.groupName} onChange={(e) => updateRowData("groupName", e.target.value)} size="small"></TextField>
+									:
+									props.guest.groupName
+								}
+							</td>
+							<td>
+								{editing?
+									<TextField value={props.guest.groupContact} onChange={(e) => updateRowData("groupContact", e.target.value)} size="small"></TextField>
+									:
+									props.guest.groupContact
+								}
+							</td>
 							<td>{props.guest.surveyStatus}</td>
 							<td><IconButton aria-label="Send reminder"><NotificationsIcon/></IconButton></td>
-							<td><IconButton aria-label="Edit row"><EditIcon/></IconButton></td>
-							<td><IconButton aria-label="Delete row"><DeleteIcon/></IconButton></td>
+							<td>
+								<IconButton onClick={() => setEditing(!editing)} aria-label={editing? "Save edits" : "Edit row"}>
+									{editing? <SaveIcon/> : <EditIcon/>}
+								</IconButton>
+							</td>
+							<td><IconButton onClick={() => deleteRowData()} aria-label="Delete row"><DeleteIcon/></IconButton></td>
 						</>
 				}
 
@@ -104,7 +164,7 @@ export function GuestListTable(props: {tableData:GuestListDataInterface[], setTa
 
 				<tbody>
 					{props.tableData.map((obj, i) => (
-						<GuestListTableRow guest={obj} setTableData={props.setTableData} index={i} mode={props.mode}/>
+						<GuestListTableRow tableData={props.tableData} guest={obj} setTableData={props.setTableData} index={i} mode={props.mode}/>
 					))}
 				</tbody>
 
