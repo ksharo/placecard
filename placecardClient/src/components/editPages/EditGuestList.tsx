@@ -3,6 +3,7 @@ import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { GuestListTable, GuestListDataInterface } from "../guestList/GuestListTable"
 import './editGuestList.css';
+import { UploadFile } from "../shared/UploadFile";
 
 
 export function EditGuestList() {
@@ -71,6 +72,10 @@ export function EditGuestList() {
 		<>
 			<h1 className='title'>Edit Your Guest List</h1>
 			<GuestListTable tableData={guestListData}/>
+			<section>
+				<span>OR</span><hr/>
+			</section>
+			<UploadFile/>
 			<Button variant='contained' onClick={handleClick}>Return to Dashboard</Button>
 		</>
 	)

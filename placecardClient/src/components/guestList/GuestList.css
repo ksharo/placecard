@@ -63,8 +63,6 @@
 	font-size: 22px;
 }
 
-
-
 .fileUploadSection {
 	display: flex;
 	flex-direction: column;
@@ -74,8 +72,6 @@
 	align-items: center;
 }
 
-
-
 .manualGuestListSection{
 	max-width: 1200px;
 	margin: auto;
@@ -84,11 +80,6 @@
 .addGuestRowBottomControl{
 	text-align: left;
 }
-
-.addGuestRowButton{
-
-}
-
 
 .buttonControlGroup{
 	display: flex;
@@ -135,12 +126,6 @@
 	grid-column: span 2;
 }
 
-.groupMembers{
-	/* display: grid;
-	grid-template-columns: [first] auto [second] 150px [third] 50px;
-	gap: 20px; */
-}
-
 .unknownNameCheckboxGroup{
 	display: flex;
 	align-items: center;
@@ -160,7 +145,7 @@
 	flex-direction: row;
 	justify-content: right;
 	width: 780px;
-	margin: 20px auto;
+	margin: 5px auto 20px auto;
 }
 
 .downloadTemplate * {

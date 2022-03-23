@@ -1,17 +1,14 @@
 import { GuestListTable, GuestListDataInterface } from "./GuestListTable"
-import { useRef, useState, useEffect, InputHTMLAttributes, useLayoutEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Button } from "@mui/material";
-import { MdUploadFile } from 'react-icons/md';
-import { HiTrash } from 'react-icons/hi';
-import { TextField, Switch, Checkbox } from "@mui/material";
+import { TextField, Switch } from "@mui/material";
 import { ObjectId } from 'mongodb';
 import './GuestList.css'
-import template from '../../assets/Placecard_Guestlist_Template.png';
-import { AiOutlineFileExcel } from "react-icons/ai";
+import { UploadFile } from "../shared/UploadFile";
 
 export function GuestList(){
-	const title			= 'Add a Guest List For Your Event'
+	const title				= 'Add a Guest List For Your Event'
 	const pageDescription	= 'Download our guest list template, fill it out, and drop it back here'
 
 	const tableTitle		= 'Enter Guest List Manually'
@@ -20,7 +17,6 @@ export function GuestList(){
 
 
 	const [guestListData, setGuestListData]					= useState<GuestListDataInterface[]>([])
-	const [userFile, setUserFile] 						= useState(undefined);
 
 	const [individualAddPopupState, setIndividualAddPopupState]	= useState(false)
 	const [groupAddPopupState, setGroupAddPopupState]			= useState(false)
@@ -93,22 +89,6 @@ export function GuestList(){
 		}
 	}, [window.activeEvent]);
 
-	const fileSelected = (event: any) => {
-		const selectedFile = event.target.files[0];
-		setUserFile(selectedFile)
-     	// const reader = new FileReader();
-		let data = new FormData();
-          data.append('file', selectedFile);
-
-		// const requestOptions = {
-		// 	method: 'POST',
-		// 	headers: {
-		// 		'Content-Type': 'application/json'
-		// 	}
-		// };
-		// return fetch('http://localhost:3001/guestList/fileUpload', requestOptions);
-	}
-
 
 	const toCustomizeSurvey = (event: any) => {
 		event.preventDefault()
@@ -129,19 +109,19 @@ export function GuestList(){
 		}
 
 		let data = new FormData();
-		if (userFile != undefined) {
-          	data.append('file', userFile);
-		}
+		// if (userFile != undefined) {
+        //   	data.append('file', userFile);
+		// }
 
-		if(userFile && userFile['name']){
-			const requestOptions = {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			};
-			return fetch('http://localhost:3001/guestList/fileUpload', requestOptions);
-		}
+		// if(userFile && userFile['name']){
+		// 	const requestOptions = {
+		// 		method: 'POST',
+		// 		headers: {
+		// 			'Content-Type': 'application/json'
+		// 		}
+		// 	};
+		// 	return fetch('http://localhost:3001/guestList/fileUpload', requestOptions);
+		// }
 
 		history.push('/editSurvey');
 	}
@@ -412,37 +392,9 @@ export function GuestList(){
 			<section>
 				<h1 className='title'>{title}</h1>
 				<p className='subtitle'>{pageDescription}</p>
-				<a href={template} className='downloadTemplate' download="Placecard_Guestlist_Template.xlsx">
-						<AiOutlineFileExcel size={30}/> 
-						<span>Download our Template!</span>
-				</a>
 			</section>
 
-			<section className='fileUploadSection'>
-				<section className="fileUploadButtonSection">
-					<MdUploadFile className="uploadFileIcon"/>
-					<section>
-						<p>Drag your file here or click here to upload</p>
-						<label>{userFile != undefined ? userFile['name'] : "No File Selected"}</label>
-						{/* <button type="button" id ="buttonTestTag">
-							<i className="fas fa-file-upload" />
-							<span> Upload files</span>
-						</button> */}
-					</section>
-				</section>
-
-				<section id="dragDropContainer">
-					<input
-						id = "inputTestTag"
-						type="file"
-						ref={useRef(null)}
-						title=""
-						value=""
-						onChange={fileSelected}
-						accept=".xls,.xlsx,.csv"
-					/>
-				</section>
-			</section>
+			<UploadFile/>
 
 			<section>
 				<span>OR</span><hr/>

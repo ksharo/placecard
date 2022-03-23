@@ -42,7 +42,7 @@ function GuestListTableRow(props: {guest:GuestListDataInterface}){
 
 export function GuestListTable(props: {tableData:GuestListDataInterface[]}) {
 	return(
-		<section className="guestTable">
+		<section className="guestListTable">
 			<table className="resultTable">
 
 				<thead>
