@@ -516,9 +516,12 @@ function updateGlobalEvent(guestData: any) {
 			contact: guestData.email,
 		};
 		curGuests.push(newGuest);
+		const curSurveys = window.activeEvent.surveys ? [...window.activeEvent.surveys] : [];
+		curSurveys.push(guestData._id);
 		const tmpEvent = window.activeEvent;
 		tmpEvent.guestList = curGuests;
+		tmpEvent.surveys = curSurveys;
 		window.setActiveEvent(tmpEvent);
-		/* TODO: replace in eventList! */
+		window.setInvitees(curGuests);
 	}
 }

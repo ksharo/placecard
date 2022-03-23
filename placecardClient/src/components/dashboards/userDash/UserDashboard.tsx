@@ -32,6 +32,7 @@ export function UserDashboard() {
                 'surveys': data.surveys_sent
             }
             window.setActiveEvent(updatedEvent);
+            window.setInvitees(event.guestList);
         }
         else {
             console.error('Could not update event');
