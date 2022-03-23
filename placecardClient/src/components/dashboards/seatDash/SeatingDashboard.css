@@ -329,6 +329,21 @@ ul {
     cursor: help !important;
 }
 
+.editTableNum {
+    color: var(--secondary) !important;
+    width: 18px;
+    height: 18px;
+    padding: 0 !important;
+}
+
+.editTableNum:disabled {
+    color: var(--borderColor) !important;
+}
+
+.spacedSpan {
+    padding: 0px 6px;
+}
+
 .smallClose {
     color: black !important;
     padding: 0 !important;
