@@ -48,6 +48,9 @@ interface Window {
 
     curGuest: Invitee | undefined;
     setCurGuest: any;
+
+    firstTime: boolean | undefined;
+    setFirstTime: any;
 }
 
 interface PlacecardEvent {
