@@ -8,13 +8,14 @@ import './GuestList.css'
 import { UploadFile } from "../shared/UploadFile";
 
 export function GuestList(){
-	const title				= 'Add a Guest List For Your Event'
-	const pageDescription	= 'Download our guest list template, fill it out, and drop it back here'
+	const TITLE			= 'Add a Guest List For Your Event'
+	const PAGE_DESCRIPTION	= 'Download our guest list template, fill it out, and drop it back here'
 
-	const tableTitle		= 'Enter Guest List Manually'
-	const tableDescription	= 'You only need to provide one method of contact for each guest'
+	const TABLE_TITLE		= 'Enter Guest List Manually'
+	const TABLE_DESCRIPTION	= 'You only need to provide one method of contact for each guest'
+	const DEFAULT_GROUP_SIZE = 5
+
 	const history			= useHistory();
-
 
 	const [guestListData, setGuestListData]					= useState<GuestListDataInterface[]>([])
 
@@ -28,11 +29,33 @@ export function GuestList(){
 
 	const [currGrpName, setCurrGrpName]					= useState("")
 	const [currGrpContact, setCurGrpContact]				= useState('')
-	const DEFAULT_GROUP_SIZE = 2
 	const [currGrpSize, setCurrGrpSize]					= useState(DEFAULT_GROUP_SIZE.toString())
 	const [currGrpSendSurvey, setCurrGrpSendSurvey]			= useState(true)
 	const [currGrpMembers, setCurrGrpMembers]				= useState(Array(DEFAULT_GROUP_SIZE).fill(""))
 	const [currGrpId, setCurrGrpId] 						= useState((new ObjectId()).toString());
+
+	const NAME_REGEX				= /^[a-zA-z\s.]{2,}$/
+	const NAME_OPTIONAL_REGEX		= /^[a-zA-z\s.]{2,}$|^$/
+	const EMAIL_REGEX				= /^[a-zA-Z.\d!#$%&'*+\-/=?^_`{|}~]+@[a-zA-Z+.-\d]+.[a-zA-z+.-\d]+$/
+	const PHONE_REGEX				= /^[\d-\s()+_#.ext]*$/
+	const PARTY_SIZE_REGEX			= /^[\d]*$/
+
+	const NAME_ERROR_TEXT			= "Name must only contain A - Z, periods, and must be 2 or more character"
+	const NAME_OPTIONAL_ERROR_TEXT	= "Name must only contain A - Z, periods, and must be 2 or more character. Leave blank if no plus one"
+	const EMAIL_ERROR_TEXT			= "Email must contain @ and domain"
+	const PHONE_ERROR_TEXT			= ""
+
+	const [indiIsValid, setIndiIsValid]	= useState({
+		name:		true,
+		contact:		true,
+		plusOneName:	true,
+	})
+
+	const [grpIsValid, setGrpIsValid]		= useState({
+		grpName:		true,
+		grpContact:	true,
+	})
+	const [grpMembersIsValid, setGrpMemebrsIsValid]	= useState(Array(DEFAULT_GROUP_SIZE).fill(true))
 
 	/* initialize guest list data */
 	useLayoutEffect( () => {
@@ -127,28 +150,7 @@ export function GuestList(){
 		history.push('/editSurvey');
 	}
 
-	const NAME_REGEX				= /^[a-zA-z\s.]{2,}$/
-	const NAME_OPTIONAL_REGEX		= /^[a-zA-z\s.]{2,}$|^$/
-	const EMAIL_REGEX				= /^[a-zA-Z.\d!#$%&'*+\-/=?^_`{|}~]+@[a-zA-Z+.-\d]+.[a-zA-z+.-\d]+$/
-	const PHONE_REGEX				= /^[\d-\s()+_#.ext]*$/
-	const PARTY_SIZE_REGEX			= /^[\d]*$/
 
-	const NAME_ERROR_TEXT			= "Name must only contain A - Z, periods, and must be 2 or more character"
-	const NAME_OPTIONAL_ERROR_TEXT	= "Name must only contain A - Z, periods, and must be 2 or more character. Leave blank if no plus one"
-	const EMAIL_ERROR_TEXT			= "Email must contain @ and domain"
-	const PHONE_ERROR_TEXT			= ""
-
-	const [indiIsValid, setIndiIsValid]	= useState({
-		name:		true,
-		contact:		true,
-		plusOneName:	true,
-	})
-
-	const [grpIsValid, setGrpIsValid]		= useState({
-		grpName:		true,
-		grpContact:	true,
-	})
-	const [grpMembersIsValid, setGrpMemebrsIsValid]	= useState(Array(DEFAULT_GROUP_SIZE).fill(true))
 
 	function validateIndi(){
 		console.log(indiIsValid);
@@ -519,8 +521,8 @@ export function GuestList(){
 	return(
 		<>
 			<section>
-				<h1 className='title'>{title}</h1>
-				<p className='subtitle'>{pageDescription}</p>
+				<h1 className='title'>{TITLE}</h1>
+				<p className='subtitle'>{PAGE_DESCRIPTION}</p>
 			</section>
 
 			<UploadFile/>
@@ -539,8 +541,8 @@ export function GuestList(){
 				{ groupAddPopupState && groupPopOut() }
 
 				<section className = "manualGuestListSection">
-					<h3>{tableTitle}</h3>
-					<p>{tableDescription}</p>
+					<h3>{TABLE_TITLE}</h3>
+					<p>{TABLE_DESCRIPTION}</p>
 					<GuestListTable tableData={guestListData} setTableData={setGuestListData} mode="New"/>
 				</section>
 				<Button type="submit" color="primary" variant="contained">Next</Button>
