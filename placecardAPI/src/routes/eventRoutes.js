@@ -51,7 +51,6 @@ router.get("/algorithm/:eventId", async (req, res) => {
 
     try {
         let algorithmData = await events.getAlgorithmData(eventId);
-        console.log(algorithmData);
 
         let { data } = await axios.post("http://127.0.0.1:5000/flask", {
             algorithmData: algorithmData,

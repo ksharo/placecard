@@ -8,10 +8,10 @@ def index():
     data = request.get_json()
     # res = numbers['x'] + numbers['y']
 
-    algorithmData = data['algorithmData']
-    # seatingChart = main()
+    # algorithmData = data['algorithmData']
+    seatingChart = main(data)
     # return {'answer': seatingChart}
-    return {'answer': algorithmData}
+    return {'answer': seatingChart}
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

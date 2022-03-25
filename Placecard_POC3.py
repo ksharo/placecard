@@ -769,6 +769,7 @@ def seatingHelper(table, partyID, unseatedFriends, seatingChart, unseated, seate
     if partyID in unseated:
         unseated.remove(partyID)
         for x in parties[partyID]:
+            print(x, seatingChart[table])
             seatingChart[table].append(x)
             seatedParties[x] = table
             if x in unseated:
@@ -778,6 +779,7 @@ def seatingHelper(table, partyID, unseatedFriends, seatingChart, unseated, seate
         if y in seatedParties:
             t = seatedParties[y]
             for x in parties[y]:
+                print(x, seatingChart[table])
                 seatingChart[table].append(x)
                 seatedParties[x] = table
                 if x in t:
@@ -786,11 +788,12 @@ def seatingHelper(table, partyID, unseatedFriends, seatingChart, unseated, seate
         if y in unseated:
             unseated.remove(y)
             for x in parties[y]:
+                print(x, seatingChart[table])
                 seatingChart[table].append(x)
                 seatedParties[x] = table
                 if x in unseated:
                     unseated.remove(x)
-    print(unseated, seatedParties)
+    # print(unseated, seatedParties)
     return (seatingChart, unseated, seatedParties)
 
 def refreshVariables(origChart, parties):
@@ -1240,5 +1243,5 @@ def main(dbData):
     seatingChart = seatParties(origChart, parties, loves, likes, dislikes, tableNames, perTable, 3)
     return seatingChart
 
-seating = main(None)
-print(json.dumps(seating, indent = 4))
+# seating = main(None)
+# print(json.dumps(seating, indent = 4))
