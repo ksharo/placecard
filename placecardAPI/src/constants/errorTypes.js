@@ -7,7 +7,9 @@ const ERROR_TYPES = {
     GUEST_NOT_FOUND: "GuestNotFound",
     INSERT_ERROR: "InsertError",
     UPDATE_ERROR: "UpdateError",
-    DELETE_ERROR: "DeleteError"
+    DELETE_ERROR: "DeleteError",
+    INVALID_EMAIL_CONFIG: "InvalidEmailConfig",
+    FAILED_EMAIL_REQUEST: "FailedEmailRequest" 
 };
 
 // TODO: Create error configs for each type so that they are linked to an object that configures the correct API response

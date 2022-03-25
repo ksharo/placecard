@@ -1,0 +1,31 @@
+#start-button {
+    display: block;
+    font-size: 36px;
+    margin: 30px auto 50px auto;
+    width: 50%;
+    min-width: 250px;
+    padding: 16px 36px 16px 36px;
+    background-color: rgb(225, 225, 225);
+    color: black;
+    font-style: normal;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+}
+  
+#start-button:hover {
+    filter: brightness(90%);
+    box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+}
+  
+#how-to-cards {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#howTo {
+    margin: 20px auto 10px auto;
+}

@@ -1,0 +1,52 @@
+.guestListTable {
+	max-width: 1000px;
+	text-align: left;
+	margin: 20px auto;
+	border-radius: 17px;
+	border: 2px solid var(--secondary);
+	background-color: var(--secondary);
+}
+
+.resultTable {
+	border-collapse: collapse;
+	width: 100%;
+	border-radius: 15px;
+	overflow: hidden;
+	border: none;
+	background-color: white;
+}
+
+.subgroupMemberList {
+	list-style: none;
+	padding-left: 38px;
+}
+
+.guestListIcon {
+	box-shadow: none !important;
+}
+
+.headingRow {
+	background-color: var(--secondary);
+}
+
+thead {
+	color: white;
+   	 height: 50px;
+}
+
+.firstCol {
+	padding-left: 21px;
+}
+
+tbody .groupSummary td {
+	padding-top: 12px;
+}
+
+tbody tr:last-child.groupDropdown td {
+    	padding-bottom: 12px;
+}
+
+/* tbody tr {
+	border-left: 3px solid var(--secondary);
+	border-right: 2px solid var(--secondary);
+} */

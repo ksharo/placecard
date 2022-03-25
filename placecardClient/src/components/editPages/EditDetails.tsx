@@ -2,64 +2,95 @@ import '../forms/Forms.css'
 import './editPages.css'
 import { useHistory } from "react-router-dom";
 import validator from 'validator';
-import { Button } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardHeader, TextField } from '@mui/material';
 import moment from 'moment';
+import React from 'react';
+import { ObjectId } from 'mongodb';
+
+    let validName = true;
+    let validLoc = true;
+    let validDate = true;
+    let validPerTable = true;
+
+    /* variables that hold the textfield input */
+    let name = '';
+    let date = '';
+    let time = '';
+    let location = '';
+    let per_table = -1;
+
+    /* we don't want to show/hide errors before they press submit for the first time */
+    let firstTime = true;
 
 export function EditDetails(){
     const history = useHistory();
-    let name = '';
-    let date = '';
-    let location = '';
-    let num_attend = -1;
-    let per_table = -1;
-    let firstTime = true;
     
-    let validateName = (event: any) => {
-        if (!firstTime) {
+    /* Variables to keep track of if each textField shows an error */
+    const [nameError, setNameError] = React.useState(!validName);
+    const [locError, setLocError] = React.useState(!validLoc);
+    const [dateError, setDateError] = React.useState(!validDate);
+    const [perTableError, setPerTableError] = React.useState(!validPerTable);
+
+    let validateName = (event: any, val?: string) => {
+        if (val != undefined) {
+            name = val;
+        }
+        else {
             name = validator.trim(event.target.value);
+        }
+        if (!firstTime || val != undefined) {
             const valid = !validator.isEmpty(name) && validator.isWhitelisted(name.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\'');
-            validateHelper('editNameError', valid);
-            checkAllErrors(name, date, location, num_attend, per_table);
+            validName = valid;
+            setNameError(!valid);
+            checkAllErrors(name, date, location, per_table);
         }
-    }
+    };
 
-    let validateDate = (event: any) => {
-        if (!firstTime) {
+    let validateDate = (event: any, val?: string) => {
+        if (val != undefined) {
+            date = val;
+        }
+        else {
             date = event.target.value;
+        }
+        if (!firstTime || val != undefined) {
             const valid = validator.isDate(date) && validator.isAfter(date);
-            validateHelper('editDateError', valid);
-            checkAllErrors(name, date, location, num_attend, per_table);
+            validDate = valid;
+            setDateError(!valid);
+            checkAllErrors(name, date, location, per_table);
         }
-    }
+    };
 
-    let validateLocation = (event: any) => {
-        if (!firstTime) {
+    let validateLocation = (event: any, val?: string) => {
+        if (val != undefined) {
+            location = val;
+        }
+        else {
             location = validator.trim(event.target.value);
+        }
+        if (!firstTime || val != undefined) {
             const valid = validator.isWhitelisted(location.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_., &!\'');
-            validateHelper('editLocationError', valid);
-            checkAllErrors(name, date, location, num_attend, per_table);
+            validLoc = valid;
+            setLocError(!valid);
+            checkAllErrors(name, date, location, per_table);
         }
-    }
+    };
 
-    let validateAttend = (event: any) => {
-        if (!firstTime) {
-            num_attend = event.target.value;
-            const strNum = validator.trim(num_attend.toString());
-            const valid = !validator.isEmpty(strNum) && num_attend > 0;
-            validateHelper('editNumAttError', valid);
-            checkAllErrors(name, date, location, num_attend, per_table);
+    let validateTable = (event: any, val?: number) => {
+        if (val != undefined) {
+            per_table = val;
         }
-    }
-
-    let validateTable = (event: any) => {
-        if (!firstTime) {
+        else {
             per_table = event.target.value;
+        }
+        if (!firstTime || val != undefined) {
             const strNum = validator.trim(per_table.toString());
             const valid = !validator.isEmpty(strNum) && per_table > 0;
-            validateHelper('editPerTableError', valid);
-            checkAllErrors(name, date, location, num_attend, per_table);
+            validPerTable = valid;
+            setPerTableError(!valid);
+            checkAllErrors(name, date, location, per_table);
         }
-    }
+    };
     
     let handleSubmit = async (event: any) => {
         event.preventDefault();
@@ -74,42 +105,60 @@ export function EditDetails(){
                 window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
             }
         }
-        // get data from form and fill variables
+
+        /* get data from form and fill variables */
         name = validator.trim(event?.target?.name?.value);
         date = validator.trim(event?.target?.date?.value);
+        time = validator.trim(event?.target?.time?.value);
         location = validator.trim(event?.target?.location?.value);
-        num_attend = event?.target?.num_attend?.value;
         per_table = event?.target?.per_table?.value;
 
-        // validate form based on above data
-        errorFound = validate(name, date, location, num_attend, per_table);
+
+        /* validate form based on above data */
+        validateName(null, name);
+        validateDate(null, date);
+        validateLocation(null, location);
+        validateTable(null, per_table);
+        firstTime = false;
+
+        errorFound = !(validName && validDate && validLoc && validPerTable);
 
         if (!errorFound) { 
-            // if form is good, sendEvent
+            /* if form is good, sendEvent */
             try {
-                // send the edited event to the backend
+                /* send the edited event to the backend */
                 if (window.activeEvent != null) {
-                    const result = await updateEvent(window.activeEvent.id, name, date, location, num_attend, per_table, window.activeEvent.guestList);
-                    // if sendEvent is successful, go back to dashboard after updating globals
-                    if (result.status == 200) {
-                        const activeEvent = {id: window.activeEvent.id, name: name, date: date, location: location, numAttend: num_attend, perTable: per_table, guestList: window.activeEvent.guestList};
-                        // first change list
+                    const result = await updateEvent(window.activeEvent.id, name, date, time, location, per_table, window.activeEvent.tables, window.activeEvent.guestList);
+                    /* if sendEvent is successful, go back to dashboard after updating globals */
+                    if (result && result.status == 200) {
+                        const activeEvent = {
+                            id: window.activeEvent.id, 
+                            uid: window.uidState, 
+                            name: name, 
+                            date: date, 
+                            time: time, 
+                            location: location, 
+                            perTable: per_table, 
+                            tables: window.activeEvent.tables, 
+                            guestList: window.activeEvent.guestList, 
+                            respondents: window.activeEvent.respondents, 
+                            surveys: window.activeEvent.surveys
+                        };
+                        /* first change list */
                         const events = [...window.eventsState];
                         const curEvent = window.activeEvent;
                         for (let i = 0; i < events.length; i++) {
                             const event = events[i];
-                            if (curEvent != null && event.name == curEvent.name && (event.date == curEvent.date || moment(event.date).format('DD MMMM YYYY') == curEvent.date) && 
-                                event.location == curEvent.location && event.numAttend == curEvent.numAttend
-                                && event.perTable == curEvent.perTable) {
-                                    // found the matching event!
+                            if (curEvent.id == event.id) {
+                                    /* found the matching event! */
                                     events[i] = activeEvent;
                                     break;
                                 }
                         }
                         window.setEvents(events);
-                        // then change active event
+                        /* then change active event */
                         window.setActiveEvent(activeEvent);
-                        history.push('/eventDash'); 
+                        history.goBack(); 
                     }
                     else {
                         if (x != null) {
@@ -132,7 +181,7 @@ export function EditDetails(){
                 }
             }
         }
-        // if there is an error, tell the user
+        /* if there is an error, tell the user */
         else {
             const y = document.getElementById('editEventError');
             if (y != null) {
@@ -147,13 +196,14 @@ export function EditDetails(){
         const x = document.getElementById('hiddenWarning');
         if (x != null) {
             x.style.display = 'inline-block';
+            window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
         }
     };
     const toDashboard = () => {
-        history.push('/eventDash');
+        history.goBack();
     };
     const toHome = () => {
-        history.push('/userHome');
+        history.goBack();
     };
     const hideWarning = () => {
         const x = document.getElementById('hiddenWarning');
@@ -167,48 +217,84 @@ export function EditDetails(){
     {window.activeEvent == null ?
     <>
      <h1 className='title'>Error: No event found.</h1> 
-     <Button variant='outlined' onClick={toHome}>Return Home</Button>
+     <Button variant='contained' className='basicBtn' onClick={toHome}>Return Home</Button>
      </>
      : 
         <>
         <section className='hiddenBoxes' id='hiddenWarning'>
-            <section className='innerBox'>
-                <h1 className='smallBoxTitle title'>Notice</h1>
-                <p className='subtitle'>Returning to the dashboard will forget your saved data.</p>
-                <p className='subtitle'>Are you sure you want to continue?</p>
-                <section className='horizontalFlex'>
-                    <button className='smallButton' onClick={hideWarning}>No</button>
-                    <button className='smallButton' onClick={toDashboard}>Yes</button>
-                </section>
-            </section>
+            <Card className='innerBox'>
+                <CardHeader className='innerBoxHeader' title='Notice'/>
+                <CardContent className='innerBoxContent'>
+                    <p className='subtitle'>Your changes may not be saved.</p>
+                    <p className='subtitle'>Are you sure you want to continue?</p>
+                </CardContent>
+                <CardActions className='spacedBtns'>
+                    <Button variant='contained' className='basicBtn' onClick={hideWarning}>No</Button>
+                    <Button variant='contained' className='basicBtn' onClick={toDashboard}>Yes</Button>
+                </CardActions>
+            </Card>
         </section>
         <h1 className='title'>Edit Your Event</h1>
         <p className='subtitle pageError' id='editEventError'>Please fix the errors.</p>
         <p className='subtitle pageError' id='sendEventEditError'>Something went wrong. Please try again.</p>
         <form className='vertical-form' onSubmit={handleSubmit} id='editEventForm'>
-            <label>Event Name
-            <span id='editNameError' className='formError'>The event name can only contain spaces and the following characters: [a-zA-Z0-9.'&!-_].</span>
-            <input name='name' onChange={validateName} defaultValue={window.activeEvent.name} type="text"/>
-            </label>
-            <label>Event Date
-            <span id='editDateError' className='formError'>Please enter a valid date that is after today.</span>
-            <input name='date' defaultValue={moment(window.activeEvent.date).format('YYYY-MM-DD')} onChange={validateDate} type="date"/>
-            </label>
-            <label>Location (optional)
-            <span id='editLocationError' className='formError'>The event location can only contain spaces and the following characters: [a-zA-Z0-9.'&!-_,].</span>
-            <input name='location' defaultValue={window.activeEvent.location=='N/A' ? '' : window.activeEvent.location} onChange={validateLocation} type="text"/>
-            </label>
-            <label>Expected Number of Attendees
-            <span id='editNumAttError' className='formError'>Please enter a positive number.</span>
-            <input name='num_attend' defaultValue={window.activeEvent.numAttend} onChange={validateAttend} type="number"/>
-            </label>
-            <label>Attendees Per Table
-            <span id='editPerTableError' className='formError'>Please enter a positive number.</span>
-            <input name='per_table' onChange={validateTable} defaultValue={window.activeEvent.perTable} type="number"/>
-            </label>
-            <section className='horizontalFlex'> 
-                <button className='rectangleButton smallerButton' onClick={noSave}>Return to Dashboard</button>
-                <button type='submit' className='rectangleButton smallerButton'>Save</button>
+            <section className='formBox'>
+                <TextField 
+                    size='small'
+                    variant='outlined' 
+                    type="text" 
+                    label='Event Name' 
+                    name='name'
+                    defaultValue={window.activeEvent.name}
+                    error={nameError} 
+                    helperText={nameError ? 'Must be at least one character (alphanumeric and [-_. &!\'] only)' : ''}  
+                    onChange={validateName}/>
+                <TextField 
+                    size='small'
+                    variant='outlined' 
+                    type="text" 
+                    label='Event Location (optional)' 
+                    name='location'
+                    defaultValue={window.activeEvent.location=='N/A' ? '' : window.activeEvent.location}
+                    error={locError} 
+                    helperText={locError ? 'Can only contain spaces and [a-zA-Z0-9.\'&!-_,]' : ''}  
+                    onChange={validateLocation}/>
+                <TextField 
+                    variant='outlined' 
+                    size='small'
+                    type="date" 
+                    label='Event Date' 
+                    name='date'
+                    defaultValue={moment(window.activeEvent.date).format('YYYY-MM-DD')}
+                    InputLabelProps={{ shrink: true }}
+                    error={dateError} 
+                    helperText={dateError ? 'Please enter a date that is after today' : ''}  
+                    onChange={validateDate}/>
+                <TextField 
+                    variant='outlined' 
+                    size='small'
+                    type="time" 
+                    label='Event Time (optional)' 
+                    defaultValue={window.activeEvent.time}
+                    name='time'
+                    InputLabelProps={{ shrink: true }}  
+                    />
+                <TextField 
+                    variant='outlined' 
+                    size='small'
+                    type="number" 
+                    label='Attendees Per Table' 
+                    name='per_table'
+                    defaultValue={window.activeEvent.perTable}
+                    InputLabelProps={{ shrink: true }}
+                    error={perTableError} 
+                    helperText={perTableError ? 'Please enter a positive number' : ''}  
+                    onChange={validateTable}
+                    />
+            </section>
+            <section className='horizontalFlex closeButtons'> 
+                <Button className='basicBtn' variant='contained' onClick={noSave}>Go Back</Button>
+                <Button type='submit' className='basicBtn' variant='contained'>Save</Button>
             </section>
         </form>
         </>
@@ -218,93 +304,45 @@ export function EditDetails(){
     );
 }
 
-async function updateEvent(id: string, name: string, date: string, location: string, num_attendees: number, per_table: number, guestList: string[]) {
-    // location cannot be empty string when sent to database
+async function updateEvent(id: string, name: string, date: string, time: string, location: string, per_table: number, tables: Table[], guestList: Invitee[]) {
+    /* location cannot be empty string when sent to database */
     if (location == '') {
         location = 'N/A';
     }
-    const requestOptions = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            _id: id,
-            event_name: name,
-            event_time: date,
-            location: location,
-            expected_number_of_attendees: Number(num_attendees),
-            attendees_per_table: Number(per_table),
-            guest_list: guestList
+    if (window.activeEvent != null && window.activeEvent != undefined) {
+        let tables = window.activeEvent.tables;
+        if (per_table < window.activeEvent.perTable) {
+            const num_attend = window.activeEvent.guestList.length;
+            let tmpSeats = tables.length * per_table;
+            while (tmpSeats < num_attend) {
+                const id = (new ObjectId()).toString();
+                const newTable: Table = {
+                    id: id,
+                    name: 'Table ' + (tables.length+1).toString(),
+                    guests: []
+                }
+                tables.push(newTable);
+                tmpSeats += per_table;
+            }
+        }
+        let tmpEvent = window.activeEvent;
+        tmpEvent.perTable = per_table;
+
+        window.setActiveEvent(tmpEvent);
+        const requestOptions = {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                event_name: name,
+                event_start_time: Number(Date.parse(new Date(date + " " + time).toString())),
+                location: location,
+                attendees_per_table: Number(per_table),
+                tables: tables,
             })
         };
-    return fetch('http://localhost:3001/events/updateEvent', requestOptions);
-}
-
-/*
- * Displays the error with id 'id'. Returns true so that
- * errorFound is set properly.
- */
-function showError(id: string): boolean {
-    let x = document.getElementById(id);
-    if (x != null) {
-        x.style.display = 'inline-block';
-    } 
-    return true;
-}
-
-/* 
- * Validates the information in the form
- */
-function validate(name: string, date: string, location: string, num_attend: number, per_table: number) {
-    let errorFound = false;
-
-    /* Make sure name is not empty and is only letters, numbers, underscores, apostrophes, ampersands, and dashes */
-    if (!(!validator.isEmpty(name) && validator.isWhitelisted(name.toLocaleLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\''))) {
-        errorFound = showError('editNameError');
-    }
-
-    /* Make sure the date is after today */
-    if (!(validator.isDate(date) && validator.isAfter(date))) {
-        errorFound = showError('editDateError');
-    }
-
-    /* Make sure location is only letters, numbers, underscores, apostrophes, ampersands, and dashes */
-    if (!(validator.isWhitelisted(location.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_., &!\''))) {
-        errorFound = showError('editLocationError');
-    }
-    
-    /* Make sure the number attending is a valid, positive number */
-    let strNum = validator.trim(num_attend.toString());
-    if (!(!validator.isEmpty(strNum) && num_attend > 0)) {
-        errorFound = showError('editNumAttError');
-    }
-
-    /* Make sure the number per table is a valid, positive number */
-    strNum = validator.trim(per_table.toString());
-    if (!(!validator.isEmpty(strNum) && per_table > 0)) {
-        errorFound = showError('editPerTableError');
-    }
-
-    return errorFound;
-}
-
-/* 
- * Removes redundancy from validation functions by performing the
- * show/hide of errors given the id of that error and the boolean
- * that must be checked
- */
-function validateHelper(id: string, valid: boolean) {
-    let x = document.getElementById(id);
-    if (valid) {
-        if (x != null) {
-            x.style.display = 'none';
-        }             
-    }
-    else {
-        if (x != null) {
-            x.style.display = 'inline-block';
-        } 
+        return fetch('http://localhost:3001/events/updateEvent/'+id.toString(), requestOptions);
     }
 }
 
@@ -312,20 +350,19 @@ function validateHelper(id: string, valid: boolean) {
  * Checks to see if there are any errors in order to show
  * or hide the error at the top of the page
  */
-function checkAllErrors(name: string, date: string, location: string, num_attend: number, per_table: number) {
+function checkAllErrors(name: string, date: string, location: string, per_table: number) {
     const strNum1 = validator.trim(per_table.toString());
-    const strNum = validator.trim(num_attend.toString());
-    const error = (!validator.isEmpty(strNum1) && per_table > 0) && (!validator.isEmpty(strNum) && num_attend > 0) && (validator.isWhitelisted(location.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_., &!\''))
+    const error = (!validator.isEmpty(strNum1) && per_table > 0) && (validator.isWhitelisted(location.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_., &!\''))
     && (validator.isDate(date) && validator.isAfter(date)) && (!validator.isEmpty(name) && validator.isWhitelisted(name.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\''));
     
-    let x = document.getElementById('editEventError');
-    // if there's an error, keep the item visible
+    let x = document.getElementById('eventFormError');
+    /* if there's an error, keep the item visible */
     if (!error) {
         if (x != null) {
             x.style.display = 'inline-block';
         }
     }
-    // otherwise, hide it
+    /* otherwise, hide it */
     else {
         if (x != null) {
             x.style.display = 'none';
