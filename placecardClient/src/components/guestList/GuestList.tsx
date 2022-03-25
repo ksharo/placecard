@@ -28,9 +28,10 @@ export function GuestList(){
 
 	const [currGrpName, setCurrGrpName]					= useState("")
 	const [currGrpContact, setCurGrpContact]				= useState('')
-	const [currGrpSize, setCurrGrpSize]					= useState("2")
+	const DEFAULT_GROUP_SIZE = 2
+	const [currGrpSize, setCurrGrpSize]					= useState(DEFAULT_GROUP_SIZE.toString())
 	const [currGrpSendSurvey, setCurrGrpSendSurvey]			= useState(true)
-	const [currGrpMembers, setCurrGrpMembers]				= useState(["", ""])
+	const [currGrpMembers, setCurrGrpMembers]				= useState(Array(DEFAULT_GROUP_SIZE).fill(""))
 	const [currGrpId, setCurrGrpId] 						= useState((new ObjectId()).toString());
 
 	/* initialize guest list data */
@@ -126,7 +127,74 @@ export function GuestList(){
 		history.push('/editSurvey');
 	}
 
+	const NAME_REGEX				= /^[a-zA-z\s.]{2,}$/
+	const NAME_OPTIONAL_REGEX		= /^[a-zA-z\s.]{2,}$|^$/
+	const EMAIL_REGEX				= /^[a-zA-Z.\d!#$%&'*+\-/=?^_`{|}~]+@[a-zA-Z+.-\d]+.[a-zA-z+.-\d]+$/
+	const PHONE_REGEX				= /^[\d-\s()+_#.ext]*$/
+	const PARTY_SIZE_REGEX			= /^[\d]*$/
+
+	const NAME_ERROR_TEXT			= "Name must only contain A - Z, periods, and must be 2 or more character"
+	const NAME_OPTIONAL_ERROR_TEXT	= "Name must only contain A - Z, periods, and must be 2 or more character. Leave blank if no plus one"
+	const EMAIL_ERROR_TEXT			= "Email must contain @ and domain"
+	const PHONE_ERROR_TEXT			= ""
+
+	const [indiIsValid, setIndiIsValid]	= useState({
+		name:		true,
+		contact:		true,
+		plusOneName:	true,
+	})
+
+	const [grpIsValid, setGrpIsValid]		= useState({
+		grpName:		true,
+		grpContact:	true,
+	})
+	const [grpMembersIsValid, setGrpMemebrsIsValid]	= useState(Array(DEFAULT_GROUP_SIZE).fill(true))
+
+	function validateIndi(){
+		console.log(indiIsValid);
+
+		let isValidInput = true
+		if (!NAME_REGEX.test(currIndiName)){
+			setIndiIsValid((prev) => ({...prev, name: false}))
+			isValidInput = false;
+		}
+		if (!NAME_OPTIONAL_REGEX.test(currPlusOneName)){
+			setIndiIsValid((prev) => ({...prev, plusOneName: false}))
+			isValidInput = false;
+		}
+		if (!EMAIL_REGEX.test(currIndiContact)){
+			setIndiIsValid((prev) => ({...prev, contact: false}))
+			isValidInput = false;
+		}
+
+		return isValidInput;
+	}
+
+	function validateGrp(){
+		let isValidInput = true
+
+		if (!NAME_REGEX.test(currGrpName)){
+			setGrpIsValid((prev) => ({...prev, grpName: false}))
+			isValidInput = false;
+		}
+		if (!EMAIL_REGEX.test(currGrpContact)){
+			setGrpIsValid((prev) => ({...prev, grpContact: false}))
+			isValidInput = false;
+		}
+		const newGrpMembersIsValid = [...grpMembersIsValid]
+		currGrpMembers.forEach(function (subgroupMember, index){
+			newGrpMembersIsValid[index] = NAME_REGEX.test(subgroupMember)
+		})
+		setGrpMemebrsIsValid(newGrpMembersIsValid)
+
+		return isValidInput
+	}
+
 	async function addIndiToTable(){
+		if (!validateIndi()){
+			console.log("Frontend Validation Failed")
+			return;
+		}
 		setGuestListData([...guestListData, {
 			"groupName":		currPlusOneName ? (currIndiName + " & " + currPlusOneName) : currIndiName,
 			"groupContact":	currIndiContact,
@@ -163,9 +231,15 @@ export function GuestList(){
 		setCurrIndiSendSurvey(true)
 		setCurrGrpId((new ObjectId()).toString());
 		updateGlobalEvent(guestData);
+
+
 	}
 
 	async function addGrpToTable(){
+		if(!validateGrp()){
+			console.log("Frontend Validation Failed")
+			return;
+		}
 		setGuestListData([...guestListData, {
 			"groupName":		currGrpName,
 			"groupContact":	currGrpContact,
@@ -188,13 +262,14 @@ export function GuestList(){
 		}
 		setCurrGrpName("")
 		setCurGrpContact("")
-		setCurrGrpSize("2")
+		setCurrGrpSize(DEFAULT_GROUP_SIZE.toString())
 		setCurrGrpSendSurvey(true)
-		setCurrGrpMembers(["", ""])
+		setCurrGrpMembers(Array(DEFAULT_GROUP_SIZE).fill(""))
 		setCurrGrpId((new ObjectId()).toString());
 		for (let guestData of allData) {
 			updateGlobalEvent(guestData);
 		}
+
 	}
 
 	function updateGrpMembers(index: number, event: any) {
@@ -216,11 +291,20 @@ export function GuestList(){
 			if ((difference = newNumInt - currGrpMembers.length) > 0 ){
 				const arr = currGrpMembers.concat(Array(difference).fill(""));
 				setCurrGrpMembers(arr)
+
+				// add members that are valid to the validation state
+				const validArr = grpMembersIsValid.concat(Array(difference).fill(true));
+				setGrpMemebrsIsValid(validArr)
 			}
 			else if (difference < 0){
 				const arr = currGrpMembers
 				arr.splice(newNumInt)
 				setCurrGrpMembers(arr)
+
+				// Remove our markers on valid or invalid individuals
+				const validArr = grpMembersIsValid
+				grpMembersIsValid.splice(newNumInt)
+				setGrpMemebrsIsValid(validArr)
 			}
 		}
 	}
@@ -231,20 +315,41 @@ export function GuestList(){
 				<TextField
 					placeholder="Name"
 					value={currIndiName}
-					onChange={e => setCurrIndiName(e.target.value)}
+					onChange={e => {
+						setCurrIndiName(e.target.value);
+						if(!indiIsValid.name && NAME_REGEX.test(e.target.value)){
+							setIndiIsValid((prev) => ({...prev, name: true}))
+						}
+					}}
+					error={!indiIsValid.name}
+					helperText={indiIsValid.name ? "" : NAME_ERROR_TEXT}
 					label="Name"
 				/>
 				<TextField
 					placeholder="Email or Phone"
 					value={currIndiContact}
-					onChange={e => setCurrIndiContact(e.target.value)}
+					onChange={e => {
+						setCurrIndiContact(e.target.value);
+						if(!indiIsValid.contact && EMAIL_REGEX.test(e.target.value)){
+							setIndiIsValid((prev) => ({...prev, contact: true}))
+						}
+					}}
+					error={!indiIsValid.contact}
+					helperText={indiIsValid.contact ? "" : EMAIL_ERROR_TEXT}
 					label="Contact"
 				/>
 				<TextField
 					placeholder="Name"
 					className="plusOneInput"
 					value={currPlusOneName}
-					onChange={(e) => setCurrPlusOneName(e.target.value)}
+					onChange={e => {
+						setCurrPlusOneName(e.target.value);
+						if(!indiIsValid.plusOneName && NAME_OPTIONAL_REGEX.test(e.target.value)){
+							setIndiIsValid((prev) => ({...prev, plusOneName: true}))
+						}
+					}}
+					error={!indiIsValid.plusOneName}
+					helperText={indiIsValid.plusOneName ? "" : NAME_OPTIONAL_ERROR_TEXT}
 					label="Plus One Name (optional)"
 				/>
 
@@ -281,13 +386,27 @@ export function GuestList(){
 						placeholder={namePlaceholder}
 						label="Group Name"
 						value={currGrpName}
-						onChange={e => setCurrGrpName(e.target.value)}
+						onChange={e => {
+							setCurrGrpName(e.target.value);
+							if(!grpIsValid.grpName && NAME_REGEX.test(e.target.value)){
+								setGrpIsValid((prev) => ({...prev, grpName: true}))
+							}
+						}}
+						error={!grpIsValid.grpName}
+						helperText={grpIsValid.grpName ? "" : NAME_ERROR_TEXT}
 					/>
 					<TextField
 						placeholder="Email or Phone Number"
 						label="Group Contact"
 						value={currGrpContact}
-						onChange={e=>setCurGrpContact(e.target.value)}
+						onChange={e => {
+							setCurGrpContact(e.target.value);
+							if(!grpIsValid.grpContact && EMAIL_REGEX.test(e.target.value)){
+								setGrpIsValid((prev) => ({...prev, grpContact: true}))
+							}
+						}}
+						error={!grpIsValid.grpContact}
+						helperText={grpIsValid.grpContact ? "" : EMAIL_ERROR_TEXT}
 					/>
 					<TextField
 						type="number"
@@ -311,7 +430,17 @@ export function GuestList(){
 							label="Member Name"
 							placeholder="Leave Blank if Unknown"
 							value={name}
-							onChange={event=>updateGrpMembers(i, event)}
+							onChange={e => {
+								updateGrpMembers(i, e);
+								if(!grpMembersIsValid[i] && NAME_REGEX.test(e.target.value)){
+									const newGrpMembersIsValid = [...grpMembersIsValid]
+									newGrpMembersIsValid[i] = true
+									setGrpMemebrsIsValid(newGrpMembersIsValid)
+								}
+							}}
+							error={!grpMembersIsValid[i]}
+							helperText={grpMembersIsValid[i] ? "" : NAME_ERROR_TEXT}
+
 						/>
 					))}
 				</section>
