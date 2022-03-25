@@ -20,11 +20,45 @@ const { isInvalidObjectId } = require("../utils/mongoDocument");
 const { INVALID_EVENT_ID } = require("../constants/errorTypes");
 const axios = require("axios");
 
-router.get("/algorithm", async (req, res) => {
+router.get("/algorithm/:eventId", async (req, res) => {
+    // eventId
+    // get all the guests from that eventId
+    // from there, get guestId, groupId, groupSize, surveyResults
+
+    let eventId = req.params.eventId.trim();
     try {
-        let { data } = await axios.post("http://127.0.0.1:5000/flask");
+        checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID_MESSAGE);
+        checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_EVENT_ID,
+            statusCodes.BAD_REQUEST,
+            res
+        );
+    }
+
+    try {
+        let event = await events.getEvent(eventId);
+    } catch (e) {
+        return createErrorResponse(
+            generateErrorMessage(e),
+            ERROR_TYPES.EVENT_NOT_FOUND,
+            statusCodes.NOT_FOUND,
+            res
+        );
+    }
+
+    try {
+        let algorithmData = await events.getAlgorithmData(eventId);
+        console.log(algorithmData);
+
+        let { data } = await axios.post("http://127.0.0.1:5000/flask", {
+            algorithmData: algorithmData,
+        });
         res.status(200).json(data);
     } catch (e) {
+        console.log(e);
         res.status(500).json({ error: e });
     }
 });
