@@ -79,7 +79,7 @@ router.post("/newGuest/:eventId", async (req, res) => {
     try {
         const createdGuest = await guests.createGuest(newGuest);
         let sendSurvey = false;
-        if (createdGuest.survey_response != undefined) {
+        if (createdGuest.survey_response !== undefined) {
             sendSurvey = true;
         }
         await events.addGuest(eventId, createdGuest._id, sendSurvey);
