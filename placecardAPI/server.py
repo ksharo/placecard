@@ -5,11 +5,13 @@ app = Flask(__name__)
 
 @app.route('/flask', methods=['POST'])
 def index():
-    # numbers = request.get_json()
+    data = request.get_json()
     # res = numbers['x'] + numbers['y']
 
-    seatingChart = main()
-    return {'answer': seatingChart}
+    algorithmData = data['algorithmData']
+    # seatingChart = main()
+    # return {'answer': seatingChart}
+    return {'answer': algorithmData}
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
