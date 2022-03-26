@@ -14,6 +14,8 @@ export function GuestList(){
 	const TABLE_TITLE		= 'Enter Guest List Manually'
 	const TABLE_DESCRIPTION	= 'You only need to provide one method of contact for each guest'
 	const DEFAULT_GROUP_SIZE = 5
+	const MIN_GROUP_SIZE	= 1
+	const MAX_GROUP_SIZE	= 25
 
 	const history			= useHistory();
 
@@ -44,17 +46,19 @@ export function GuestList(){
 	const NAME_OPTIONAL_ERROR_TEXT	= "Name must only contain A - Z, periods, and must be 2 or more character. Leave blank if no plus one"
 	const EMAIL_ERROR_TEXT			= "Email must contain @ and domain"
 	const PHONE_ERROR_TEXT			= ""
+	const GROUP_SIZE_ERROR_TEXT		= `Group size must be between ${MIN_GROUP_SIZE} and ${MAX_GROUP_SIZE}`
 
-	const [indiIsValid, setIndiIsValid]	= useState({
+	const [indiIsValid, setIndiIsValid]			= useState({
 		name:		true,
 		contact:		true,
 		plusOneName:	true,
 	})
 
-	const [grpIsValid, setGrpIsValid]		= useState({
+	const [grpIsValid, setGrpIsValid]				= useState({
 		grpName:		true,
 		grpContact:	true,
 	})
+	const [grpSizeIsValid, setGrpSizeIsValid]		= useState(true)
 	const [grpMembersIsValid, setGrpMemebrsIsValid]	= useState(Array(DEFAULT_GROUP_SIZE).fill(true))
 
 	/* initialize guest list data */
@@ -189,6 +193,10 @@ export function GuestList(){
 		})
 		setGrpMemebrsIsValid(newGrpMembersIsValid)
 
+		if (!grpSizeIsValid){
+			isValidInput = false;
+		}
+
 		return isValidInput
 	}
 
@@ -267,6 +275,7 @@ export function GuestList(){
 		setCurrGrpSize(DEFAULT_GROUP_SIZE.toString())
 		setCurrGrpSendSurvey(true)
 		setCurrGrpMembers(Array(DEFAULT_GROUP_SIZE).fill(""))
+		setGrpMemebrsIsValid(Array(DEFAULT_GROUP_SIZE).fill(true))
 		setCurrGrpId((new ObjectId()).toString());
 		for (let guestData of allData) {
 			updateGlobalEvent(guestData);
@@ -288,7 +297,10 @@ export function GuestList(){
 	function changeGrpSize(newNum: string) {
 		setCurrGrpSize(newNum)
 		let newNumInt = parseInt(newNum)
-		if (!isNaN(newNumInt)){
+		if (!isNaN(newNumInt) && newNumInt >= MIN_GROUP_SIZE && newNumInt <= MAX_GROUP_SIZE){
+			if(!grpSizeIsValid){
+				setGrpSizeIsValid(true)
+			}
 			let difference = 0
 			if ((difference = newNumInt - currGrpMembers.length) > 0 ){
 				const arr = currGrpMembers.concat(Array(difference).fill(""));
@@ -308,6 +320,9 @@ export function GuestList(){
 				grpMembersIsValid.splice(newNumInt)
 				setGrpMemebrsIsValid(validArr)
 			}
+		}
+		else{
+			setGrpSizeIsValid(false)
 		}
 	}
 
@@ -414,8 +429,11 @@ export function GuestList(){
 						type="number"
 						label="Group Size"
 						value={currGrpSize}
+						InputProps={{ inputProps: { min: MIN_GROUP_SIZE, max: MAX_GROUP_SIZE } }}
 						// onChange={e=>setCurrGrpSize(parseInt(e.target.value))}
 						onChange={e=>changeGrpSize(e.target.value)}
+						error={!grpSizeIsValid}
+						helperText={grpSizeIsValid ? "" : GROUP_SIZE_ERROR_TEXT}
 					/>
 					<section>
 						Send Survey?
