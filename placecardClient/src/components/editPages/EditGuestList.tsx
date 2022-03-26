@@ -2,6 +2,7 @@ import { useHistory } from "react-router-dom";
 import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { GuestListTable, GuestListDataInterface } from "../guestList/GuestListTable"
+import { AddGuestPopUp } from "../guestList/AddGuestPopUp";
 import './editGuestList.css';
 import { UploadFile } from "../shared/UploadFile";
 
@@ -66,12 +67,14 @@ export function EditGuestList() {
     const history = useHistory();
     let handleClick =  () => {
         history.push('/eventDash');
-    }  
+    }
 
 	return (
 		<>
 			<h1 className='title'>Edit Your Guest List</h1>
 			<GuestListTable tableData={guestListData} setTableData={setGuestListData} mode="SurveySent"/>
+
+			<AddGuestPopUp guestListData={guestListData} setGuestListData={setGuestListData}/>
 			<section>
 				<span>OR</span><hr/>
 			</section>
