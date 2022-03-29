@@ -10,7 +10,7 @@ const { generateNotFoundMessage, generateCRUDErrorMessage } = require("../../src
 const { SCHEMA_TYPES } = require("../../src/constants/schemaTypes");
 const { UPDATE_ERROR_MESSAGE } = require("../../src/constants/errorMessages");
 
-describe("data/event.js tests", function() {
+describe("data/Event.js tests", function() {
     const validId = "61aecad54d001a2e61933618";
     const nonExistingId = "51aecad54d001a2e61933618";
     const nonExistingObjectId = ObjectId(nonExistingId);
@@ -180,7 +180,6 @@ describe("data/event.js tests", function() {
             eventCollectionsStub.value(newStubConfigs)
 
             const result = await eventFunctions.updateEvent(validId, updatedEventConfig);
-
             expect(result).to.equal(updatedEvent);
         });
 

@@ -7,9 +7,11 @@ function checkPrecondition(value, checkFunction, errorMessage) {
     }
 }
 
-function validateSchema(input, schemaType) {
+function validateSchema(input, schemaType, schemaConfig) {
     const schema = TYPE_TO_SCHEMA[schemaType];
-    const response = schema.validate(input);
+    const validateConfig = schemaConfig || {};
+    const response = schema.validate(input, validateConfig);
+
     if (!isUndefined(response.error)) {
         const errorDetails = response.error.details[0];
         throw new Error(errorDetails.message)

@@ -9,7 +9,23 @@ function isInvalidObjectId(id) {
     return !(ObjectId.isValid(id));
 }
 
+
+function updateFailed(updateInfo) {
+    return updateInfo.matchedCount === 0 || updateInfo.modifiedCount === 0; 
+}
+
+function deleteFailed(deleteInfo) {
+    return deleteInfo.deletedCount === 0;
+}
+
+function createFailed(createInfo) {
+    return createInfo.insertedCount === 0;
+}
+
 module.exports = {
     convertIdToString,
-    isInvalidObjectId
+    isInvalidObjectId,
+    updateFailed,
+    deleteFailed,
+    createFailed
 };

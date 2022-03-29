@@ -3,7 +3,7 @@ const data = require("../src/data");
 const events = data.events;
 const guests = data.guests;
 
-const { uniqueNamesGenerator, Config, countries, names, adjectives, colors, starWars, NumberDictionary } = require('unique-names-generator');
+const { uniqueNamesGenerator, Config, countries, names, adjectives, colors, starWars, NumberDictionary } = require("unique-names-generator");
 const { ObjectId } = require("mongodb");
 
 let eventName = uniqueNamesGenerator({
@@ -38,7 +38,7 @@ let guestNames = uniqueNamesGenerator({
 
 const emailNumber = NumberDictionary.generate({min: 100, max: 999});
 let emails = uniqueNamesGenerator({
-  dictionaries: [adjectives, colors, emailNumber, ['@gmail.com']],
+  dictionaries: [adjectives, colors, emailNumber, ["@gmail.com"]],
   length: 4,
   separator: "",
   style: "capital"
@@ -46,7 +46,7 @@ let emails = uniqueNamesGenerator({
 
 const phoneNumber = NumberDictionary.generate({min: 0, max: 9});
 let phones = uniqueNamesGenerator({
-  dictionaries: [phoneNumber, phoneNumber, phoneNumber, ['-'], phoneNumber, phoneNumber, phoneNumber, ['-'], phoneNumber, phoneNumber, phoneNumber, phoneNumber],
+  dictionaries: [phoneNumber, phoneNumber, phoneNumber, ["-"], phoneNumber, phoneNumber, phoneNumber, ["-"], phoneNumber, phoneNumber, phoneNumber, phoneNumber],
   length: 12,
   separator: ""
 });
@@ -184,7 +184,7 @@ async function main() {
       email: "GuestTen@gmail.com",
       party_size: 3,
       group_id: groupId,
-      group_name: 'Group One',
+      group_name: "Group One",
       survey_response: {
         disliked: [],
         liked: [],
@@ -197,7 +197,7 @@ async function main() {
       email: "GuestEleven@gmail.com",
       party_size: 3,
       group_id: groupId,
-      group_name: 'Group One',
+      group_name: "Group One",
       survey_response: {
         disliked: [],
         liked: [],
@@ -210,7 +210,7 @@ async function main() {
       email: "GuestTwelve@gmail.com",
       party_size: 3,
       group_id: groupId,
-      group_name: 'Group One',
+      group_name: "Group One",
       survey_response: {
         disliked: [],
         liked: [],
@@ -315,24 +315,24 @@ async function main() {
 
   let table_list = [
     {
-      'id': new ObjectId(),
-      'name': 'Table 1',
-      'guests': []
+      "id": new ObjectId(),
+      "name": "Table 1",
+      "guests": []
     },
     {
-      'id': new ObjectId(),
-      'name': 'Table 2',
-      'guests': []
+      "id": new ObjectId(),
+      "name": "Table 2",
+      "guests": []
     },
     {
-      'id': new ObjectId(),
-      'name': 'Table 3',
-      'guests': []
+      "id": new ObjectId(),
+      "name": "Table 3",
+      "guests": []
     },
     {
-      'id': new ObjectId(),
-      'name': 'Table 4',
-      'guests': []
+      "id": new ObjectId(),
+      "name": "Table 4",
+      "guests": []
     }
   ];
 

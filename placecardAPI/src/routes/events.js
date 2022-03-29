@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
-const { events } = require("../data");
+const { events, guests } = require("../data");
 const {
     INVALID_EVENT_ID_MESSAGE,
     EVENT_UNDEFINED_MESSAGE,
@@ -54,8 +54,8 @@ router.get("/guests/:eventId", async (req, res) => {
     try {
         const event = await events.getEvent(eventId);
         const ids = event.guest_list;
-        const guests = await events.getGuests(ids);
-        return res.json(guests);
+        const allGuests = await guests.getGuests(ids);
+        return res.json(allGuests);
     }
     catch (e) {
         return createErrorResponse(
@@ -103,7 +103,7 @@ router.post("/newEvent", async (req, res) => {
     try {
         checkPrecondition(newEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
         checkPrecondition(newEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
-        validateSchema(newEvent, SCHEMA_TYPES.EVENT);
+        validateSchema(newEvent, SCHEMA_TYPES.EVENT, { presence: "required "});
     } catch (e) {
         return createErrorResponse(
             e.message,

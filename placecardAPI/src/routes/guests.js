@@ -52,7 +52,7 @@ router.post("/newGuest/:eventId", async (req, res) => {
     try {
         checkPrecondition(newGuest, _.isUndefined, GUEST_UNDEFINED_MESSAGE);
         checkPrecondition(newGuest, _.isEmpty, GUEST_EMPTY_MESSAGE);
-        validateSchema(newGuest, SCHEMA_TYPES.GUEST);
+        validateSchema(newGuest, SCHEMA_TYPES.GUEST, { presence: "required "});
     } catch (e) {
         return createErrorResponse(
             e.message,
@@ -64,10 +64,8 @@ router.post("/newGuest/:eventId", async (req, res) => {
 
     try {
         const createdGuest = await guests.createGuest(newGuest);
-        let sendSurvey = false;
-        if (createdGuest.survey_response != undefined) {
-            sendSurvey = true;
-        }
+        const sendSurvey = !(_.isUndefined(createdGuest.survey_response));
+        
         await events.addGuest(eventId, createdGuest._id, sendSurvey);
         return res.json(createdGuest);
     } catch (e) {
