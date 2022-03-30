@@ -172,7 +172,6 @@ def prepDBdata(data):
 
     return {'parties': partyDict, 'likes': likesDict, 'dislikes': dislikesDict, 'superLikes': idealDict, 'seatingChart': seatingChart, 'tables': tables, 'perTable': perTable}
 
-
 ########## General Functions ##########
 def chooseBestScore(charts, scores):
     '''Given a  list of charts and a list of scores, returns the chart
