@@ -11,6 +11,7 @@ export function EditGuestList() {
 	const [guestListData, setGuestListData]					= useState<GuestListDataInterface[]>([])
 
 	useEffect( () => {
+
 		const startingGuests: GuestListDataInterface[] = [...guestListData];
 		const startingGroups: any = {};
 		if (window.activeEvent != null) {

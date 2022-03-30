@@ -43,6 +43,7 @@ function GuestListTableRow(props: {tableData:GuestListDataInterface[], guest:Gue
 	}
 
 	function deleteRowData(){
+		console.log(props.tableData)
 		setEditing(false)
 		props.setTableData(
 			[
