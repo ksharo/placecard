@@ -235,6 +235,7 @@ def prepDBdata(data):
 def seatRespondent(id, seatingChart, unseated, people, ideals, likes, dislikes, perTable, limitSpaces=True):
     '''Returns the table the person with id should be sat at along with any 
     friends that should/can be seated with them.'''
+    print(id)
     # find the greatest amount of spaces open at a table
     mostSpaces = 0
     for x in seatingChart:
@@ -248,7 +249,7 @@ def seatRespondent(id, seatingChart, unseated, people, ideals, likes, dislikes, 
         bestFriends = findBestFriends(id, ideals, likes, dislikes, unseated, mostSpaces, people)
     else:
         bestFriends = findBestFriends(id, ideals, likes, dislikes, unseated, mostSpaces*3, people)
-
+    print(bestFriends)
     # find the table where the person, their group (if applicable), and their friends best fit
     table, friends, bestWorstTable = findBestTable(id, seatingChart, people, ideals, likes, dislikes, bestFriends, perTable)
     if table != '':
@@ -340,7 +341,7 @@ def findBestFriends(id, ideals, likes, dislikes, includedGroup, mostSpaces, peop
         # check size of group to see if table is now full
         if mostSpaces - len(curGroup) == 0:
             # check for best score
-            groupScore = scoreGroup(curGroup, people, ideals, likes, dislikes)
+            groupScore = scoreGroup(curGroup, people, ideals, likes, dislikes)['score']
             if groupScore > bestScore:
                 bestGroup = curGroup 
                 bestScore = groupScore 
@@ -366,7 +367,7 @@ def findBestFriends(id, ideals, likes, dislikes, includedGroup, mostSpaces, peop
                             if mostSpaces -len(curGroup) == 0:
                                 break 
             # check for best score using the current group
-            groupScore = scoreGroup(curGroup, people, ideals, likes, dislikes)
+            groupScore = scoreGroup(curGroup, people, ideals, likes, dislikes)['score']
             if groupScore > bestScore:
                 bestGroup = curGroup 
                 bestScore = groupScore            
@@ -410,13 +411,12 @@ def findBestTable(id, seatingChart, people, ideals, likes, dislikes, possibleFri
                 for x in possibleFriends:
                     tmpTable = list(t)
                     tmpFriends = []
-                    ###### WORK HERE ##########
                     # make sure sizes are compatible
                     if x != id and len(people[x]) + len(tmpTable) <= perTable:
                         # make sure people are compatible
                         tmpTableData = scoreGroup(tmpTable + people[x], people, ideals, likes, dislikes)
                         tmpTableScore = tmpTableData['score']
-                        tmpDisCount = tmpTableData['loveDis'] + tmpTableData['disLove'] + tmpTableData['mDis'] + tmpTableData['disLike'] + tmpTableData['likeDis'] + tmpTableData['justDis'] + tmpTableData['nrDis']
+                        tmpDisCount = tmpTableData['idealDis'] + 4*tmpTableData['mDis'] + 2*tmpTableData['likeDis'] + 3*tmpTableData['justDis'] + 3*tmpTableData['nrDis']
                         if tmpDisCount == 0:
                             tmpTable += people[x]
                             tmpFriends += people[x]
@@ -426,8 +426,40 @@ def findBestTable(id, seatingChart, people, ideals, likes, dislikes, possibleFri
                                     bestTmpScore = tmpTableScore 
                                 if len(tmpTable) == perTable:
                                     break 
-                
-
+                                else:
+                                    # go through the rest of friends and see who is compatible 
+                                    # if there is still space left
+                                    for y in possibleFriends:
+                                        if y != id and y not in tmpTable:
+                                            # check if sizes are compatible
+                                            if len(people[y]) + len(tmpTable) <= perTable:
+                                                # check if people are compatible
+                                                tmpTableData = scoreGroup(tmpTable + people[x], people, ideals, likes, dislikes)
+                                                tmpTableScore = tmpTableData['score']
+                                                tmpDisCount = tmpTableData['idealDis'] + 4*tmpTableData['mDis'] + 2*tmpTableData['likeDis'] + 3*tmpTableData['justDis'] + 3*tmpTableData['nrDis']
+                                                if tmpDisCount == 0:
+                                                    tmpTable += people[y]
+                                                    tmpFriends += people[y]
+                                                    if tmpTableScore > bestTmpScore or (noResponse and tmpTableScore == bestTmpScore):
+                                                        bestFriends = list(tmpFriends)
+                                                        bestTmpScore = tmpTableScore
+                                                    if len(tmpTable) == perTable:
+                                                        break
+                if bestTmpScore > bestScore:
+                    bestTable = tableId 
+                    bestScore = bestTmpScore
+                    friends = bestFriends 
+            # there are dislikes here
+            else:
+                if dislikeCount < leastDislikes or leastDislikes == -1:
+                    leastDislikes = dislikeCount
+                    bestDislikeTable = tableId
+    # for now, prioritize fitting everyone. if not possible, 
+    # use the least-filled table
+    if bestDislikeTable == '':
+        bestDislikeTable = bestSmallTable
+    return (bestTable, friends, bestDislikeTable)
+                    
 
 def seatingHelper(table, indId, friends, seatingChart, unseated, seated, people):
     '''Seats the individual, their group (if applicable), and their friends 

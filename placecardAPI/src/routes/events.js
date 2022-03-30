@@ -20,6 +20,33 @@ const { isInvalidObjectId } = require("../utils/mongoUtils");
 const { INVALID_EVENT_ID } = require("../constants/errorTypes");
 const axios = require("axios");
 
+router.get("/guestAccess/:eventId", async(req, res) => {
+    let eventId = req.params.eventId.trim();
+    try {
+        checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID_MESSAGE);
+        checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_EVENT_ID,
+            statusCodes.BAD_REQUEST,
+            res
+        );
+    }
+
+    try {
+        const event = await events.getEvent(eventId);
+        return res.json(event);
+    } catch (e) {
+        return createErrorResponse(
+            generateErrorMessage(e),
+            ERROR_TYPES.EVENT_NOT_FOUND,
+            statusCodes.NOT_FOUND,
+            res
+        );
+    }
+});
+
 router.get("/:eventId", async (req, res) => {
     let eventId = req.params.eventId.trim();
     try {
@@ -84,7 +111,6 @@ router.get("/algorithm/:eventId", async (req, res) => {
 
     try {
         let algorithmData = await events.getAlgorithmData(eventId);
-        console.log(algorithmData);
 
         let event = await events.getEvent(eventId);
 
