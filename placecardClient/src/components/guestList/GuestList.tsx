@@ -8,13 +8,16 @@ import './GuestList.css'
 import { UploadFile } from "../shared/UploadFile";
 
 export function GuestList(){
-	const title				= 'Add a Guest List For Your Event'
-	const pageDescription	= 'Download our guest list template, fill it out, and drop it back here'
+	const TITLE			= 'Add a Guest List For Your Event'
+	const PAGE_DESCRIPTION	= 'Download our guest list template, fill it out, and drop it back here'
 
-	const tableTitle		= 'Enter Guest List Manually'
-	const tableDescription	= 'You only need to provide one method of contact for each guest'
+	const TABLE_TITLE		= 'Enter Guest List Manually'
+	const TABLE_DESCRIPTION	= 'You only need to provide one method of contact for each guest'
+	const DEFAULT_GROUP_SIZE = 5
+	const MIN_GROUP_SIZE	= 1
+	const MAX_GROUP_SIZE	= 25
+
 	const history			= useHistory();
-
 
 	const [guestListData, setGuestListData]					= useState<GuestListDataInterface[]>([])
 
@@ -28,10 +31,35 @@ export function GuestList(){
 
 	const [currGrpName, setCurrGrpName]					= useState("")
 	const [currGrpContact, setCurGrpContact]				= useState('')
-	const [currGrpSize, setCurrGrpSize]					= useState("2")
+	const [currGrpSize, setCurrGrpSize]					= useState(DEFAULT_GROUP_SIZE.toString())
 	const [currGrpSendSurvey, setCurrGrpSendSurvey]			= useState(true)
-	const [currGrpMembers, setCurrGrpMembers]				= useState(["", ""])
+	const [currGrpMembers, setCurrGrpMembers]				= useState(Array(DEFAULT_GROUP_SIZE).fill(""))
 	const [currGrpId, setCurrGrpId] 						= useState((new ObjectId()).toString());
+
+	const NAME_REGEX				= /^[a-zA-z\s.]{2,}$/
+	const NAME_OPTIONAL_REGEX		= /^[a-zA-z\s.]{2,}$|^$/
+	const EMAIL_REGEX				= /^[a-zA-Z.\d!#$%&'*+\-/=?^_`{|}~]+@[a-zA-Z+.-\d]+.[a-zA-z+.-\d]+$/
+	const PHONE_REGEX				= /^[\d-\s()+_#.ext]*$/
+	const PARTY_SIZE_REGEX			= /^[\d]*$/
+
+	const NAME_ERROR_TEXT			= "Name must only contain A - Z, periods, and must be 2 or more character"
+	const NAME_OPTIONAL_ERROR_TEXT	= "Name must only contain A - Z, periods, and must be 2 or more character. Leave blank if no plus one"
+	const EMAIL_ERROR_TEXT			= "Email must contain @ and domain"
+	const PHONE_ERROR_TEXT			= ""
+	const GROUP_SIZE_ERROR_TEXT		= `Group size must be between ${MIN_GROUP_SIZE} and ${MAX_GROUP_SIZE}`
+
+	const [indiIsValid, setIndiIsValid]			= useState({
+		name:		true,
+		contact:		true,
+		plusOneName:	true,
+	})
+
+	const [grpIsValid, setGrpIsValid]				= useState({
+		grpName:		true,
+		grpContact:	true,
+	})
+	const [grpSizeIsValid, setGrpSizeIsValid]		= useState(true)
+	const [grpMembersIsValid, setGrpMemebrsIsValid]	= useState(Array(DEFAULT_GROUP_SIZE).fill(true))
 
 	/* initialize guest list data */
 	useLayoutEffect( () => {
@@ -126,7 +154,57 @@ export function GuestList(){
 		history.push('/editSurvey');
 	}
 
+
+
+	function validateIndi(){
+		console.log(indiIsValid);
+
+		let isValidInput = true
+		if (!NAME_REGEX.test(currIndiName)){
+			setIndiIsValid((prev) => ({...prev, name: false}))
+			isValidInput = false;
+		}
+		if (!NAME_OPTIONAL_REGEX.test(currPlusOneName)){
+			setIndiIsValid((prev) => ({...prev, plusOneName: false}))
+			isValidInput = false;
+		}
+		if (!EMAIL_REGEX.test(currIndiContact)){
+			setIndiIsValid((prev) => ({...prev, contact: false}))
+			isValidInput = false;
+		}
+
+		return isValidInput;
+	}
+
+	function validateGrp(){
+		let isValidInput = true
+
+		if (!NAME_REGEX.test(currGrpName)){
+			setGrpIsValid((prev) => ({...prev, grpName: false}))
+			isValidInput = false;
+		}
+		if (!EMAIL_REGEX.test(currGrpContact)){
+			setGrpIsValid((prev) => ({...prev, grpContact: false}))
+			isValidInput = false;
+		}
+		const newGrpMembersIsValid = [...grpMembersIsValid]
+		currGrpMembers.forEach(function (subgroupMember, index){
+			newGrpMembersIsValid[index] = NAME_REGEX.test(subgroupMember)
+		})
+		setGrpMemebrsIsValid(newGrpMembersIsValid)
+
+		if (!grpSizeIsValid){
+			isValidInput = false;
+		}
+
+		return isValidInput
+	}
+
 	async function addIndiToTable(){
+		if (!validateIndi()){
+			console.log("Frontend Validation Failed")
+			return;
+		}
 		setGuestListData([...guestListData, {
 			"groupName":		currPlusOneName ? (currIndiName + " & " + currPlusOneName) : currIndiName,
 			"groupContact":	currIndiContact,
@@ -163,9 +241,15 @@ export function GuestList(){
 		setCurrIndiSendSurvey(true)
 		setCurrGrpId((new ObjectId()).toString());
 		updateGlobalEvent(guestData);
+
+
 	}
 
 	async function addGrpToTable(){
+		if(!validateGrp()){
+			console.log("Frontend Validation Failed")
+			return;
+		}
 		setGuestListData([...guestListData, {
 			"groupName":		currGrpName,
 			"groupContact":	currGrpContact,
@@ -188,13 +272,15 @@ export function GuestList(){
 		}
 		setCurrGrpName("")
 		setCurGrpContact("")
-		setCurrGrpSize("2")
+		setCurrGrpSize(DEFAULT_GROUP_SIZE.toString())
 		setCurrGrpSendSurvey(true)
-		setCurrGrpMembers(["", ""])
+		setCurrGrpMembers(Array(DEFAULT_GROUP_SIZE).fill(""))
+		setGrpMemebrsIsValid(Array(DEFAULT_GROUP_SIZE).fill(true))
 		setCurrGrpId((new ObjectId()).toString());
 		for (let guestData of allData) {
 			updateGlobalEvent(guestData);
 		}
+
 	}
 
 	function updateGrpMembers(index: number, event: any) {
@@ -211,17 +297,32 @@ export function GuestList(){
 	function changeGrpSize(newNum: string) {
 		setCurrGrpSize(newNum)
 		let newNumInt = parseInt(newNum)
-		if (!isNaN(newNumInt)){
+		if (!isNaN(newNumInt) && newNumInt >= MIN_GROUP_SIZE && newNumInt <= MAX_GROUP_SIZE){
+			if(!grpSizeIsValid){
+				setGrpSizeIsValid(true)
+			}
 			let difference = 0
 			if ((difference = newNumInt - currGrpMembers.length) > 0 ){
 				const arr = currGrpMembers.concat(Array(difference).fill(""));
 				setCurrGrpMembers(arr)
+
+				// add members that are valid to the validation state
+				const validArr = grpMembersIsValid.concat(Array(difference).fill(true));
+				setGrpMemebrsIsValid(validArr)
 			}
 			else if (difference < 0){
 				const arr = currGrpMembers
 				arr.splice(newNumInt)
 				setCurrGrpMembers(arr)
+
+				// Remove our markers on valid or invalid individuals
+				const validArr = grpMembersIsValid
+				grpMembersIsValid.splice(newNumInt)
+				setGrpMemebrsIsValid(validArr)
 			}
+		}
+		else{
+			setGrpSizeIsValid(false)
 		}
 	}
 
@@ -231,20 +332,41 @@ export function GuestList(){
 				<TextField
 					placeholder="Name"
 					value={currIndiName}
-					onChange={e => setCurrIndiName(e.target.value)}
+					onChange={e => {
+						setCurrIndiName(e.target.value);
+						if(!indiIsValid.name && NAME_REGEX.test(e.target.value)){
+							setIndiIsValid((prev) => ({...prev, name: true}))
+						}
+					}}
+					error={!indiIsValid.name}
+					helperText={indiIsValid.name ? "" : NAME_ERROR_TEXT}
 					label="Name"
 				/>
 				<TextField
 					placeholder="Email or Phone"
 					value={currIndiContact}
-					onChange={e => setCurrIndiContact(e.target.value)}
+					onChange={e => {
+						setCurrIndiContact(e.target.value);
+						if(!indiIsValid.contact && EMAIL_REGEX.test(e.target.value)){
+							setIndiIsValid((prev) => ({...prev, contact: true}))
+						}
+					}}
+					error={!indiIsValid.contact}
+					helperText={indiIsValid.contact ? "" : EMAIL_ERROR_TEXT}
 					label="Contact"
 				/>
 				<TextField
 					placeholder="Name"
 					className="plusOneInput"
 					value={currPlusOneName}
-					onChange={(e) => setCurrPlusOneName(e.target.value)}
+					onChange={e => {
+						setCurrPlusOneName(e.target.value);
+						if(!indiIsValid.plusOneName && NAME_OPTIONAL_REGEX.test(e.target.value)){
+							setIndiIsValid((prev) => ({...prev, plusOneName: true}))
+						}
+					}}
+					error={!indiIsValid.plusOneName}
+					helperText={indiIsValid.plusOneName ? "" : NAME_OPTIONAL_ERROR_TEXT}
 					label="Plus One Name (optional)"
 				/>
 
@@ -281,20 +403,37 @@ export function GuestList(){
 						placeholder={namePlaceholder}
 						label="Group Name"
 						value={currGrpName}
-						onChange={e => setCurrGrpName(e.target.value)}
+						onChange={e => {
+							setCurrGrpName(e.target.value);
+							if(!grpIsValid.grpName && NAME_REGEX.test(e.target.value)){
+								setGrpIsValid((prev) => ({...prev, grpName: true}))
+							}
+						}}
+						error={!grpIsValid.grpName}
+						helperText={grpIsValid.grpName ? "" : NAME_ERROR_TEXT}
 					/>
 					<TextField
 						placeholder="Email or Phone Number"
 						label="Group Contact"
 						value={currGrpContact}
-						onChange={e=>setCurGrpContact(e.target.value)}
+						onChange={e => {
+							setCurGrpContact(e.target.value);
+							if(!grpIsValid.grpContact && EMAIL_REGEX.test(e.target.value)){
+								setGrpIsValid((prev) => ({...prev, grpContact: true}))
+							}
+						}}
+						error={!grpIsValid.grpContact}
+						helperText={grpIsValid.grpContact ? "" : EMAIL_ERROR_TEXT}
 					/>
 					<TextField
 						type="number"
 						label="Group Size"
 						value={currGrpSize}
+						InputProps={{ inputProps: { min: MIN_GROUP_SIZE, max: MAX_GROUP_SIZE } }}
 						// onChange={e=>setCurrGrpSize(parseInt(e.target.value))}
 						onChange={e=>changeGrpSize(e.target.value)}
+						error={!grpSizeIsValid}
+						helperText={grpSizeIsValid ? "" : GROUP_SIZE_ERROR_TEXT}
 					/>
 					<section>
 						Send Survey?
@@ -311,7 +450,17 @@ export function GuestList(){
 							label="Member Name"
 							placeholder="Leave Blank if Unknown"
 							value={name}
-							onChange={event=>updateGrpMembers(i, event)}
+							onChange={e => {
+								updateGrpMembers(i, e);
+								if(!grpMembersIsValid[i] && NAME_REGEX.test(e.target.value)){
+									const newGrpMembersIsValid = [...grpMembersIsValid]
+									newGrpMembersIsValid[i] = true
+									setGrpMemebrsIsValid(newGrpMembersIsValid)
+								}
+							}}
+							error={!grpMembersIsValid[i]}
+							helperText={grpMembersIsValid[i] ? "" : NAME_ERROR_TEXT}
+
 						/>
 					))}
 				</section>
@@ -390,8 +539,8 @@ export function GuestList(){
 	return(
 		<>
 			<section>
-				<h1 className='title'>{title}</h1>
-				<p className='subtitle'>{pageDescription}</p>
+				<h1 className='title'>{TITLE}</h1>
+				<p className='subtitle'>{PAGE_DESCRIPTION}</p>
 			</section>
 
 			<UploadFile/>
@@ -410,8 +559,8 @@ export function GuestList(){
 				{ groupAddPopupState && groupPopOut() }
 
 				<section className = "manualGuestListSection">
-					<h3>{tableTitle}</h3>
-					<p>{tableDescription}</p>
+					<h3>{TABLE_TITLE}</h3>
+					<p>{TABLE_DESCRIPTION}</p>
 					<GuestListTable tableData={guestListData} setTableData={setGuestListData} mode="New"/>
 				</section>
 				<Button type="submit" color="primary" variant="contained">Next</Button>
