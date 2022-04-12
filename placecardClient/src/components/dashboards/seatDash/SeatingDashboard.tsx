@@ -672,6 +672,8 @@ export function SeatingDashboard() {
                     newTables.push(x);
                 }
             }
+            tables -= 1;
+            window.activeEvent.tables = newTables;
             setTablesData(newTables);
             setData([[...newTables], [...unseated]]);
         }
