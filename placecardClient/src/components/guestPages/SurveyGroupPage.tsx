@@ -39,7 +39,7 @@ export function SurveyGroupPage(props: {error?: boolean}) {
         },
         {
             field: 'col2', headerName: 'Remove from group', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 3,
-            renderCell: (params) => { return (<Checkbox id={'checkbox' + params.value} onClick={updateInputs}></Checkbox>) }
+            renderCell: (params) => { return (window.curGuest && params.value != window.curGuest.id && <Checkbox id={'checkbox' + params.value} onClick={updateInputs}></Checkbox>) }
         },
         {
             field: 'col1', headerName: 'Email Address', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 3,
