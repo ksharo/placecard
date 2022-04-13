@@ -49,6 +49,8 @@ function App() {
   [window.curGuest, window.setCurGuest] = React.useState(undefined);
   [window.uidState, window.setUID] = React.useState('');
   [window.firstTime, window.setFirstTime] = React.useState(undefined);
+  [window.removedMembers, window.setRemovedMembers] = React.useState([]);
+
   useEffect(() => {
     const getEvents = async () => {
       try {

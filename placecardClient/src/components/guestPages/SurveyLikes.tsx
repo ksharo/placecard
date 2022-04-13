@@ -40,7 +40,7 @@ export function SurveyLikes() {
 
     const columns: GridColDef[] = [
         {
-            field: 'col0', headerName: 'Party Name', headerAlign: 'center', flex: 2,
+            field: 'col0', headerName: 'Name', headerAlign: 'center', flex: 2,
         },
         {
             field: 'col1', headerName: 'Would sit with', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 1,
@@ -126,7 +126,7 @@ export function SurveyLikes() {
 
     return (<>
                 <h1 className='title'>Seating Survey - Part III</h1>
-                <p className='subtitle'>Which of these parties do you feel comfortable sitting with?</p>
+                <p className='subtitle'>Which of these individuals do you feel comfortable sitting with?</p>
                 <section className='stickySearch smallSearch'>
                     <TextField
                         placeholder='Search Guests'
