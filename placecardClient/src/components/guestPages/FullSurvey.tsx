@@ -283,7 +283,12 @@ function removeMember(id: string, email: string) {
             group_id: newGroup,
             email: email,
             group_name: 'N/A',
-            party_size: 1
+            party_size: 1,
+            survey_response: {
+                disliked: [],
+                liked: [],
+                ideal: []
+            },
         })
     };
     return fetch('http://localhost:3001/guests/updateGuest', requestOptions);
