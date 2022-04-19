@@ -85,33 +85,53 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	max-width: 800px;
+	max-width: 900px;
 	margin: auto;
 }
 
-.addButton{
+.addButton {
 	flex: 1 1;
-	padding: 30px;
+	padding: 15px;
 	font-size: 20px;
 }
 
 #addIndividualButton{
-	border-radius: 20px 0 0 20px;
+	border-radius: 10px;
 }
 
 #addCoupleOrGroupButton{
-	border-radius: 0 20px 20px 0;
+	border-radius: 10px;
 }
 
-.buttonPopOut{
-	max-width: 800px;
-	background: rgb(219, 219, 219);
-	margin: auto;
-	padding: 50px;
+.buttonPopOut {
+	max-width: 900px;
+	background: white;
+	margin: 12px auto;
+	padding: 10px 18px 22px 18px;
 	box-sizing: border-box;
 	display: grid;
-	grid-template-columns: [first] 50% [second] 50%;
-	gap: 20px;
+	border: 2px solid #cfcfcf;
+	border-radius: 8px;
+	row-gap: 3px;
+   	column-gap: 12px;
+}
+
+.individualPopOut{
+	grid-template-columns: [first] auto [second] auto [third] auto [fourth] 165px;
+}
+
+.groupPopOut{
+	grid-template-columns: [first] 60% [second] auto;
+	padding-top: 18px;
+}
+
+.sendSurveyInputSection{
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.MuiFormControl-root{
+	width: 100%;
 }
 
 .plusOneInputGroup{
@@ -122,8 +142,55 @@
 	flex:1;
 }
 
-.addButtonGroup{
-	grid-column: span 2;
+.compactNumberComponent {
+    display: flex;
+    flex-direction: row;
+}
+
+.numberComponentAction {
+    display: flex;
+    flex-direction: row;
+    background: #f1f1f1;
+    height: 40px;
+    border-radius: 6px;
+    border: 2px solid #d9d9d9;
+    position: relative;
+}
+
+.compactNumberComponent .MuiFormControl-root {
+    width: 60px;
+    margin-top: 0px !important;
+    position: absolute;
+    left: 50%;
+    margin-left: -30px !important;
+    z-index: 3;
+}
+
+.compactNumberComponent .MuiFormControl-root .MuiInputBase-root{
+	background: white;
+}
+
+.plusButton{
+	padding-left: 34px;
+}
+
+.minusButton{
+	padding-right: 34px;
+}
+
+.compactNumberComponent .numberComponentActionButton {
+	width: 74px;
+    height: 40px;
+    box-shadow: unset !important;
+}
+
+
+.addButtonGroup {
+	grid-column: span 4;
+	text-align: right;
+}
+.addButtonGroup button {
+    width: 130px;
 }
 
 .unknownNameCheckboxGroup{
@@ -133,9 +200,27 @@
 }
 
 .groupInfo {
-	display: flex;
-	flex-direction: column;
+	display: grid;
+	grid-template-columns: 50% 50%;
+	grid-template-rows: 89px 80px;
+	grid-gap: 20px;
 	gap: 20px;
+	padding-right: 10px;
+}
+
+.groupMembers{
+	position: relative;
+    padding-left: 40px;
+}
+
+.groupMembers:before {
+    content: " ";
+    border-left: 1px solid blue;
+    height: 100%;
+    position: absolute;
+    margin-top: auto;
+    margin-bottom: auto;
+    left: 20px;
 }
 
 .downloadTemplate {
