@@ -2,6 +2,20 @@ const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
 const { guests, events } = require("../data");
+const multer = require("multer");
+
+// -> Multer Upload Storage
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, __basedir + "/src/uploads/");
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname);
+    },
+});
+
+const upload = multer({ storage: storage });
+
 const {
     INVALID_GUEST_ID_MESSAGE,
     GUEST_UNDEFINED_MESSAGE,
@@ -217,5 +231,29 @@ router.delete("/:guestId", async (req, res) => {
 });
 
 
+router.post("/fileUpload", upload.single("file"), async (req, res) => {
+    try {
+        let formData = req.file;
+        let fileType = formData.originalname.split(".").pop();
+
+        if (
+            formData.mimetype !== "application/vnd.ms-excel" &&
+            formData.mimetype !==
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
+            formData.mimetype !== "text/csv"
+        ) {
+            return res.status(400).json({
+                error: "Only .xls, .xlsx, and .csv formatted files are allowed!",
+            });
+        }
+
+        let uploadData = await guests.uploadSurveyData(formData.path, fileType);
+
+        res.status(200).json(uploadData);
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({ error: e });
+    }
+});
 
 module.exports = router;

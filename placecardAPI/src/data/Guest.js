@@ -22,6 +22,10 @@ const {
     generateCRUDErrorMessage,
 } = require("../utils/errors");
 const { INVALID_GUEST } = require("../constants/errorTypes");
+const fs = require("fs");
+const excelToJson = require("convert-excel-to-json");
+const csvToJson = require("convert-csv-to-json");
+const xlsx = require("xlsx");
 
 async function getGuest(guestId) {
     checkPrecondition(guestId, isUndefined, INVALID_GUEST_ID_MESSAGE);
@@ -116,9 +120,46 @@ async function deleteGuest(guestId) {
     return true;
 }
 
+async function uploadSurveyData(filePath, fileType) {
+    let data;
+
+    if (fileType === "xlsx" || fileType === "xls") {
+        data = excelToJson({
+            sourceFile: filePath,
+            header: {
+                rows: 1,
+            },
+            columnToKey: {
+                A: "name",
+                B: "email_address",
+                C: "company",
+                D: "github_account",
+            },
+        });
+
+        // Accessing JSON Object via sheet name
+        let workbook = xlsx.readFile(filePath);
+        let firstSheet = workbook.SheetNames[0];
+
+        data = data[firstSheet];
+    }
+
+    if (fileType === "csv") {
+        data = csvToJson.fieldDelimiter(",").getJsonFromCsv(filePath);
+    }
+
+    // Insert survey data into mongo here
+
+    // Delete file after data is read into JSON object
+    fs.unlinkSync(filePath);
+
+    return data;
+}
+
 module.exports = {
     getGuest,
     createGuest,
     updateGuest,
     deleteGuest,
+    uploadSurveyData,
 };
