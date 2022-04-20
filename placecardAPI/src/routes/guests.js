@@ -229,7 +229,6 @@ router.patch("/removeFromGroup/:guestId", async (req, res) => {
     }
 
     try {
-        console.log(guestId)
         const guest = await guests.getGuest(guestId);
     } catch (e) {
         return createErrorResponse(
