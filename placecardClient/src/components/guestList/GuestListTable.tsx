@@ -47,6 +47,7 @@ function GuestListTableRow(props: {tableData:GuestListDataInterface[], guest:Gue
 		// console.log(props.tableData[props.index].id);
 		// delete the person from the database
 
+		setEditing(false)
 		props.setTableData(
 			[
 				...props.tableData.slice(0, props.index),

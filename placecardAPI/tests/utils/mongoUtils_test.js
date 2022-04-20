@@ -30,4 +30,69 @@ describe("mongoUtils.js tests", function() {
             expect(result).to.equal(false);
         });
     });
+
+    describe("updatedFailed function tests", () => {
+        it("should return false if both matchedCount and modifiedCount are not equal to 0", () => {
+            const successUpdateInfo = {
+                matchedCount: 1,
+                modifiedCount: 1
+            };
+            const result = mongoDocumentFile.updateFailed(successUpdateInfo);
+            expect(result).to.be.false;
+        });
+
+        it("should return true if matchedCount is equal to 0", () => {
+            const failUpdateInfo = {
+                matchedCount: 0
+            };
+            const result = mongoDocumentFile.updateFailed(failUpdateInfo);
+            expect(result).to.be.true;
+        });
+
+        it("should return true if modifiedCount is equal to 0", () => {
+            const updateInfo = {
+                modifiedCount: 0
+            };
+            const result = mongoDocumentFile.updateFailed(updateInfo);
+            expect(result).to.be.true;
+        });
+    });
+
+    describe("deleteFailed function tests", () => {
+        it("should return false if deletedCount does not equal 0", () => {
+            const deleteInfo = {
+                deletedCount: 1
+            };
+            const result = mongoDocumentFile.deleteFailed(deleteInfo);
+            expect(result).to.be.false;
+        });
+
+        it("should return true if deletedCount is equal to 0", () => {
+            const deleteInfo = {
+                deletedCount: 0
+            };
+            const result = mongoDocumentFile.deleteFailed(deleteInfo);
+            expect(result).to.be.true;
+        });
+    });
+
+    describe("createFailed function tests", () => {
+        it("should return false if insertedCount is not equal to 0", () => {
+            const insertInfo = {
+                insertedCount: 1
+            };
+
+            const result = mongoDocumentFile.createFailed(insertInfo);
+            expect(result).to.be.false;
+        });
+
+        it("should return true if insertedCount is equal to 0", () => {
+            const insertInfo = {
+                insertedCount: 0
+            };
+
+            const result = mongoDocumentFile.createFailed(insertInfo);
+            expect(result).to.be.true;
+        });
+    });
 });

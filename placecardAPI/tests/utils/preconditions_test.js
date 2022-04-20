@@ -1,6 +1,6 @@
 const expect = require("chai").expect;
 const preconditions = require("../../src/utils/preconditions");
-const { isUndefined, isEmpty, pick } = require("lodash");
+const { isUndefined, isEmpty, omit } = require("lodash");
 const { SCHEMA_TYPES } = require("../../src/constants/schemaTypes");
 const { checkThrowError } = require("../../src/utils/testingUtils");
 
@@ -35,6 +35,13 @@ describe("preconditions.js tests", function() {
             const error = await checkThrowError(preconditions.validateSchema, [originalEvent, SCHEMA_TYPES.EVENT]);
 
             expect(error).to.be.undefined;
+        });
+
+        it("should fail validation if the required presence config is passed in", async () => {
+            const newEvent = omit(originalEvent, ["event_name"]);
+            const error = await checkThrowError(preconditions.validateSchema, [newEvent, SCHEMA_TYPES.EVENT, { presence: "required" }]);
+
+            expect(error).to.not.be.undefined;
         });
     });
 });

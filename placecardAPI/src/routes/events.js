@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
-const { events } = require("../data");
+const { events, guests } = require("../data");
 const {
     INVALID_EVENT_ID_MESSAGE,
     EVENT_UNDEFINED_MESSAGE,
@@ -47,7 +47,7 @@ router.get("/guestAccess/:eventId", async(req, res) => {
     }
 });
 
-router.get("/:eventId", async (req, res) => {
+router.get("/:eventId", async(req, res) => {
     let eventId = req.params.eventId.trim();
     try {
         checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID_MESSAGE);
@@ -80,7 +80,7 @@ router.get("/:eventId", async (req, res) => {
     }
 });
 
-router.get("/algorithm/:eventId", async (req, res) => {
+router.get("/algorithm/:eventId", async(req, res) => {
     // eventId
     // get all the guests from that eventId
     // from there, get guestId, groupId, groupSize, surveyResults
@@ -127,7 +127,7 @@ router.get("/algorithm/:eventId", async (req, res) => {
 });
 
 /* Returns all the guests for a specified event */
-router.get("/guests/:eventId", async (req, res) => {
+router.get("/guests/:eventId", async(req, res) => {
     let eventId = req.params.eventId.trim();
     try {
         const event = await events.getEvent(eventId);
@@ -144,7 +144,7 @@ router.get("/guests/:eventId", async (req, res) => {
     }
 });
 
-router.get("/users/:userId", async (req, res) => {
+router.get("/users/:userId", async(req, res) => {
     let userId = req.params.userId.trim();
     // try {
     //     checkPrecondition(userId, _.isUndefined, INVALID_EVENT_ID_MESSAGE);
@@ -174,13 +174,13 @@ router.get("/users/:userId", async (req, res) => {
     }
 });
 
-router.post("/newEvent", async (req, res) => {
+router.post("/newEvent", async(req, res) => {
     const newEvent = req.body;
     newEvent.last_viewed = Number(Date.parse(new Date()));
     try {
         checkPrecondition(newEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
         checkPrecondition(newEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
-        validateSchema(newEvent, SCHEMA_TYPES.EVENT);
+        validateSchema(newEvent, SCHEMA_TYPES.EVENT, { presence: "required " });
     } catch (e) {
         return createErrorResponse(
             e.message,
@@ -203,7 +203,7 @@ router.post("/newEvent", async (req, res) => {
     }
 });
 
-router.put("/updateEvent/:id", async (req, res) => {
+router.put("/updateEvent/:id", async(req, res) => {
     const updatedEvent = req.body;
     try {
         checkPrecondition(updatedEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
@@ -243,7 +243,7 @@ router.put("/updateEvent/:id", async (req, res) => {
     }
 });
 
-router.patch("/updateEvent/:id", async (req, res) => {
+router.patch("/updateEvent/:id", async(req, res) => {
     const updatedEvent = req.body;
 
     try {
@@ -288,7 +288,7 @@ router.patch("/updateEvent/:id", async (req, res) => {
     }
 });
 
-router.delete("/:eventId", async (req, res) => {
+router.delete("/:eventId", async(req, res) => {
     const eventId = req.params.eventId.trim();
     try {
         checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID_MESSAGE);
