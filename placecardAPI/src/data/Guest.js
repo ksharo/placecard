@@ -129,7 +129,7 @@ async function removeFromGroup(guestId) {
     const guestCollection = await mongoCollections.guests();
     const guestObjectId = ObjectId(guestId);
 
-    const queryParameters = { _id: guestId };
+    const queryParameters = { _id: guestObjectId };
     const updatedDocument = { $unset: {group_id: "", group_name: ""} };
 
     const updateInfo = await guestCollection.updateOne(queryParameters, updatedDocument);
