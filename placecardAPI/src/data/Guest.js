@@ -122,10 +122,31 @@ async function deleteGuest(guestId) {
     return true;
 }
 
+async function removeFromGroup(guestId) {
+    checkPrecondition(guestId, isUndefined, INVALID_GUEST_ID_MESSAGE);
+    checkPrecondition(guestId, isInvalidObjectId, INVALID_GUEST_ID_MESSAGE);
+
+    const guestCollection = await mongoCollections.guests();
+    const guestObjectId = ObjectId(guestId);
+
+    const queryParameters = { _id: guestId };
+    const updatedDocument = { $unset: {group_id: "", group_name: ""} };
+
+    const updateInfo = await guestCollection.updateOne(queryParameters, updatedDocument);
+
+    if (updateFailed(updateInfo)) {
+        throw new Error(generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, GUEST_TYPE));
+    }
+
+    const updatedGuest = await this.getGuest(guestId);
+    return updatedGuest;
+}
+
 module.exports = {
     getGuest,
     getGuests,
     createGuest,
     updateGuest,
-    deleteGuest
+    deleteGuest,
+    removeFromGroup
 };
