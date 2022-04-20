@@ -13,7 +13,12 @@ export function EditSurvey () {
     const defaultSignatureText = 'Thanks! \r\n'+window.firstNameState + ' ' + window.lastNameState;
 
     const sendSurvey = () => {
-        history.push('/sentConf');
+        if (window.activeEvent != null) {
+            for (let x of window.activeEvent.guestList) {
+                console.log(x.name + ' ' + x.contact + ':   http://localhost:3000/' + window.activeEvent.name.replace(' ', '-') + '/beginSurvey?eventId=' + window.activeEvent.id + '&guestId=' + x.id);
+            }
+            history.push('/sentConf');
+        }
     };
 
     const previewSurvey = () => {
