@@ -27,6 +27,7 @@ const excelToJson = require("convert-excel-to-json");
 const csvToJson = require("convert-csv-to-json");
 const xlsx = require("xlsx");
 
+
 async function getGuest(guestId) {
     checkPrecondition(guestId, isUndefined, INVALID_GUEST_ID_MESSAGE);
     checkPrecondition(guestId, isInvalidObjectId, INVALID_GUEST_ID_MESSAGE);
@@ -121,9 +122,11 @@ async function deleteGuest(guestId) {
 }
 
 async function uploadSurveyData(filePath, fileType) {
+    console.log("running guest function")
     let data;
 
     if (fileType === "xlsx" || fileType === "xls") {
+        console.log("excel")
         data = excelToJson({
             sourceFile: filePath,
             header: {
@@ -145,10 +148,53 @@ async function uploadSurveyData(filePath, fileType) {
     }
 
     if (fileType === "csv") {
+        console.log("csv")
+
         data = csvToJson.fieldDelimiter(",").getJsonFromCsv(filePath);
     }
 
     // Insert survey data into mongo here
+    data.sort(function(a,b){
+        if (a["EmailAddress"] > b["EmailAddress"]){
+            return 1
+        }
+        else if (a["EmailAddress"] < b["EmailAddress"]){
+            return -1
+        }
+        else{
+            return 0
+        }
+    })
+
+    console.log(data)
+
+
+
+    let guestArr = []
+    let prevEmailAddress = data[0].EmailAddress
+    let currGroup = {partySize: 0, groupId: new ObjectId(), members: []}
+    for (const d of data){
+        console.log(d)
+        if (d.EmailAddress == prevEmailAddress){
+            currGroup.members.push(d.Name)
+            currGroup.partySize++
+            console.log(currGroup)
+        }
+        else{
+            console.log(currGroup)
+            guestArr.push(currGroup)
+            currGroup = {partySize: 0, groupId: new ObjectId(), members: []}
+            currGroup.members.push(d.Name)
+            currGroup.partySize++
+            prevEmailAddress = d.EmailAddress
+        }
+    }
+    guestArr.push(currGroup)
+
+
+    console.log(guestArr)
+
+
 
     // Delete file after data is read into JSON object
     fs.unlinkSync(filePath);

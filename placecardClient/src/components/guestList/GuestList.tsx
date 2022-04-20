@@ -95,7 +95,7 @@ export function GuestList(){
 
 		let data = new FormData();
 		// if (userFile != undefined) {
-        //   	data.append('file', userFile);
+          // 	data.append('file', userFile);
 		// }
 
 		// if(userFile && userFile['name']){

@@ -12,21 +12,22 @@ export function UploadFile() {
 		setUserFile(selectedFile)
      	// const reader = new FileReader();
 		let data = new FormData();
-          data.append('file', selectedFile);
+            data.append('file', selectedFile);
 
-		// const requestOptions = {
-		// 	method: 'POST',
-		// 	headers: {
-		// 		'Content-Type': 'application/json'
-		// 	}
-		// };
-		// return fetch('http://localhost:3001/guestList/fileUpload', requestOptions);
+		const requestOptions = {
+			method: 'POST',
+			// headers: {
+			// 	'Content-Type': 'application/json'
+			// },
+            body: data
+		};
+		return fetch('http://localhost:3001/guests/fileUpload', requestOptions);
 	}
-    
+
     return (
         <section className='fileUploadSection'>
         <a href={template} className='downloadTemplate' download="Placecard_Guestlist_Template.xlsx">
-                <AiOutlineFileExcel size={30}/> 
+                <AiOutlineFileExcel size={30}/>
                 <span>Download our Template!</span>
         </a>
         <section className="fileUploadButtonSection">

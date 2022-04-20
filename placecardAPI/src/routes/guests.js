@@ -232,8 +232,10 @@ router.delete("/:guestId", async (req, res) => {
 
 
 router.post("/fileUpload", upload.single("file"), async (req, res) => {
+    console.log("hitting file upload")
     try {
         let formData = req.file;
+        console.log(req)
         let fileType = formData.originalname.split(".").pop();
 
         if (
@@ -247,6 +249,7 @@ router.post("/fileUpload", upload.single("file"), async (req, res) => {
             });
         }
 
+        console.log("about to proces file")
         let uploadData = await guests.uploadSurveyData(formData.path, fileType);
 
         res.status(200).json(uploadData);
