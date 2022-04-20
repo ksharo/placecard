@@ -36,7 +36,7 @@ export function SurveyIdealTable() {
 
     const columns: GridColDef[] = [
         {
-            field: 'col0', headerName: 'Party Name', headerAlign: 'center', flex: 4,
+            field: 'col0', headerName: 'Name', headerAlign: 'center', flex: 4,
         },
         {
             field: 'col2', headerName: 'Include at table', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 2,
@@ -149,7 +149,7 @@ export function SurveyIdealTable() {
 
     return (<>
                 <h1 className='title'>Seating Survey - Part IV</h1>
-                <p className='subtitle'>Create your ideal table! Choose up to {sizeLeft} of the parties you are comfortable <br/>with (from the previous page) to fill up your table.</p>
+                <p className='subtitle'>Create your ideal table! Choose up to {sizeLeft} of the individuals you are comfortable with (from the previous page) to fill up your table.</p>
                 <section className='stickySearch smallSearch'>
                     <TextField
                         placeholder='Search Guests'

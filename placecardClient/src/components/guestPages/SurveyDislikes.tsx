@@ -32,7 +32,7 @@ export function SurveyDislikes() {
 
     const columns: GridColDef[] = [
         {
-            field: 'col0', headerName: 'Party Name', headerAlign: 'center', flex: 2,
+            field: 'col0', headerName: 'Name', headerAlign: 'center', flex: 2,
         },
         {
             field: 'col1', headerName: 'Do not sit with', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 1,
@@ -121,7 +121,7 @@ export function SurveyDislikes() {
     
     return (<>
                 <h1 className='title'>Seating Survey - Part II</h1>
-                <p className='subtitle'>Which of these parties do you want to avoid sitting with?</p>
+                <p className='subtitle'>Which of these individuals do you want to avoid sitting with?</p>
                 <section className='stickySearch smallSearch'>
                     <TextField
                         placeholder='Search Guests'

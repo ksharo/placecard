@@ -17,25 +17,65 @@ const { SCHEMA_TYPES } = require("../constants/schemaTypes");
 const EVENT_TYPE = SCHEMA_TYPES.EVENT;
 const EVENT_TYPE_PATCH = SCHEMA_TYPES.EVENT_PATCH;
 const { validateSchema, checkPrecondition } = require("../utils/preconditions");
+const { guests } = require("../../config/mongoConfig/mongoCollections");
+const guestFns = require("./Guest");
 
 async function getEvent(eventId) {
     checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
     checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
-    
+
     const eventCollection = await mongoCollections.events();
     const eventObjectId = ObjectId(eventId);
     const queryParameters = {
-      _id: eventObjectId,
+        _id: eventObjectId,
     };
-    
+
     const event = await eventCollection.findOne(queryParameters);
     checkPrecondition(
-      event,
-      isNull,
-      generateNotFoundMessage(NO_EVENT_FOUND_MESSAGE, eventId)
+        event,
+        isNull,
+        generateNotFoundMessage(NO_EVENT_FOUND_MESSAGE, eventId)
     );
-  
+
     return convertIdToString(event);
+}
+
+async function getAlgorithmData(eventId) {
+    checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
+    checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
+
+    const eventCollection = await mongoCollections.events();
+    const eventObjectId = ObjectId(eventId);
+    const queryParameters = {
+        _id: eventObjectId,
+    };
+
+    const event = await eventCollection.findOne(queryParameters);
+    checkPrecondition(
+        event,
+        isNull,
+        generateNotFoundMessage(NO_EVENT_FOUND_MESSAGE, eventId)
+    );
+
+    let guestList = event.guest_list;
+    let algorithmData = [];
+    for (let guestId of guestList) {
+        let guestInfo = await guestFns.getGuest(guestId);
+        let group_id = guestInfo.group_id;
+        let party_size = guestInfo.party_size;
+        let survey_response = guestInfo.survey_response;
+
+        let guestAlgorithmInfo = {
+            guestId: guestId,
+            group_id: group_id,
+            party_size: party_size,
+            survey_response: survey_response,
+        };
+
+        algorithmData.push(guestAlgorithmInfo);
+    }
+
+    return algorithmData;
 }
 
 async function getUserEvents(userId) {
@@ -50,7 +90,10 @@ async function getUserEvents(userId) {
         // _userId: userObjectId,
         _userId: userId,
     };
-    const userEvents = await eventCollection.find(queryParameters).sort( { last_viewed: -1 }).toArray();
+    const userEvents = await eventCollection
+        .find(queryParameters)
+        .sort({ last_viewed: -1 })
+        .toArray();
     // Do we need to check if events array is empty for a user?
     // checkPrecondition(
     //     userEvents,
@@ -92,11 +135,10 @@ async function addGuest(eventId, guestId, sendSurvey) {
         if (sendSurvey) {
             surveys.push(guestId);
         }
-        const updatedConfig = {guest_list: guests, surveys_sent: surveys};
+        const updatedConfig = { guest_list: guests, surveys_sent: surveys };
         await updateEvent(eventId, updatedConfig, "PATCH");
         return;
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e);
         throw new Error(generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE));
     }
@@ -117,25 +159,54 @@ async function updateEvent(eventId, updatedEventConfig, updateType) {
     const eventCollection = await mongoCollections.events();
     const eventObjectId = ObjectId(eventId);
 
-    const queryParameters = { _id: eventObjectId};
+    const queryParameters = { _id: eventObjectId };
     const updatedDocument = { $set: updatedEventConfig };
 
-    const updateInfo = await eventCollection.updateOne(queryParameters, updatedDocument);
 
-    if (updateFailed(updateInfo)) {
-        throw new Error(generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE));
+    const updateInfo = await eventCollection.updateOne(
+        queryParameters,
+        updatedDocument
+    );
+    if (
+        updateInfo.matchedCount === 0 ||
+        (updateType === "PUT" && updateInfo.modifiedCount === 0)
+    ) {
+        throw new Error(
+            generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE)
+        );
     }
+    try {
+        const updatedEvent = await this.getEvent(eventId);
+        return updatedEvent;
+    } catch {
+        const updatedEvent = await getEvent(eventId);
+        return updatedEvent;
+    }
+}
 
-    const updatedEvent = await this.getEvent(eventId);
-    return updatedEvent;
+async function getGuests(ids) {
+    const guestCollection = await guests();
+    try {
+        ids = ids.map((id) => {
+            return ObjectId(id);
+        });
+        const matchingGuests = await guestCollection.find({
+            _id: { $in: ids },
+        });
+        return matchingGuests.toArray();
+    } catch (e) {
+        throw new Error(
+            generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE)
+        );
+    }
 }
 
 async function deleteEvent(eventId) {
-  checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
-  checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
+    checkPrecondition(eventId, isUndefined, INVALID_EVENT_ID_MESSAGE);
+    checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
 
-  const eventCollection = await mongoCollections.events();
-  const eventObjectId = ObjectId(eventId);
+    const eventCollection = await mongoCollections.events();
+    const eventObjectId = ObjectId(eventId);
 
     const queryParameters = {
         _id: eventObjectId,
@@ -150,10 +221,12 @@ async function deleteEvent(eventId) {
 }
 
 module.exports = {
+    getAlgorithmData,
     getEvent,
     getUserEvents,
     createEvent,
     updateEvent,
     deleteEvent,
-    addGuest
+    getGuests,
+    addGuest,
 };

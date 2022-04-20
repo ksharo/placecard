@@ -126,13 +126,17 @@ def prepDBdata(data):
     dislikesDict = {}
     groups = {}
     # initialize dictionaries
-    for x in data.guests:
-        partySize = x.party_size
-        responses = x.survey_responses
-        partyId = x._id
+    for x in data['algorithmData']:
+        print(x)
+        partySize = x['party_size']
+        if 'survey_response' not in x:
+            responses = {'liked': [], 'disliked': [], 'ideal': []}
+        else:
+            responses = x['survey_response']
+        partyId = x['guestId']
         # if it is a group...
         if partySize > 1:
-            groupId = x.group_id
+            groupId = x['group_id']
             if groupId in groups:
                 groups[groupId].append(partyId)
                 partyDict[partyId] = groups[groupId]
@@ -143,23 +147,30 @@ def prepDBdata(data):
         else:
             partyDict[partyId] = [partyId]
         # fill in dicts
-        if partyId not in partyDict:
-            likesDict[partyId] = responses.liked
-            idealDict[partyId] = responses.ideal
-            dislikesDict[partyId] = responses.disliked
-
-    # IDEA! make partyDict the list of ids in that group so then it would be partyDict[indId].length to get the size
-
+        likes = responses['liked']
+        likedIds = []
+        for x in likes:
+            likedIds.append(x['id'])
+        ideals = responses['ideal']
+        idealIds = []
+        for x in ideals:
+            idealIds.append(x['id'])
+        dislikes = responses['disliked']
+        dislikedIds = []
+        for x in dislikes:
+            dislikedIds.append(x['id'])
+        likesDict[partyId] = likedIds
+        idealDict[partyId] = idealIds
+        dislikesDict[partyId] = dislikedIds
     # get initial table data
-    perTable = data.per_table
+    perTable = data['tableSize']
     seatingChart = {}
     tables = []
-    for x in data.tables:
-        tables.append(x.name)
-        seatingChart[x.name] = list(x.guests)
+    for x in data['tables']:
+        tables.append(x['id'])
+        seatingChart[x['id']] = list(x['guests'])
 
-    return {'parties': partyDict, 'likes': likesDict, 'dislikes': dislikesDict, 'superLikes': idealDict, 'chart': seatingChart, 'tables': tables, 'perTable': perTable}
-
+    return {'parties': partyDict, 'likes': likesDict, 'dislikes': dislikesDict, 'superLikes': idealDict, 'seatingChart': seatingChart, 'tables': tables, 'perTable': perTable}
 
 ########## General Functions ##########
 def chooseBestScore(charts, scores):
@@ -769,7 +780,6 @@ def seatingHelper(table, partyID, unseatedFriends, seatingChart, unseated, seate
     if partyID in unseated:
         unseated.remove(partyID)
         for x in parties[partyID]:
-            print(x, seatingChart[table])
             seatingChart[table].append(x)
             seatedParties[x] = table
             if x in unseated:
@@ -779,7 +789,6 @@ def seatingHelper(table, partyID, unseatedFriends, seatingChart, unseated, seate
         if y in seatedParties:
             t = seatedParties[y]
             for x in parties[y]:
-                print(x, seatingChart[table])
                 seatingChart[table].append(x)
                 seatedParties[x] = table
                 if x in t:
@@ -788,12 +797,10 @@ def seatingHelper(table, partyID, unseatedFriends, seatingChart, unseated, seate
         if y in unseated:
             unseated.remove(y)
             for x in parties[y]:
-                print(x, seatingChart[table])
                 seatingChart[table].append(x)
                 seatedParties[x] = table
                 if x in unseated:
                     unseated.remove(x)
-    # print(unseated, seatedParties)
     return (seatingChart, unseated, seatedParties)
 
 def refreshVariables(origChart, parties):
@@ -1221,14 +1228,13 @@ def main(dbData):
         origChart = {}
     else:
         data = prepDBdata(dbData)
-        tableNames = data.tables
-        perTable = data.perTable
-        origChart = data.seatingChart
+        tableNames = data['tables']
+        perTable = data['perTable']
+        origChart = data['seatingChart']
     parties = data['parties']
     loves = data['superLikes']
     likes = data['likes']
     dislikes = data['dislikes']
-    print(parties)
     
     # idGroups = findAllGroupings(parties, loves, likes, dislikes)
     # seatingChart = seatParties({}, parties, dict(idGroups), loves, likes, dislikes, tableNames, perTable)

@@ -49,6 +49,8 @@ function App() {
   [window.curGuest, window.setCurGuest] = React.useState(undefined);
   [window.uidState, window.setUID] = React.useState('');
   [window.firstTime, window.setFirstTime] = React.useState(undefined);
+  [window.removedMembers, window.setRemovedMembers] = React.useState([]);
+
   useEffect(() => {
     const getEvents = async () => {
       try {
@@ -171,11 +173,11 @@ function App() {
           <Switch>
             <Route exact path='/' component={ Home }/>
             {/* <Route exact path='/newAccount' component={ NewAccount }/> */}
-            <Route exact path='/beginSurvey' component={ GuestConfirmation }/>
+            <Route path='/:eventName*/beginSurvey' component={ GuestConfirmation }/>
             {/* <Route exact path='/surveyPt1' component={ SurveyPt1WithAges }/> */}
             {/* <Route exact path='/surveyPt2' component={ SurveyPt2 }/> */}
             {/* <Route exact path='/surveyPt1' component={ SurveyPt1SitTogether }/> */}
-            <Route exact path='/takeSurvey' component={FullSurvey}/>
+            <Route exact path='/:eventName*/takeSurvey' component={FullSurvey}/>
             {/* <Route exact path='/surveyInstructions' component={ SurveyInstructions }/>
             <Route exact path='/editGroup' component={ SurveyGroupPage }/>
             <Route exact path='/surveyDislikes' component={ SurveyDislikes }/>

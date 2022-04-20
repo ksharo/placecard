@@ -631,6 +631,33 @@ export function SeatingDashboard() {
         }
     };
 
+    const generatePlan = async () => {
+        if (window.activeEvent != null) {
+            const seatingChart = await fetch('http://localhost:3001/events/algorithm/'+window.activeEvent.id);
+            const chartData = await seatingChart.json();
+            const chartAnswer = chartData.answer;
+            let tmpTables = [...window.activeEvent.tables];
+            for (let x of tmpTables) {
+                const tmpGuests = chartAnswer[x.id];
+                const newGuests: Invitee[] = [];
+                for (let guest of tmpGuests) {
+                    const tmpGuest = window.activeEvent.guestList.filter((g) => {return g.id==guest})[0];
+                    newGuests.push(tmpGuest);
+                }
+                x.guests = newGuests;
+            }
+            tmpTables = JSON.parse(JSON.stringify(tmpTables));
+            for (let x of tmpTables) {
+                x = JSON.parse(JSON.stringify(x));
+                x.guests = [...x.guests];
+            }
+            console.log(tmpTables);
+            setTablesData(tmpTables);
+            setUnseated([]);
+            setData([tmpTables, []]);
+        }
+    }
+
     const deleteTable = () => {
         if (window.activeEvent != null) {
             let emptyTables = tablesData.filter( (table) => {return table.guests.length==0});
@@ -645,6 +672,8 @@ export function SeatingDashboard() {
                     newTables.push(x);
                 }
             }
+            tables -= 1;
+            window.activeEvent.tables = newTables;
             setTablesData(newTables);
             setData([[...newTables], [...unseated]]);
         }
@@ -744,7 +773,7 @@ export function SeatingDashboard() {
                                                                 <section className={`guestName ${snapshot.isDragging ? "draggingGuest" : "placedGuest"}`} ref={provided.innerRef}
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}>
-                                                                    <span className='cornerText'>{(guest.groupName==undefined ? 'No Group' : guest.groupName)}</span>
+                                                                    <span className='cornerText'>{(guest.groupName==undefined || guest.groupName=='N/A' ? 'No Group' : guest.groupName)}</span>
                                                                     <br/>
                                                                     {guest.name}
                                                                 </section>
@@ -777,7 +806,7 @@ export function SeatingDashboard() {
                             &#160;&#160;|&#160;&#160;
                             <Button variant='text' className='whiteTxtBtn' size='small' onClick={clearAll}>Clear All</Button>
                             &#160;&#160;|&#160;&#160;
-                            <Button variant='text' className='whiteTxtBtn' size='medium'>Generate New Plan</Button>
+                            <Button variant='text' className='whiteTxtBtn' size='medium' onClick={generatePlan}>Generate New Plan</Button>
                             </>}/>
                         {/* Body of seating chart, containing the table boxes */}
                             <Grid container spacing={{xs:1, md: 2, lg: 1}} columns={{ xs: 1, md: 2, lg: 3 }}>
@@ -813,7 +842,7 @@ export function SeatingDashboard() {
                                                                                         <section className={`guestName ${snapshot.isDragging ? "draggingGuest" : "placedGuest"}`} ref={provided.innerRef}
                                                                                         {...provided.draggableProps}
                                                                                         {...provided.dragHandleProps}>
-                                                                                            <span className='cornerText'>{(guest.groupName==undefined ? 'No Group' : guest.groupName)}</span>
+                                                                                            <span className='cornerText'>{(guest.groupName==undefined || guest.groupName=='N/A' ? 'No Group' : guest.groupName)}</span>
                                                                                             {guest.groupName != undefined && !isGroupTogether(guest.groupID) && 
                                                                                             <Tooltip title={<span>Group is separated.<br/>Click to seat group together.</span>}>
                                                                                                 <IconButton className='infoError' onClick={() => seatGroupTogether(table.id, guest.groupID)}>
