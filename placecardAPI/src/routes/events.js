@@ -18,6 +18,34 @@ const statusCodes = require("../constants/statusCodes");
 const ERROR_TYPES = require("../constants/errorTypes");
 const { isInvalidObjectId } = require("../utils/mongoUtils");
 const { INVALID_EVENT_ID } = require("../constants/errorTypes");
+const axios = require("axios");
+
+router.get("/guestAccess/:eventId", async(req, res) => {
+    let eventId = req.params.eventId.trim();
+    try {
+        checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID_MESSAGE);
+        checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_EVENT_ID,
+            statusCodes.BAD_REQUEST,
+            res
+        );
+    }
+
+    try {
+        const event = await events.getEvent(eventId);
+        return res.json(event);
+    } catch (e) {
+        return createErrorResponse(
+            generateErrorMessage(e),
+            ERROR_TYPES.EVENT_NOT_FOUND,
+            statusCodes.NOT_FOUND,
+            res
+        );
+    }
+});
 
 router.get("/:eventId", async (req, res) => {
     let eventId = req.params.eventId.trim();
@@ -35,8 +63,12 @@ router.get("/:eventId", async (req, res) => {
 
     try {
         // const event = await events.getEvent(eventId);
-        const updatedConfig = {last_viewed: Number(Date.parse(new Date()))};
-        const updatedEvent = await events.updateEvent(eventId, updatedConfig, "PUT");
+        const updatedConfig = { last_viewed: Number(Date.parse(new Date())) };
+        const updatedEvent = await events.updateEvent(
+            eventId,
+            updatedConfig,
+            "PUT"
+        );
         return res.json(updatedEvent);
     } catch (e) {
         return createErrorResponse(
@@ -48,6 +80,52 @@ router.get("/:eventId", async (req, res) => {
     }
 });
 
+router.get("/algorithm/:eventId", async (req, res) => {
+    // eventId
+    // get all the guests from that eventId
+    // from there, get guestId, groupId, groupSize, surveyResults
+
+    let eventId = req.params.eventId.trim();
+    try {
+        checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID_MESSAGE);
+        checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_EVENT_ID,
+            statusCodes.BAD_REQUEST,
+            res
+        );
+    }
+
+    try {
+        let event = await events.getEvent(eventId);
+    } catch (e) {
+        return createErrorResponse(
+            generateErrorMessage(e),
+            ERROR_TYPES.EVENT_NOT_FOUND,
+            statusCodes.NOT_FOUND,
+            res
+        );
+    }
+
+    try {
+        let algorithmData = await events.getAlgorithmData(eventId);
+
+        let event = await events.getEvent(eventId);
+
+        let { data } = await axios.post("http://127.0.0.1:5000/flask", {
+            algorithmData: algorithmData,
+            tableSize: event.attendees_per_table,
+            tables: event.tables,
+        });
+        res.status(200).json(data);
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({ error: e });
+    }
+});
+
 /* Returns all the guests for a specified event */
 router.get("/guests/:eventId", async (req, res) => {
     let eventId = req.params.eventId.trim();
@@ -56,8 +134,7 @@ router.get("/guests/:eventId", async (req, res) => {
         const ids = event.guest_list;
         const guests = await events.getGuests(ids);
         return res.json(guests);
-    }
-    catch (e) {
+    } catch (e) {
         return createErrorResponse(
             generateErrorMessage(e),
             ERROR_TYPES.EVENT_NOT_FOUND,
