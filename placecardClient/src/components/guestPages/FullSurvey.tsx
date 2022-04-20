@@ -124,7 +124,8 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
     };
 
     if (props != undefined && props.preview) {
-        /* Don't include last two pages in preview for sizing/usability purposes */
+        /* Don't include last three pages in preview for sizing/usability purposes */
+        pages.pop();
         pages.pop();
         pages.pop();
         pages.push(
@@ -222,15 +223,18 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
     return (
         <>
             {pages[curPage]}
-            {curPage == 0 || curPage == pages.length-1 ? <Button variant='contained' className='basicBtn fitBtn' onClick={nextPage}>Continue</Button> :
-                curPage == pages.length - 2 ?
+            {curPage == 0 || ((!props || !props.preview) && curPage == pages.length-1) ? <Button variant='contained' className='basicBtn fitBtn' onClick={nextPage}>Continue</Button> :
+                curPage == pages.length - 2 && (!props || !props.preview)?
                     <></>
                     :
-                    curPage == pages.length - 3 ?
+                    props && props.preview && curPage == pages.length - 2 || ((!props || !props.preview) && curPage == pages.length - 3) ?
                         <>
                             <Button variant='contained' className='basicBtn fitBtn generalButton' onClick={prevPage}>Go Back</Button>
                             <Button variant='contained' className='basicBtn fitBtn generalButton' onClick={nextPage}>Finish!</Button>
                         </>
+                        :
+                        props && props.preview && curPage == pages.length-1 ? 
+                        <></> 
                         :
                         <>
                             <Button variant='contained' className='basicBtn fitBtn generalButton' onClick={prevPage}>Go Back</Button>
