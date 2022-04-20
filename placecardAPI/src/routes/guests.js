@@ -214,6 +214,45 @@ router.delete("/:guestId", async (req, res) => {
     }
 });
 
+router.patch("/removeFromGroup/:guestId", async (req, res) => {
+    const guestId = req.params.guestId.trim();
+
+    try {
+        checkPrecondition(guestId, _.isUndefined, INVALID_GUEST_ID_MESSAGE);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.INVALID_GUEST,
+            statusCodes.BAD_REQUEST,
+            res
+        );
+    }
+
+    try {
+        console.log(guestId)
+        const guest = await guests.getGuest(guestId);
+    } catch (e) {
+        return createErrorResponse(
+            generateErrorMessage(e),
+            ERROR_TYPES.GUEST_NOT_FOUND,
+            statusCodes.NOT_FOUND,
+            res
+        );
+    }
+
+    try {
+        const updatedGuestRet = await guests.removeFromGroup(guestId);
+        return res.json(updatedGuestRet);
+    } catch (e) {
+        return createErrorResponse(
+            e.message,
+            ERROR_TYPES.GUEST_NOT_FOUND,
+            statusCodes.INTERNAL_SERVER,
+            res
+        );
+    }
+});
+
 
 
 module.exports = router;
