@@ -1,6 +1,6 @@
 const { isUndefined, isEmpty } = require("lodash");
 const { checkPrecondition, validateSchema } = require("../utils/preconditions");
-const { guests } = require("../../config/mongoConfig/mongoCollections");
+const { guests, events } = require("../../config/mongoConfig/mongoCollections");
 const {
     INVALID_GUEST_ID_MESSAGE,
     GUEST_EMPTY_MESSAGE,
@@ -122,11 +122,9 @@ async function deleteGuest(guestId) {
 }
 
 async function uploadSurveyData(filePath, fileType) {
-    console.log("running guest function")
     let data;
 
     if (fileType === "xlsx" || fileType === "xls") {
-        console.log("excel")
         data = excelToJson({
             sourceFile: filePath,
             header: {
@@ -148,7 +146,6 @@ async function uploadSurveyData(filePath, fileType) {
     }
 
     if (fileType === "csv") {
-        console.log("csv")
 
         data = csvToJson.fieldDelimiter(",").getJsonFromCsv(filePath);
     }
@@ -197,68 +194,80 @@ async function uploadSurveyData(filePath, fileType) {
         'ksharo@stevens.edu': [ 'Kaitlyn Sharo' ],
         'tjtayo@gmail.com': [ 'Thad Tayo', 'Damien Tayo', 'Dion Tayo' ],
         'gaustria@stevens.edu': [ 'Gil Austria' ]
-        }        
+        }
 
     */
     let returnData = [];
     for (const [email, members] of Object.entries(emails)) {
         if (members.length > 1) {
-            let groupname = members.join(",");
-            groupname = groupname + " group";
+            let groupName = members.join(",");
+            groupName = groupName + " group";
             returnData.push({
-                groupname: groupname,
-                contact: email,
-                members: members,
+                groupName: groupName,
+                groupContact: email,
+                groupMembers: members,
             });
         } else {
             returnData.push({
-                groupname: members[0],
-                contact: email,
-                members: members,
+                groupName: members[0],
+                groupContact: email,
+                groupMembers: [],
             });
         }
     }
 
-    // Insert survey data into mongo here
-    data.sort(function(a,b){
-        if (a["EmailAddress"] > b["EmailAddress"]){
-            return 1
-        }
-        else if (a["EmailAddress"] < b["EmailAddress"]){
-            return -1
+    for (const retGroup of returnData){
+        if (retGroup.groupMembers.length > 0){
+
         }
         else{
-            return 0
-        }
-    })
-
-    console.log(data)
-
-
-
-    let guestArr = []
-    let prevEmailAddress = data[0].EmailAddress
-    let currGroup = {partySize: 0, groupId: new ObjectId(), members: []}
-    for (const d of data){
-        console.log(d)
-        if (d.EmailAddress == prevEmailAddress){
-            currGroup.members.push(d.Name)
-            currGroup.partySize++
-            console.log(currGroup)
-        }
-        else{
-            console.log(currGroup)
-            guestArr.push(currGroup)
-            currGroup = {partySize: 0, groupId: new ObjectId(), members: []}
-            currGroup.members.push(d.Name)
-            currGroup.partySize++
-            prevEmailAddress = d.EmailAddress
+            createGuest({
+                first_name: retGroup.groupName,
+                email: retGroup.groupContact,
+                party_size: 1,
+            })
         }
     }
-    guestArr.push(currGroup)
+    // createGuest({
+    //     first_name
+    // })
 
+    // Insert survey data into mongo here
+    // data.sort(function(a,b){
+    //     if (a["EmailAddress"] > b["EmailAddress"]){
+    //         return 1
+    //     }
+    //     else if (a["EmailAddress"] < b["EmailAddress"]){
+    //         return -1
+    //     }
+    //     else{
+    //         return 0
+    //     }
+    // })
 
-    console.log(guestArr)
+    // console.log(data)
+
+    // let guestArr = []
+    // let prevEmailAddress = data[0].EmailAddress
+    // let currGroup = {partySize: 0, groupId: new ObjectId(), members: []}
+    // for (const d of data){
+    //     console.log(d)
+    //     if (d.EmailAddress == prevEmailAddress){
+    //         currGroup.members.push(d.Name)
+    //         currGroup.partySize++
+    //         console.log(currGroup)
+    //     }
+    //     else{
+    //         console.log(currGroup)
+    //         guestArr.push(currGroup)
+    //         currGroup = {partySize: 0, groupId: new ObjectId(), members: []}
+    //         currGroup.members.push(d.Name)
+    //         currGroup.partySize++
+    //         prevEmailAddress = d.EmailAddress
+    //     }
+    // }
+    // guestArr.push(currGroup)
+    // console.log(guestArr)
 
 
 

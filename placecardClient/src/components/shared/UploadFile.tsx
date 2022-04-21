@@ -4,7 +4,7 @@ import '../guestList/GuestList.css';
 import template from '../../assets/Placecard_Guestlist_Template.png';
 import { AiOutlineFileExcel } from "react-icons/ai";
 
-export function UploadFile() {
+export function UploadFile(props: {setTableData:Function}) {
 	const [userFile, setUserFile] = useState(undefined);
 
     const fileSelected = (event: any) => {
@@ -21,6 +21,9 @@ export function UploadFile() {
 			// },
             body: data
 		};
+        fetch('http://localhost:3001/guests/fileUpload', requestOptions)
+            .then(response => response.json())
+            .then(data => {console.log(data); props.setTableData(data)})
 		return fetch('http://localhost:3001/guests/fileUpload', requestOptions);
 	}
 

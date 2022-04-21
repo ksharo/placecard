@@ -119,7 +119,7 @@ export function GuestList(){
 				<p className='subtitle'>{PAGE_DESCRIPTION}</p>
 			</section>
 
-			<UploadFile/>
+			<UploadFile setTableData={setGuestListData}/>
 
 			<section>
 				<span>OR</span><hr/>
