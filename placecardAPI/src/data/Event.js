@@ -2,7 +2,7 @@ const { isUndefined, isEmpty, isNull } = require("lodash");
 const { ObjectId } = require("mongodb");
 const { events } = require("../../config/mongoConfig/mongoCollections");
 const mongoCollections = require("../../config/mongoConfig/mongoCollections");
-const { convertIdToString, isInvalidObjectId } = require("../utils/mongoUtils");
+const { convertIdToString, isInvalidObjectId, updateFailed, deleteFailed, createFailed } = require("../utils/mongoUtils");
 const {
     INVALID_EVENT_ID_MESSAGE,
     NO_EVENT_FOUND_MESSAGE,
@@ -12,13 +12,10 @@ const {
     UPDATE_ERROR_MESSAGE,
     DELETE_ERROR_MESSAGE,
 } = require("../constants/errorMessages");
-const {
-    generateCRUDErrorMessage,
-    generateNotFoundMessage,
-} = require("../utils/errors");
-const EVENT_TYPE = require("../constants/schemaTypes").SCHEMA_TYPES.EVENT;
-const EVENT_TYPE_PATCH = require("../constants/schemaTypes").SCHEMA_TYPES
-    .EVENTPATCH;
+const { generateCRUDErrorMessage, generateNotFoundMessage } = require("../utils/errors");
+const { SCHEMA_TYPES } = require("../constants/schemaTypes");
+const EVENT_TYPE = SCHEMA_TYPES.EVENT;
+const EVENT_TYPE_PATCH = SCHEMA_TYPES.EVENT_PATCH;
 const { validateSchema, checkPrecondition } = require("../utils/preconditions");
 const { guests } = require("../../config/mongoConfig/mongoCollections");
 const guestFns = require("./Guest");
@@ -112,17 +109,17 @@ async function getUserEvents(userId) {
 async function createEvent(newEventConfig) {
     checkPrecondition(newEventConfig, isUndefined, EVENT_UNDEFINED_MESSAGE);
     checkPrecondition(newEventConfig, isEmpty, EVENT_EMPTY_MESSAGE);
-
     validateSchema(newEventConfig, EVENT_TYPE);
+
+    newEventConfig.tables = [];
+    // validateSchema(newEventConfig, EVENT_TYPE, { presence: "required "});
 
     // TODO: Validate the event time is greater than the current time
     const eventCollection = await mongoCollections.events();
     const insertInfo = await eventCollection.insertOne(newEventConfig);
 
-    if (insertInfo.insertedCount === 0) {
-        throw new Error(
-            generateCRUDErrorMessage(INSERT_ERROR_MESSAGE, EVENT_TYPE)
-        );
+    if (createFailed(insertInfo)) {
+        throw new Error(generateCRUDErrorMessage(INSERT_ERROR_MESSAGE, EVENT_TYPE));
     }
     const newId = insertInfo.insertedId.toString();
     const newEvent = await this.getEvent(newId);
@@ -143,9 +140,7 @@ async function addGuest(eventId, guestId, sendSurvey) {
         return;
     } catch (e) {
         console.log(e);
-        throw new Error(
-            generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE)
-        );
+        throw new Error(generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE));
     }
 }
 
@@ -154,6 +149,7 @@ async function updateEvent(eventId, updatedEventConfig, updateType) {
     checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
     checkPrecondition(updatedEventConfig, isUndefined, EVENT_UNDEFINED_MESSAGE);
     checkPrecondition(updatedEventConfig, isEmpty, EVENT_EMPTY_MESSAGE);
+
     if (updateType === "PUT") {
         validateSchema(updatedEventConfig, EVENT_TYPE);
     } else {
@@ -163,13 +159,9 @@ async function updateEvent(eventId, updatedEventConfig, updateType) {
     const eventCollection = await mongoCollections.events();
     const eventObjectId = ObjectId(eventId);
 
-    const queryParameters = {
-        _id: eventObjectId,
-    };
+    const queryParameters = { _id: eventObjectId };
+    const updatedDocument = { $set: updatedEventConfig };
 
-    const updatedDocument = {
-        $set: updatedEventConfig,
-    };
 
     const updateInfo = await eventCollection.updateOne(
         queryParameters,
@@ -221,10 +213,8 @@ async function deleteEvent(eventId) {
     };
 
     const deleteResult = await eventCollection.deleteOne(queryParameters);
-    if (deleteResult.deletedCount === 0) {
-        throw new Error(
-            generateCRUDErrorMessage(DELETE_ERROR_MESSAGE, EVENT_TYPE)
-        );
+    if (deleteFailed(deleteResult)) {
+        throw new Error(generateCRUDErrorMessage(DELETE_ERROR_MESSAGE, EVENT_TYPE));
     }
 
     return true;

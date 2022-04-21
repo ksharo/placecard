@@ -43,6 +43,10 @@ function GuestListTableRow(props: {tableData:GuestListDataInterface[], guest:Gue
 	}
 
 	function deleteRowData(){
+		// console.log(props);
+		// console.log(props.tableData[props.index].id);
+		// delete the person from the database
+
 		setEditing(false)
 		props.setTableData(
 			[
@@ -142,7 +146,7 @@ export function GuestListTable(props: {tableData:GuestListDataInterface[], setTa
 							props.mode === "New" ?
 							<>
 								<th className='firstCol'>Expand Group</th>
-								<th >Name of Individual/Party</th>
+								<th >Name of Individual/Group</th>
 								<th >Contact</th>
 								<th >Send Survey</th>
 								<th >Edit</th>
@@ -151,7 +155,7 @@ export function GuestListTable(props: {tableData:GuestListDataInterface[], setTa
 							:
 							<>
 								<th className='firstCol'>Expand Group</th>
-								<th >Name of Individual/Party</th>
+								<th >Name of Individual/Group</th>
 								<th >Contact</th>
 								<th >Survey Status</th>
 								<th >Remind</th>

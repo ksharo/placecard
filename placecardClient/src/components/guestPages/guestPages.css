@@ -43,24 +43,29 @@
     border-radius: 7px;
     margin: auto !important;
     overflow: scroll;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
     width: 40%;
     min-width: 600px;
     /* border: 1px solid grey; */
     /* border-radius: 5px; */
 }
 
+
 /* Hide scrollbar for Chrome, Safari and Opera */
+
 .survey::-webkit-scrollbar {
     display: none;
-  }
+}
 
 .MuiDataGrid-row {
     margin: 0px !important;
 }
 
-.surveyPt1 .MuiDataGrid-root, .surveyPt1 .MuiDataGrid-cell--withRenderer{
+.surveyPt1 .MuiDataGrid-root,
+.surveyPt1 .MuiDataGrid-cell--withRenderer {
     border: none !important;
 }
 
@@ -77,14 +82,16 @@
     justify-content: center !important;
 }
 
-.surveyPt1, .surveyPt2 {
+.surveyPt1,
+.surveyPt2 {
     max-width: 1400px;
     margin: auto;
 }
 
+
 /* hide the sorting buttons  */
-.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeSmall.css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root[title~=Sort]
-{
+
+.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeSmall.css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root[title~=Sort] {
     display: none !important;
 }
 
@@ -136,80 +143,77 @@
     animation-duration: 8.5s;
     animation-name: showHide;
     animation-fill-mode: forwards;
-  }
+}
 
 .gradualError {
     animation-duration: 2s;
     animation-name: showHide;
     animation-fill-mode: forwards;
-  }
-  
-  @keyframes showHide {
-    from {
-      opacity: 0;
-    }
-  
-    15% {
-      opacity: 100;
-    }
+}
 
+@keyframes showHide {
+    from {
+        opacity: 0;
+    }
+    15% {
+        opacity: 100;
+    }
     55% {
         opacity: 100;
-      }
-  
+    }
     to {
-      opacity: 0;
+        opacity: 0;
     }
-  }
+}
 
-  .checkboxWithError {
-      display: flex;
-      height: 50%;
-      flex-direction: column;
-      line-height: 0;
-  }
+.checkboxWithError {
+    display: flex;
+    height: 50%;
+    flex-direction: column;
+    line-height: 0;
+}
 
-  .wholeColumnStyle {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 0px 14px;
-      border: 1px solid var(--borderColor);
-      width: 240px;
-      height: 500px;
-    }
+.wholeColumnStyle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0px 14px;
+    border: 1px solid var(--borderColor);
+    width: 240px;
+    height: 500px;
+}
 
-    .columnBackground {
-        width: 100%;
-        height: 100%;
-        padding: 15px 0px;
-        overflow-y: scroll;
-    }
+.columnBackground {
+    width: 100%;
+    height: 100%;
+    padding: 15px 0px;
+    overflow-y: scroll;
+}
 
-  .columnCenterStyle {
-      margin: 12px;
-  }
+.columnCenterStyle {
+    margin: 12px;
+}
 
-  .smallHeader * {
+.smallHeader * {
     font-size: 19px !important;
     padding: 4px;
-  }
+}
 
-  .columnGroupStyle {
-      display: flex;
-      justify-content: center;
-      height: 100%;
-  }
+.columnGroupStyle {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+}
 
-  .activeBackgroundColumn {
+.activeBackgroundColumn {
     background-color: rgb(245, 245, 245);
-  }
+}
 
-  .smallerText {
-      font-size: 12px;
-  }
+.smallerText {
+    font-size: 12px;
+}
 
-  .partyBox {
+.partyBox {
     user-select: none;
     padding: 12px;
     min-height: 50px;
@@ -217,46 +221,50 @@
     background-color: rgb(44, 53, 94);
     margin: 8px;
     border-radius: 4px;
-  }
+}
 
-  .activeBackgroundPartyBox {
+.activeBackgroundPartyBox {
     background-color: black;
-  }
+}
 
-  .unstyledSubheader {
-      margin: 0;
-      padding: 0;
-      font-size: 12px !important;
-      color: white !important;
-      text-decoration: none;
-      font-weight: normal;
-  }
+.unstyledSubheader {
+    margin: 0;
+    padding: 0;
+    font-size: 12px !important;
+    color: white !important;
+    text-decoration: none;
+    font-weight: normal;
+}
 
-  .emptySpace {
-      padding: 9px;
-  }
+.emptySpace {
+    padding: 9px;
+}
 
-  .twoBtns {
-      width: 500px;
-      margin: auto !important;
-      padding-bottom: 60px;
-  }
+.twoBtns {
+    width: 500px;
+    margin: auto !important;
+    padding-bottom: 60px;
+}
 
-  .decoratedTextField {
-      border-radius: 4px;
-      border: 1px solid var(--borderColor);
-      width: fit-content;
-      margin: 40px auto 20px auto!important;
-      padding: 12px 54px;
-      box-shadow: 4px 4px 4px lightgrey;
-  }
+.decoratedTextField {
+    border-radius: 4px;
+    border: 1px solid var(--borderColor);
+    width: fit-content;
+    margin: 40px auto 20px auto!important;
+    padding: 12px 54px;
+    box-shadow: 4px 4px 4px lightgrey;
+}
 
-  .loadingCircle {
+.loadingCircle {
     position: relative;
     top: 100px
-  }
+}
 
-  .higherLoadingCircle {
+.higherLoadingCircle {
     position: relative;
     top: 50px
-  }
+}
+
+.hiddenInput {
+    visibility: hidden;
+}

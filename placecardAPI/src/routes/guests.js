@@ -33,7 +33,7 @@ const ERROR_TYPES = require("../constants/errorTypes");
 const { isInvalidObjectId } = require("../utils/mongoUtils");
 const { INVALID_GUEST_ID } = require("../constants/errorTypes");
 
-router.get("/:guestId", async (req, res) => {
+router.get("/:guestId", async(req, res) => {
     let guestId = req.params.guestId.trim();
     try {
         checkPrecondition(guestId, _.isUndefined, INVALID_GUEST_ID_MESSAGE);
@@ -60,13 +60,13 @@ router.get("/:guestId", async (req, res) => {
     }
 });
 
-router.post("/newGuest/:eventId", async (req, res) => {
+router.post("/newGuest/:eventId", async(req, res) => {
     const newGuest = req.body;
     const eventId = req.params.eventId.trim();
     try {
         checkPrecondition(newGuest, _.isUndefined, GUEST_UNDEFINED_MESSAGE);
         checkPrecondition(newGuest, _.isEmpty, GUEST_EMPTY_MESSAGE);
-        validateSchema(newGuest, SCHEMA_TYPES.GUEST);
+        validateSchema(newGuest, SCHEMA_TYPES.GUEST, { presence: "required " });
     } catch (e) {
         return createErrorResponse(
             e.message,
@@ -78,13 +78,11 @@ router.post("/newGuest/:eventId", async (req, res) => {
 
     try {
         const createdGuest = await guests.createGuest(newGuest);
-        let sendSurvey = false;
-        if (createdGuest.survey_response !== undefined) {
-            sendSurvey = true;
-        }
+        const sendSurvey = !(_.isUndefined(createdGuest.survey_response));
+
         await events.addGuest(eventId, createdGuest._id, sendSurvey);
         return res.json(createdGuest);
-    } catch (e) {
+    } catch (e\
         return createErrorResponse(
             e.message,
             ERROR_TYPES.INSERT_ERROR,
@@ -94,7 +92,7 @@ router.post("/newGuest/:eventId", async (req, res) => {
     }
 });
 
-router.put("/updateGuest", async (req, res) => {
+router.put("/updateGuest", async(req, res) => {
     const updatedGuest = req.body;
 
     try {
@@ -142,7 +140,7 @@ router.put("/updateGuest", async (req, res) => {
     }
 });
 
-router.patch("/updateGuest", async (req, res) => {
+router.patch("/updateGuest", async(req, res) => {
     const updatedGuest = req.body;
 
     try {
@@ -190,7 +188,7 @@ router.patch("/updateGuest", async (req, res) => {
     }
 });
 
-router.delete("/:guestId", async (req, res) => {
+router.delete("/:guestId", async(req, res) => {
     const guestId = req.params.guestId.trim();
     try {
         checkPrecondition(guestId, _.isUndefined, INVALID_GUEST_ID_MESSAGE);
@@ -239,7 +237,7 @@ router.post("/fileUpload", upload.single("file"), async (req, res) => {
         if (
             formData.mimetype !== "application/vnd.ms-excel" &&
             formData.mimetype !==
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
             formData.mimetype !== "text/csv"
         ) {
             return res.status(400).json({

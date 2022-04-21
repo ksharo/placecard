@@ -8,7 +8,8 @@
     "test": "nyc --reporter=text mocha ./tests/**/*.js --exit",
     "start": "node server.js",
     "seed": "node ./tasks/seed.js",
-    "build": "gulp build"
+    "build": "gulp build",
+    "prepare": "husky install"
   },
   "author": "Placecard Senior Design Group 2021-2022",
   "license": "ISC",
@@ -36,6 +37,7 @@
     "cors": "^2.8.5",
     "eslint": "^8.10.0",
     "eslint-config-google": "^0.14.0",
-    "unique-names-generator": "^4.7.1"
+    "unique-names-generator": "^4.7.1",
+    "husky": "^7.0.0"
   }
 }

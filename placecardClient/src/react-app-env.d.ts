@@ -51,6 +51,9 @@ interface Window {
 
     firstTime: boolean | undefined;
     setFirstTime: any;
+
+    removedMembers: Invitee[];
+    setRemovedMembers: any;
 }
 
 interface PlacecardEvent {
