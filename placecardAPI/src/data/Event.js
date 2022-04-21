@@ -93,7 +93,7 @@ async function addGuest(eventId, guestId, sendSurvey) {
             surveys.push(guestId);
         }
         const updatedConfig = {guest_list: guests, surveys_sent: surveys};
-        await updateEvent(eventId, updatedConfig, "PATCH");
+        await this.updateEvent(eventId, updatedConfig, "PATCH");
         return;
     }
     catch (e) {
