@@ -1,7 +1,7 @@
 const { isUndefined, isEmpty, isNull } = require("lodash");
 const mongoCollections = require("../../config/mongoConfig/mongoCollections");
 const { checkPrecondition, validateSchema } = require("../utils/preconditions");
-const { guests, events } = require("../../config/mongoConfig/mongoCollections");
+const { guests } = require("../../config/mongoConfig/mongoCollections");
 const {
     INVALID_GUEST_ID_MESSAGE,
     GUEST_UNDEFINED_MESSAGE,
@@ -132,7 +132,7 @@ async function deleteGuest(guestId) {
     return true;
 }
 
-async function uploadSurveyData(filePath, fileType) {
+async function uploadSurveyData(filePath, fileType, eventId) {
     let data;
 
     if (fileType === "xlsx" || fileType === "xls") {
@@ -229,14 +229,24 @@ async function uploadSurveyData(filePath, fileType) {
 
     for (const retGroup of returnData){
         if (retGroup.groupMembers.length > 0){
+            for (const retGroupMem of retGroup.groupMembers){
+                const createdGuest = await createGuest({
+                    first_name: retGroupMem,
+                    email: retGroup.groupContact,
+                    party_size: retGroup.groupMembers.length
+                })
 
+                events.addGuest(eventId, createdGuest._id, true)
+            }
         }
         else{
-            createGuest({
+            const createdGuest = await createGuest({
                 first_name: retGroup.groupName,
                 email: retGroup.groupContact,
                 party_size: 1,
             })
+            events.addGuest(eventId, createdGuest._id, true)
+
         }
     }
     // createGuest({

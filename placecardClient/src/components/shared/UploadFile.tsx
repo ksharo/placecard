@@ -13,6 +13,9 @@ export function UploadFile(props: {setTableData:Function}) {
      	// const reader = new FileReader();
 		let data = new FormData();
             data.append('file', selectedFile);
+            if (window && window.activeEvent){
+                data.append('eventId', window.activeEvent.id)
+            }
 
 		const requestOptions = {
 			method: 'POST',

@@ -82,7 +82,7 @@ router.post("/newGuest/:eventId", async(req, res) => {
 
         await events.addGuest(eventId, createdGuest._id, sendSurvey);
         return res.json(createdGuest);
-    } catch (e\
+    } catch (e) {
         return createErrorResponse(
             e.message,
             ERROR_TYPES.INSERT_ERROR,
@@ -232,6 +232,7 @@ router.delete("/:guestId", async(req, res) => {
 router.post("/fileUpload", upload.single("file"), async (req, res) => {
     try {
         let formData = req.file;
+        let eventId = req.evnetId;
         let fileType = formData.originalname.split(".").pop();
 
         if (
@@ -245,7 +246,7 @@ router.post("/fileUpload", upload.single("file"), async (req, res) => {
             });
         }
 
-        let uploadData = await guests.uploadSurveyData(formData.path, fileType);
+        let uploadData = await guests.uploadSurveyData(formData.path, fileType, eventId);
 
         res.status(200).json(uploadData);
     } catch (e) {
