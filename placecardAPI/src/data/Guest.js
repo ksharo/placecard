@@ -32,6 +32,7 @@ const excelToJson = require("convert-excel-to-json");
 const csvToJson = require("convert-csv-to-json");
 const xlsx = require("xlsx");
 const { SCHEMA_TYPES } = require("../constants/schemaTypes");
+const {addGuest} = require("./Event")
 
 
 async function getGuest(guestId) {
@@ -81,7 +82,12 @@ async function createGuest(guestConfig) {
     }
 
     const newId = insertInfo.insertedId.toString();
-    const newGuest = await this.getGuest(newId);
+    let newGuest = ""
+    try {
+        newGuest = await this.getGuest(newId);
+    } catch {
+        newGuest = await getGuest(newId);
+    }
 
     return newGuest;
 }
@@ -236,7 +242,7 @@ async function uploadSurveyData(filePath, fileType, eventId) {
                     party_size: retGroup.groupMembers.length
                 })
 
-                events.addGuest(eventId, createdGuest._id, true)
+                let a = await addGuest(eventId, createdGuest._id, true)
             }
         }
         else{
@@ -245,7 +251,7 @@ async function uploadSurveyData(filePath, fileType, eventId) {
                 email: retGroup.groupContact,
                 party_size: 1,
             })
-            events.addGuest(eventId, createdGuest._id, true)
+            let a = await addGuest(eventId, createdGuest._id, true)
 
         }
     }

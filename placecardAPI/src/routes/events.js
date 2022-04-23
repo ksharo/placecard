@@ -249,7 +249,7 @@ router.patch("/updateEvent/:id", async(req, res) => {
     try {
         checkPrecondition(updatedEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
         checkPrecondition(updatedEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
-        validateSchema(updatedEvent, SCHEMA_TYPES.EVENTPATCH);
+        validateSchema(updatedEvent, SCHEMA_TYPES.EVENT_PATCH);
     } catch (e) {
         console.log(e);
         return createErrorResponse(

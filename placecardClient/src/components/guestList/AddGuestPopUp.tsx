@@ -136,15 +136,28 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 			console.log("Frontend Validation Failed")
 			return;
 		}
+
+		let renamedGrpMembers = []
+		let renamedGrpCounter = 1
+		for(let grpMem of currGrpMembers){
+			if (grpMem == ""){
+				renamedGrpMembers.push(currGrpName + " Member " + (renamedGrpCounter++).toString())
+			}
+			else {
+				renamedGrpMembers.push(grpMem)
+			}
+		}
+		setCurrGrpMembers(renamedGrpMembers)
+
 		setGuestListData([...guestListData, {
 			"groupName":		currGrpName,
 			"groupContact":	currGrpContact,
 			"groupSize":		currGrpSize,
 			"sendSurvey":		currGrpSendSurvey,
-			"groupMembers":	currGrpMembers
+			"groupMembers":	renamedGrpMembers
 		}])
 		const allData = [];
-		for (let x of currGrpMembers) {
+		for (let x of renamedGrpMembers) {
 			const res = await sendGuest(x, currGrpContact, currGrpName, currGrpId, Number(currGrpSize), currGrpSendSurvey);
 			const guestData = await res?.json();
 			if (res != undefined && !res.ok) {
@@ -292,6 +305,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 					helperText={indiIsValid.name ? "" : NAME_ERROR_TEXT}
 					label="Name"
 					size='small'
+					autoComplete='name'
 				/>
 				<TextField
 					placeholder="Email or Phone"
@@ -306,6 +320,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 					helperText={indiIsValid.contact ? "" : EMAIL_ERROR_TEXT}
 					label="Contact"
 					size='small'
+					autoComplete='email'
 				/>
 				<TextField
 					placeholder="Name"
@@ -321,6 +336,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 					helperText={indiIsValid.plusOneName ? "" : NAME_OPTIONAL_ERROR_TEXT}
 					label="Plus One Name (optional)"
 					size='small'
+					autoComplete='name'
 				/>
 
 				{/* {plusOne ?
@@ -365,6 +381,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 						error={!grpIsValid.grpName}
 						helperText={grpIsValid.grpName ? "" : NAME_ERROR_TEXT}
 						size='small'
+						autoComplete="name"
 					/>
 					<TextField
 						placeholder="Email or Phone Number"
@@ -379,11 +396,21 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 						error={!grpIsValid.grpContact}
 						helperText={grpIsValid.grpContact ? "" : EMAIL_ERROR_TEXT}
 						size='small'
+						autoComplete="email"
+
 					/>
 					<section className='compactNumberComponent'>
 						Group Size:
 						<section className='numberComponentAction'>
-							<button className='minusButton numberComponentActionButton' type="button">-</button>
+							<button
+								className='minusButton numberComponentActionButton'
+								type="button"
+								onClick={e => {if (parseInt(currGrpSize) && parseInt(currGrpSize) > 0){
+											changeGrpSize((parseInt(currGrpSize) - 1).toString())
+										}}
+									}>
+								-
+							</button>
 							<TextField
 								type="text"
 								inputMode="numeric"
@@ -395,7 +422,12 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 								helperText={grpSizeIsValid ? "" : GROUP_SIZE_ERROR_TEXT}
 								size='small'
 							/>
-							<button className='plusButton numberComponentActionButton' type="button">+</button>
+							<button
+								className='plusButton numberComponentActionButton'
+								type="button"
+								onClick={e => changeGrpSize((parseInt(currGrpSize) + 1).toString())}>
+								+
+							</button>
 						</section>
 					</section>
 
@@ -437,7 +469,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 		)
 	}
 
-	function sendGuest(name: string, contact: string, groupName: string | undefined, groupId: string, groupSize: number, sendSurvey: boolean) {
+	async function sendGuest(name: string, contact: string, groupName: string | undefined, groupId: string, groupSize: number, sendSurvey: boolean) {
 		if (window.activeEvent != undefined && window.activeEvent != null) {
 			const nameSplit = name.split(" ");
 			let firstName = '';
@@ -467,6 +499,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 					"ideal": []
 				}
 			}
+			console.log(body)
 			const requestOptions = {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
