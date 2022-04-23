@@ -30,7 +30,7 @@ export function CreateEvent(){
     const [locError, setLocError] = React.useState(!validLoc);
     const [dateError, setDateError] = React.useState(!validDate);
     const [perTableError, setPerTableError] = React.useState(!validPerTable);
-    
+
     let validateName = (event: any, val?: string) => {
         if (val != undefined) {
             name = val;
@@ -91,7 +91,7 @@ export function CreateEvent(){
             checkAllErrors(name, date, location, per_table);
         }
     }
-    
+
     let handleSubmit = async (event: any) => {
         event.preventDefault();
         let errorFound = false;
@@ -121,7 +121,7 @@ export function CreateEvent(){
 
         errorFound = !(validName && validDate && validLoc && validPerTable);
 
-        if (!errorFound) { 
+        if (!errorFound) {
             /* if form is good, sendEvent */
             try {
                 const initTable = [{id: uuid(), name: 'Table 1', guests: []}];
@@ -143,7 +143,7 @@ export function CreateEvent(){
                         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
                     }
                 }
-                      
+
             }
             catch {
                 if (x != null) {
@@ -171,52 +171,52 @@ export function CreateEvent(){
         <p className='subtitle pageError' id='sendEventError'>Something went wrong. Please try again.</p>
         <form className='vertical-form' onSubmit={handleSubmit} id='createEventForm'>
             <section className='formBox'>
-                <TextField 
-                    variant='outlined' 
-                    size='small'
-                    type="text" 
-                    label='Event Name' 
-                    name='name'
-                    error={nameError} 
-                    helperText={nameError ? 'Must be at least one character (alphanumeric and [-_. &!\'] only)' : ''}  
-                    onChange={validateName}/>
-                <TextField 
-                    variant='outlined' 
-                    size='small'
-                    type="text" 
-                    label='Event Location (optional)' 
-                    name='location'
-                    error={locError} 
-                    helperText={locError ? 'Can only contain spaces and [a-zA-Z0-9.\'&!-_,]' : ''}  
-                    onChange={validateLocation}/>
-                <TextField 
+                <TextField
                     variant='outlined'
-                    size='small' 
-                    type="date" 
-                    label='Event Date' 
+                    size='small'
+                    type="text"
+                    label='Event Name'
+                    name='name'
+                    error={nameError}
+                    helperText={nameError ? 'Must be at least one character (alphanumeric and [-_. &!\'] only)' : ''}
+                    onChange={validateName}/>
+                <TextField
+                    variant='outlined'
+                    size='small'
+                    type="text"
+                    label='Event Location (optional)'
+                    name='location'
+                    error={locError}
+                    helperText={locError ? 'Can only contain spaces and [a-zA-Z0-9.\'&!-_,]' : ''}
+                    onChange={validateLocation}/>
+                <TextField
+                    variant='outlined'
+                    size='small'
+                    type="date"
+                    label='Event Date'
                     name='date'
                     InputLabelProps={{ shrink: true }}
-                    error={dateError} 
-                    helperText={dateError ? 'Please enter a date that is after today' : ''}  
+                    error={dateError}
+                    helperText={dateError ? 'Please enter a date that is after today' : ''}
                     onChange={validateDate}/>
-                <TextField 
-                    variant='outlined' 
+                <TextField
+                    variant='outlined'
                     size='small'
-                    type="time" 
-                    label='Event Time (optional)' 
+                    type="time"
+                    label='Event Time (optional)'
                     name='time'
-                    InputLabelProps={{ shrink: true }}  
+                    InputLabelProps={{ shrink: true }}
                     />
-                <TextField 
-                    variant='outlined' 
+                <TextField
+                    variant='outlined'
                     size='small'
-                    type="number" 
+                    type="number"
                     defaultValue='10'
-                    label='Attendees Per Table' 
+                    label='Attendees Per Table'
                     name='per_table'
                     InputLabelProps={{ shrink: true }}
-                    error={perTableError} 
-                    helperText={perTableError ? 'Please enter a positive number' : ''}  
+                    error={perTableError}
+                    helperText={perTableError ? 'Please enter a positive number' : ''}
                     onChange={validateTable}
                     />
             </section>
@@ -236,7 +236,7 @@ async function sendEvent(name: string, uid: string, date: string, time: string, 
         headers: {
             'Content-Type': 'application/json'
         },
-        // TODO: Simon change date to date and time info 
+        // TODO: Simon change date to date and time info
         body: JSON.stringify({
             event_name: name,
             _userId: uid,
@@ -245,7 +245,7 @@ async function sendEvent(name: string, uid: string, date: string, time: string, 
             attendees_per_table: Number(per_table),
             tables: initTable,
             guest_list: [],
-            surveys_sent: []
+            surveys_sent: [],
             })
         };
     return fetch('http://localhost:3001/events/newEvent', requestOptions);
@@ -259,7 +259,7 @@ function checkAllErrors(name: string, date: string, location: string, per_table:
     const strNum1 = validator.trim(per_table.toString());
     const error = (!validator.isEmpty(strNum1) && per_table > 0) && (validator.isWhitelisted(location.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_., &!\''))
     && (validator.isDate(date) && validator.isAfter(date)) && (!validator.isEmpty(name) && validator.isWhitelisted(name.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\''));
-    
+
     let x = document.getElementById('eventFormError');
     // if there's an error, keep the item visible
     if (!error) {
@@ -274,4 +274,3 @@ function checkAllErrors(name: string, date: string, location: string, per_table:
         }
     }
 }
-

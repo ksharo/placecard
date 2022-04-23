@@ -4,7 +4,7 @@ import '../guestList/GuestList.css';
 import template from '../../assets/Placecard_Guestlist_Template.png';
 import { AiOutlineFileExcel } from "react-icons/ai";
 
-export function UploadFile() {
+export function UploadFile(props: {setTableData:Function}) {
 	const [userFile, setUserFile] = useState(undefined);
 
     const fileSelected = (event: any) => {
@@ -12,21 +12,28 @@ export function UploadFile() {
 		setUserFile(selectedFile)
      	// const reader = new FileReader();
 		let data = new FormData();
-          data.append('file', selectedFile);
+            data.append('file', selectedFile);
+            if (window && window.activeEvent){
+                data.append('eventId', window.activeEvent.id)
+            }
 
-		// const requestOptions = {
-		// 	method: 'POST',
-		// 	headers: {
-		// 		'Content-Type': 'application/json'
-		// 	}
-		// };
-		// return fetch('http://localhost:3001/guestList/fileUpload', requestOptions);
+		const requestOptions = {
+			method: 'POST',
+			// headers: {
+			// 	'Content-Type': 'application/json'
+			// },
+            body: data
+		};
+        fetch('http://localhost:3001/guests/fileUpload', requestOptions)
+            .then(response => response.json())
+            .then(data => {console.log(data); props.setTableData(data)})
+		return fetch('http://localhost:3001/guests/fileUpload', requestOptions);
 	}
-    
+
     return (
         <section className='fileUploadSection'>
         <a href={template} className='downloadTemplate' download="Placecard_Guestlist_Template.xlsx">
-                <AiOutlineFileExcel size={30}/> 
+                <AiOutlineFileExcel size={30}/>
                 <span>Download our Template!</span>
         </a>
         <section className="fileUploadButtonSection">

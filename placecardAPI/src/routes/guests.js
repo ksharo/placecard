@@ -1,6 +1,7 @@
 const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
+const { guests, events } = require("../data");
 const multer = require("multer");
 
 // -> Multer Upload Storage
@@ -15,7 +16,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const { guests, events } = require("../data");
 const {
     INVALID_GUEST_ID_MESSAGE,
     GUEST_UNDEFINED_MESSAGE,
@@ -234,9 +234,11 @@ router.delete("/:guestId", async(req, res) => {
     }
 });
 
-router.post("/fileUpload", upload.single("file"), async(req, res) => {
+
+router.post("/fileUpload", upload.single("file"), async (req, res) => {
     try {
         let formData = req.file;
+        let eventId = req.evnetId;
         let fileType = formData.originalname.split(".").pop();
 
         if (
@@ -250,7 +252,7 @@ router.post("/fileUpload", upload.single("file"), async(req, res) => {
             });
         }
 
-        let uploadData = await guests.uploadSurveyData(formData.path, fileType);
+        let uploadData = await guests.uploadSurveyData(formData.path, fileType, eventId);
 
         res.status(200).json(uploadData);
     } catch (e) {

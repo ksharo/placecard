@@ -78,7 +78,7 @@ export function EditGuestList() {
 			<section>
 				<span>OR</span><hr/>
 			</section>
-			<UploadFile/>
+			<UploadFile setTableData={setGuestListData}/>
 			<Button variant='contained' onClick={handleClick}>Return to Dashboard</Button>
 
 		</>
