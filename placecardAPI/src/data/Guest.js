@@ -233,12 +233,13 @@ async function uploadSurveyData(filePath, fileType) {
     return returnData;
 }
 
-async function removeFromGroup(guestId, email) {
+async function removeFromGroup(guestId, email, groupId) {
     checkPrecondition(guestId, isUndefined, INVALID_GUEST_ID_MESSAGE);
     checkPrecondition(guestId, isInvalidObjectId, INVALID_GUEST_ID_MESSAGE);
 
     const guestCollection = await mongoCollections.guests();
     const guestObjectId = ObjectId(guestId);
+
 
     const queryParameters = { _id: guestObjectId };
     const updatedDocument = { $unset: { group_id: "", group_name: "" }, $set: { email: email, party_size: 1, survey_response: { disliked: [], liked: [], ideal: [] } } };
@@ -247,6 +248,19 @@ async function removeFromGroup(guestId, email) {
 
     if (updateFailed(updateInfo)) {
         throw new Error(generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, GUEST_TYPE));
+    }
+
+    /* for each remaining group member, decrease party size by 1 */
+    const group = await guestCollection.find({ group_id: groupId });
+    const arrayGroup = await group.toArray();
+    for (let x of arrayGroup) {
+        const query = { _id: x._id };
+        const update = { $set: { party_size: arrayGroup.length } };
+        const updatedX = await guestCollection.updateOne(query, update);
+
+        if (updateFailed(updatedX)) {
+            throw new Error(generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, GUEST_TYPE));
+        }
     }
 
     const updatedGuest = await this.getGuest(guestId);

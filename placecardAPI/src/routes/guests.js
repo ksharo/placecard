@@ -146,8 +146,9 @@ router.patch("/updateGuest", async(req, res) => {
     try {
         checkPrecondition(updatedGuest, _.isUndefined, GUEST_UNDEFINED_MESSAGE);
         checkPrecondition(updatedGuest, _.isEmpty, GUEST_EMPTY_MESSAGE);
-        validateSchema(updatedGuest, SCHEMA_TYPES.GUESTPATCH);
+        validateSchema(updatedGuest, SCHEMA_TYPES.GUEST_PATCH);
     } catch (e) {
+        console.log(e);
         return createErrorResponse(
             e.message,
             ERROR_TYPES.INVALID_GUEST,
@@ -161,6 +162,7 @@ router.patch("/updateGuest", async(req, res) => {
         checkPrecondition(guestId, _.isUndefined, INVALID_GUEST_ID_MESSAGE);
         checkPrecondition(guestId, isInvalidObjectId, INVALID_GUEST_ID_MESSAGE);
     } catch (e) {
+        console.log(e);
         return createErrorResponse(
             e.message,
             ERROR_TYPES.INVALID_GUEST_ID,
@@ -256,6 +258,7 @@ router.post("/fileUpload", upload.single("file"), async(req, res) => {
 router.patch("/removeFromGroup/:guestId", async(req, res) => {
     const guestId = req.params.guestId.trim();
     const email = req.body.email;
+    const groupId = req.body.groupId;
 
     try {
         checkPrecondition(guestId, _.isUndefined, INVALID_GUEST_ID_MESSAGE);
@@ -280,7 +283,7 @@ router.patch("/removeFromGroup/:guestId", async(req, res) => {
     }
 
     try {
-        const updatedGuestRet = await guests.removeFromGroup(guestId, email);
+        const updatedGuestRet = await guests.removeFromGroup(guestId, email, groupId);
         return res.json(updatedGuestRet);
     } catch (e) {
         return createErrorResponse(
