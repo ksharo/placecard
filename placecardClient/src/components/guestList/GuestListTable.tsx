@@ -11,6 +11,7 @@ import './GuestTable.css'
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import { TextField } from '@mui/material';
+import { v4 as uuid } from 'uuid';
 
 export interface GuestListDataInterface {
 	individualName?:	string;
@@ -124,7 +125,7 @@ function GuestListTableRow(props: {tableData:GuestListDataInterface[], guest:Gue
 					<Collapse in={open} timeout="auto" unmountOnExit>
 						<ul className='subgroupMemberList'>
 							{props.guest.groupMembers.map((memberName, _) =>(
-								<li className="subgroupMember" >{memberName}</li>
+								<li key={uuid()} className="subgroupMember" >{memberName}</li>
 							))}
 						</ul>
 					</Collapse>
@@ -169,7 +170,7 @@ export function GuestListTable(props: {tableData:GuestListDataInterface[], setTa
 
 				<tbody>
 					{props.tableData.map((obj, i) => (
-						<GuestListTableRow tableData={props.tableData} guest={obj} setTableData={props.setTableData} index={i} mode={props.mode}/>
+						<GuestListTableRow key={uuid()} tableData={props.tableData} guest={obj} setTableData={props.setTableData} index={i} mode={props.mode}/>
 					))}
 				</tbody>
 

@@ -15,7 +15,6 @@ const FirebaseAuthProvider = ({ children } : any) => {
     const history = useHistory();
 
     const toggleUser = (user: any) => {
-        console.log("User: ", user);
         if (window.loggedInState==false) {
             window.setLoggedIn(!(user==null || user==undefined));
         }
@@ -26,6 +25,7 @@ const FirebaseAuthProvider = ({ children } : any) => {
             window.setPhone(user.phoneNumber);
             window.setEmail(user.email);
             window.setUID(user.uid);
+            window.setProfPic(user.photoURL);
             window.setFirstTime(user.metadata.createdAt === user.metadata.lastLoginAt);
         }
         setFirebaseUser(user);
