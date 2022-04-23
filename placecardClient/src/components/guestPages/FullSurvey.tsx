@@ -267,16 +267,19 @@ function updateGuest(id: string) {
 }
 
 function removeMember(id: string, email: string) {
-    const newGroup = new ObjectId();
+    let groupid = undefined;
+    /* fix global variables */
     const matching = window.inviteesState.filter( (g) => {
         return g.id.toString() == id.toString();
     });
     if (matching.length > 0) {
-        matching[0].groupID = newGroup.toString();
+        groupid = matching[0].groupID;
+        matching[0].groupID = undefined;
         matching[0].groupSize = 1;
         matching[0].groupName = undefined;
         matching[0].contact = email;
     }
+    /* send to database */
     const requestOptions = {
         method: 'PATCH',
         headers: {
@@ -284,16 +287,9 @@ function removeMember(id: string, email: string) {
         },
         body: JSON.stringify({
             _id: id,
-            group_id: newGroup,
             email: email,
-            group_name: 'N/A',
-            party_size: 1,
-            survey_response: {
-                disliked: [],
-                liked: [],
-                ideal: []
-            },
+            groupId: groupid
         })
     };
-    return fetch('http://localhost:3001/guests/updateGuest', requestOptions);
+    return fetch('http://localhost:3001/guests/removeFromGroup/'+id, requestOptions);
 }
