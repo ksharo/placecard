@@ -249,9 +249,8 @@ router.patch("/updateEvent/:id", async(req, res) => {
     try {
         checkPrecondition(updatedEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
         checkPrecondition(updatedEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
-        validateSchema(updatedEvent, SCHEMA_TYPES.EVENTPATCH);
+        validateSchema(updatedEvent, SCHEMA_TYPES.EVENT_PATCH);
     } catch (e) {
-        console.log(e);
         return createErrorResponse(
             e.message,
             ERROR_TYPES.INVALID_EVENT,
@@ -265,7 +264,6 @@ router.patch("/updateEvent/:id", async(req, res) => {
         checkPrecondition(eventId, _.isUndefined, INVALID_EVENT_ID);
         checkPrecondition(eventId, isInvalidObjectId, INVALID_EVENT_ID);
     } catch (e) {
-        console.log(e);
         return createErrorResponse(
             e.message,
             ERROR_TYPES.INVALID_EVENT_ID,
@@ -278,7 +276,6 @@ router.patch("/updateEvent/:id", async(req, res) => {
         const event = await events.updateEvent(eventId, updatedEvent, "PATCH");
         return res.json(event);
     } catch (e) {
-        console.log(e);
         return createErrorResponse(
             e.message,
             ERROR_TYPES.UPDATE_ERROR,
