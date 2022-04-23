@@ -96,12 +96,12 @@ export function GuestConfirmation() {
     return (
         <section className='guestConfirmation'>
             <h1 className='title'>Welcome to Placecard!</h1>
-            <p className='subtitle'>To respond to an event survey, confirm your identity by typing in the email address or phone number to which this link was sent.</p>
+            <p className='subtitle'>To respond to an event survey, confirm your identity by typing in the email address to which this link was sent.</p>
             <p className='pageError' id='wrongContactError'>Incorrect contact information. Please try again.</p>
             <p className='pageError' id='wrongLinkError'>There is a problem with your link. Please try again.</p>
             <form onSubmit={handleSubmit}>
                 <section className='decoratedTextField'>
-                    <TextField label='Email/Phone Number' name='contactInfo' size='small' className='textInput'/>
+                    <TextField label='Email Address' name='contactInfo' size='small' className='textInput'/>
                 </section>
                 <section className='horizontalContainer twoBtns'>
                     <Button className='basicBtn' variant='contained' onClick={goHome}>Home</Button>
