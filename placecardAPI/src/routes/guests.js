@@ -255,6 +255,7 @@ router.post("/fileUpload", upload.single("file"), async(req, res) => {
 
 router.patch("/removeFromGroup/:guestId", async(req, res) => {
     const guestId = req.params.guestId.trim();
+    const email = req.body.email;
 
     try {
         checkPrecondition(guestId, _.isUndefined, INVALID_GUEST_ID_MESSAGE);
@@ -279,7 +280,7 @@ router.patch("/removeFromGroup/:guestId", async(req, res) => {
     }
 
     try {
-        const updatedGuestRet = await guests.removeFromGroup(guestId);
+        const updatedGuestRet = await guests.removeFromGroup(guestId, email);
         return res.json(updatedGuestRet);
     } catch (e) {
         return createErrorResponse(

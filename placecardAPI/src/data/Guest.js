@@ -233,7 +233,7 @@ async function uploadSurveyData(filePath, fileType) {
     return returnData;
 }
 
-async function removeFromGroup(guestId) {
+async function removeFromGroup(guestId, email) {
     checkPrecondition(guestId, isUndefined, INVALID_GUEST_ID_MESSAGE);
     checkPrecondition(guestId, isInvalidObjectId, INVALID_GUEST_ID_MESSAGE);
 
@@ -241,7 +241,7 @@ async function removeFromGroup(guestId) {
     const guestObjectId = ObjectId(guestId);
 
     const queryParameters = { _id: guestObjectId };
-    const updatedDocument = { $unset: { group_id: "", group_name: "" } };
+    const updatedDocument = { $unset: { group_id: "", group_name: "" }, $set: { email: email, party_size: 1, survey_response: { disliked: [], liked: [], ideal: [] } } };
 
     const updateInfo = await guestCollection.updateOne(queryParameters, updatedDocument);
 
