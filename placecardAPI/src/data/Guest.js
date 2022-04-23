@@ -20,7 +20,7 @@ const {
 const { ObjectId } = require("mongodb");
 const GUEST_TYPE = require("../constants/schemaTypes").SCHEMA_TYPES.GUEST;
 const GUEST_TYPE_PATCH = require("../constants/schemaTypes").SCHEMA_TYPES
-    .GUESTPATCH;
+    .GUEST_PATCH;
 const {
     generateNotFoundMessage,
     generateCRUDErrorMessage,
@@ -95,7 +95,6 @@ async function updateGuest(guestId, updatedGuestConfig, updateType) {
     } else {
         validateSchema(updatedGuestConfig, GUEST_TYPE_PATCH);
     }
-
     const guestCollection = await mongoCollections.guests();
     const guestObjectId = ObjectId(guestId);
 
@@ -105,6 +104,11 @@ async function updateGuest(guestId, updatedGuestConfig, updateType) {
     const updateInfo = await guestCollection.updateOne(queryParameters, updatedDocument);
 
     if (updateFailed(updateInfo)) {
+        if (updateInfo.matchedCount !== 0 && updateInfo.modifiedCount === 0) {
+            // found, not modified. We are okay with that.
+            const updatedGuest = await this.getGuest(guestId);
+            return updatedGuest;
+        }
         throw new Error(generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, GUEST_TYPE));
     }
 

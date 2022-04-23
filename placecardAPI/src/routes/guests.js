@@ -100,6 +100,7 @@ router.put("/updateGuest", async(req, res) => {
         checkPrecondition(updatedGuest, _.isEmpty, GUEST_EMPTY_MESSAGE);
         validateSchema(updatedGuest, SCHEMA_TYPES.GUEST);
     } catch (e) {
+        console.log(e);
         return createErrorResponse(
             e.message,
             ERROR_TYPES.INVALID_GUEST,
@@ -113,6 +114,7 @@ router.put("/updateGuest", async(req, res) => {
         checkPrecondition(guestId, _.isUndefined, INVALID_GUEST_ID_MESSAGE);
         checkPrecondition(guestId, isInvalidObjectId, INVALID_GUEST_ID_MESSAGE);
     } catch (e) {
+        console.log(e);
         return createErrorResponse(
             e.message,
             ERROR_TYPES.INVALID_GUEST_ID,
@@ -131,6 +133,7 @@ router.put("/updateGuest", async(req, res) => {
         );
         return res.json(updatedGuestRet);
     } catch (e) {
+        console.log(e);
         return createErrorResponse(
             e.message,
             ERROR_TYPES.UPDATE_ERROR,
@@ -181,6 +184,7 @@ router.patch("/updateGuest", async(req, res) => {
         );
         return res.json(updatedGuestRet);
     } catch (e) {
+        console.log(e);
         return createErrorResponse(
             e.message,
             ERROR_TYPES.UPDATE_ERROR,
