@@ -112,7 +112,7 @@ async function createEvent(newEventConfig) {
     validateSchema(newEventConfig, EVENT_TYPE);
 
     newEventConfig.tables = [];
-    // validateSchema(newEventConfig, EVENT_TYPE, { presence: "required "});
+    // validateSchema(newEventConfig, EVENT_TYPE, { presence: "required"});
 
     // TODO: Validate the event time is greater than the current time
     const eventCollection = await mongoCollections.events();

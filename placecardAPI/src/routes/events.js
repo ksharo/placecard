@@ -180,7 +180,7 @@ router.post("/newEvent", async(req, res) => {
     try {
         checkPrecondition(newEvent, _.isUndefined, EVENT_UNDEFINED_MESSAGE);
         checkPrecondition(newEvent, _.isEmpty, EVENT_EMPTY_MESSAGE);
-        validateSchema(newEvent, SCHEMA_TYPES.EVENT, { presence: "required " });
+        validateSchema(newEvent, SCHEMA_TYPES.EVENT, { presence: "required" });
     } catch (e) {
         return createErrorResponse(
             e.message,
