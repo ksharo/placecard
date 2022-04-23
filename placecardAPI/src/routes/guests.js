@@ -66,7 +66,7 @@ router.post("/newGuest/:eventId", async(req, res) => {
     try {
         checkPrecondition(newGuest, _.isUndefined, GUEST_UNDEFINED_MESSAGE);
         checkPrecondition(newGuest, _.isEmpty, GUEST_EMPTY_MESSAGE);
-        validateSchema(newGuest, SCHEMA_TYPES.GUEST, { presence: "required " });
+        validateSchema(newGuest, SCHEMA_TYPES.GUEST, { presence: "required" });
     } catch (e) {
         return createErrorResponse(
             e.message,
@@ -235,7 +235,7 @@ router.delete("/:guestId", async(req, res) => {
 });
 
 
-router.post("/fileUpload", upload.single("file"), async (req, res) => {
+router.post("/fileUpload", upload.single("file"), async(req, res) => {
     try {
         let formData = req.file;
         let eventId = req.evnetId;
