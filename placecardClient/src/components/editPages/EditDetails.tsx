@@ -32,13 +32,13 @@ export function EditDetails(){
     const [perTableError, setPerTableError] = React.useState(!validPerTable);
 
     let validateName = (event: any, val?: string) => {
-        if (val != undefined) {
+        if (val != undefined ) {
             name = val;
         }
         else {
             name = validator.trim(event.target.value);
         }
-        if (!firstTime || val != undefined) {
+        if (!firstTime || val != undefined ) {
             const valid = !validator.isEmpty(name) && validator.isWhitelisted(name.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\'');
             validName = valid;
             setNameError(!valid);
@@ -47,13 +47,13 @@ export function EditDetails(){
     };
 
     let validateDate = (event: any, val?: string) => {
-        if (val != undefined) {
+        if (val != undefined ) {
             date = val;
         }
         else {
             date = event.target.value;
         }
-        if (!firstTime || val != undefined) {
+        if (!firstTime || val != undefined ) {
             const valid = validator.isDate(date) && validator.isAfter(date);
             validDate = valid;
             setDateError(!valid);
@@ -62,13 +62,13 @@ export function EditDetails(){
     };
 
     let validateLocation = (event: any, val?: string) => {
-        if (val != undefined) {
+        if (val != undefined ) {
             location = val;
         }
         else {
             location = validator.trim(event.target.value);
         }
-        if (!firstTime || val != undefined) {
+        if (!firstTime || val != undefined ) {
             const valid = validator.isWhitelisted(location.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_., &!\'');
             validLoc = valid;
             setLocError(!valid);
@@ -77,13 +77,13 @@ export function EditDetails(){
     };
 
     let validateTable = (event: any, val?: number) => {
-        if (val != undefined) {
+        if (val != undefined ) {
             per_table = val;
         }
         else {
             per_table = event.target.value;
         }
-        if (!firstTime || val != undefined) {
+        if (!firstTime || val != undefined ) {
             const strNum = validator.trim(per_table.toString());
             const valid = !validator.isEmpty(strNum) && per_table > 0;
             validPerTable = valid;
@@ -96,11 +96,11 @@ export function EditDetails(){
         event.preventDefault();
         let errorFound = false;
         const x = document.getElementById('sendEventEditError');
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'none';
         }
-        if (event == null) {
-            if (x != null) {
+        if (event == null ) {
+            if (x !== null) {
                 x.style.display = 'inline-block';
                 window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
             }
@@ -127,10 +127,10 @@ export function EditDetails(){
             /* if form is good, sendEvent */
             try {
                 /* send the edited event to the backend */
-                if (window.activeEvent != null) {
+                if (window.activeEvent !== null) {
                     const result = await updateEvent(window.activeEvent.id, name, date, time, location, per_table, window.activeEvent.tables, window.activeEvent.guestList);
                     /* if sendEvent is successful, go back to dashboard after updating globals */
-                    if (result && result.status == 200) {
+                    if (result && result.status === 200) {
                         const activeEvent = {
                             id: window.activeEvent.id, 
                             uid: window.uidState, 
@@ -149,7 +149,7 @@ export function EditDetails(){
                         const curEvent = window.activeEvent;
                         for (let i = 0; i < events.length; i++) {
                             const event = events[i];
-                            if (curEvent.id == event.id) {
+                            if (curEvent.id === event.id) {
                                     /* found the matching event! */
                                     events[i] = activeEvent;
                                     break;
@@ -161,21 +161,21 @@ export function EditDetails(){
                         history.goBack(); 
                     }
                     else {
-                        if (x != null) {
+                        if (x !== null) {
                             x.style.display = 'inline-block';
                             window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
                         } 
                     }          
                 }
                 else {
-                    if (x != null) {
+                    if (x !== null) {
                         x.style.display = 'inline-block';
                         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
                     }  
                 }
             }
             catch {
-                if (x != null) {
+                if (x !== null) {
                     x.style.display = 'inline-block';
                     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
                 }
@@ -184,7 +184,7 @@ export function EditDetails(){
         /* if there is an error, tell the user */
         else {
             const y = document.getElementById('editEventError');
-            if (y != null) {
+            if (y !== null) {
                 y.style.display = 'inline-block';
                 window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
             }
@@ -194,7 +194,7 @@ export function EditDetails(){
 
     const noSave = () => {
         const x = document.getElementById('hiddenWarning');
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'inline-block';
             window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
         }
@@ -207,14 +207,14 @@ export function EditDetails(){
     };
     const hideWarning = () => {
         const x = document.getElementById('hiddenWarning');
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'none';
         }
     }
 
     return (
     <>
-    {window.activeEvent == null ?
+    {window.activeEvent == null  ?
     <>
      <h1 className='title'>Error: No event found.</h1> 
      <Button variant='contained' className='basicBtn' onClick={toHome}>Return Home</Button>
@@ -306,10 +306,10 @@ export function EditDetails(){
 
 async function updateEvent(id: string, name: string, date: string, time: string, location: string, per_table: number, tables: Table[], guestList: Invitee[]) {
     /* location cannot be empty string when sent to database */
-    if (location == '') {
+    if (location === '') {
         location = 'N/A';
     }
-    if (window.activeEvent != null && window.activeEvent != undefined) {
+    if (window.activeEvent !== null && window.activeEvent != undefined ) {
         let tables = window.activeEvent.tables;
         if (per_table < window.activeEvent.perTable) {
             const num_attend = window.activeEvent.guestList.length;
@@ -358,13 +358,13 @@ function checkAllErrors(name: string, date: string, location: string, per_table:
     let x = document.getElementById('eventFormError');
     /* if there's an error, keep the item visible */
     if (!error) {
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'inline-block';
         }
     }
     /* otherwise, hide it */
     else {
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'none';
         }
     }

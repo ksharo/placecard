@@ -8,9 +8,9 @@ let searchTerm = '';
 export function SurveyDislikes() {
     const names: {name: string, id: string}[] = [];
     for (let x of window.inviteesState) {
-        if (window.curGuest != undefined && window.curGuest.id != x.id) {
-            if (window.curGuest.groupID != undefined && window.curGuest.groupID != '') {
-                if (x.groupID != window.curGuest.groupID) {
+        if (window.curGuest != undefined  && window.curGuest.id !== x.id) {
+            if (window.curGuest.groupID != undefined  && window.curGuest.groupID !== '') {
+                if (x.groupID !== window.curGuest.groupID) {
                     names.push({name: x.name, id: x.id});
                 }
             }
@@ -42,7 +42,7 @@ export function SurveyDislikes() {
 
     const isChecked = (id: string) => {
         for (let x of window.dislikedInvitees) {
-            if (x.id == id) {
+            if (x.id === id) {
                 return true;
             }
         }
@@ -59,7 +59,7 @@ export function SurveyDislikes() {
         let groupID = undefined;
         let groupName = undefined;
         for (let x of window.inviteesState) {
-            if (x.id == id) {
+            if (x.id === id) {
                 size = 1;
                 name = x.name;
                 groupID = x.groupID;
@@ -77,7 +77,7 @@ export function SurveyDislikes() {
             // remove the party from the list of those who are disliked
             const tmp = [];
             for (let x of window.dislikedInvitees) {
-                if (x.id != id) {
+                if (x.id !== id) {
                     tmp.push({id: x.id, name: x.name, groupName: x.groupName, groupID: x.groupID})
                 }
             }
@@ -88,7 +88,7 @@ export function SurveyDislikes() {
     const loadingCircle = () => {
         return (
         <section className='loadingCircle'>
-            {window.curGuest != undefined ? <p>No Guests</p> : 
+            {window.curGuest != undefined  ? <p>No Guests</p> : 
             <>
                 <p>Loading...</p>
                 <CircularProgress size={24} />
@@ -100,7 +100,7 @@ export function SurveyDislikes() {
 
     const search = (event: any) => {
         searchTerm = event.target.value.toLowerCase().trim();
-        if (searchTerm.trim() == '') {
+        if (searchTerm.trim() === '') {
             setRows([...startRows]);
             return;
         }
@@ -112,7 +112,7 @@ export function SurveyDislikes() {
 
     const clearSearch = () => {
         const e = document.getElementById('searchBar');
-        if (e != null) {
+        if (e !== null) {
             (e as HTMLInputElement).value='';
         }
         searchTerm = '';
@@ -135,7 +135,7 @@ export function SurveyDislikes() {
                                     <FaSearch/>
                                 </InputAdornment>, 
                             endAdornment:
-                                searchTerm.trim() != ''  && <InputAdornment position="end">  
+                                searchTerm.trim() !== ''  && <InputAdornment position="end">  
                                     <IconButton className='smallClose' onClick={clearSearch}>
                                         <IoIosClose/>
                                     </IconButton>

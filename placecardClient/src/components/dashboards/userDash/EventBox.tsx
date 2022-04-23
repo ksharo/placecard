@@ -15,10 +15,10 @@ export function EventBox(props: {id: string, name: string; date: string; locatio
     const numTables = Math.ceil(props.numAttend/props.perTable);
     const daysLeft = Math.ceil(((new Date(props.date)).valueOf() - (new Date()).valueOf())/100000000);
     let daysLeftString = daysLeft.toString() + " Days Left!";
-    if (daysLeft == 0) {
+    if (daysLeft === 0) {
         daysLeftString = 'Today is the day!';
     }
-    else if (daysLeft == 1) {
+    else if (daysLeft === 1) {
         daysLeftString = '1 Day Left!';
     }
     else if (daysLeft < 0) {

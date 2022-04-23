@@ -54,7 +54,7 @@ function App() {
   useEffect(() => {
     const getEvents = async () => {
       try {
-        if (window.location.href.indexOf('takeSurvey') == -1 && window.location.href.indexOf('beginSurvey') == -1 && window.uidState != undefined && window.uidState.trim() != '') {
+        if (window.location.href.indexOf('takeSurvey') === -1 && window.location.href.indexOf('beginSurvey') === -1 && window.uidState != undefined  && window.uidState.trim() !== '') {
           const eventFetch = await fetch('http://localhost:3001/events/users/'+window.uidState);
           const fetchedEvents = await eventFetch.json();
           const events: PlacecardEvent[] = []; 
@@ -74,7 +74,7 @@ function App() {
                   groupSize: guest.party_size,
                   contact: guest.email,
                 }
-                if (guest.survey_response != undefined && (guest.survey_response.disliked.length != 0 || guest.survey_response.ideal.length != 0 || guest.survey_response.liked.length != 0 )) {
+                if (guest.survey_response != undefined  && (guest.survey_response.disliked.length !== 0 || guest.survey_response.ideal.length !== 0 || guest.survey_response.liked.length !== 0 )) {
                   respondents.push(guest._id);
                 }
                 guests.push(newGuest);
@@ -106,7 +106,7 @@ function App() {
           }
 
         window.setEvents([...events]);
-        if (events.length > 0 && window.activeEvent == null) {
+        if (events.length > 0 && window.activeEvent == null ) {
           window.setActiveEvent(events[0]);
           window.setInvitees(events[0].guestList);
         }

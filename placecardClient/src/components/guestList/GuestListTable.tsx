@@ -106,7 +106,7 @@ function GuestListTableRow(props: {tableData:GuestListDataInterface[], guest:Gue
 									props.guest.groupContact
 								}
 							</td>
-							<td>{window.activeEvent != null && window.activeEvent.surveys != undefined && window.activeEvent.surveys.indexOf(props.guest.id != undefined ? props.guest.id : '') != -1 ? (window.activeEvent.respondents != undefined && window.activeEvent.respondents.indexOf(props.guest.id != undefined ? props.guest.id : '') != -1 ? 'Completed' : 'Pending') : 'Not Sent'}</td>
+							<td>{window.activeEvent !== null && window.activeEvent.surveys != undefined  && window.activeEvent.surveys.indexOf(props.guest.id != undefined  ? props.guest.id : '') !== -1 ? (window.activeEvent.respondents != undefined  && window.activeEvent.respondents.indexOf(props.guest.id != undefined  ? props.guest.id : '') !== -1 ? 'Completed' : 'Pending') : 'Not Sent'}</td>
 							<td><IconButton className='guestListIcon' aria-label="Send reminder"><NotificationsIcon/></IconButton></td>
 							<td>
 								<IconButton className='guestListIcon' onClick={() => setEditing(!editing)} aria-label={editing? "Save edits" : "Edit row"}>

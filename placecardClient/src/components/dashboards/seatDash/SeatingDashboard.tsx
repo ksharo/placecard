@@ -10,7 +10,7 @@ import { IoIosClose, IoIosSave } from "react-icons/io";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import moment from 'moment';
 import React, { useEffect, useLayoutEffect } from "react";
-import {uuid} from "uuidv4";
+import { v4 as uuid } from 'uuid';
 import { FaExclamationCircle, FaSearch } from "react-icons/fa";
 import { ObjectId } from "mongodb";
 
@@ -39,7 +39,7 @@ export function SeatingDashboard() {
     // let survComp = 0;
     let perTable = -1;
     let num_attend = 0;
-    let tables = ((window.activeEvent != null) ? window.activeEvent.tables.length : 0);
+    let tables = ((window.activeEvent !== null) ? window.activeEvent.tables.length : 0);
     let tmpSeats = tables*perTable;
     const [editing, toggleEditing] = React.useState(editList);
     const [idList, setIds]: [string[], any] = React.useState([]);
@@ -48,14 +48,14 @@ export function SeatingDashboard() {
         dataHistory.past = [];
         dataHistory.present = [];
         dataHistory.future = [];
-        if (window.activeEvent != undefined && window.activeEvent != null) {
+        if (window.activeEvent != undefined  && window.activeEvent !== null) {
             tmpUnseated = [];
             origTables = [...window.activeEvent.tables];
             for (let x of origTables) {
                 tmpIds.push(x.id);
             }
             perTable = window.activeEvent.perTable;
-            tables = ((window.activeEvent != null) ? window.activeEvent.tables.length : 0);
+            tables = ((window.activeEvent !== null) ? window.activeEvent.tables.length : 0);
             num_attend = window.activeEvent.guestList.length;
             tmpSeats = tables*perTable;
             let tmpEdit = [...editList];
@@ -103,7 +103,7 @@ export function SeatingDashboard() {
     const [tablesData, setTablesData] = React.useState(origTables);
     const [unseated, setUnseated] = React.useState(tmpUnseated);
     const [allData, setData] = React.useState([tablesData, unseated]);
-    if (dataHistory.present.length == 0) {
+    if (dataHistory.present.length === 0) {
         dataHistory.present = allData;
     }
 
@@ -126,9 +126,9 @@ export function SeatingDashboard() {
 
     useEffect(() => {
         executeUpdate();
-        if (tablesData != undefined) {
-            const emptyTables = tablesData.filter( (table) => {return table.guests.length == 0});
-            if (emptyTables == undefined || emptyTables.length == 0) {
+        if (tablesData != undefined ) {
+            const emptyTables = tablesData.filter( (table) => {return table.guests.length === 0});
+            if (emptyTables == undefined  || emptyTables.length === 0) {
                 setDisabled(true);
             }
             else {
@@ -148,7 +148,7 @@ export function SeatingDashboard() {
 
     // in case there is a delay in getting the data
     useEffect(() => {
-        if (window.activeEvent != undefined) {            
+        if (window.activeEvent != undefined ) {            
             setVariables();
             setUnseated(tmpUnseated);
             setTablesData(origTables);
@@ -159,10 +159,10 @@ export function SeatingDashboard() {
     const renameTable = (table: Table, open: boolean) => {
         editList[idList.indexOf(table.id)] = open; 
         toggleEditing([...editList]); 
-        if (open == false) {
+        if (open === false) {
             const tmpTables = JSON.parse(JSON.stringify(tablesData));
             for (let x of tmpTables) {
-                if (table.id == x.id) {
+                if (table.id === x.id) {
                     x.name = (document.getElementById('tableName'+table.id) as HTMLInputElement).value;
                     setTablesData([...tmpTables]);
                     setData([tmpTables, [...unseated]]);
@@ -181,15 +181,15 @@ export function SeatingDashboard() {
         // do stuff if the name was moved from one column to another
         if (source.droppableId !== destination.droppableId) {
             // if just dragging between tables, this will work fine
-            if (source.droppableId != unseatedID && destination.droppableId != unseatedID) {
+            if (source.droppableId !== unseatedID && destination.droppableId !== unseatedID) {
                 // find the data at the to/from columns
                 let sourceColumn: Table = {id: '', guests: [], name: ''};
                 let destColumn: Table = {id: '', guests: [], name: ''};
                 for (let x of tablesData) {
-                    if (x.id == source.droppableId) {
+                    if (x.id === source.droppableId) {
                         sourceColumn = x;
                     }
-                    if (x.id == destination.droppableId) {
+                    if (x.id === destination.droppableId) {
                         destColumn = x;
                     }
                 }
@@ -203,14 +203,14 @@ export function SeatingDashboard() {
                 destItems.splice(destination.index, 0, removed);
                 const tmpTables = tablesData;
                 // make sure the whole group gets moved if the option is on
-                if (seatGroupsTogether && removed.groupID != undefined) {
+                if (seatGroupsTogether && removed.groupID != undefined ) {
                     for (let x of tmpTables) {
-                        if (x.id != destination.droppableId) {
+                        if (x.id !== destination.droppableId) {
                             let tmpGuests = [...x.guests];
                             for (let y of x.guests) {
-                                if (y.groupID == removed.groupID && y.id != removed.id) {
+                                if (y.groupID === removed.groupID && y.id !== removed.id) {
                                     // remove y from the table
-                                    if (x.id == source.droppableId) {
+                                    if (x.id === source.droppableId) {
                                         sourceItems.splice(sourceItems.indexOf(y), 1);
                                     }
                                     else {
@@ -226,7 +226,7 @@ export function SeatingDashboard() {
                     // go through unseated
                     const tmpNotSeated = [...unseated];
                     for (let y of unseated) {
-                        if (y.groupID == removed.groupID && y.id != removed.id) {
+                        if (y.groupID === removed.groupID && y.id !== removed.id) {
                             // remove y from unseated
                             tmpNotSeated.splice(tmpNotSeated.indexOf(y), 1);
                             // add y to the new table
@@ -237,10 +237,10 @@ export function SeatingDashboard() {
                     newUnseated = tmpNotSeated;
                 }
                 for (let x of tmpTables) {
-                    if (x.id == source.droppableId)  {
+                    if (x.id === source.droppableId)  {
                         x.guests = [...sourceItems];
                     }
-                    if (x.id == destination.droppableId) {
+                    if (x.id === destination.droppableId) {
                         x.guests = [...destItems];
                     }
                 }
@@ -248,11 +248,11 @@ export function SeatingDashboard() {
                 newTables = [...tmpTables];
             }
             else {
-                if (source.droppableId == unseatedID) {
+                if (source.droppableId === unseatedID) {
                     // find the data at the to/from columns
                     let destColumn: Table = {id: '', guests: [], name: ''};
                     for (let x of tablesData) {
-                        if (x.id == destination.droppableId) {
+                        if (x.id === destination.droppableId) {
                             destColumn = x;
                             break;
                         }
@@ -268,15 +268,15 @@ export function SeatingDashboard() {
                     destItems.splice(destination.index, 0, removed);
                     const tmpTables = tablesData;
                     // make sure the whole group gets moved if the option is on
-                    if (seatGroupsTogether && removed.groupID != undefined) {
+                    if (seatGroupsTogether && removed.groupID != undefined ) {
                         // go through the tables
                         for (let x of tmpTables) {
-                            if (x.id != destination.droppableId) {
+                            if (x.id !== destination.droppableId) {
                                 let tmpGuests = [...x.guests];
                                 for (let y of x.guests) {
-                                    if (y.groupID == removed.groupID && y.id != removed.id) {
+                                    if (y.groupID === removed.groupID && y.id !== removed.id) {
                                         // remove y from the table
-                                        if (x.id == source.droppableId) {
+                                        if (x.id === source.droppableId) {
                                             sourceItems.splice(sourceItems.indexOf(y), 1);
                                         }
                                         else {
@@ -292,7 +292,7 @@ export function SeatingDashboard() {
                         // go through unseated
                         const tmpSource = [...sourceItems];
                         for (let y of tmpSource) {
-                            if (y.groupID == removed.groupID && y.id != removed.id) {
+                            if (y.groupID === removed.groupID && y.id !== removed.id) {
                                 // remove y from unseated
                                 sourceItems.splice(sourceItems.indexOf(y), 1);
                                 // add y to the new table
@@ -301,7 +301,7 @@ export function SeatingDashboard() {
                         }
                     }
                     for (let x of tmpTables) {
-                        if (x.id == destination.droppableId) {
+                        if (x.id === destination.droppableId) {
                             x.guests = [...destItems];
                         }
                     }
@@ -311,11 +311,11 @@ export function SeatingDashboard() {
                     setSeated(seated + 1);
                     newTables = [...tmpTables];
                 }
-                else if (destination.droppableId == unseatedID) {
+                else if (destination.droppableId === unseatedID) {
                     // find the data at the to/from columns
                     let sourceColumn: Table = {id: '', guests: [], name: ''};
                     for (let x of tablesData) {
-                        if (x.id == source.droppableId) {
+                        if (x.id === source.droppableId) {
                             sourceColumn = x;
                             break;
                         }
@@ -330,14 +330,14 @@ export function SeatingDashboard() {
                     destItems.splice(destination.index, 0, removed);
                     const tmpTables = tablesData;
                     // make sure the whole group gets moved if the option is on
-                    if (seatGroupsTogether && removed.groupID != undefined) {
+                    if (seatGroupsTogether && removed.groupID != undefined ) {
                         // go through the tables
                         for (let x of tmpTables) {
                             let tmpGuests = [...x.guests];
                             for (let y of x.guests) {
-                                if (y.groupID == removed.groupID && y.id != removed.id) {
+                                if (y.groupID === removed.groupID && y.id !== removed.id) {
                                     // remove y from the table
-                                    if (x.id == source.droppableId) {
+                                    if (x.id === source.droppableId) {
                                         sourceItems.splice(sourceItems.indexOf(y), 1);
                                     }
                                     else {
@@ -351,7 +351,7 @@ export function SeatingDashboard() {
                         }
                     }
                     for (let x of tmpTables) {
-                        if (x.id == source.droppableId) {
+                        if (x.id === source.droppableId) {
                             x.guests = [...sourceItems];
                         }
                     }
@@ -366,7 +366,7 @@ export function SeatingDashboard() {
         else {
             // unseated gets different treatment from tables!!
             // sort based on drag and drop within unseated table
-            if (source.droppableId == unseatedID)  {
+            if (source.droppableId === unseatedID)  {
                 const copiedItems = [...shownUnseated];
                 const [removed] = copiedItems.splice(source.index, 1);
                 copiedItems.splice(destination.index, 0, removed);
@@ -377,7 +377,7 @@ export function SeatingDashboard() {
             else {
                 let sourceColumn: Table = {id: '', guests: [], name: ''};
                 for (let x of tablesData) {
-                    if (x.id == source.droppableId) {
+                    if (x.id === source.droppableId) {
                         sourceColumn = x;
                         break;
                     }
@@ -389,7 +389,7 @@ export function SeatingDashboard() {
                 // set the new column data based off of the above
                 const tmpTables = tablesData;
                 for (let x of tmpTables) {
-                    if (x.id == source.droppableId)  {
+                    if (x.id === source.droppableId)  {
                         x.guests = sourceItems;
                         break;
                     }
@@ -410,7 +410,7 @@ export function SeatingDashboard() {
 
     const clearSearch = () => {
         const e = document.getElementById('searchBar');
-        if (e != null) {
+        if (e !== null) {
             (e as HTMLInputElement).value='';
         }
         searchTerm = '';
@@ -418,7 +418,7 @@ export function SeatingDashboard() {
     }
 
     const search = (event: any, search? : string) => {
-        if (search == undefined) {
+        if (search == undefined ) {
             searchTerm = event.target.value.toLowerCase().trim();
         }
         if (searchTerm.trim()=='') {
@@ -426,14 +426,14 @@ export function SeatingDashboard() {
             return;
         }
         const newUnseated = unseated.filter( (x) => {
-            return (x.name.toLowerCase()).includes(searchTerm) || (x.groupName != undefined ? x.groupName.toLowerCase().includes(searchTerm) : false);
+            return (x.name.toLowerCase()).includes(searchTerm) || (x.groupName != undefined  ? x.groupName.toLowerCase().includes(searchTerm) : false);
         });
         searchedUnseated(newUnseated);
     };
 
     const clearTable = (event: any, id?: string) => {
         let tableId = undefined;
-        if (id != undefined) {
+        if (id != undefined ) {
             tableId = id;
         }
         else {
@@ -442,12 +442,12 @@ export function SeatingDashboard() {
         const tmpTables = tablesData;
         let nowUnseated: Invitee[] = []
         for (let x of tmpTables) {
-            if (x.id == tableId) {
+            if (x.id === tableId) {
                 nowUnseated = [...x.guests];
                 x.guests = [];
             }
         }
-        if (id == undefined) {
+        if (id == undefined ) {
             setTablesData(tmpTables);
             setUnseated(unseated.concat(nowUnseated));
             setSeated(seated - nowUnseated.length);
@@ -479,7 +479,7 @@ export function SeatingDashboard() {
         setData([newTables, [...unseated]]);
     };
 
-    const title = window.activeEvent == null ? 'Event' : `${window.activeEvent.name}  |  ${moment(window.activeEvent.date).format('MM / DD / YYYY')}`;
+    const title = window.activeEvent == null  ? 'Event' : `${window.activeEvent.name}  |  ${moment(window.activeEvent.date).format('MM / DD / YYYY')}`;
     
     const toggleGroupMode = (event: any) => {
         seatGroupsTogether = event.target.checked;
@@ -490,7 +490,7 @@ export function SeatingDashboard() {
         let difTables = 0;
         for (let x of tablesData) {
             for (let y of x.guests) {
-                if (y.groupID == groupID) {
+                if (y.groupID === groupID) {
                     difTables += 1;
                     break;
                 }
@@ -505,7 +505,7 @@ export function SeatingDashboard() {
     /* checks if all members of a group are seated */
     const isGroupUnseated = (groupID: string | undefined) => {
         for (let x of unseated) {
-            if (x.groupID == groupID) {
+            if (x.groupID === groupID) {
                 return true;
             }
         }
@@ -518,11 +518,11 @@ export function SeatingDashboard() {
         const guestsToAdd: Invitee[] = [];
         let ourTableInd = 0;
         for (let x of tablesData) {
-            if (tableId != x.id) {
+            if (tableId !== x.id) {
                 // find all the guests with groupID
                 const tmpGuests = [...x.guests];
                 for (let y of tmpGuests) {
-                    if (y.groupID == groupID) {
+                    if (y.groupID === groupID) {
                         // remove them from their table
                         const [removed] = tmpTables[tmpTables.indexOf(x)].guests.splice(x.guests.indexOf(y), 1);
                         // keep track of the guest
@@ -552,14 +552,14 @@ export function SeatingDashboard() {
         const tmpNotSeated = [...unseated];
         let tmpTables = [...tablesData];
         for (let x of unseated) {
-            if (x.groupID == groupID) {
+            if (x.groupID === groupID) {
                 const [removed] = tmpNotSeated.splice(tmpNotSeated.indexOf(x), 1);
                 guestsToAdd.push(removed);
             }
         }
         // add the data to our table
         const ourTable = tablesData.filter( (t) => {
-            return t.id == tableId;
+            return t.id === tableId;
         });
         tmpTables[tmpTables.indexOf(ourTable[0])].guests = tmpTables[tmpTables.indexOf(ourTable[0])].guests.concat(guestsToAdd);
         setSeated(seated + guestsToAdd.length);
@@ -579,7 +579,7 @@ export function SeatingDashboard() {
         if (dataHistory.past.length > 0) {
             dataHistory.future.push(dataHistory.present);
             dataHistory.present = dataHistory.past.pop();
-            if (dataHistory.present.length == 1) {
+            if (dataHistory.present.length === 1) {
                 dataHistory.present = dataHistory.present[0]
             }
             const tmpTables = JSON.parse(JSON.stringify(dataHistory.present[0]));
@@ -595,7 +595,7 @@ export function SeatingDashboard() {
         if (dataHistory.future.length > 0) {
             dataHistory.past.push(dataHistory.present);
             dataHistory.present = dataHistory.future.pop();
-            if (dataHistory.present.length == 1) {
+            if (dataHistory.present.length === 1) {
                 dataHistory.present = dataHistory.present[0]
             }
             const tmpTables = JSON.parse(JSON.stringify(dataHistory.present[0]));
@@ -609,10 +609,10 @@ export function SeatingDashboard() {
     };
 
     const addTable = () => {
-        if (window.activeEvent != null) {
+        if (window.activeEvent !== null) {
             let tmpTables = [...window.activeEvent.tables];
             const id = (new ObjectId()).toString();
-            tables = ((window.activeEvent != null) ? window.activeEvent.tables.length : 0);
+            tables = ((window.activeEvent !== null) ? window.activeEvent.tables.length : 0);
             const newTable: Table = {
                 id: id,
                 name: 'Table ' + (tables+1).toString(),
@@ -632,7 +632,7 @@ export function SeatingDashboard() {
     };
 
     const generatePlan = async () => {
-        if (window.activeEvent != null) {
+        if (window.activeEvent !== null) {
             const seatingChart = await fetch('http://localhost:3001/events/algorithm/'+window.activeEvent.id);
             const chartData = await seatingChart.json();
             const chartAnswer = chartData.answer;
@@ -659,14 +659,14 @@ export function SeatingDashboard() {
     }
 
     const deleteTable = () => {
-        if (window.activeEvent != null) {
+        if (window.activeEvent !== null) {
             let emptyTables = tablesData.filter( (table) => {return table.guests.length==0});
             let toDelete = emptyTables[emptyTables.length-1];
             let tmpTables = [...tablesData];
             tmpTables = JSON.parse(JSON.stringify(tmpTables));
             let newTables: Table[] = [];
             for (let x of tmpTables) {
-                if (x.id != toDelete.id) {
+                if (x.id !== toDelete.id) {
                     x = JSON.parse(JSON.stringify(x));
                     x.guests = [...x.guests];
                     newTables.push(x);
@@ -681,7 +681,7 @@ export function SeatingDashboard() {
 
     return (
         <>
-            {window.activeEvent == null ? 
+            {window.activeEvent == null  ? 
             <>
             <h1 className='title'>Error: No event found.</h1>
             <Button variant='contained' onClick={handleClick}>Return to Dashboard</Button>
@@ -694,7 +694,7 @@ export function SeatingDashboard() {
                 {/* Header Code  */}
                 <Grid container className='dashBody firstCard' spacing={0} columns={26}>
                     <Grid item xs={4}>
-                        <h3 className='seatStat'>{window.activeEvent.respondents == undefined || window.activeEvent.surveys == undefined ? '0' : Math.floor((window.activeEvent.respondents.length/window.activeEvent.surveys.length)*100)}%</h3>
+                        <h3 className='seatStat'>{window.activeEvent.respondents == undefined  || window.activeEvent.surveys == undefined  ? '0' : Math.floor((window.activeEvent.respondents.length/window.activeEvent.surveys.length)*100)}%</h3>
                         <p className='statLabel'>Survey Completion</p>
                     </Grid>
                     <Grid item xs={4}>
@@ -752,7 +752,7 @@ export function SeatingDashboard() {
                                         <FaSearch/>
                                     </InputAdornment>, 
                                 endAdornment:
-                                    searchTerm.trim() != ''  && <InputAdornment position="end">  
+                                    searchTerm.trim() !== ''  && <InputAdornment position="end">  
                                         <IconButton className='smallClose' onClick={clearSearch}>
                                             <IoIosClose/>
                                         </IconButton>
@@ -763,7 +763,7 @@ export function SeatingDashboard() {
                                 {(provided, snapshot) => {
                                     return (
                                         <section className={`unseatedSection ${snapshot.isDraggingOver ? "overBackground" : ""}`} {...provided.droppableProps} ref={provided.innerRef}>
-                                            {shownUnseated.length == 0 ? unseated.length == 0 ? <p className='centeredCell'>All guests have been seated!</p> : <p className='wrappedP'>No guests found for search term {searchTerm}</p> : 
+                                            {shownUnseated.length === 0 ? unseated.length === 0 ? <p className='centeredCell'>All guests have been seated!</p> : <p className='wrappedP'>No guests found for search term {searchTerm}</p> : 
                                             <>
                                             {shownUnseated.map((guest: Invitee, index) => {
                                                 return (
@@ -843,13 +843,13 @@ export function SeatingDashboard() {
                                                                                         {...provided.draggableProps}
                                                                                         {...provided.dragHandleProps}>
                                                                                             <span className='cornerText'>{(guest.groupName==undefined ? 'No Group' : guest.groupName)}</span>
-                                                                                            {guest.groupName != undefined && !isGroupTogether(guest.groupID) && 
+                                                                                            {guest.groupName != undefined  && !isGroupTogether(guest.groupID) && 
                                                                                             <Tooltip title={<span>Group is separated.<br/>Click to seat group together.</span>}>
                                                                                                 <IconButton className='infoError' onClick={() => seatGroupTogether(table.id, guest.groupID)}>
                                                                                                     <FaExclamationCircle />
                                                                                                 </IconButton>
                                                                                             </Tooltip>}
-                                                                                            {guest.groupName != undefined && isGroupTogether(guest.groupID) && isGroupUnseated(guest.groupID) && 
+                                                                                            {guest.groupName != undefined  && isGroupTogether(guest.groupID) && isGroupUnseated(guest.groupID) && 
                                                                                             <Tooltip title={<span>Some members of this group are unseated.<br/>Click to seat group together.</span>}>
                                                                                                 <IconButton className='infoError' onClick={() => seatUnseatedGroup(table.id, guest.groupID)}>
                                                                                                     <FaExclamationCircle />
@@ -887,15 +887,15 @@ export function SeatingDashboard() {
 }
 
 function updateEvent(tablesData: Table[]) {
-    if (window.activeEvent != null && window.activeEvent != undefined) {
+    if (window.activeEvent !== null && window.activeEvent != undefined ) {
         const tables = [];
-        if (tablesData.length == 0) {
+        if (tablesData.length === 0) {
             return;
         }
         for (let x of tablesData) {
             const tmpGuests = [];
             for (let g of x.guests) {
-                if (g == undefined || g.id == undefined) {
+                if (g == undefined  || g.id == undefined ) {
                     return;
                 }
                 tmpGuests.push(g.id);

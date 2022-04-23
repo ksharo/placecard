@@ -33,7 +33,7 @@ export function UploadFile() {
             <MdUploadFile className="uploadFileIcon"/>
             <section>
                 <p>Drag your file here or click here to upload</p>
-                <label>{userFile != undefined ? userFile['name'] : "No File Selected"}</label>
+                <label>{userFile != undefined  ? userFile['name'] : "No File Selected"}</label>
                 {/* <button type="button" id ="buttonTestTag">
                     <i className="fas fa-file-upload" />
                     <span> Upload files</span>

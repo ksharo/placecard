@@ -6,8 +6,8 @@ import { IoIosClose } from "react-icons/io";
 
 let searchTerm = '';
 export function SurveyIdealTable() {
-    const perTable = window.activeEvent == undefined ? 0 : window.activeEvent.perTable;
-    let partySize = window.curGuest == undefined ? 0 : window.curGuest.groupSize == undefined ? 1 : window.curGuest.groupSize;
+    const perTable = window.activeEvent == undefined  ? 0 : window.activeEvent.perTable;
+    let partySize = window.curGuest == undefined  ? 0 : window.curGuest.groupSize == undefined  ? 1 : window.curGuest.groupSize;
     let curSize = 0;
     for (let x of window.lovedInvitees) {
         curSize += 1;
@@ -30,7 +30,7 @@ export function SurveyIdealTable() {
     const [rows, setRows] = React.useState([...startRows]);
 
     useLayoutEffect( () => {
-        partySize = window.curGuest == undefined ? 0 : window.curGuest.groupSize == undefined ? 1 : window.curGuest.groupSize;
+        partySize = window.curGuest == undefined  ? 0 : window.curGuest.groupSize == undefined  ? 1 : window.curGuest.groupSize;
         setSizeLeft(perTable - (partySize + curSize));
     }, [window.curGuest])
 
@@ -49,7 +49,7 @@ export function SurveyIdealTable() {
 
     const isChecked = (id: string) => {
         for (let x of window.lovedInvitees) {
-            if (x.id == id) {
+            if (x.id === id) {
                 return true;
             }
         }
@@ -66,7 +66,7 @@ export function SurveyIdealTable() {
         let groupName = undefined;
         let groupID = undefined;
         for (let x of window.inviteesState) {
-            if (x.id == id) {
+            if (x.id === id) {
                 size = 1;
                 name = x.name;
                 groupName = x.groupName;
@@ -91,7 +91,7 @@ export function SurveyIdealTable() {
                 event.target.checked = false;
                 // show error on page
                 const warning = document.getElementById('warning'+id);
-                if (warning != null) {
+                if (warning !== null) {
                     // do this so animation plays
                     warning.classList.remove('gradualError');
                     window.requestAnimationFrame(function() {
@@ -104,7 +104,7 @@ export function SurveyIdealTable() {
             // remove the party from the list of those who are loved
             const tmp = [];
             for (let x of window.lovedInvitees) {
-                if (x.id != id) {
+                if (x.id !== id) {
                     tmp.push({id: x.id, name: x.name, groupName: x.groupName, groupID: x.groupID })
                 }
             }
@@ -116,7 +116,7 @@ export function SurveyIdealTable() {
     const loadingCircle = () => {
         return (
         <section className='loadingCircle'>
-            {window.curGuest != undefined ? <p>No Guests</p> : 
+            {window.curGuest != undefined  ? <p>No Guests</p> : 
             <>
                 <p>Loading...</p>
                 <CircularProgress size={24} />
@@ -128,7 +128,7 @@ export function SurveyIdealTable() {
 
     const search = (event: any) => {
         searchTerm = event.target.value.toLowerCase().trim();
-        if (searchTerm.trim() == '') {
+        if (searchTerm.trim() === '') {
             setRows([...startRows]);
             return;
         }
@@ -140,7 +140,7 @@ export function SurveyIdealTable() {
 
     const clearSearch = () => {
         const e = document.getElementById('searchBar');
-        if (e != null) {
+        if (e !== null) {
             (e as HTMLInputElement).value='';
         }
         searchTerm = '';
@@ -163,7 +163,7 @@ export function SurveyIdealTable() {
                                     <FaSearch/>
                                 </InputAdornment>, 
                             endAdornment:
-                                searchTerm.trim() != ''  && <InputAdornment position="end">  
+                                searchTerm.trim() !== ''  && <InputAdornment position="end">  
                                     <IconButton className='smallClose' onClick={clearSearch}>
                                         <IoIosClose/>
                                     </IconButton>

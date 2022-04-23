@@ -19,14 +19,14 @@ const FirebaseAuthProvider = ({ children } : any) => {
         if (window.loggedInState==false) {
             window.setLoggedIn(!(user==null || user==undefined));
         }
-        if (user != null && user != undefined) {
+        if (user !== null && user != undefined ) {
             const name = user.displayName.split(' ');
             window.setFirstName(name[0]);
             window.setLastName(name[name.length-1]);
             window.setPhone(user.phoneNumber);
             window.setEmail(user.email);
             window.setUID(user.uid);
-            window.setFirstTime(user.metadata.createdAt == user.metadata.lastLoginAt);
+            window.setFirstTime(user.metadata.createdAt === user.metadata.lastLoginAt);
         }
         setFirebaseUser(user);
     };

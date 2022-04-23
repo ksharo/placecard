@@ -49,7 +49,7 @@ export function GuestConfirmation() {
                 tables: undefined,
             });
             window.setInvitees(guests);
-            if (guestInfo.status == 200) {
+            if (guestInfo.status === 200) {
                 const data = await guestInfo.json();
                 const newGuest = {
                     id: data._id,
@@ -59,7 +59,7 @@ export function GuestConfirmation() {
                     groupSize: data.party_size,
                     contact: data.email,
                 };
-                if ((data.email.toLowerCase() == contact || data.phone_number == contact) && contact != '' && contact != undefined) {
+                if ((data.email.toLowerCase() === contact || data.phone_number === contact) && contact !== '' && contact != undefined ) {
                     window.setCurGuest(newGuest);
                     window.setGroupID(data.group_id);
                     window.setDisliked(data.survey_response.disliked);
@@ -69,7 +69,7 @@ export function GuestConfirmation() {
                 }
                 else {
                     const contactErr = document.getElementById('wrongContactError');
-                    if (contactErr != null) {
+                    if (contactErr !== null) {
                         contactErr.style.display = 'block';
                         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
                     }
@@ -77,7 +77,7 @@ export function GuestConfirmation() {
             }
             else {
                 const linkErr = document.getElementById('wrongLinkError');
-                if (linkErr != null) {
+                if (linkErr !== null) {
                     linkErr.style.display = 'block';
                     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
                 }
@@ -86,7 +86,7 @@ export function GuestConfirmation() {
         catch (e) {
             const linkErr = document.getElementById('wrongLinkError');
             console.error(e);
-            if (linkErr != null) {
+            if (linkErr !== null) {
                 linkErr.style.display = 'block';
                 window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
             }

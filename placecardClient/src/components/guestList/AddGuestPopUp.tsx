@@ -102,7 +102,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 		const grpSize = currPlusOneName ? 2 : 1;
 		const res = await sendGuest(currIndiName, currIndiContact, grpName, currGrpId, grpSize, currIndiSendSurvey);
 		const guestData = await res?.json();
-		if (res != undefined && !res.ok) {
+		if (res != undefined  && !res.ok) {
 			const message = `An error has occured: ${res.status} - ${res.statusText}`;
 			throw new Error(message);
 		}
@@ -112,7 +112,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 		if (currPlusOneName) {
 			const resPlusOne = await sendGuest(currPlusOneName, currIndiContact, grpName, currGrpId, grpSize, currIndiSendSurvey);
 			const plusOneData = await resPlusOne?.json();
-			if (resPlusOne != undefined && !resPlusOne.ok) {
+			if (resPlusOne != undefined  && !resPlusOne.ok) {
 				const message = `An error has occured: ${resPlusOne.status} - ${resPlusOne.statusText}`;
 				throw new Error(message);
 			}
@@ -147,7 +147,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 		for (let x of currGrpMembers) {
 			const res = await sendGuest(x, currGrpContact, currGrpName, currGrpId, Number(currGrpSize), currGrpSendSurvey);
 			const guestData = await res?.json();
-			if (res != undefined && !res.ok) {
+			if (res != undefined  && !res.ok) {
 				const message = `An error has occured: ${res.status} - ${res.statusText}`;
 				throw new Error(message);
 			}
@@ -423,7 +423,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 	}
 
 	function sendGuest(name: string, contact: string, groupName: string | undefined, groupId: string, groupSize: number, sendSurvey: boolean) {
-		if (window.activeEvent != undefined && window.activeEvent != null) {
+		if (window.activeEvent != undefined  && window.activeEvent !== null) {
 			const nameSplit = name.split(" ");
 			let firstName = '';
 			let lastName = '--';
@@ -441,7 +441,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 				"party_size": groupSize,
 				"associated_table_number": -1,
 			}
-			if (groupName != undefined) {
+			if (groupName != undefined ) {
 				body["group_id"] = groupId;
 				body["group_name"] = groupName;
 			}
@@ -462,7 +462,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 	}
 
 	function updateGlobalEvent(guestData: any) {
-		if (window.activeEvent != null) {
+		if (window.activeEvent !== null) {
 			const curGuests = [...window.activeEvent.guestList];
 			const newGuest = {
 				id: guestData._id,

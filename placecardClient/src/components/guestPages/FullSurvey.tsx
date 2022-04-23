@@ -20,7 +20,7 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
     const guestID = new URLSearchParams(queryString).get('guestId');
     const eventID = new URLSearchParams(queryString).get('eventId');
     const setupSurvey = async () => {
-        if ((pageString != undefined || (props == undefined || props.hostView == false)) && (window.curGuest == undefined || window.inviteesState.length == 0)) {
+        if ((pageString != undefined  || (props == undefined  || props.hostView === false)) && (window.curGuest == undefined  || window.inviteesState.length === 0)) {
             try {
                 const guestInfo = await fetch('http://localhost:3001/guests/' + guestID);
                 const eventInfo = await fetch('http://localhost:3001/events/guestAccess/' + eventID);
@@ -52,7 +52,7 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
                     tables: undefined,
                 });
                 window.setInvitees(guests);
-                if (guestInfo.status == 200) {
+                if (guestInfo.status === 200) {
                     const data = await guestInfo.json();
                     const newGuest = {
                         id: data._id,
@@ -72,13 +72,13 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
             catch (e) {
                 console.error(e)
                 const linkErr = document.getElementById('wrongLinkError');
-                if (linkErr != null) {
+                if (linkErr !== null) {
                     linkErr.style.display = 'block';
                     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
                 }
             }
         }
-        if (props != undefined && props.hostView && window.curGuest == undefined) {
+        if (props != undefined  && props.hostView && window.curGuest == undefined ) {
             const newGuest = {
                 id: new ObjectId(),
                 name: window.firstNameState + ' ' + window.lastNameState,
@@ -92,7 +92,7 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
     }
 
     useEffect(() => {
-        if (props != undefined && props.hostView) {
+        if (props != undefined  && props.hostView) {
             const newGuest = {
                 id: new ObjectId(),
                 name: window.firstNameState + ' ' + window.lastNameState,
@@ -123,7 +123,7 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
         setPage(0);
     };
 
-    if (props != undefined && props.preview) {
+    if (props != undefined  && props.preview) {
         /* Don't include last three pages in preview for sizing/usability purposes */
         pages.pop();
         pages.pop();
@@ -138,8 +138,8 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
 
     const nextPage = async () => {
         /* Make sure that on preview we don't switch pages accidentally! */
-        if (props == undefined || !props.preview) {
-            if (curPage == 0 || curPage == pages.length-1) {
+        if (props == undefined  || !props.preview) {
+            if (curPage === 0 || curPage === pages.length-1) {
                 /* take care of removed members */
                 for (let x of window.removedMembers) {
                     if (x.contact && validator.isEmail(x.contact)) {
@@ -164,10 +164,10 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
                 window.setRemovedMembers([]);
             }
             /* check for default values to make sure that we don't overwrite with bad data */
-            if (!((window.dislikedInvitees.length == 1 && window.dislikedInvitees[0].id == 'none') || (window.likedInvitees.length == 1 && window.likedInvitees[0].id == 'none') || (window.lovedInvitees.length == 1 && window.lovedInvitees[0].id == 'none'))) {
+            if (!((window.dislikedInvitees.length === 1 && window.dislikedInvitees[0].id === 'none') || (window.likedInvitees.length === 1 && window.likedInvitees[0].id === 'none') || (window.lovedInvitees.length === 1 && window.lovedInvitees[0].id === 'none'))) {
                 // TODO add error checking here!!!
                 for (let x of window.inviteesState) {
-                    if (window.curGuest != undefined && window.curGuest.groupID != undefined && x.groupID == window.curGuest?.groupID){
+                    if (window.curGuest != undefined  && window.curGuest.groupID != undefined  && x.groupID === window.curGuest?.groupID){
                         await updateGuest(x.id);
                     }
                 }
@@ -175,7 +175,7 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
                     await updateGuest(window.curGuest.id);
                 }
             }
-            if (curPage == pages.length-1) {
+            if (curPage === pages.length-1) {
                 startPage = 1;
                 history.push('/takeSurvey?page=' + startPage + '&guestId=' + guestID + '&eventId=' + eventID);
                 window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
@@ -197,11 +197,11 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
 
     const prevPage = async () => {
         /* Make sure that on preview we don't switch pages accidentally! */
-        if (props == undefined || !props.preview) {
+        if (props == undefined  || !props.preview) {
             /* check for default values to make sure that we don't overwrite with bad data */
-            if (!((window.dislikedInvitees.length == 1 && window.dislikedInvitees[0].id == 'none') || (window.likedInvitees.length == 1 && window.likedInvitees[0].id == 'none') || (window.lovedInvitees.length == 1 && window.lovedInvitees[0].id == 'none'))) {
+            if (!((window.dislikedInvitees.length === 1 && window.dislikedInvitees[0].id === 'none') || (window.likedInvitees.length === 1 && window.likedInvitees[0].id === 'none') || (window.lovedInvitees.length === 1 && window.lovedInvitees[0].id === 'none'))) {
                 for (let x of window.inviteesState) {
-                    if (window.curGuest != undefined && window.curGuest.groupID != undefined && x.groupID == window.curGuest?.groupID){
+                    if (window.curGuest != undefined  && window.curGuest.groupID != undefined  && x.groupID === window.curGuest?.groupID){
                         await updateGuest(x.id);
                     }
                 }
@@ -223,17 +223,17 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
     return (
         <>
             {pages[curPage]}
-            {curPage == 0 || ((!props || !props.preview) && curPage == pages.length-1) ? <Button variant='contained' className='basicBtn fitBtn' onClick={nextPage}>Continue</Button> :
-                curPage == pages.length - 2 && (!props || !props.preview)?
+            {curPage === 0 || ((!props || !props.preview) && curPage === pages.length-1) ? <Button variant='contained' className='basicBtn fitBtn' onClick={nextPage}>Continue</Button> :
+                curPage === pages.length - 2 && (!props || !props.preview)?
                     <></>
                     :
-                    props && props.preview && curPage == pages.length - 2 || ((!props || !props.preview) && curPage == pages.length - 3) ?
+                    props && props.preview && curPage === pages.length - 2 || ((!props || !props.preview) && curPage === pages.length - 3) ?
                         <>
                             <Button variant='contained' className='basicBtn fitBtn generalButton' onClick={prevPage}>Go Back</Button>
                             <Button variant='contained' className='basicBtn fitBtn generalButton' onClick={nextPage}>Finish!</Button>
                         </>
                         :
-                        props && props.preview && curPage == pages.length-1 ? 
+                        props && props.preview && curPage === pages.length-1 ? 
                         <></> 
                         :
                         <>
@@ -246,7 +246,7 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
 }
 
 function updateGuest(id: string) {
-    if (window.curGuest != undefined) {
+    if (window.curGuest != undefined ) {
         const requestOptions = {
             method: 'PATCH',
             headers: {
@@ -270,7 +270,7 @@ function removeMember(id: string, email: string) {
     let groupid = undefined;
     /* fix global variables */
     const matching = window.inviteesState.filter( (g) => {
-        return g.id.toString() == id.toString();
+        return g.id.toString() === id.toString();
     });
     if (matching.length > 0) {
         groupid = matching[0].groupID;
