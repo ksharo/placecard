@@ -233,6 +233,26 @@ async function uploadSurveyData(filePath, fileType) {
     return returnData;
 }
 
+async function removeFromGroup(guestId) {
+    checkPrecondition(guestId, isUndefined, INVALID_GUEST_ID_MESSAGE);
+    checkPrecondition(guestId, isInvalidObjectId, INVALID_GUEST_ID_MESSAGE);
+
+    const guestCollection = await mongoCollections.guests();
+    const guestObjectId = ObjectId(guestId);
+
+    const queryParameters = { _id: guestObjectId };
+    const updatedDocument = { $unset: { group_id: "", group_name: "" } };
+
+    const updateInfo = await guestCollection.updateOne(queryParameters, updatedDocument);
+
+    if (updateFailed(updateInfo)) {
+        throw new Error(generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, GUEST_TYPE));
+    }
+
+    const updatedGuest = await this.getGuest(guestId);
+    return updatedGuest;
+}
+
 module.exports = {
     getGuest,
     getGuests,
@@ -240,4 +260,5 @@ module.exports = {
     updateGuest,
     deleteGuest,
     uploadSurveyData,
+    removeFromGroup
 };
