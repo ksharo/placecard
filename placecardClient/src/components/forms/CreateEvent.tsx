@@ -244,7 +244,8 @@ async function sendEvent(name: string, uid: string, date: string, time: string, 
             location: location,
             attendees_per_table: Number(per_table),
             tables: initTable,
-            guest_list: []
+            guest_list: [],
+            surveys_sent: []
             })
         };
     return fetch('http://localhost:3001/events/newEvent', requestOptions);

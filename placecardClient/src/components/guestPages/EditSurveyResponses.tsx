@@ -335,7 +335,7 @@ export function EditSurveyResponses() {
                                                 <section className={`guestName ${snapshot.isDragging ? "draggingGuest" : "placedGuest"}`} ref={provided.innerRef}
                                                     {...provided.draggableProps}
                                                     {...provided.dragHandleProps}>
-                                                    <span className='cornerText'>{(guest.groupName==undefined || guest.groupName=='N/A' ? 'No Group' : guest.groupName)}</span>
+                                                    <span className='cornerText'>{(guest.groupName==undefined ? 'No Group' : guest.groupName)}</span>
                                                         <br/>
                                                         {guest.name}
                                                 </section>

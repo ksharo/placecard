@@ -773,7 +773,7 @@ export function SeatingDashboard() {
                                                                 <section className={`guestName ${snapshot.isDragging ? "draggingGuest" : "placedGuest"}`} ref={provided.innerRef}
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}>
-                                                                    <span className='cornerText'>{(guest.groupName==undefined || guest.groupName=='N/A' ? 'No Group' : guest.groupName)}</span>
+                                                                    <span className='cornerText'>{(guest.groupName==undefined ? 'No Group' : guest.groupName)}</span>
                                                                     <br/>
                                                                     {guest.name}
                                                                 </section>
@@ -842,7 +842,7 @@ export function SeatingDashboard() {
                                                                                         <section className={`guestName ${snapshot.isDragging ? "draggingGuest" : "placedGuest"}`} ref={provided.innerRef}
                                                                                         {...provided.draggableProps}
                                                                                         {...provided.dragHandleProps}>
-                                                                                            <span className='cornerText'>{(guest.groupName==undefined || guest.groupName=='N/A' ? 'No Group' : guest.groupName)}</span>
+                                                                                            <span className='cornerText'>{(guest.groupName==undefined ? 'No Group' : guest.groupName)}</span>
                                                                                             {guest.groupName != undefined && !isGroupTogether(guest.groupID) && 
                                                                                             <Tooltip title={<span>Group is separated.<br/>Click to seat group together.</span>}>
                                                                                                 <IconButton className='infoError' onClick={() => seatGroupTogether(table.id, guest.groupID)}>
