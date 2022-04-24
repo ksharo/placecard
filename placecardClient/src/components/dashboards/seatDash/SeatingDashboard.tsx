@@ -440,7 +440,7 @@ export function SeatingDashboard() {
         else {
             tableId = event.target.id.substring(11);
         }
-        const tmpTables = tablesData;
+        const tmpTables = [...tablesData];
         let nowUnseated: Invitee[] = []
         for (let x of tmpTables) {
             if (x.id === tableId) {
@@ -652,7 +652,6 @@ export function SeatingDashboard() {
                 x = JSON.parse(JSON.stringify(x));
                 x.guests = [...x.guests];
             }
-            console.log(tmpTables);
             setTablesData(tmpTables);
             setUnseated([]);
             setData([tmpTables, []]);
@@ -813,7 +812,7 @@ export function SeatingDashboard() {
                             <Grid container spacing={{xs:1, md: 2, lg: 1}} columns={{ xs: 1, md: 2, lg: 3 }}>
                                 {Object.entries(tablesData).map(([_, table]) => {
                                         return (
-                                            <Grid item xs={1} md={1} lg={1}>
+                                            <Grid key={uuid()} item xs={1} md={1} lg={1}>
                                                 <Card className='tableBox'>
                                                     <AppBar position='static' className='tableHeader'>
                                                         <Toolbar className='topTableHeader'>
@@ -876,6 +875,13 @@ export function SeatingDashboard() {
                                         )
                                     })
                                 }
+                                <Grid key={uuid()} item xs={1} md={1} lg={1}>
+                                                <Card className='fakeTableBox'>
+                                                    <section className='fakeTableSection'>
+                                                        <Button className='addTableBtn' variant='contained' onClick={addTable}>+  Add a Table</Button>
+                                                    </section>
+                                                </Card>
+                                            </Grid>
                             </Grid>
                     </Card>
                 </Grid>
