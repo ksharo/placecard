@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import './Confirmation.css';
 
 export function SentConf() {
+    window.setGuestMode(false);
     const history = useHistory();
     const toDash = () => {
         history.push('/eventDash');

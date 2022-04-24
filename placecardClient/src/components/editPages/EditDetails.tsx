@@ -23,6 +23,7 @@ import { ObjectId } from 'mongodb';
     let firstTime = true;
 
 export function EditDetails(){
+    window.setGuestMode(false);
     const history = useHistory();
     
     /* Variables to keep track of if each textField shows an error */

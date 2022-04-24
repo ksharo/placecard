@@ -6,6 +6,7 @@ import { FullSurvey } from '../guestPages/FullSurvey';
 import './editPages.css';
 
 export function EditSurvey () {
+    window.setGuestMode(false);
     const history = useHistory();
 
     const defaultMainText = `Please fill out a seating chart for my event, ${window.activeEvent == undefined  || window.activeEvent == null  ? 'Event Name Not Found' : window.activeEvent.name}, on Placecard!`

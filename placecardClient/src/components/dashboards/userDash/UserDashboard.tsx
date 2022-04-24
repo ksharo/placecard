@@ -10,6 +10,7 @@ import { HiTrash } from 'react-icons/hi';
 
 
 export function UserDashboard() {
+    window.setGuestMode(false);
     const [viewAll, setView] = React.useState(false);
     const history = useHistory();
     const handleClick = async (event: PlacecardEvent) => {

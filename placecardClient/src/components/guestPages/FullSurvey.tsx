@@ -13,6 +13,12 @@ import validator from 'validator';
 
 
 export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
+    if (!props || !props.preview) {
+        window.setGuestMode(true);
+    }
+    else {
+        window.setGuestMode(false);
+    }
     const history = useHistory();
     const queryString = useLocation().search;
     // gets query string if you do /takeSurvey?page=aaaaaa&guestId=aaaaaa&eventId=12345

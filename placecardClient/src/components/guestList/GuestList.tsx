@@ -7,6 +7,7 @@ import './GuestList.css'
 import { UploadFile } from "../shared/UploadFile";
 
 export function GuestList(){
+	window.setGuestMode(false);
 	const TITLE			= 'Add a Guest List For Your Event'
 	const PAGE_DESCRIPTION	= 'Download our guest list template, fill it out, and drop it back here'
 	const TABLE_TITLE		= 'Enter Guest List Manually'

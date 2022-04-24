@@ -6,6 +6,7 @@ import { Button } from "@mui/material";
 import validator from "validator";
 
 export function GuestConfirmation() {
+    window.setGuestMode(true);
     const history = useHistory();
     const queryString = useLocation().search;
     // gets query string if you do /beginSurvey?guestId=aaaaaa&eventId=12345

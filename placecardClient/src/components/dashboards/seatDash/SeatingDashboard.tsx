@@ -28,6 +28,7 @@ for (let _ in (window.activeEvent? window.activeEvent.tables : [])) {
     editList.push(false);
 }
 export function SeatingDashboard() {
+    window.setGuestMode(false);
     const history = useHistory();
     let handleClick =  () => {
         history.push('/eventDash');

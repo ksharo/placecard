@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import moment from 'moment';
 
 export function EventDashboard() {
+    window.setGuestMode(false);
     const history = useHistory();
     const goHome = () => {
         history.push('/userHome');
