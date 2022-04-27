@@ -125,7 +125,7 @@ export function SurveyLikes() {
     }
 
     return (<>
-                <h1 className='title'>Seating Survey - Part III</h1>
+                <h1 className='title'>Seating Survey - Part II</h1>
                 <p className='subtitle'>Which of these individuals do you feel comfortable sitting with?</p>
                 <section className='stickySearch smallSearch'>
                     <TextField

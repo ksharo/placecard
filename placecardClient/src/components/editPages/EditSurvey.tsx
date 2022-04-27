@@ -14,7 +14,7 @@ export function EditSurvey () {
     const defaultSignatureText = 'Thanks! \r\n'+window.firstNameState + ' ' + window.lastNameState;
 
     const sendSurvey = () => {
-        if (window.activeEvent !== null) {
+        if (window.activeEvent != null) {
             for (let x of window.activeEvent.guestList) {
                 console.log(x.name + ' ' + x.contact + ':   http://localhost:3000/' + window.activeEvent.name.replace(' ', '-') + '/beginSurvey?eventId=' + window.activeEvent.id + '&guestId=' + x.id);
             }

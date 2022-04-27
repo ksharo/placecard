@@ -7,15 +7,22 @@ import { IoIosClose } from "react-icons/io";
 let searchTerm = '';
 export function SurveyDislikes() {
     const names: {name: string, id: string}[] = [];
+    const likeIds: string[] = [];
+    // don't include disliked invitees here
+    for (let x of window.likedInvitees) {
+        likeIds.push(x.id);
+    }
     for (let x of window.inviteesState) {
-        if (window.curGuest != undefined  && window.curGuest.id !== x.id) {
-            if (window.curGuest.groupID != undefined  && window.curGuest.groupID !== '') {
-                if (x.groupID !== window.curGuest.groupID) {
+        if (!likeIds.includes(x.id)) {
+            if (window.curGuest != undefined  && window.curGuest.id !== x.id) {
+                if (window.curGuest.groupID != undefined  && window.curGuest.groupID !== '') {
+                    if (x.groupID !== window.curGuest.groupID) {
+                        names.push({name: x.name, id: x.id});
+                    }
+                }
+                else {
                     names.push({name: x.name, id: x.id});
                 }
-            }
-            else {
-                names.push({name: x.name, id: x.id});
             }
         }
     }
@@ -120,7 +127,7 @@ export function SurveyDislikes() {
     }
     
     return (<>
-                <h1 className='title'>Seating Survey - Part II</h1>
+                <h1 className='title'>Seating Survey - Part IV</h1>
                 <p className='subtitle'>Which of these individuals do you want to avoid sitting with?</p>
                 <section className='stickySearch smallSearch'>
                     <TextField

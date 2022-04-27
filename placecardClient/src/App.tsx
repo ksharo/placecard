@@ -178,7 +178,7 @@ function App() {
             {/* <Route exact path='/surveyPt1' component={ SurveyPt1WithAges }/> */}
             {/* <Route exact path='/surveyPt2' component={ SurveyPt2 }/> */}
             {/* <Route exact path='/surveyPt1' component={ SurveyPt1SitTogether }/> */}
-            <Route exact path='/:eventName*/takeSurvey' component={FullSurvey}/>
+            <Route path='/:eventName*/takeSurvey/:pageNumber' component={FullSurvey}/>
             {/* <Route exact path='/surveyInstructions' component={ SurveyInstructions }/>
             <Route exact path='/editGroup' component={ SurveyGroupPage }/>
             <Route exact path='/surveyDislikes' component={ SurveyDislikes }/>

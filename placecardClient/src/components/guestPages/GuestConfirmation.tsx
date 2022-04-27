@@ -66,7 +66,9 @@ export function GuestConfirmation() {
                     window.setDisliked(data.survey_response.disliked);
                     window.setLiked(data.survey_response.liked);
                     window.setLoved(data.survey_response.ideal);
-                    history.push('/takeSurvey/?page=0&guestId='+guestID+'&eventId='+eventID);
+                    const link = '/takeSurvey/0?page=0&guestId='+guestID+'&eventId='+eventID;
+                    history.push(link);
+                    window.location.hash = '#page0';
                 }
                 else {
                     const contactErr = document.getElementById('wrongContactError');

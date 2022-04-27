@@ -148,7 +148,7 @@ export function SurveyIdealTable() {
     }
 
     return (<>
-                <h1 className='title'>Seating Survey - Part IV</h1>
+                <h1 className='title'>Seating Survey - Part III</h1>
                 <p className='subtitle'>Create your ideal table! Choose up to {sizeLeft} of the individuals you are comfortable with (from the previous page) to fill up your table.</p>
                 <section className='stickySearch smallSearch'>
                     <TextField
