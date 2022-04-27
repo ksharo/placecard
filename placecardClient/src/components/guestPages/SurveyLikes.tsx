@@ -1,16 +1,19 @@
 import { Checkbox, CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
-import React from "react";
+import React, { useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 
 let searchTerm = '';
 export function SurveyLikes() {
-    const names: {name: string, id: string}[] = [];
+    let names: {name: string, id: string}[] = [];
     const disIds: string[] = [];
     // don't include disliked invitees here
+    const setup = () => {
     for (let x of window.dislikedInvitees) {
-        disIds.push(x.id);
+        if (!disIds.includes(x.id)) {
+            disIds.push(x.id);
+        }
     }
     
     for (let x of window.inviteesState) {
@@ -27,7 +30,10 @@ export function SurveyLikes() {
             }
         }
     }
+}
+
     const makeRows = () => {
+        setup();
         let arr: Array<any> = [];
         names.map((name, ind) => {
             arr[ind] = { id: ind, col0: name.name, col1: name.id};
@@ -123,7 +129,11 @@ export function SurveyLikes() {
         searchTerm = '';
         setRows([...startRows]);
     }
-
+    useEffect(() => {
+        names = [];
+        startRows = makeRows();
+        setRows([...startRows]);
+    }, ([window.inviteesState]));
     return (<>
                 <h1 className='title'>Seating Survey - Part II</h1>
                 <p className='subtitle'>Which of these individuals do you feel comfortable sitting with?</p>

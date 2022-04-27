@@ -1,32 +1,37 @@
 import { Checkbox, CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
-import React from "react";
+import React, { useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 
 let searchTerm = '';
 export function SurveyDislikes() {
-    const names: {name: string, id: string}[] = [];
-    const likeIds: string[] = [];
+    let names: {name: string, id: string}[] = [];
+    let likeIds: string[] = [];
     // don't include disliked invitees here
-    for (let x of window.likedInvitees) {
-        likeIds.push(x.id);
-    }
-    for (let x of window.inviteesState) {
-        if (!likeIds.includes(x.id)) {
-            if (window.curGuest != undefined  && window.curGuest.id !== x.id) {
-                if (window.curGuest.groupID != undefined  && window.curGuest.groupID !== '') {
-                    if (x.groupID !== window.curGuest.groupID) {
+    const setup = () => {
+        for (let x of window.likedInvitees) {
+            if (!likeIds.includes(x.id)) {
+                likeIds.push(x.id);
+            }
+        }
+        for (let x of window.inviteesState) {
+            if (!likeIds.includes(x.id)) {
+                if (window.curGuest != undefined  && window.curGuest.id !== x.id) {
+                    if (window.curGuest.groupID != undefined  && window.curGuest.groupID !== '') {
+                        if (x.groupID !== window.curGuest.groupID) {
+                            names.push({name: x.name, id: x.id});
+                        }
+                    }
+                    else {
                         names.push({name: x.name, id: x.id});
                     }
-                }
-                else {
-                    names.push({name: x.name, id: x.id});
                 }
             }
         }
     }
     const makeRows = () => {
+        setup();
         let arr: Array<any> = [];
         names.map((name, ind) => {
             arr[ind] = { id: ind, col0: name.name, col1: name.id};
@@ -125,7 +130,11 @@ export function SurveyDislikes() {
         searchTerm = '';
         setRows([...startRows]);
     }
-    
+    useEffect(() => {
+        names = [];
+        startRows = makeRows();
+        setRows([...startRows]);
+    }, ([window.inviteesState]));
     return (<>
                 <h1 className='title'>Seating Survey - Part IV</h1>
                 <p className='subtitle'>Which of these individuals do you want to avoid sitting with?</p>

@@ -1,6 +1,6 @@
 import { Checkbox, CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 
@@ -13,11 +13,14 @@ export function SurveyIdealTable() {
         curSize += 1;
     }
     const [sizeLeft, setSizeLeft] = React.useState(perTable - (partySize + curSize));
-    const names: Invitee[] = [];
-    for (let x of window.likedInvitees) {
-        names.push({name: x.name, id: x.id, groupName: x.groupName, groupID: x.groupID});
+    let names: Invitee[] = [];
+    const setup = () => {
+        for (let x of window.likedInvitees) {
+            names.push({name: x.name, id: x.id, groupName: x.groupName, groupID: x.groupID});
+        }
     }
     const makeRows = () => {
+        setup();
         let arr: Array<any> = [];
         names.map((name, ind) => {
             arr[ind] = { id: ind, col0: name.name, 
@@ -146,7 +149,11 @@ export function SurveyIdealTable() {
         searchTerm = '';
         setRows([...startRows]);
     }
-
+    useEffect(() => {
+        names = [];
+        startRows = makeRows();
+        setRows([...startRows]);
+    }, ([window.inviteesState]));
     return (<>
                 <h1 className='title'>Seating Survey - Part III</h1>
                 <p className='subtitle'>Create your ideal table! Choose up to {sizeLeft} of the individuals you are comfortable with (from the previous page) to fill up your table.</p>

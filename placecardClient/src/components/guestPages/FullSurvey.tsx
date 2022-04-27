@@ -45,7 +45,6 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
                     }
                     guests.push(newGuest);
                 }
-
                 window.setActiveEvent({
                     id: undefined,
                     uid: undefined,
@@ -113,13 +112,19 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
     let pageNum = Number(pageString);
     let startPage = pageNum;
     const [curPage, setPage] = React.useState(startPage);
-        window.addEventListener('hashchange', () => {
-        const page = Number(window.location.hash.split('#page')[1]);
-        if (page != startPage) {
-            startPage = page;
-            setPage(page);
-        }
-     });
+
+    const eventListener = (event: any) => {
+        // console.log(event.target.location.pathname.split('/')[2], curPage, history.location.pathname.split('/')[2], history.location.hash.split('#page')[1])
+        // console.log(history.location.pathname, Number(history.location.hash.split('#page')[1]));
+        // if (Number(history.location.hash.split('#page')[1]) != Number(history.location.pathname.split('/')[2])) {
+        //     startPage = Number(history.location.pathname.split('/')[2]);
+        //     console.log(startPage);
+        //     setPage(startPage);
+        // }
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        window.removeEventListener('popstate', eventListener);
+     }
+    window.addEventListener('popstate', eventListener);
     const pages = [
         <SurveyGroupPage></SurveyGroupPage>,
         <SurveyLikes></SurveyLikes>,
@@ -164,9 +169,9 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
                     await updateGuest(window.curGuest.id);
                 }
                 startPage += 2;
-                const link = '/takeSurvey/'+startPage+'?page=' + startPage + '&guestId=' + guestID + '&eventId=' + eventID;
-                history.push(link);
                 window.location.hash = '#page' + startPage;
+                const link = '/takeSurvey/'+startPage+'?page=' + startPage + '&guestId=' + guestID + '&eventId=' + eventID+window.location.hash;
+                history.push(link);
                 window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
                 setPage(curPage + 2);
                 return;
@@ -179,9 +184,9 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
                     }
                     else {
                         // throw some error about necessary email
-                        const link = '/takeSurvey/'+startPage+'?page=' + startPage + '&guestId=' + guestID + '&eventId=' + eventID;
-                        history.push(link);
                         window.location.hash = '#page' + startPage;                        
+                        const link = '/takeSurvey/'+startPage+'?page=' + startPage + '&guestId=' + guestID + '&eventId=' + eventID + window.location.hash;
+                        history.push(link);
                         window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
                         setPage(pages.length-1);
                         return;
@@ -212,7 +217,7 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
             if (curPage === pages.length-1) {
                 startPage = 1;
                 window.location.hash = '#page'+startPage;                
-                const link = '/takeSurvey/'+startPage+'?page=' + startPage + '&guestId=' + guestID + '&eventId=' + eventID + window.location.hash;
+                const link = '/takeSurvey/'+startPage+'?page=' + startPage + '&guestId=' + guestID + '&eventId=' + eventID+window.location.hash;
                 history.push(link);
                 window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
                 setPage(startPage);
@@ -220,7 +225,7 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
             else {
                 startPage += 1;
                 window.location.hash = '#page'+startPage;                
-                const link = '/takeSurvey/'+startPage+'?page=' + startPage + '&guestId=' + guestID + '&eventId=' + eventID + window.location.hash;
+                const link = '/takeSurvey/'+startPage+'?page=' + startPage + '&guestId=' + guestID + '&eventId=' + eventID+window.location.hash;
                 history.push(link);
                 window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
                 setPage(curPage + 1);
@@ -249,7 +254,7 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
                 }
                 startPage -= 2;
                 window.location.hash = '#page'+startPage;                
-                const link = '/takeSurvey/'+startPage+'?page=' + startPage + '&guestId=' + guestID + '&eventId=' + eventID + window.location.hash;
+                const link = '/takeSurvey/'+startPage+'?page=' + startPage + '&guestId=' + guestID + '&eventId=' + eventID+window.location.hash;
                 history.push(link);
                 window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
                 setPage(curPage - 2);
@@ -268,7 +273,7 @@ export function FullSurvey(props?: { preview: boolean, hostView?: boolean }) {
             }
             startPage -= 1;
             window.location.hash = '#page'+startPage; 
-            const link = '/takeSurvey/'+startPage+'?page=' + startPage + '&guestId=' + guestID + '&eventId=' + eventID + window.location.hash;
+            const link = '/takeSurvey/'+startPage+'?page=' + startPage + '&guestId=' + guestID + '&eventId=' + eventID+window.location.hash;
             history.push(link);               
             window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
             setPage(curPage - 1);
