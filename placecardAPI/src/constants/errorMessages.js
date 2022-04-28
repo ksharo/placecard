@@ -19,7 +19,8 @@ const DELETE_ERROR_MESSAGE =
 const MISSING_FUNCTION_ARGUMENT_MESSAGE = "Missing argument(s) for function";
 
 const EMAIL_SEND_FAILED = "Email could not be sent";
-const EMAIL_CONFIG_EMPTY = "Email configuration cannot empty"
+const EMAIL_CONFIG_EMPTY = "Email configuration cannot empty";
+const INVALID_TEMPLATE_DATA = "Invalid email template data for guest";
 
 module.exports = Object.freeze({
     INVALID_EVENT_ID_MESSAGE,
@@ -35,5 +36,6 @@ module.exports = Object.freeze({
     DELETE_ERROR_MESSAGE,
     MISSING_FUNCTION_ARGUMENT_MESSAGE,
     EMAIL_SEND_FAILED,
-    EMAIL_CONFIG_EMPTY
+    EMAIL_CONFIG_EMPTY,
+    INVALID_TEMPLATE_DATA
 });

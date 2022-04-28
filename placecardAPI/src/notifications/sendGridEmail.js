@@ -1,18 +1,22 @@
+const { isUndefined } = require("lodash");
 const sgMail = require("@sendgrid/mail");
-const { EMAIL_SEND_FAILED } = require("../constants/errorMessages");
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 async function sendEmailRequest(emailConfig) {
     try {
         const response = await sgMail.send(emailConfig);
-        console.log("Response: ", response);
-        console.log("Email was successfully sent");
+        return response;
     } catch (error) {
-        throw new Error(EMAIL_SEND_FAILED);
+        return error;
     }
 }
 
+function hasError(config) {
+    return !isUndefined(config.error);
+}
+
 module.exports = {
-    sendEmailRequest
+    sendEmailRequest,
+    hasError
 };
