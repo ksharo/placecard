@@ -77,10 +77,10 @@ export function ProfileMenu(props: {user: any}) {
     };
 
     const initCode = <Avatar className='profilePic' onClick={ handleClick } sx={{ width: 46, height: 46 }}>{initials}</Avatar>;
-    const imgCode = <Avatar className='profilePic' alt={initials} onClick={ handleClick } src={window.profPicState == null ? props.user.photoURL : window.profPicState} sx={{ width: 46, height: 46 }}>{initials}</Avatar>;
+    const imgCode = <Avatar className='profilePic' alt={initials} onClick={ handleClick } src={window.profPicState == null  ? props.user.photoURL : window.profPicState} sx={{ width: 46, height: 46 }}>{initials}</Avatar>;
     return (
         <>
-            {window.profPicState == null && props.user.photoURL == null ? initCode : imgCode}
+            {window.profPicState == null  && props.user.photoURL == null  ? initCode : imgCode}
             <Menu anchorEl={ anchorEl } 
                 open={ open } 
                 onClose ={ handleClose } 

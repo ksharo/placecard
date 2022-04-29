@@ -23,6 +23,7 @@ import { ObjectId } from 'mongodb';
     let firstTime = true;
 
 export function CreateEvent(){
+    window.setGuestMode(false);
     const history = useHistory();
 
     /* Variables to keep track of if each textField shows an error */
@@ -32,13 +33,13 @@ export function CreateEvent(){
     const [perTableError, setPerTableError] = React.useState(!validPerTable);
 
     let validateName = (event: any, val?: string) => {
-        if (val != undefined) {
+        if (val != undefined ) {
             name = val;
         }
         else {
             name = validator.trim(event.target.value);
         }
-        if (!firstTime || val != undefined) {
+        if (!firstTime || val != undefined ) {
             const valid = !validator.isEmpty(name) && validator.isWhitelisted(name.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_. &!\'');
             validName = valid;
             setNameError(!valid);
@@ -47,13 +48,13 @@ export function CreateEvent(){
     }
 
     let validateDate = (event: any, val?: string) => {
-        if (val != undefined) {
+        if (val != undefined ) {
             date = val;
         }
         else {
             date = event.target.value;
         }
-        if (!firstTime || val != undefined) {
+        if (!firstTime || val != undefined ) {
             const valid = validator.isDate(date) && validator.isAfter(date);
             validDate = valid;
             setDateError(!valid);
@@ -62,13 +63,13 @@ export function CreateEvent(){
     }
 
     let validateLocation = (event: any, val?: string) => {
-        if (val != undefined) {
+        if (val != undefined ) {
             location = val;
         }
         else {
             location = validator.trim(event.target.value);
         }
-        if (!firstTime || val != undefined) {
+        if (!firstTime || val != undefined ) {
             const valid = validator.isWhitelisted(location.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789-_., &!\'');
             validLoc = valid;
             setLocError(!valid);
@@ -77,13 +78,13 @@ export function CreateEvent(){
     }
 
     let validateTable = (event: any, val?: number) => {
-        if (val != undefined) {
+        if (val != undefined ) {
             per_table = val;
         }
         else {
             per_table = event.target.value;
         }
-        if (!firstTime || val != undefined) {
+        if (!firstTime || val != undefined ) {
             const strNum = validator.trim(per_table.toString());
             const valid = !validator.isEmpty(strNum) && per_table > 0;
             validPerTable = valid;
@@ -96,11 +97,11 @@ export function CreateEvent(){
         event.preventDefault();
         let errorFound = false;
         const x = document.getElementById('sendEventError');
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'none';
         }
-        if (event == null) {
-            if (x != null) {
+        if (event == null ) {
+            if (x !== null) {
                 x.style.display = 'inline-block';
                 window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
             }
@@ -126,7 +127,7 @@ export function CreateEvent(){
             try {
                 const initTable = [{id: uuid(), name: 'Table 1', guests: []}];
                 const result = await sendEvent(name, window.uidState, date, time, location, initTable, per_table);
-                if (result.status == 200) {
+                if (result.status === 200) {
                     const data = await result.json();
                     const id: string = data._id;
                     /* if sendEvent is successful, go to next page after adding event to global list */
@@ -138,7 +139,7 @@ export function CreateEvent(){
                     history.push('/uploadGuestList');
                 }
                 else {
-                    if (x != null) {
+                    if (x !== null) {
                         x.style.display = 'inline-block';
                         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
                     }
@@ -146,7 +147,7 @@ export function CreateEvent(){
 
             }
             catch {
-                if (x != null) {
+                if (x !== null) {
                     x.style.display = 'inline-block';
                     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
                 }
@@ -155,7 +156,7 @@ export function CreateEvent(){
         /* if there is an error, tell the user */
         else {
             const y = document.getElementById('eventFormError');
-            if (y != null) {
+            if (y !== null) {
                 y.style.display = 'inline-block';
                 window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
             }
@@ -228,7 +229,7 @@ export function CreateEvent(){
 
 async function sendEvent(name: string, uid: string, date: string, time: string, location: string, initTable: Table[], per_table: number) {
     // location cannot be empty string when sent to database
-    if (location == '') {
+    if (location === '') {
         location = 'N/A';
     }
     const requestOptions = {
@@ -263,13 +264,13 @@ function checkAllErrors(name: string, date: string, location: string, per_table:
     let x = document.getElementById('eventFormError');
     // if there's an error, keep the item visible
     if (!error) {
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'inline-block';
         }
     }
     // otherwise, hide it
     else {
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'none';
         }
     }

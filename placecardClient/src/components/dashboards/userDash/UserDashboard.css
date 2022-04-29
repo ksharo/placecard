@@ -77,7 +77,7 @@
 }
 
 .leftBtn {
-    justify-self: start;
+    justify-self: flex-start;
     width: fit-content;
 }
 
@@ -86,7 +86,7 @@
     margin: auto auto 40px auto;
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: flex-start;
 }
 
 .userDashFooter {

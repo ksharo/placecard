@@ -13,11 +13,11 @@ export function EditGuestList() {
 	useEffect( () => {
 		const startingGuests: GuestListDataInterface[] = [...guestListData];
 		const startingGroups: any = {};
-		if (window.activeEvent != null) {
+		if (window.activeEvent !== null) {
 			// loop over guest list to fillout guestListData state
 			for (let guest of window.activeEvent.guestList) {
 				/* single people */
-				if (guest.groupName == undefined || guest.groupName.trim() == "") {
+				if (guest.groupName == undefined  || guest.groupName.trim() === "") {
 					const newGuest: GuestListDataInterface = {
 						groupName: guest.name,
 						groupContact: guest.contact,
@@ -26,15 +26,15 @@ export function EditGuestList() {
 						groupMembers: [],
 						id: guest.id
 					};
-					if (!startingGuests.some(g => { if (g.id == newGuest.id) return true;})) {
+					if (!startingGuests.some(g => { if (g.id === newGuest.id) return true;})) {
 						startingGuests.push(newGuest);
 					}
 				}
 				/* groups */
-				else if (guest.groupID != undefined && Object.keys(startingGroups).includes(guest.groupID)) {
+				else if (guest.groupID != undefined  && Object.keys(startingGroups).includes(guest.groupID)) {
 					startingGroups[guest.groupID].groupMembers.push(guest.name);
 				}
-				else if (guest.groupID != undefined) {
+				else if (guest.groupID != undefined ) {
 					startingGroups[guest.groupID] = {
 						groupName: guest.groupName,
 						groupContact: guest.contact,
@@ -56,7 +56,7 @@ export function EditGuestList() {
 					groupMembers: group.groupMembers,
 					id: group.id
 				};
-				if (!startingGuests.some(g => { if (g.id == newGroup.id) return true;})) {
+				if (!startingGuests.some(g => { if (g.id === newGroup.id) return true;})) {
 					startingGuests.push(newGroup);
 				}
 			}

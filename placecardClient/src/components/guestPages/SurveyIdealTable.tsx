@@ -1,23 +1,26 @@
 import { Checkbox, CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 
 let searchTerm = '';
 export function SurveyIdealTable() {
-    const perTable = window.activeEvent == undefined ? 0 : window.activeEvent.perTable;
-    let partySize = window.curGuest == undefined ? 0 : window.curGuest.groupSize == undefined ? 1 : window.curGuest.groupSize;
+    const perTable = window.activeEvent == undefined  ? 0 : window.activeEvent.perTable;
+    let partySize = window.curGuest == undefined  ? 0 : window.curGuest.groupSize == undefined  ? 1 : window.curGuest.groupSize;
     let curSize = 0;
     for (let x of window.lovedInvitees) {
         curSize += 1;
     }
     const [sizeLeft, setSizeLeft] = React.useState(perTable - (partySize + curSize));
-    const names: Invitee[] = [];
-    for (let x of window.likedInvitees) {
-        names.push({name: x.name, id: x.id, groupName: x.groupName, groupID: x.groupID});
+    let names: Invitee[] = [];
+    const setup = () => {
+        for (let x of window.likedInvitees) {
+            names.push({name: x.name, id: x.id, groupName: x.groupName, groupID: x.groupID});
+        }
     }
     const makeRows = () => {
+        setup();
         let arr: Array<any> = [];
         names.map((name, ind) => {
             arr[ind] = { id: ind, col0: name.name, 
@@ -30,7 +33,7 @@ export function SurveyIdealTable() {
     const [rows, setRows] = React.useState([...startRows]);
 
     useLayoutEffect( () => {
-        partySize = window.curGuest == undefined ? 0 : window.curGuest.groupSize == undefined ? 1 : window.curGuest.groupSize;
+        partySize = window.curGuest == undefined  ? 0 : window.curGuest.groupSize == undefined  ? 1 : window.curGuest.groupSize;
         setSizeLeft(perTable - (partySize + curSize));
     }, [window.curGuest])
 
@@ -49,7 +52,7 @@ export function SurveyIdealTable() {
 
     const isChecked = (id: string) => {
         for (let x of window.lovedInvitees) {
-            if (x.id == id) {
+            if (x.id === id) {
                 return true;
             }
         }
@@ -66,7 +69,7 @@ export function SurveyIdealTable() {
         let groupName = undefined;
         let groupID = undefined;
         for (let x of window.inviteesState) {
-            if (x.id == id) {
+            if (x.id === id) {
                 size = 1;
                 name = x.name;
                 groupName = x.groupName;
@@ -91,7 +94,7 @@ export function SurveyIdealTable() {
                 event.target.checked = false;
                 // show error on page
                 const warning = document.getElementById('warning'+id);
-                if (warning != null) {
+                if (warning !== null) {
                     // do this so animation plays
                     warning.classList.remove('gradualError');
                     window.requestAnimationFrame(function() {
@@ -104,7 +107,7 @@ export function SurveyIdealTable() {
             // remove the party from the list of those who are loved
             const tmp = [];
             for (let x of window.lovedInvitees) {
-                if (x.id != id) {
+                if (x.id !== id) {
                     tmp.push({id: x.id, name: x.name, groupName: x.groupName, groupID: x.groupID })
                 }
             }
@@ -116,7 +119,7 @@ export function SurveyIdealTable() {
     const loadingCircle = () => {
         return (
         <section className='loadingCircle'>
-            {window.curGuest != undefined ? <p>No Guests</p> : 
+            {window.curGuest != undefined  ? <p>No Guests</p> : 
             <>
                 <p>Loading...</p>
                 <CircularProgress size={24} />
@@ -128,7 +131,7 @@ export function SurveyIdealTable() {
 
     const search = (event: any) => {
         searchTerm = event.target.value.toLowerCase().trim();
-        if (searchTerm.trim() == '') {
+        if (searchTerm.trim() === '') {
             setRows([...startRows]);
             return;
         }
@@ -140,15 +143,19 @@ export function SurveyIdealTable() {
 
     const clearSearch = () => {
         const e = document.getElementById('searchBar');
-        if (e != null) {
+        if (e !== null) {
             (e as HTMLInputElement).value='';
         }
         searchTerm = '';
         setRows([...startRows]);
     }
-
+    useEffect(() => {
+        names = [];
+        startRows = makeRows();
+        setRows([...startRows]);
+    }, ([window.inviteesState]));
     return (<>
-                <h1 className='title'>Seating Survey - Part IV</h1>
+                <h1 className='title'>Seating Survey - Part III</h1>
                 <p className='subtitle'>Create your ideal table! Choose up to {sizeLeft} of the individuals you are comfortable with (from the previous page) to fill up your table.</p>
                 <section className='stickySearch smallSearch'>
                     <TextField
@@ -163,7 +170,7 @@ export function SurveyIdealTable() {
                                     <FaSearch/>
                                 </InputAdornment>, 
                             endAdornment:
-                                searchTerm.trim() != ''  && <InputAdornment position="end">  
+                                searchTerm.trim() !== ''  && <InputAdornment position="end">  
                                     <IconButton className='smallClose' onClick={clearSearch}>
                                         <IoIosClose/>
                                     </IconButton>

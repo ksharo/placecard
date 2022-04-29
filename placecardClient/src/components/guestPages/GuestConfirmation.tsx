@@ -6,6 +6,7 @@ import { Button } from "@mui/material";
 import validator from "validator";
 
 export function GuestConfirmation() {
+    window.setGuestMode(true);
     const history = useHistory();
     const queryString = useLocation().search;
     // gets query string if you do /beginSurvey?guestId=aaaaaa&eventId=12345
@@ -49,7 +50,7 @@ export function GuestConfirmation() {
                 tables: undefined,
             });
             window.setInvitees(guests);
-            if (guestInfo.status == 200) {
+            if (guestInfo.status === 200) {
                 const data = await guestInfo.json();
                 const newGuest = {
                     id: data._id,
@@ -59,17 +60,19 @@ export function GuestConfirmation() {
                     groupSize: data.party_size,
                     contact: data.email,
                 };
-                if ((data.email.toLowerCase() == contact || data.phone_number == contact) && contact != '' && contact != undefined) {
+                if ((data.email.toLowerCase() === contact || data.phone_number === contact) && contact !== '' && contact != undefined ) {
                     window.setCurGuest(newGuest);
                     window.setGroupID(data.group_id);
                     window.setDisliked(data.survey_response.disliked);
                     window.setLiked(data.survey_response.liked);
                     window.setLoved(data.survey_response.ideal);
-                    history.push('/takeSurvey/?page=0&guestId='+guestID+'&eventId='+eventID);
+                    const link = '/takeSurvey/0?page=0&guestId='+guestID+'&eventId='+eventID;
+                    history.push(link);
+                    window.location.hash = '#page0';
                 }
                 else {
                     const contactErr = document.getElementById('wrongContactError');
-                    if (contactErr != null) {
+                    if (contactErr !== null) {
                         contactErr.style.display = 'block';
                         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
                     }
@@ -77,7 +80,7 @@ export function GuestConfirmation() {
             }
             else {
                 const linkErr = document.getElementById('wrongLinkError');
-                if (linkErr != null) {
+                if (linkErr !== null) {
                     linkErr.style.display = 'block';
                     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
                 }
@@ -86,7 +89,7 @@ export function GuestConfirmation() {
         catch (e) {
             const linkErr = document.getElementById('wrongLinkError');
             console.error(e);
-            if (linkErr != null) {
+            if (linkErr !== null) {
                 linkErr.style.display = 'block';
                 window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
             }
@@ -96,12 +99,12 @@ export function GuestConfirmation() {
     return (
         <section className='guestConfirmation'>
             <h1 className='title'>Welcome to Placecard!</h1>
-            <p className='subtitle'>To respond to an event survey, confirm your identity by typing in the email address or phone number to which this link was sent.</p>
+            <p className='subtitle'>To respond to an event survey, confirm your identity by typing in the email address to which this link was sent.</p>
             <p className='pageError' id='wrongContactError'>Incorrect contact information. Please try again.</p>
             <p className='pageError' id='wrongLinkError'>There is a problem with your link. Please try again.</p>
             <form onSubmit={handleSubmit}>
                 <section className='decoratedTextField'>
-                    <TextField label='Email/Phone Number' name='contactInfo' size='small' className='textInput'/>
+                    <TextField label='Email Address' name='contactInfo' size='small' className='textInput'/>
                 </section>
                 <section className='horizontalContainer twoBtns'>
                     <Button className='basicBtn' variant='contained' onClick={goHome}>Home</Button>

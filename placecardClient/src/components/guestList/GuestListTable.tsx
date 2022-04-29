@@ -11,6 +11,7 @@ import './GuestTable.css'
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import { TextField } from '@mui/material';
+import { v4 as uuid } from 'uuid';
 
 export interface GuestListDataInterface {
 	individualName?:	string;
@@ -106,7 +107,7 @@ function GuestListTableRow(props: {tableData:GuestListDataInterface[], guest:Gue
 									props.guest.groupContact
 								}
 							</td>
-							<td>{window.activeEvent != null && window.activeEvent.surveys != undefined && window.activeEvent.surveys.indexOf(props.guest.id != undefined ? props.guest.id : '') != -1 ? (window.activeEvent.respondents != undefined && window.activeEvent.respondents.indexOf(props.guest.id != undefined ? props.guest.id : '') != -1 ? 'Completed' : 'Pending') : 'Not Sent'}</td>
+							<td>{window.activeEvent !== null && window.activeEvent.surveys != undefined  && window.activeEvent.surveys.indexOf(props.guest.id != undefined  ? props.guest.id : '') !== -1 ? (window.activeEvent.respondents != undefined  && window.activeEvent.respondents.indexOf(props.guest.id != undefined  ? props.guest.id : '') !== -1 ? 'Completed' : 'Pending') : 'Not Sent'}</td>
 							<td><IconButton className='guestListIcon' aria-label="Send reminder"><NotificationsIcon/></IconButton></td>
 							<td>
 								<IconButton className='guestListIcon' onClick={() => setEditing(!editing)} aria-label={editing? "Save edits" : "Edit row"}>
@@ -124,7 +125,7 @@ function GuestListTableRow(props: {tableData:GuestListDataInterface[], guest:Gue
 					<Collapse in={open} timeout="auto" unmountOnExit>
 						<ul className='subgroupMemberList'>
 							{props.guest.groupMembers.map((memberName, _) =>(
-								<li className="subgroupMember" >{memberName}</li>
+								<li key={uuid()} className="subgroupMember" >{memberName}</li>
 							))}
 						</ul>
 					</Collapse>
@@ -169,7 +170,7 @@ export function GuestListTable(props: {tableData:GuestListDataInterface[], setTa
 
 				<tbody>
 					{props.tableData.map((obj, i) => (
-						<GuestListTableRow tableData={props.tableData} guest={obj} setTableData={props.setTableData} index={i} mode={props.mode}/>
+						<GuestListTableRow key={uuid()} tableData={props.tableData} guest={obj} setTableData={props.setTableData} index={i} mode={props.mode}/>
 					))}
 				</tbody>
 

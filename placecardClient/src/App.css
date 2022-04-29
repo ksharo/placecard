@@ -1,178 +1,187 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Arvo:wght@700&display=swap');
-
 :root {
-  --main: #00A6A0;
-  --lighter: #03c9c2;
-  --secondary: #1F6BAE;
-  --highlight: #F57A75;
-  --borderColor: #cfcfcf;
-  --mainGrey: #5e5e5e;
-  --footerColor: #18283A;
+    --main: #00A6A0;
+    --lighter: #03c9c2;
+    --secondary: #1F6BAE;
+    --highlight: #F57A75;
+    --borderColor: #cfcfcf;
+    --mainGrey: #5e5e5e;
+    --footerColor: #18283A;
 }
 
-body, html, input, button {
-  font-family: 'Ubuntu', sans-serif;
+body,
+html,
+input,
+button {
+    font-family: 'Ubuntu', sans-serif;
 }
 
 body {
-  text-align: center;
-  margin: 0;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  position: relative;
-  min-height: 100vh;
+    text-align: center;
+    margin: 0;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: relative;
+    min-height: 100vh;
 }
 
 button {
-  border-radius: 4px;
-  border: none;
-  /* box-shadow: 2px 2px 6px rgba(0,0,0,0.1); */
-  padding: 2px 6px;
-  text-transform: none !important;
+    border-radius: 4px;
+    border: none;
+    /* box-shadow: 2px 2px 6px rgba(0,0,0,0.1); */
+    padding: 2px 6px;
+    text-transform: none !important;
 }
-  
+
 button:hover {
-  filter: brightness(90%);
-  /* box-shadow: 4px 4px 8px rgba(0,0,0,0.3); */
+    filter: brightness(90%);
+    /* box-shadow: 4px 4px 8px rgba(0,0,0,0.3); */
 }
 
 .title {
-  letter-spacing: 2px;
-  font-size: 36px;
-  margin: 40px auto 6px auto;
-  color: var(--secondary);
+    letter-spacing: 2px;
+    font-size: 36px;
+    margin: 40px auto 6px auto;
+    color: var(--secondary);
 }
 
 .subtitle {
-  font-size: 16px;
-  margin: 12px auto 24px auto;
-  color: var(--mainGrey);
-  max-width: 70%;
-  min-width: 400px;
-  width: 50%;
-  overflow-wrap: normal;
+    font-size: 16px;
+    margin: 12px auto 24px auto;
+    color: var(--mainGrey);
+    max-width: 70%;
+    min-width: 400px;
+    width: 50%;
+    overflow-wrap: normal;
 }
 
 .rectangleButton {
-  display: block;
-  padding: 0px 25px 0px 25px;
-  height: 80%;
-  align-self: center;
-  margin: 5px 20px 5px 15px;
-  font-size: 24px;
-  letter-spacing: 1px;
-  background-color: rgb(225, 225, 225);
-  color: black;
-  font-style: normal;
-  text-decoration: none;
-  border-radius: 4px;
-  border: none;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
-  cursor: default;
+    display: block;
+    padding: 0px 25px 0px 25px;
+    height: 80%;
+    align-self: center;
+    margin: 5px 20px 5px 15px;
+    font-size: 24px;
+    letter-spacing: 1px;
+    background-color: rgb(225, 225, 225);
+    color: black;
+    font-style: normal;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+    cursor: default;
 }
 
 .rectangleButton:hover {
-  filter: brightness(90%);
-  box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+    filter: brightness(90%);
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .smallerButton {
-  width: 20%;
-  min-width: 240px;
-  margin: 10px auto 50px auto;
-  padding: 10px;
+    width: 20%;
+    min-width: 240px;
+    margin: 10px auto 50px auto;
+    padding: 10px;
 }
 
 .verticalContainer {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .verticalContainer button {
-  margin: 2px;
+    margin: 2px;
 }
 
 .horizontalContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .content {
-  padding-bottom: 250px;
+    padding-bottom: 250px;
 }
+
 
 /* input {
   /* box-shadow: 3px 3px 5px rgba(0,0,0,0.2); */
-  /* border-radius: 2px; */
-  /* border: 2px solid rgb(228, 228, 228) !important; */
-/* } */ 
+
+
+/* border-radius: 2px; */
+
+
+/* border: 2px solid rgb(228, 228, 228) !important; */
+
+
+/* } */
 
 label {
-  color: var(--secondary);
+    color: var(--secondary);
 }
 
 .basicBtn {
-  width: 140px;
-  margin: 20px auto !important;
-  font-weight: bold !important;
-  letter-spacing: 1px;
-  font-size: 16px !important;
+    width: 140px;
+    margin: 20px auto !important;
+    font-weight: bold !important;
+    letter-spacing: 1px;
+    font-size: 16px !important;
 }
 
 .fitBtn {
-  width: fit-content;
-} 
+    width: fit-content;
+}
 
 .lowBtn {
-  margin-top: 60px !important;
-} 
+    margin-top: 60px !important;
+}
 
 .highBtn {
-  margin: 8px auto !important;
+    margin: 8px auto !important;
 }
 
 .iconBtn {
-  color: var(--secondary) !important;
-  margin: 0px 8px;
+    color: var(--secondary) !important;
+    margin: 0px 8px;
 }
 
 .blueBtn {
-  background-color: var(--secondary) !important;
-  color: white !important;
+    background-color: var(--secondary) !important;
+    color: white !important;
 }
 
 .smallBtnFnt {
-  font-size: 14px !important;
+    font-size: 14px !important;
 }
 
 .smallMargin {
-  margin: 8px auto 0px auto !important;
+    margin: 8px auto 0px auto !important;
 }
 
 button {
-  box-shadow: 2px 3px 3px rgba(73, 73, 73, 0.363) !important;
+    box-shadow: 2px 3px 3px rgba(73, 73, 73, 0.363) !important;
 }
 
 .lowText {
-  margin: 50px auto 10px auto;
+    margin: 50px auto 10px auto;
 }
 
 .spacedBottom {
-  margin-bottom: 32px !important;
+    margin-bottom: 32px !important;
 }
 
 .lowTitle {
-  padding-top: 24px;
+    padding-top: 24px;
 }
 
 .textLink {
-  color: var(--highlight);
-  text-decoration: underline;
-  cursor: pointer;
+    color: var(--highlight);
+    text-decoration: underline;
+    cursor: pointer;
 }

@@ -1,23 +1,26 @@
 import { Checkbox, CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
-import React from "react";
+import React, { useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 
 let searchTerm = '';
 export function SurveyLikes() {
-    const names: {name: string, id: string}[] = [];
+    let names: {name: string, id: string}[] = [];
     const disIds: string[] = [];
     // don't include disliked invitees here
+    const setup = () => {
     for (let x of window.dislikedInvitees) {
-        disIds.push(x.id);
+        if (!disIds.includes(x.id)) {
+            disIds.push(x.id);
+        }
     }
     
     for (let x of window.inviteesState) {
         if (!disIds.includes(x.id)) {
-            if (window.curGuest != undefined && window.curGuest.id != x.id) {
-                if (window.curGuest.groupID != undefined && window.curGuest.groupID != '') {
-                    if (x.groupID != window.curGuest.groupID) {
+            if (window.curGuest != undefined  && window.curGuest.id !== x.id) {
+                if (window.curGuest.groupID != undefined  && window.curGuest.groupID !== '') {
+                    if (x.groupID !== window.curGuest.groupID) {
                         names.push({name: x.name, id: x.id});
                     }
                 }
@@ -27,7 +30,10 @@ export function SurveyLikes() {
             }
         }
     }
+}
+
     const makeRows = () => {
+        setup();
         let arr: Array<any> = [];
         names.map((name, ind) => {
             arr[ind] = { id: ind, col0: name.name, col1: name.id};
@@ -49,7 +55,7 @@ export function SurveyLikes() {
     ];
     const isChecked = (id: string) => {
         for (let x of window.likedInvitees) {
-            if (x.id == id) {
+            if (x.id === id) {
                 return true;
             }
         }
@@ -65,7 +71,7 @@ export function SurveyLikes() {
         let groupName = undefined;
         let groupID = undefined;
         for (let x of window.inviteesState) {
-            if (x.id == id) {
+            if (x.id === id) {
                 name = x.name;
                 groupName = x.groupName;
                 groupID = x.groupID;
@@ -82,7 +88,7 @@ export function SurveyLikes() {
             // remove the party from the list of those who are liked
             const tmp = [];
             for (let x of window.likedInvitees) {
-                if (x.id != id) {
+                if (x.id !== id) {
                     tmp.push({id: x.id, name: x.name, groupName: x.groupName, groupID: x.groupID})
                 }
             }
@@ -93,7 +99,7 @@ export function SurveyLikes() {
     const loadingCircle = () => {
         return (
         <section className='loadingCircle'>
-            {window.curGuest != undefined ? <p>No Guests</p> : 
+            {window.curGuest != undefined  ? <p>No Guests</p> : 
             <>
                 <p>Loading...</p>
                 <CircularProgress size={24} />
@@ -105,7 +111,7 @@ export function SurveyLikes() {
 
     const search = (event: any) => {
         searchTerm = event.target.value.toLowerCase().trim();
-        if (searchTerm.trim() == '') {
+        if (searchTerm.trim() === '') {
             setRows([...startRows]);
             return;
         }
@@ -117,15 +123,19 @@ export function SurveyLikes() {
 
     const clearSearch = () => {
         const e = document.getElementById('searchBar');
-        if (e != null) {
+        if (e !== null) {
             (e as HTMLInputElement).value='';
         }
         searchTerm = '';
         setRows([...startRows]);
     }
-
+    useEffect(() => {
+        names = [];
+        startRows = makeRows();
+        setRows([...startRows]);
+    }, ([window.inviteesState]));
     return (<>
-                <h1 className='title'>Seating Survey - Part III</h1>
+                <h1 className='title'>Seating Survey - Part II</h1>
                 <p className='subtitle'>Which of these individuals do you feel comfortable sitting with?</p>
                 <section className='stickySearch smallSearch'>
                     <TextField
@@ -140,7 +150,7 @@ export function SurveyLikes() {
                                     <FaSearch/>
                                 </InputAdornment>, 
                             endAdornment:
-                                searchTerm.trim() != ''  && <InputAdornment position="end">  
+                                searchTerm.trim() !== ''  && <InputAdornment position="end">  
                                     <IconButton className='smallClose' onClick={clearSearch}>
                                         <IoIosClose/>
                                     </IconButton>

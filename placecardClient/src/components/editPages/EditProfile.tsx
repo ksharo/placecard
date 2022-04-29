@@ -19,12 +19,12 @@ export function EditProfile() {
     const toDashboard = () => {
         // TODO: make sure user wants to leave (hidden box thing) if edit On is true
         // 'all unsaved changes will be lost. are you sure you want to continue?'
-        if (editMode == false && picChanged == false) {
+        if (editMode === false && picChanged === false) {
             history.push('/userHome');
         }
         else {
             const x = document.getElementById('hiddenWarning');
-            if (x != null) {
+            if (x !== null) {
                 x.style.display = 'inline-block';
             }
         }
@@ -46,9 +46,9 @@ export function EditProfile() {
     let validatePhone = (event: any) => {
         phone = validator.trim(event.target.value);
         const regex = new RegExp('[0-9]{3}-[0-9]{3}-[0-9]{4}');
-        const valid = (validator.isWhitelisted(phone, '0123456789') && phone.length == 10) || 
-        (validator.isWhitelisted(phone, '0123456789-') && phone.length == 12 && regex.test(phone)) ||
-        (phone.length == 0);
+        const valid = (validator.isWhitelisted(phone, '0123456789') && phone.length === 10) || 
+        (validator.isWhitelisted(phone, '0123456789-') && phone.length === 12 && regex.test(phone)) ||
+        (phone.length === 0);
         validateHelper('phoneError', valid);
     }
 
@@ -81,7 +81,7 @@ export function EditProfile() {
             window.setProfPic(img);
             // update the old name since it was saved
             const x = document.getElementById('fileNameSpan');
-            if (x != null) {
+            if (x !== null) {
                 window.setProfPicName(x.textContent);
             }
             editMode = false;
@@ -94,12 +94,12 @@ export function EditProfile() {
         const selectedFile = event.target.files[0];
         const reader = new FileReader();
         const y = document.getElementById('fileNameSpan');
-        if (y != null) {
+        if (y !== null) {
             y.textContent = selectedFile.name;
         }
         reader.onload = (event) => {
             const x = event.target;
-            if (x != null) {
+            if (x !== null) {
                 img = x.result;
             }
         };
@@ -117,7 +117,7 @@ export function EditProfile() {
         }
         for (let i = 0; i < editables.length; i++) {
             (editables[i] as HTMLInputElement).style.display = 'inline-block';
-            if (i == 0) {
+            if (i === 0) {
                 (editables[i] as HTMLInputElement).focus();
             }
         }
@@ -126,7 +126,7 @@ export function EditProfile() {
 
     const hideWarning = () => {
         const x = document.getElementById('hiddenWarning');
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'none';
         }
     }
@@ -138,7 +138,7 @@ export function EditProfile() {
     const removePic = () => {
         img = null;
         const y = document.getElementById('fileNameSpan');
-        if (y != null) {
+        if (y !== null) {
             y.textContent = 'None';
         }
         const x = document.getElementById('editProfPic');
@@ -146,7 +146,7 @@ export function EditProfile() {
         picChanged = true;
         // reset the input so if they choose the same picture 
         // again it will still show up properly
-        if (x != null) {
+        if (x !== null) {
             (x as HTMLInputElement).value = '';
         }
     }
@@ -156,7 +156,7 @@ export function EditProfile() {
         const op = document.getElementById('oldPass');
         const np = document.getElementById('newPass');
         const cnp = document.getElementById('confNewPass');
-        if (op != null && np != null && cnp != null) {
+        if (op !== null && np !== null && cnp !== null) {
             const oldPass = (op as HTMLInputElement).value;
             const newPass = (np as HTMLInputElement).value;
             const confPass = (cnp as HTMLInputElement).value;
@@ -170,18 +170,18 @@ export function EditProfile() {
                     errorFound = showError('newPassError');
             }
             // make sure the new password is not the same as the old password
-            if (newPass == oldPass) {
+            if (newPass === oldPass) {
                 errorFound = showError('matchPassErr');
             }
             // make sure the new password and confirmation are the same
-            if (newPass != confPass) {
+            if (newPass !== confPass) {
                 errorFound = showError('confError');
             }
             // if everything is good, hide the box
             if (!errorFound) {
                 // TODO: actually send the password
                 const x = document.getElementById('passChange');
-                if (x != null) {
+                if (x !== null) {
                     x.style.display = 'none';
                 }
             }
@@ -198,21 +198,21 @@ export function EditProfile() {
 
     const changePassword = () => {
         const x = document.getElementById('passChange');
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'inline-block';
         }
     }
 
     const closePassBox = () => {
         const x = document.getElementById('passChange');
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'none';
         }
     }
 
     const viewHidePasswords = (event: any) => {
         let toggle = event.target;
-        if (toggle != null) {
+        if (toggle !== null) {
             toggle = toggle.checked;
             const passwords = document.getElementsByClassName('passwordBox');
             // show passwords if checked
@@ -335,12 +335,12 @@ export function EditProfile() {
 function validateHelper(id: string, valid: boolean) {
     let x = document.getElementById(id);
     if (valid) {
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'none';
         }             
     }
     else {
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'inline-block';
         } 
     }
@@ -355,20 +355,20 @@ function checkAllErrors(firstName: string, lastName: string, phone: string, emai
     const regex = new RegExp('[0-9]{3}-[0-9]{3}-[0-9]{4}');
     const error = (!validator.isEmpty(firstName) && validator.isAlphanumeric(firstName.replace('-', '')) && validator.isByteLength(firstName, {min: 2, max: undefined}))
     && (!validator.isEmpty(lastName) && validator.isAlphanumeric(lastName.replace('-', '')) && validator.isByteLength(lastName, {min: 2, max: undefined})) &&
-    ((validator.isWhitelisted(phone, '0123456789') && phone.length == 10) || (validator.isWhitelisted(phone, '0123456789-') && phone.length == 12 && 
-    regex.test(phone)) || (phone.length == 0)) && validator.isEmail(email);
+    ((validator.isWhitelisted(phone, '0123456789') && phone.length === 10) || (validator.isWhitelisted(phone, '0123456789-') && phone.length === 12 && 
+    regex.test(phone)) || (phone.length === 0)) && validator.isEmail(email);
     
     let x = document.getElementById('editProfileError');
     // if there's an error, keep the item visible
     if (!error) {
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'inline-block';
         }
         return false;
     }
     // otherwise, hide it
     else {
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'none';
         }
         return true;
@@ -377,7 +377,7 @@ function checkAllErrors(firstName: string, lastName: string, phone: string, emai
 
 function showError(id: string) {
     const x = document.getElementById(id);
-    if (x != null) {
+    if (x !== null) {
         x.style.display = 'inline-block'
     }
     return true;
@@ -385,7 +385,7 @@ function showError(id: string) {
 
 function hideError(id: string) {
     const x = document.getElementById(id);
-    if (x != null) {
+    if (x !== null) {
         x.style.display = 'none'
     }
 }

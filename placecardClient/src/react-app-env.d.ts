@@ -54,6 +54,9 @@ interface Window {
 
     removedMembers: Invitee[];
     setRemovedMembers: any;
+
+    guestMode: boolean;
+    setGuestMode: any;
 }
 
 interface PlacecardEvent {
