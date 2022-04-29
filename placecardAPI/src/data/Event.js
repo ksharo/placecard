@@ -83,7 +83,7 @@ async function getUserEvents(userId) {
     // checkPrecondition(userId, isUndefined, INVALID_EVENT_ID_MESSAGE);
     // checkPrecondition(userId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
 
-    const eventCollection = await mongoCollection.events();
+    const eventCollection = await mongoCollections.events();
     // User id is currently a string in database, but should be objectId
     // const userObjectId = ObjectId(userId);
     const queryParameters = {
@@ -175,7 +175,7 @@ async function updateEvent(eventId, updatedEventConfig, updateType) {
             generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE)
         );
     }
-    
+
     const updatedEvent = await getEvent(eventId);
     return updatedEvent;
 }
