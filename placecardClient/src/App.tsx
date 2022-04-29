@@ -50,11 +50,12 @@ function App() {
   [window.uidState, window.setUID] = React.useState('');
   [window.firstTime, window.setFirstTime] = React.useState(undefined);
   [window.removedMembers, window.setRemovedMembers] = React.useState([]);
+  [window.guestMode, window.setGuestMode] = React.useState(false);
 
   useEffect(() => {
     const getEvents = async () => {
       try {
-        if (window.location.href.indexOf('takeSurvey') == -1 && window.location.href.indexOf('beginSurvey') == -1 && window.uidState != undefined && window.uidState.trim() != '') {
+        if (window.location.href.indexOf('takeSurvey') === -1 && window.location.href.indexOf('beginSurvey') === -1 && window.uidState != undefined  && window.uidState.trim() !== '') {
           const eventFetch = await fetch('http://localhost:3001/events/users/'+window.uidState);
           const fetchedEvents = await eventFetch.json();
           const events: PlacecardEvent[] = []; 
@@ -74,7 +75,7 @@ function App() {
                   groupSize: guest.party_size,
                   contact: guest.email,
                 }
-                if (guest.survey_response != undefined && (guest.survey_response.disliked.length != 0 || guest.survey_response.ideal.length != 0 || guest.survey_response.liked.length != 0 )) {
+                if (guest.survey_response != undefined  && (guest.survey_response.disliked.length !== 0 || guest.survey_response.ideal.length !== 0 || guest.survey_response.liked.length !== 0 )) {
                   respondents.push(guest._id);
                 }
                 guests.push(newGuest);
@@ -106,7 +107,7 @@ function App() {
           }
 
         window.setEvents([...events]);
-        if (events.length > 0 && window.activeEvent == null) {
+        if (events.length > 0 && window.activeEvent == null ) {
           window.setActiveEvent(events[0]);
           window.setInvitees(events[0].guestList);
         }
@@ -118,7 +119,7 @@ function App() {
 
     };
     getEvents();
-  }, [window.uidState]);
+  }, [window.uidState, window.guestMode]);
 
   const theme = createTheme({
     palette: {
@@ -177,7 +178,7 @@ function App() {
             {/* <Route exact path='/surveyPt1' component={ SurveyPt1WithAges }/> */}
             {/* <Route exact path='/surveyPt2' component={ SurveyPt2 }/> */}
             {/* <Route exact path='/surveyPt1' component={ SurveyPt1SitTogether }/> */}
-            <Route exact path='/:eventName*/takeSurvey' component={FullSurvey}/>
+            <Route path='/:eventName*/takeSurvey/:pageNumber' component={FullSurvey}/>
             {/* <Route exact path='/surveyInstructions' component={ SurveyInstructions }/>
             <Route exact path='/editGroup' component={ SurveyGroupPage }/>
             <Route exact path='/surveyDislikes' component={ SurveyDislikes }/>

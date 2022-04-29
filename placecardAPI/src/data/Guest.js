@@ -54,14 +54,15 @@ async function getGuest(guestId) {
 }
 
 async function getGuests(ids) {
-    const guestCollection = await guests();
+    const guestCollection = await mongoCollections.guests();
     try {
         ids = ids.map((id) => {
             return ObjectId(id);
         });
-        const matchingGuests = await guestCollection.find({ "_id": { "$in": ids } });
-        return matchingGuests.toArray();
-    } catch (e) {
+        const matchingGuests = await guestCollection.find( { "_id" : { "$in" : ids } } ).toArray();
+        return matchingGuests.map(convertIdToString);
+    }
+    catch (e) {
         throw new Error(generateCRUDErrorMessage(NO_GUEST_FOUND_MESSAGE, GUEST_TYPE));
     }
 }

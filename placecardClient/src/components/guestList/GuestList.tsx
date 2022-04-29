@@ -7,7 +7,8 @@ import './GuestList.css'
 import { UploadFile } from "../shared/UploadFile";
 
 export function GuestList(){
-	const TITLE			= 'Add a guest list for your event'
+	window.setGuestMode(false);
+	const TITLE			= 'Add a Guest List For Your Event'
 	const PAGE_DESCRIPTION	= 'Download our guest list template, fill it out, and drop it back here'
 	const TABLE_TITLE		= 'Enter guest list manually'
 	const TABLE_DESCRIPTION	= 'You only need to provide one method of contact for each guest'
@@ -22,11 +23,11 @@ export function GuestList(){
 	useLayoutEffect( () => {
 		const startingGuests: GuestListDataInterface[] = [...guestListData];
 		const startingGroups: any = {};
-		if (window.activeEvent != null) {
+		if (window.activeEvent !== null) {
 			// loop over guest list to fillout guestListData state
 			for (let guest of window.activeEvent.guestList) {
 				/* single people */
-				if (guest.groupName == undefined || guest.groupName.trim() == "") {
+				if (guest.groupName == undefined  || guest.groupName.trim() === "") {
 					const newGuest: GuestListDataInterface = {
 						individualName: guest.name,
 						// groupName: guest.name,
@@ -36,15 +37,15 @@ export function GuestList(){
 						groupMembers: [],
 						id: guest.id
 					};
-					if (!startingGuests.some(g => { if (g.id == newGuest.id) return true;})) {
+					if (!startingGuests.some(g => { if (g.id === newGuest.id) return true;})) {
 						startingGuests.push(newGuest);
 					}
 				}
 				/* groups */
-				else if (guest.groupID != undefined && Object.keys(startingGroups).includes(guest.groupID)) {
+				else if (guest.groupID != undefined  && Object.keys(startingGroups).includes(guest.groupID)) {
 					startingGroups[guest.groupID].groupMembers.push(guest.name);
 				}
-				else if (guest.groupID != undefined) {
+				else if (guest.groupID != undefined ) {
 					startingGroups[guest.groupID] = {
 						groupName: guest.groupName,
 						groupContact: guest.contact,
@@ -67,7 +68,7 @@ export function GuestList(){
 					groupMembers: group.groupMembers,
 					id: group.id
 				};
-				if (!startingGuests.some(g => { if (g.id == newGroup.id) return true;})) {
+				if (!startingGuests.some(g => { if (g.id === newGroup.id) return true;})) {
 					startingGuests.push(newGroup);
 				}
 			}

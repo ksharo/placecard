@@ -64,13 +64,13 @@ export function NewAccount() {
 
     /* functions that will show/remove errors based on user's input */
     let validateFirstName = (event: any, val?: string) => {
-        if (val !=  undefined) {
+        if (val !==  undefined) {
             firstName = val;
         }
         else {
             firstName = validator.trim(event.target.value);
         }
-        if (!firstTime || val != undefined) {
+        if (!firstTime || val != undefined ) {
             const valid = !validator.isEmpty(firstName) && validator.isAlphanumeric(firstName.replace('-', '')) && validator.isByteLength(firstName, {min: 2, max: undefined});
             validFirst = valid;
             setFirstError(!valid);
@@ -79,13 +79,13 @@ export function NewAccount() {
     }
 
     let validateLastName = (event: any, val?: string) => {
-        if (val !=  undefined) {
+        if (val !==  undefined) {
             lastName = val;
         }
         else {
             lastName = validator.trim(event.target.value);
         }
-        if (!firstTime || val != undefined) {
+        if (!firstTime || val != undefined ) {
             const valid = !validator.isEmpty(lastName) && validator.isAlphanumeric(lastName.replace('-', '')) && validator.isByteLength(lastName, {min: 2, max: undefined});
             validLast = valid;
             setLastError(!valid);
@@ -94,17 +94,17 @@ export function NewAccount() {
     }
 
     let validatePhone = (event: any, val?: string) => {
-        if (val !=  undefined) {
+        if (val !==  undefined) {
             phone = val;
         }
         else {
             phone = validator.trim(event.target.value);
         }
-        if (!firstTime || val != undefined) {
+        if (!firstTime || val != undefined ) {
             const regex = new RegExp('[0-9]{3}-[0-9]{3}-[0-9]{4}');
-            const valid = (validator.isWhitelisted(phone, '0123456789') && phone.length == 10) || 
-            (validator.isWhitelisted(phone, '0123456789-') && phone.length == 12 && regex.test(phone)) ||
-            (phone.length == 0);
+            const valid = (validator.isWhitelisted(phone, '0123456789') && phone.length === 10) || 
+            (validator.isWhitelisted(phone, '0123456789-') && phone.length === 12 && regex.test(phone)) ||
+            (phone.length === 0);
             validPhone = valid;
             setPhoneError(!valid);
             checkAllErrors(firstName, lastName, phone, email, password, confirm);
@@ -112,13 +112,13 @@ export function NewAccount() {
     }
 
     let validateEmail = (event: any, val?: string) => {
-        if (val !=  undefined) {
+        if (val !==  undefined) {
             email = val;
         }
         else {
             email = validator.trim(event.target.value);
         }
-        if (!firstTime || val != undefined) {
+        if (!firstTime || val != undefined ) {
             const valid = validator.isEmail(email);
             validEmail = valid;
             setEmailError(!valid);
@@ -127,18 +127,18 @@ export function NewAccount() {
     }
 
     let validatePass = (event: any, val?: string) => {
-        if (val !=  undefined) {
+        if (val !==  undefined) {
             password = val;
         }
         else {
             password = event.target.value;
         }
-        if (!firstTime || val != undefined) {
+        if (!firstTime || val != undefined ) {
             const valid = (validator.isWhitelisted(password.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%&* ') &&
             validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 0, returnScore: false }));
             validPass = valid;
             setPassError(!valid);
-            if (confirm != password) {
+            if (confirm !== password) {
                 validConfirm = false;
                 setConfirmError(true);
             }
@@ -151,14 +151,14 @@ export function NewAccount() {
     }
 
     let validateConfirm = (event: any, val?: string) => {
-        if (val !=  undefined) {
+        if (val !==  undefined) {
             confirm = val;
         }
         else {
             confirm = event.target.value;
         }
-        if (!firstTime || val != undefined) {
-            const valid = confirm == password;
+        if (!firstTime || val != undefined ) {
+            const valid = confirm === password;
             validConfirm = valid;
             setConfirmError(!valid);
             checkAllErrors(firstName, lastName, phone, email, password, confirm);
@@ -174,12 +174,12 @@ export function NewAccount() {
             return;
         }
         const x = document.getElementById('sendAccountError');
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'none';
         }
         let errorFound = false;
-        if (event == null) {
-            if (x != null) {
+        if (event == null ) {
+            if (x !== null) {
                 x.style.display = 'inline-block';
                 window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
             }
@@ -216,7 +216,7 @@ export function NewAccount() {
                 history.push('/createEvent');
             }
             catch {
-                if (x != null) {
+                if (x !== null) {
                     x.style.display = 'inline-block';
                     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
                 }
@@ -225,7 +225,7 @@ export function NewAccount() {
         /* if there is an error, tell the user */
         else {
             const y = document.getElementById('accountFormError');
-            if (y != null) {
+            if (y !== null) {
                 y.style.display = 'inline-block';
                 window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
             }
@@ -394,16 +394,16 @@ function togglePassword(id: string) {
     if (e) {
         e.style.display = 'none';
     }
-    if (id == 'passNoEye') {
+    if (id === 'passNoEye') {
         toggleHelper('passEye', 'passInp', e, 'text');
     }
-    else if (id == 'passEye') {
+    else if (id === 'passEye') {
         toggleHelper('passNoEye', 'passInp', e, 'password');
     }
-    else if (id == 'confirmEye') {
+    else if (id === 'confirmEye') {
         toggleHelper('confirmNoEye', 'passConfirm', e, 'password');
     }
-    else if (id == 'confirmNoEye') {
+    else if (id === 'confirmNoEye') {
         toggleHelper('confirmEye', 'passConfirm', e, 'text');
     }
 }
@@ -416,20 +416,20 @@ function checkAllErrors(firstName: string, lastName: string, phone: string, emai
     const regex = new RegExp('[0-9]{3}-[0-9]{3}-[0-9]{4}');
     const error = (!validator.isEmpty(firstName) && validator.isAlphanumeric(firstName.replace('-', '')) && validator.isByteLength(firstName, {min: 2, max: undefined}))
     && (!validator.isEmpty(lastName) && validator.isAlphanumeric(lastName.replace('-', '')) && validator.isByteLength(lastName, {min: 2, max: undefined})) &&
-    ((validator.isWhitelisted(phone, '0123456789') && phone.length == 10) || (validator.isWhitelisted(phone, '0123456789-') && phone.length == 12 && 
-    regex.test(phone)) || (phone.length == 0)) && validator.isEmail(email) && (validator.isWhitelisted(password.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%&* ') &&
-    validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 0, returnScore: false })) && confirm == password;
+    ((validator.isWhitelisted(phone, '0123456789') && phone.length === 10) || (validator.isWhitelisted(phone, '0123456789-') && phone.length === 12 && 
+    regex.test(phone)) || (phone.length === 0)) && validator.isEmail(email) && (validator.isWhitelisted(password.toLowerCase(), 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%&* ') &&
+    validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 0, returnScore: false })) && confirm === password;
     
     let x = document.getElementById('accountFormError');
     /* if there's an error, keep the error visible */
     if (!error) {
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'inline-block';
         }
     }
     /* otherwise, hide it */
     else {
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'none';
         }
     }

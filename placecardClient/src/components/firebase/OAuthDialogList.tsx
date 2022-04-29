@@ -3,6 +3,7 @@ import placecardLogo from "../../assets/logo.png";
 import CustomOAuthBox from "./CustomOAuthBox";
 import { PROVIDERS, authBoxConfigs } from "../../constants/mappings/authBoxConfigs";
 import { loginDescription } from "../../constants/messages";
+import { v4 as uuid } from 'uuid';
 
 const PROVIDER_NAMES: string[] = Object.values(PROVIDERS);
 
@@ -16,7 +17,7 @@ const OAuthDialogList = (props: {open: any, onClose:any, title: String}) => {
     const onClose: any = props.onClose;
 
     const authList = PROVIDER_NAMES.map((providerName) => {
-        return <CustomOAuthBox authBoxConfig={ authBoxConfigs[providerName] }/> 
+        return <CustomOAuthBox key={uuid()} authBoxConfig={ authBoxConfigs[providerName] }/> 
     });
 
     return (

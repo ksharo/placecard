@@ -83,7 +83,7 @@ async function getUserEvents(userId) {
     // checkPrecondition(userId, isUndefined, INVALID_EVENT_ID_MESSAGE);
     // checkPrecondition(userId, isInvalidObjectId, INVALID_EVENT_ID_MESSAGE);
 
-    const eventCollection = await events();
+    const eventCollection = await mongoCollections.events();
     // User id is currently a string in database, but should be objectId
     // const userObjectId = ObjectId(userId);
     const queryParameters = {
@@ -122,13 +122,13 @@ async function createEvent(newEventConfig) {
         throw new Error(generateCRUDErrorMessage(INSERT_ERROR_MESSAGE, EVENT_TYPE));
     }
     const newId = insertInfo.insertedId.toString();
-    const newEvent = await this.getEvent(newId);
+    const newEvent = await getEvent(newId);
     return newEvent;
 }
 
 async function addGuest(eventId, guestId, sendSurvey) {
     try {
-        const event = await this.getEvent(eventId);
+        const event = await getEvent(eventId);
         const guests = [...event.guest_list];
         const surveys = event.surveys_sent ? [...event.surveys_sent] : [];
         guests.push(guestId);
@@ -175,13 +175,9 @@ async function updateEvent(eventId, updatedEventConfig, updateType) {
             generateCRUDErrorMessage(UPDATE_ERROR_MESSAGE, EVENT_TYPE)
         );
     }
-    try {
-        const updatedEvent = await this.getEvent(eventId);
-        return updatedEvent;
-    } catch {
-        const updatedEvent = await getEvent(eventId);
-        return updatedEvent;
-    }
+
+    const updatedEvent = await getEvent(eventId);
+    return updatedEvent;
 }
 
 async function getGuests(ids) {

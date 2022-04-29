@@ -10,14 +10,14 @@ export function SurveyConf() {
             <Card className='eventDetailsCard'>
                 <CardHeader title='Event Details' className='dashCardHeader detailsCardHeader'/>
                 <CardContent className='detailsCardContent'>
-                    {window.activeEvent == null || window.activeEvent == undefined ?
+                    {window.activeEvent == null  || window.activeEvent == undefined  ?
                     <p> Cannot get event information. </p> : 
                     <>
                         <p><strong>Name:</strong> {window.activeEvent.name} </p>
                         <p><strong>Date:</strong> {window.activeEvent.date} </p>
-                        {!(window.activeEvent.time == 'Invalid date') && 
+                        {!(window.activeEvent.time === 'Invalid date') && 
                         <p><strong>Time:</strong> {window.activeEvent.time} </p>}
-                        {window.activeEvent.location != '' && <p><strong>Location:</strong> {window.activeEvent.location} </p>}
+                        {window.activeEvent.location !== '' && <p><strong>Location:</strong> {window.activeEvent.location} </p>}
                     </>
                     }
             </CardContent>

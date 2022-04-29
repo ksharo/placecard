@@ -8,7 +8,7 @@ import React from "react";
 let stick = true;
 export function Header() {
   const history = useHistory();
-  stick = (history.location.pathname == '/');
+  stick = (history.location.pathname === '/');
   const [stickyHeader, toggleStick] = React.useState(stick);
 
   const handleClick =  () => {
@@ -16,7 +16,7 @@ export function Header() {
   }   
   useEffect(() => {
     return history.listen((location) => { 
-      if (location.pathname == '/') {
+      if (location.pathname === '/') {
         stick = true;
         toggleStick(stick);
       }

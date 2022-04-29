@@ -16,8 +16,8 @@ const schema = Joi.object({
     phone_number: Joi.string().optional(),
     party_size: Joi.number().integer().required(),
     associated_table_number: Joi.number().integer(),
-    group_id: Joi.string(),
-    group_name: Joi.string(),
+    group_id: Joi.string().optional(),
+    group_name: Joi.string().optional(),
     survey_response: surveyResponseSchema,
 }).strict();
 

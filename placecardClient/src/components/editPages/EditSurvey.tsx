@@ -6,9 +6,10 @@ import { FullSurvey } from '../guestPages/FullSurvey';
 import './editPages.css';
 
 export function EditSurvey () {
+    window.setGuestMode(false);
     const history = useHistory();
 
-    const defaultMainText = `Please fill out a seating chart for my event, ${window.activeEvent == undefined ? 'Event Name Not Found' : window.activeEvent.name}, on Placecard!`
+    const defaultMainText = `Please fill out a seating chart for my event, ${window.activeEvent == undefined  || window.activeEvent == null  ? 'Event Name Not Found' : window.activeEvent.name}, on Placecard!`
 
     const defaultSignatureText = 'Thanks! \r\n'+window.firstNameState + ' ' + window.lastNameState;
 
@@ -23,7 +24,7 @@ export function EditSurvey () {
 
     const previewSurvey = () => {
         const el = document.getElementById('surveyPreview');
-        if (el != null) {
+        if (el !== null) {
             el.style.display = 'block';
             window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
         }
@@ -35,7 +36,7 @@ export function EditSurvey () {
 
     const closePreview = () => {
         const el = document.getElementById('surveyPreview');
-        if (el != null) {
+        if (el !== null) {
             el.style.display = 'none';
             window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
         }
@@ -59,8 +60,8 @@ export function EditSurvey () {
         <Card className='box'>
             <p className='details'>Hello [Guest name/Group name]!</p>
             <TextareaAutosize className='customInput' defaultValue={defaultMainText}></TextareaAutosize>
-            <p className='details'> Event Date: {window.activeEvent == undefined ? 'Error' : moment(window.activeEvent.date).format('DD MMMM YYYY')} </p>
-            {window.activeEvent != undefined && window.activeEvent.location != 'N/A' && window.activeEvent.location != '' ?
+            <p className='details'> Event Date: {window.activeEvent == undefined  ? 'Error' : moment(window.activeEvent.date).format('DD MMMM YYYY')} </p>
+            {window.activeEvent != undefined  && window.activeEvent.location !== 'N/A' && window.activeEvent.location !== '' ?
             <p className='details'> Location: {window.activeEvent.location}</p>
             :
             <></>}

@@ -10,6 +10,7 @@ import { HiTrash } from 'react-icons/hi';
 
 
 export function UserDashboard() {
+    window.setGuestMode(false);
     const [viewAll, setView] = React.useState(false);
     const history = useHistory();
     const handleClick = async (event: PlacecardEvent) => {
@@ -86,10 +87,10 @@ export function UserDashboard() {
         for (let event of window.eventsState) {
             const daysLeft = Math.ceil(((new Date(event.date)).valueOf() - (new Date()).valueOf()) / 100000000);
             let daysLeftString = daysLeft.toString();
-            if (daysLeft == 0) {
+            if (daysLeft === 0) {
                 daysLeftString = 'Today is the day!';
             }
-            else if (daysLeft == 1) {
+            else if (daysLeft === 1) {
                 daysLeftString = '1 Day Left!';
             }
             else if (daysLeft < 0) {
@@ -122,7 +123,7 @@ export function UserDashboard() {
 
     const showDelWarning = (eventId: string) => {
         const x = document.getElementById('hiddenWarning');
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'block';
             x.classList.add(eventId);
         }
@@ -131,19 +132,19 @@ export function UserDashboard() {
         hideWarning();
         const x = document.getElementById('hiddenWarning');
         let eventId: string = '';
-        if (x != null) {
+        if (x !== null) {
             eventId = x.classList[x?.classList.length-1];
         }
-        if (eventId != '') {
+        if (eventId !== '') {
             try {
                 const confirmation = await deleteEvent(eventId);
-                if (confirmation.status == 200) {
+                if (confirmation.status === 200) {
                     const events = [...window.eventsState];
-                    const matchingId = (event: PlacecardEvent) => event.id == eventId;
+                    const matchingId = (event: PlacecardEvent) => event.id === eventId;
                     const deletedInd = events.findIndex(matchingId);
                     events.splice(deletedInd, 1);
                     window.setEvents(events);
-                    if (window.activeEvent != null && window.activeEvent.id == eventId) {
+                    if (window.activeEvent !== null && window.activeEvent.id === eventId) {
                         window.setActiveEvent(undefined);
                     }
                 }
@@ -160,7 +161,7 @@ export function UserDashboard() {
     const loadingCircle = () => {
         return (
             <section className='loadingCircle'>
-                {window.eventsState == rowsState ? <p>No Events</p> :
+                {window.eventsState === rowsState ? <p>No Events</p> :
                     <>
                         <p>Loading...</p>
                         <CircularProgress size={24} />
@@ -171,7 +172,7 @@ export function UserDashboard() {
     }
     const hideWarning = () => {
         const x = document.getElementById('hiddenWarning');
-        if (x != null) {
+        if (x !== null) {
             x.style.display = 'none';
         }
     }
@@ -190,7 +191,7 @@ export function UserDashboard() {
                     </CardActions>
                 </Card>
             </section>
-            <h1 className='title'>Welcome back{window.firstNameState.trim() == '' ? '!' : ', ' + window.firstNameState + '!'}</h1>
+            <h1 className='title'>Welcome back{window.firstNameState.trim() === '' ? '!' : ', ' + window.firstNameState + '!'}</h1>
             <section className='userDashContent'>
                 <div style={{ 'height': tableHeight }} className='table'>
                     <DataGrid

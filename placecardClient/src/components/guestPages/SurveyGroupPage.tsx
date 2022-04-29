@@ -7,7 +7,7 @@ export function SurveyGroupPage(props: {error?: boolean}) {
     // TODO: make edits for when someone doesn't have a group!
     const names: { name: string, id: string }[] = [];
     for (let x of window.inviteesState) {
-        if (window.curGroupID != undefined && window.curGroupID != '' && x.groupID == window.curGroupID) {
+        if (window.curGroupID != undefined  && window.curGroupID !== '' && x.groupID === window.curGroupID) {
             names.push({ name: x.name, id: x.id });
         }
     }
@@ -20,7 +20,7 @@ export function SurveyGroupPage(props: {error?: boolean}) {
     };
 
     const makeOneRow = () => {
-        if (window.curGuest != undefined) {
+        if (window.curGuest != undefined ) {
             let arr: Array<any> = [{ id: 0, col0: window.curGuest.name, col1: window.curGuest.contact }];
             return arr;
         }
@@ -39,7 +39,7 @@ export function SurveyGroupPage(props: {error?: boolean}) {
         },
         {
             field: 'col2', headerName: 'Remove from group', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 3,
-            renderCell: (params) => { return (window.curGuest && params.value != window.curGuest.id && <Checkbox id={'checkbox' + params.value} onClick={updateInputs}></Checkbox>) }
+            renderCell: (params) => { return (window.curGuest && params.value !== window.curGuest.id && <Checkbox id={'checkbox' + params.value} onClick={updateInputs}></Checkbox>) }
         },
         {
             field: 'col1', headerName: 'Email Address', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 3,
@@ -64,7 +64,7 @@ export function SurveyGroupPage(props: {error?: boolean}) {
             // ready to remove member!
             el?.parentElement?.parentElement?.classList.remove('hiddenInput');
             const val = (el as HTMLInputElement).value;
-            const matching = window.removedMembers.filter((m) => { return m.id == id; });
+            const matching = window.removedMembers.filter((m) => { return m.id === id; });
             if (matching.length > 0) {
                 matching[0].contact = val;
             }
@@ -80,7 +80,7 @@ export function SurveyGroupPage(props: {error?: boolean}) {
         else {
             // don't remove member!
             el?.parentElement?.parentElement?.classList.add('hiddenInput');
-            const matching = window.removedMembers.filter((m) => { return m.id == id; });
+            const matching = window.removedMembers.filter((m) => { return m.id === id; });
             if (matching.length > 0) {
                 window.removedMembers.splice(window.removedMembers.indexOf(matching[0]), 1);
             }
@@ -91,7 +91,7 @@ export function SurveyGroupPage(props: {error?: boolean}) {
         const el = event.target;
         const id = event.target.id.substring(5)
         const val = (el as HTMLInputElement).value;
-        const matching = window.removedMembers.filter((m) => { return m.id == id; });
+        const matching = window.removedMembers.filter((m) => { return m.id === id; });
         if (matching.length > 0) {
             matching[0].contact = val;
         }
@@ -117,7 +117,7 @@ export function SurveyGroupPage(props: {error?: boolean}) {
         <>
             <h1 className='title'>Seating Survey - Part I</h1>
             {props.error && <p className='shownError'>Please make sure every removed member has a valid email so we can send them a survey!</p>}
-            {names.length == 0 ?
+            {names.length === 0 ?
                 <>
                     <p className='subtitle'>Your are the only member in your group.</p>
                     <p className='subtitle'>Your answers to this survey will only count for you. Please review your data below.</p>

@@ -1,7 +1,7 @@
 import { Card, CardHeader, CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
 import React, { useEffect, useLayoutEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import {uuid} from "uuidv4";
+import { v4 as uuid } from 'uuid';
 import { FaSearch } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 
@@ -12,15 +12,15 @@ const lovedID = uuid();
 const othersID = uuid();
 
 export function EditSurveyResponses() {
-    const perTable = window.activeEvent == undefined ? 0 : window.activeEvent.perTable;
-    let ourSize = window.curGuest == undefined ? 0 : window.curGuest.groupSize == undefined ? 1 : window.curGuest.groupSize;
+    const perTable = window.activeEvent == undefined  ? 0 : window.activeEvent.perTable;
+    let ourSize = window.curGuest == undefined  ? 0 : window.curGuest.groupSize == undefined  ? 1 : window.curGuest.groupSize;
 
     let unusedInvitees = window.inviteesState.filter( (x) => {
         return !(window.lovedInvitees.map(y => y.id).includes(x.id) 
         || window.likedInvitees.map(z => z.id).includes(x.id) 
         || window.dislikedInvitees.map(t => t.id).includes(x.id)
-        || (window.curGuest == undefined || window.curGuest.id == x.id) 
-        || (window.curGuest.groupID != undefined && window.curGuest.groupID != '' && window.curGuest.groupID == x.groupID));
+        || (window.curGuest == undefined  || window.curGuest.id === x.id) 
+        || (window.curGuest.groupID != undefined  && window.curGuest.groupID !== '' && window.curGuest.groupID === x.groupID));
     });
 
     const origSearches = {
@@ -63,7 +63,7 @@ export function EditSurveyResponses() {
     const [searchTerms, setSearch] = React.useState(origSearches);
 
     useLayoutEffect( () => {
-        ourSize = window.curGuest == undefined ? 0 : window.curGuest.groupSize == undefined ? 1 : window.curGuest.groupSize;
+        ourSize = window.curGuest == undefined  ? 0 : window.curGuest.groupSize == undefined  ? 1 : window.curGuest.groupSize;
         setSpace(perTable-ourSize-loved.length);
     }, [window.curGuest])
 
@@ -76,8 +76,8 @@ export function EditSurveyResponses() {
             return !(window.lovedInvitees.map(y => y.id).includes(x.id) 
             || window.likedInvitees.map(z => z.id).includes(x.id) 
             || window.dislikedInvitees.map(t => t.id).includes(x.id)
-            || (window.curGuest == undefined || window.curGuest.id == x.id) 
-            || (window.curGuest.groupID != undefined && window.curGuest.groupID != '' && window.curGuest.groupID == x.groupID));
+            || (window.curGuest == undefined  || window.curGuest.id === x.id) 
+            || (window.curGuest.groupID != undefined  && window.curGuest.groupID !== '' && window.curGuest.groupID === x.groupID));
         });
         disliked = [...window.dislikedInvitees];
         liked = window.likedInvitees.filter( (x) => {
@@ -124,7 +124,7 @@ export function EditSurveyResponses() {
             // Don't delete anything, just put it in the right position (index)
             destItems.splice(destination.index, 0, removed);
             // check that, if moving to idealTable column, the party is not too big
-            if (destination.droppableId == lovedID) {
+            if (destination.droppableId === lovedID) {
                 let count = 0;
                 for (let x of window.lovedInvitees) {
                     count += 1;
@@ -133,7 +133,7 @@ export function EditSurveyResponses() {
                 if (count + 1 + ourSize > perTable) {
                     // show the error (shows and then hides with animation in class)
                     const errorEl = document.getElementById('tooBigError');
-                    if (errorEl != null) {
+                    if (errorEl !== null) {
                         // do this so animation plays
                         errorEl.classList.remove('slowGradualError');
                         window.requestAnimationFrame(function() {
@@ -168,7 +168,7 @@ export function EditSurveyResponses() {
                     break;
                 case likedID:
                     // don't remove from liked if we're just moving to loved
-                    if (destination.droppableId != lovedID) {
+                    if (destination.droppableId !== lovedID) {
                         const tmpLike = [...window.likedInvitees];
                         const likeInd = tmpLike.indexOf(removed);
                         tmpLike.splice(likeInd, 1);
@@ -181,7 +181,7 @@ export function EditSurveyResponses() {
                     tmpLove.splice(loveInd, 1);
                     window.setLoved(tmpLove);
                     // check if we need to remove it from liked as well
-                    if (destination.droppableId != likedID) {
+                    if (destination.droppableId !== likedID) {
                         const updateLikes = [...window.likedInvitees];
                         const likeIndForUpdate = updateLikes.indexOf(removed);
                         updateLikes.splice(likeIndForUpdate, 1);
@@ -203,7 +203,7 @@ export function EditSurveyResponses() {
                 case likedID:
                     const tmpLike = [...window.likedInvitees];
                     // make sure no duplicates (could happen if moving from loved to liked)
-                    if (tmpLike.indexOf(removed) == -1) {
+                    if (tmpLike.indexOf(removed) === -1) {
                         tmpLike.push(removed);
                         window.setLiked(tmpLike);       
                     }           
@@ -214,7 +214,7 @@ export function EditSurveyResponses() {
                     window.setLoved(tmpLove);    
                     // update likes if someone is moved to love
                     const updateLikes = [...window.likedInvitees];
-                    if (updateLikes.indexOf(removed) == -1) {
+                    if (updateLikes.indexOf(removed) === -1) {
                         updateLikes.push(removed);
                         window.setLiked(updateLikes);   
                     }           
@@ -243,7 +243,7 @@ export function EditSurveyResponses() {
     }
 
     const search = (event: any) => {
-        if (event != null) {
+        if (event !== null) {
             const searchTerm = event.target.value.toLowerCase().trim();
             const id = event.target.id.substring(6);
             searchTerms[id] = searchTerm;
@@ -256,7 +256,7 @@ export function EditSurveyResponses() {
         const newColumns: any = {};
         for (let x of Object.keys(columns)) {
             const newItems = columns[x].items.filter( (y: Invitee) => {
-                return (y.name.toLowerCase()).includes(searchTerms[x]) || (y.groupName != undefined ? y.groupName.toLowerCase().includes(searchTerms[x]) : false);
+                return (y.name.toLowerCase()).includes(searchTerms[x]) || (y.groupName != undefined  ? y.groupName.toLowerCase().includes(searchTerms[x]) : false);
             })
             newColumns[x] = {
                 name: columns[x].name,
@@ -273,7 +273,7 @@ export function EditSurveyResponses() {
             id = event.target.parentElement.parentElement.id.substring(5);
         }
         const e = document.getElementById('search' + id);
-        if (e != null) {
+        if (e !== null) {
             (e as HTMLInputElement).value='';
         }
         searchTerms[id] = '';
@@ -308,7 +308,7 @@ export function EditSurveyResponses() {
                                         <FaSearch/>
                                     </InputAdornment>,
                                     endAdornment:
-                                    searchTerms[columnId].trim() != ''  && <InputAdornment position="end">  
+                                    searchTerms[columnId].trim() !== ''  && <InputAdornment position="end">  
                                         <IconButton className='smallClose' id={'close'+columnId} onClick={clearSearch}>
                                             <IoIosClose/>
                                         </IconButton>
@@ -316,7 +316,7 @@ export function EditSurveyResponses() {
                                     }}>
                                 </TextField>
                             </section>
-                            {!((window.dislikedInvitees.length == 1 && window.dislikedInvitees[0].id == 'none') || (window.likedInvitees.length == 1 && window.likedInvitees[0].id == 'none') || (window.lovedInvitees.length == 1 && window.lovedInvitees[0].id == 'none')) ?
+                            {!((window.dislikedInvitees.length === 1 && window.dislikedInvitees[0].id === 'none') || (window.likedInvitees.length === 1 && window.likedInvitees[0].id === 'none') || (window.lovedInvitees.length === 1 && window.lovedInvitees[0].id === 'none')) ?
                             <Droppable droppableId={columnId} key={columnId}>
                             {(provided, snapshot) => {
                                 return (
@@ -325,7 +325,7 @@ export function EditSurveyResponses() {
                                     ref={provided.innerRef}
                                     className={`columnBackground ${snapshot.isDraggingOver ? "activeBackgroundColumn" : ""}`}
                                 >
-                                    {shownColumns[columnId].items.length == 0 ? columns[columnId].items.length == 0 ? <p className='wrappedP smallP'>Drag guest names to add them to this section.</p> : <p className='wrappedP smallP'>No guests found for search term {searchTerms[columnId]}</p> : 
+                                    {shownColumns[columnId].items.length === 0 ? columns[columnId].items.length === 0 ? <p className='wrappedP smallP'>Drag guest names to add them to this section.</p> : <p className='wrappedP smallP'>No guests found for search term {searchTerms[columnId]}</p> : 
                                     <>
                                     {column.items.map((guest: any, index: any) => {
                                     return (
@@ -350,7 +350,7 @@ export function EditSurveyResponses() {
                             }}
                             </Droppable> :
                             <section className='loadingCircle'>
-                                {window.curGuest != undefined ? <p>No Guests</p> : 
+                                {window.curGuest != undefined  ? <p>No Guests</p> : 
                                 <>
                                     <p>Loading...</p>
                                     <CircularProgress size={24} />
