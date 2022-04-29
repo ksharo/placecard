@@ -278,7 +278,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 
 	function individualPopOut() {
 		return (
-			<section className="buttonPopOut">
+			<section className="buttonPopOut individualPopOut">
 				<TextField
 					placeholder="Name"
 					value={currIndiName}
@@ -291,6 +291,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 					error={!indiIsValid.name}
 					helperText={indiIsValid.name ? "" : NAME_ERROR_TEXT}
 					label="Name"
+					size='small'
 				/>
 				<TextField
 					placeholder="Email or Phone"
@@ -304,6 +305,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 					error={!indiIsValid.contact}
 					helperText={indiIsValid.contact ? "" : EMAIL_ERROR_TEXT}
 					label="Contact"
+					size='small'
 				/>
 				<TextField
 					placeholder="Name"
@@ -318,6 +320,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 					error={!indiIsValid.plusOneName}
 					helperText={indiIsValid.plusOneName ? "" : NAME_OPTIONAL_ERROR_TEXT}
 					label="Plus One Name (optional)"
+					size='small'
 				/>
 
 				{/* {plusOne ?
@@ -329,7 +332,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 				<Button onClick={() => {setPlusOne(true)}}>Add Plus One</Button>
 			} */}
 
-				<section>
+				<section className='sendSurveyInputSection'>
 					Send Survey?
 					<Switch
 						checked={currIndiSendSurvey}
@@ -345,7 +348,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 
 	function groupPopOut() {
 		return (
-			<section className="buttonPopOut">
+			<section className="buttonPopOut groupPopOut">
 				<section className="groupInfo">
 					{/* <AnimatedInput  label="Group Name" placeholder={fullNameList}></AnimatedInput> */}
 					{/* <TypeWriterPlaceholder></TypeWriterPlaceholder> */}
@@ -361,6 +364,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 						}}
 						error={!grpIsValid.grpName}
 						helperText={grpIsValid.grpName ? "" : NAME_ERROR_TEXT}
+						size='small'
 					/>
 					<TextField
 						placeholder="Email or Phone Number"
@@ -374,17 +378,27 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 						}}
 						error={!grpIsValid.grpContact}
 						helperText={grpIsValid.grpContact ? "" : EMAIL_ERROR_TEXT}
+						size='small'
 					/>
-					<TextField
-						type="number"
-						label="Group Size"
-						value={currGrpSize}
-						InputProps={{ inputProps: { min: MIN_GROUP_SIZE, max: MAX_GROUP_SIZE } }}
-						// onChange={e=>setCurrGrpSize(parseInt(e.target.value))}
-						onChange={e => changeGrpSize(e.target.value)}
-						error={!grpSizeIsValid}
-						helperText={grpSizeIsValid ? "" : GROUP_SIZE_ERROR_TEXT}
-					/>
+					<section className='compactNumberComponent'>
+						Group Size:
+						<section className='numberComponentAction'>
+							<button className='minusButton numberComponentActionButton' type="button">-</button>
+							<TextField
+								type="text"
+								inputMode="numeric"
+								value={currGrpSize}
+								InputProps={{ inputProps: { min: MIN_GROUP_SIZE, max: MAX_GROUP_SIZE } }}
+								// onChange={e=>setCurrGrpSize(parseInt(e.target.value))}
+								onChange={e => changeGrpSize(e.target.value)}
+								error={!grpSizeIsValid}
+								helperText={grpSizeIsValid ? "" : GROUP_SIZE_ERROR_TEXT}
+								size='small'
+							/>
+							<button className='plusButton numberComponentActionButton' type="button">+</button>
+						</section>
+					</section>
+
 					<section>
 						Send Survey?
 						<Switch
@@ -393,8 +407,8 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 						/>
 					</section>
 				</section>
-				<p>Leave member name blank if you do not know the member's name</p>
 				<section className="groupMembers">
+					<p>Leave member name blank if you do not know the member's name</p>
 					{currGrpMembers.map((name, i) => (
 						<TextField
 							label="Member Name"
@@ -410,6 +424,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 							}}
 							error={!grpMembersIsValid[i]}
 							helperText={grpMembersIsValid[i] ? "" : NAME_ERROR_TEXT}
+							size='small'
 
 						/>
 					))}

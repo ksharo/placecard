@@ -1,6 +1,7 @@
 const { isUndefined, isEmpty, isNull } = require("lodash");
 const mongoCollections = require("../../config/mongoConfig/mongoCollections");
 const { checkPrecondition, validateSchema } = require("../utils/preconditions");
+const { guests } = require("../../config/mongoConfig/mongoCollections");
 const {
     INVALID_GUEST_ID_MESSAGE,
     GUEST_UNDEFINED_MESSAGE,
@@ -32,6 +33,7 @@ const csvToJson = require("convert-csv-to-json");
 const xlsx = require("xlsx");
 const { SCHEMA_TYPES } = require("../constants/schemaTypes");
 
+
 async function getGuest(guestId) {
     checkPrecondition(guestId, isUndefined, INVALID_GUEST_ID_MESSAGE);
     checkPrecondition(guestId, isInvalidObjectId, INVALID_GUEST_ID_MESSAGE);
@@ -51,14 +53,15 @@ async function getGuest(guestId) {
 }
 
 async function getGuests(ids) {
-    const guestCollection = await guests();
+    const guestCollection = await mongoCollections.guests();
     try {
         ids = ids.map((id) => {
             return ObjectId(id);
         });
-        const matchingGuests = await guestCollection.find({ "_id": { "$in": ids } });
-        return matchingGuests.toArray();
-    } catch (e) {
+        const matchingGuests = await guestCollection.find( { "_id" : { "$in" : ids } } ).toArray();
+        return matchingGuests.map(convertIdToString);
+    }
+    catch (e) {
         throw new Error(generateCRUDErrorMessage(NO_GUEST_FOUND_MESSAGE, GUEST_TYPE));
     }
 }
@@ -134,7 +137,7 @@ async function deleteGuest(guestId) {
     return true;
 }
 
-async function uploadSurveyData(filePath, fileType) {
+async function uploadSurveyData(filePath, fileType, eventId) {
     let data;
 
     if (fileType === "xlsx" || fileType === "xls") {
@@ -159,6 +162,7 @@ async function uploadSurveyData(filePath, fileType) {
     }
 
     if (fileType === "csv") {
+
         data = csvToJson.fieldDelimiter(",").getJsonFromCsv(filePath);
     }
 
@@ -206,29 +210,92 @@ async function uploadSurveyData(filePath, fileType) {
         'ksharo@stevens.edu': [ 'Kaitlyn Sharo' ],
         'tjtayo@gmail.com': [ 'Thad Tayo', 'Damien Tayo', 'Dion Tayo' ],
         'gaustria@stevens.edu': [ 'Gil Austria' ]
-        }        
+        }
 
     */
     let returnData = [];
     for (const [email, members] of Object.entries(emails)) {
         if (members.length > 1) {
-            let groupname = members.join(",");
-            groupname = groupname + " group";
+            let groupName = members.join(",");
+            groupName = groupName + " group";
             returnData.push({
-                groupname: groupname,
-                contact: email,
-                members: members,
+                groupName: groupName,
+                groupContact: email,
+                groupMembers: members,
             });
         } else {
             returnData.push({
-                groupname: members[0],
-                contact: email,
-                members: members,
+                groupName: members[0],
+                groupContact: email,
+                groupMembers: [],
             });
         }
     }
 
+    for (const retGroup of returnData){
+        if (retGroup.groupMembers.length > 0){
+            for (const retGroupMem of retGroup.groupMembers){
+                const createdGuest = await createGuest({
+                    first_name: retGroupMem,
+                    email: retGroup.groupContact,
+                    party_size: retGroup.groupMembers.length
+                })
+
+                events.addGuest(eventId, createdGuest._id, true)
+            }
+        }
+        else{
+            const createdGuest = await createGuest({
+                first_name: retGroup.groupName,
+                email: retGroup.groupContact,
+                party_size: 1,
+            })
+            events.addGuest(eventId, createdGuest._id, true)
+
+        }
+    }
+    // createGuest({
+    //     first_name
+    // })
+
     // Insert survey data into mongo here
+    // data.sort(function(a,b){
+    //     if (a["EmailAddress"] > b["EmailAddress"]){
+    //         return 1
+    //     }
+    //     else if (a["EmailAddress"] < b["EmailAddress"]){
+    //         return -1
+    //     }
+    //     else{
+    //         return 0
+    //     }
+    // })
+
+    // console.log(data)
+
+    // let guestArr = []
+    // let prevEmailAddress = data[0].EmailAddress
+    // let currGroup = {partySize: 0, groupId: new ObjectId(), members: []}
+    // for (const d of data){
+    //     console.log(d)
+    //     if (d.EmailAddress == prevEmailAddress){
+    //         currGroup.members.push(d.Name)
+    //         currGroup.partySize++
+    //         console.log(currGroup)
+    //     }
+    //     else{
+    //         console.log(currGroup)
+    //         guestArr.push(currGroup)
+    //         currGroup = {partySize: 0, groupId: new ObjectId(), members: []}
+    //         currGroup.members.push(d.Name)
+    //         currGroup.partySize++
+    //         prevEmailAddress = d.EmailAddress
+    //     }
+    // }
+    // guestArr.push(currGroup)
+    // console.log(guestArr)
+
+
 
     // Delete file after data is read into JSON object
     fs.unlinkSync(filePath);

@@ -95,8 +95,8 @@ export function GuestList(){
 		}
 
 		let data = new FormData();
-		// if (userFile != undefined ) {
-        //   	data.append('file', userFile);
+		// if (userFile != undefined) {
+          // 	data.append('file', userFile);
 		// }
 
 		// if(userFile && userFile['name']){
@@ -120,7 +120,7 @@ export function GuestList(){
 				<p className='subtitle'>{PAGE_DESCRIPTION}</p>
 			</section>
 
-			<UploadFile/>
+			<UploadFile setTableData={setGuestListData}/>
 
 			<section>
 				<span>OR</span><hr/>
