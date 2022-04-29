@@ -13,11 +13,12 @@ export function EditSurvey () {
 
     const defaultSignatureText = 'Thanks! \r\n'+window.firstNameState + ' ' + window.lastNameState;
 
-    const sendSurvey = () => {
+    const sendSurvey = async () => {
         if (window.activeEvent != null) {
             for (let x of window.activeEvent.guestList) {
                 console.log(x.name + ' ' + x.contact + ':   http://localhost:3000/' + window.activeEvent.name.replace(' ', '-') + '/beginSurvey?eventId=' + window.activeEvent.id + '&guestId=' + x.id);
             }
+            await emailSurveys();
             history.push('/sentConf');
         }
     };
@@ -82,4 +83,22 @@ export function EditSurvey () {
         </section>
     </section>
     );
+}
+
+async function emailSurveys() {
+    if (window.activeEvent) {
+        // TODO! Remove groups!!!
+        const guestIds = window.activeEvent.guestList.map( (g) => {return g.id});
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                eventId: window.activeEvent.id,
+                guestIds: guestIds
+            })
+        };
+        return fetch('http://localhost:3001/notifications/email/', requestOptions);
+    }
 }
