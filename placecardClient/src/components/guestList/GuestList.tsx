@@ -1,5 +1,5 @@
 import { GuestListTable, GuestListDataInterface } from "./GuestListTable"
-import { AddGuestPopUp } from "./AddGuestPopUp";
+import { AddGuestPopUp, addGuestToGlobalEvent } from "./AddGuestPopUp";
 import { useState, useEffect, useLayoutEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Button } from "@mui/material";
@@ -10,7 +10,7 @@ export function GuestList(){
 	window.setGuestMode(false);
 	const TITLE			= 'Add a Guest List For Your Event'
 	const PAGE_DESCRIPTION	= 'Download our guest list template, fill it out, and drop it back here'
-	const TABLE_TITLE		= 'Enter Guest List Manually'
+	const TABLE_TITLE		= 'Enter guest list manually'
 	const TABLE_DESCRIPTION	= 'You only need to provide one method of contact for each guest'
 
 	const history			= useHistory();
@@ -30,7 +30,7 @@ export function GuestList(){
 				if (guest.groupName == undefined  || guest.groupName.trim() === "") {
 					const newGuest: GuestListDataInterface = {
 						individualName: guest.name,
-						groupName: guest.name,
+						// groupName: guest.name,
 						groupContact: guest.contact,
 						groupSize: guest.groupSize?.toString(),
 						sendSurvey: true,
@@ -52,11 +52,12 @@ export function GuestList(){
 						groupSize: guest.groupSize?.toString(),
 						sendSurvey: true,
 						groupMembers: [guest.name],
-						id: guest.groupID
+						id: guest.groupID,
+						group_id: guest.groupID
 					}
 				}
 			}
-			// loop over gue
+			// loop over guest
 			for (let groupID of Object.keys(startingGroups)) {
 				const group = startingGroups[groupID];
 				const newGroup: GuestListDataInterface = {
@@ -71,6 +72,7 @@ export function GuestList(){
 					startingGuests.push(newGroup);
 				}
 			}
+			console.log({startingGuests})
 			setGuestListData(startingGuests);
 		}
 	}, [window.activeEvent]);
@@ -94,7 +96,7 @@ export function GuestList(){
 
 		}
 
-		let data = new FormData();
+		// let data = new FormData();
 		// if (userFile != undefined) {
           // 	data.append('file', userFile);
 		// }
@@ -122,16 +124,18 @@ export function GuestList(){
 
 			<UploadFile setTableData={setGuestListData}/>
 
-			<section>
-				<span>OR</span><hr/>
+			<section className="horizontalOr">
+				<div className="horizontalBar"/>
+				<span>OR</span>
+				<div className="horizontalBar"/>
 			</section>
 
 			<form id="addGuestListForm" onSubmit={ toCustomizeSurvey }>
-				<AddGuestPopUp guestListData={guestListData} setGuestListData={setGuestListData}/>
 
 				<section className = "manualGuestListSection">
-					<h3>{TABLE_TITLE}</h3>
-					<p>{TABLE_DESCRIPTION}</p>
+					<h1 className='title'>{TABLE_TITLE}</h1>
+					<p className='subtitle'>{TABLE_DESCRIPTION}</p>
+					<AddGuestPopUp guestListData={guestListData} setGuestListData={setGuestListData}/>
 					<GuestListTable tableData={guestListData} setTableData={setGuestListData} mode="New"/>
 				</section>
 				<Button type="submit" color="primary" variant="contained">Next</Button>
