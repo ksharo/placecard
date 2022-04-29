@@ -75,9 +75,13 @@ export function EditGuestList() {
 			<GuestListTable tableData={guestListData} setTableData={setGuestListData} mode="SurveySent"/>
 
 			<AddGuestPopUp guestListData={guestListData} setGuestListData={setGuestListData}/>
-			<section>
-				<span>OR</span><hr/>
+
+			<section className="horizontalOr">
+				<div className="horizontalBar"/>
+				<span>OR</span>
+				<div className="horizontalBar"/>
 			</section>
+
 			<UploadFile setTableData={setGuestListData}/>
 			<Button variant='contained' onClick={handleClick}>Return to Dashboard</Button>
 

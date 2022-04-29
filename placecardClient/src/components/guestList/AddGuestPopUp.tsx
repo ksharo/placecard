@@ -5,37 +5,37 @@ import { ObjectId } from 'mongodb';
 import { useEffect, useState } from 'react';
 import validator from 'validator';
 
-const DEFAULT_GROUP_SIZE	= 5
-const MIN_GROUP_SIZE	= 1
-const MAX_GROUP_SIZE	= 25
+const DEFAULT_GROUP_SIZE = 5
+const MIN_GROUP_SIZE = 1
+const MAX_GROUP_SIZE = 25
 
-const NAME_REGEX				= /^[a-zA-z\s.]{2,}$/
-const NAME_OPTIONAL_REGEX		= /^[a-zA-z\s.]{2,}$|^$/
-const EMAIL_REGEX				= /^[a-zA-Z.\d!#$%&'*+\-/=?^_`{|}~]+@[a-zA-Z+.-\d]+.[a-zA-z+.-\d]+$/
-const PHONE_REGEX				= /^[\d-\s()+_#.ext]*$/
-const PARTY_SIZE_REGEX			= /^[\d]*$/
+const NAME_REGEX = /^[a-zA-z\s.]{2,}$/
+const NAME_OPTIONAL_REGEX = /^[a-zA-z\s.]{2,}$|^$/
+const EMAIL_REGEX = /^[a-zA-Z.\d!#$%&'*+\-/=?^_`{|}~]+@[a-zA-Z+.-\d]+.[a-zA-z+.-\d]+$/
+const PHONE_REGEX = /^[\d-\s()+_#.ext]*$/
+const PARTY_SIZE_REGEX = /^[\d]*$/
 
-const NAME_ERROR_TEXT			= "Name must only contain A - Z, periods, and must be 2 or more character"
-const NAME_OPTIONAL_ERROR_TEXT	= "Name must only contain A - Z, periods, and must be 2 or more character. Leave blank if no plus one"
-const EMAIL_ERROR_TEXT			= "Email must be a valid email"
-const PHONE_ERROR_TEXT			= ""
-const GROUP_SIZE_ERROR_TEXT		= `Group size must be between ${MIN_GROUP_SIZE} and ${MAX_GROUP_SIZE}`
+const NAME_ERROR_TEXT = "Name must only contain A - Z, periods, and must be 2 or more character"
+const NAME_OPTIONAL_ERROR_TEXT = "Name must only contain A - Z, periods, and must be 2 or more character. Leave blank if no plus one"
+const EMAIL_ERROR_TEXT = "Email must be a valid email"
+const PHONE_ERROR_TEXT = ""
+const GROUP_SIZE_ERROR_TEXT = `Group size must be between ${MIN_GROUP_SIZE} and ${MAX_GROUP_SIZE}`
 
 export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any }) {
-	const [individualAddPopupState, setIndividualAddPopupState]	= useState(false)
-	const [groupAddPopupState, setGroupAddPopupState]			= useState(false)
+	const [individualAddPopupState, setIndividualAddPopupState] = useState(false)
+	const [groupAddPopupState, setGroupAddPopupState] = useState(false)
 
-	const [currIndiName, setCurrIndiName]			= useState("")
-	const [currIndiContact, setCurrIndiContact]		= useState("")
-	const [currPlusOneName, setCurrPlusOneName]		= useState("")
-	const [currIndiSendSurvey, setCurrIndiSendSurvey]	= useState(true)
+	const [currIndiName, setCurrIndiName] = useState("")
+	const [currIndiContact, setCurrIndiContact] = useState("")
+	const [currPlusOneName, setCurrPlusOneName] = useState("")
+	const [currIndiSendSurvey, setCurrIndiSendSurvey] = useState(true)
 
-	const [currGrpName, setCurrGrpName]			= useState("")
-	const [currGrpContact, setCurGrpContact]		= useState('')
-	const [currGrpSize, setCurrGrpSize]			= useState(DEFAULT_GROUP_SIZE.toString())
-	const [currGrpSendSurvey, setCurrGrpSendSurvey]	= useState(true)
-	const [currGrpMembers, setCurrGrpMembers]		= useState(Array(DEFAULT_GROUP_SIZE).fill(""))
-	const [currGrpId, setCurrGrpId]				= useState((new ObjectId()).toString());
+	const [currGrpName, setCurrGrpName] = useState("")
+	const [currGrpContact, setCurGrpContact] = useState('')
+	const [currGrpSize, setCurrGrpSize] = useState(DEFAULT_GROUP_SIZE.toString())
+	const [currGrpSendSurvey, setCurrGrpSendSurvey] = useState(true)
+	const [currGrpMembers, setCurrGrpMembers] = useState(Array(DEFAULT_GROUP_SIZE).fill(""))
+	const [currGrpId, setCurrGrpId] = useState((new ObjectId()).toString());
 	const [indiIsValid, setIndiIsValid] = useState({
 		name: true,
 		contact: true,
@@ -77,7 +77,10 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 		}
 		const newGrpMembersIsValid = [...grpMembersIsValid]
 		currGrpMembers.forEach(function (subgroupMember, index) {
-			newGrpMembersIsValid[index] = NAME_REGEX.test(subgroupMember)
+			newGrpMembersIsValid[index] = NAME_OPTIONAL_REGEX.test(subgroupMember)
+			if (!newGrpMembersIsValid[index]) {
+				isValidInput = false;
+			}
 		})
 		setGrpMemebrsIsValid(newGrpMembersIsValid)
 		if (!grpSizeIsValid) {
@@ -92,11 +95,11 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 			return;
 		}
 		setGuestListData([...guestListData, {
-			"groupName":		currPlusOneName ? (currIndiName + " & " + currPlusOneName) : currIndiName,
-			"groupContact":	currIndiContact,
-			"groupSize":		currGrpSize,
-			"sendSurvey":		currIndiSendSurvey,
-			"groupMembers":	currPlusOneName ? [currIndiName, currPlusOneName] : []
+			"individualName": currPlusOneName ? (currIndiName + " & " + currPlusOneName) : currIndiName,
+			"groupContact": currIndiContact,
+			"groupSize": currGrpSize,
+			"sendSurvey": currIndiSendSurvey,
+			"groupMembers": currPlusOneName ? [currIndiName, currPlusOneName] : []
 		}])
 		const grpName = (currPlusOneName ? currIndiName + " and " + currPlusOneName : undefined);
 		const grpSize = currPlusOneName ? 2 : 1;
@@ -118,7 +121,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 			}
 			else {
 				console.log("success!")
-				updateGlobalEvent(plusOneData);
+				addGuestToGlobalEvent(plusOneData);
 			}
 		}
 		setCurrIndiName("")
@@ -126,7 +129,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 		setCurrPlusOneName("")
 		setCurrIndiSendSurvey(true)
 		setCurrGrpId((new ObjectId()).toString());
-		updateGlobalEvent(guestData);
+		addGuestToGlobalEvent(guestData);
 
 
 	}
@@ -139,8 +142,8 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 
 		let renamedGrpMembers = []
 		let renamedGrpCounter = 1
-		for(let grpMem of currGrpMembers){
-			if (grpMem == ""){
+		for (let grpMem of currGrpMembers) {
+			if (grpMem == "") {
 				renamedGrpMembers.push(currGrpName + " Member " + (renamedGrpCounter++).toString())
 			}
 			else {
@@ -150,11 +153,11 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 		setCurrGrpMembers(renamedGrpMembers)
 
 		setGuestListData([...guestListData, {
-			"groupName":		currGrpName,
-			"groupContact":	currGrpContact,
-			"groupSize":		currGrpSize,
-			"sendSurvey":		currGrpSendSurvey,
-			"groupMembers":	renamedGrpMembers
+			"groupName": currGrpName,
+			"groupContact": currGrpContact,
+			"groupSize": currGrpSize,
+			"sendSurvey": currGrpSendSurvey,
+			"groupMembers": renamedGrpMembers
 		}])
 		const allData = [];
 		for (let x of renamedGrpMembers) {
@@ -177,7 +180,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 		setGrpMemebrsIsValid(Array(DEFAULT_GROUP_SIZE).fill(true))
 		setCurrGrpId((new ObjectId()).toString());
 		for (let guestData of allData) {
-			updateGlobalEvent(guestData);
+			addGuestToGlobalEvent(guestData);
 		}
 
 	}
@@ -365,6 +368,8 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 	function groupPopOut() {
 		return (
 			<section className="buttonPopOut groupPopOut">
+				<div className='groupPopOutHeader groupInformationHeader'>Group Information</div>
+				<div className='groupPopOutHeader groupMembersHeader'>Group Members</div>
 				<section className="groupInfo">
 					{/* <AnimatedInput  label="Group Name" placeholder={fullNameList}></AnimatedInput> */}
 					{/* <TypeWriterPlaceholder></TypeWriterPlaceholder> */}
@@ -405,10 +410,12 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 							<button
 								className='minusButton numberComponentActionButton'
 								type="button"
-								onClick={e => {if (parseInt(currGrpSize) && parseInt(currGrpSize) > 0){
-											changeGrpSize((parseInt(currGrpSize) - 1).toString())
-										}}
-									}>
+								onClick={e => {
+									if (parseInt(currGrpSize) && parseInt(currGrpSize) > 0) {
+										changeGrpSize((parseInt(currGrpSize) - 1).toString())
+									}
+								}
+								}>
 								-
 							</button>
 							<TextField
@@ -457,7 +464,7 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 							error={!grpMembersIsValid[i]}
 							helperText={grpMembersIsValid[i] ? "" : NAME_ERROR_TEXT}
 							size='small'
-
+							key={name + i}
 						/>
 					))}
 				</section>
@@ -509,53 +516,19 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 		}
 	}
 
-	function updateGlobalEvent(guestData: any) {
-		if (window.activeEvent != null) {
-			const curGuests = [...window.activeEvent.guestList];
-			const newGuest = {
-				id: guestData._id,
-				name: guestData.first_name + ' ' + guestData.last_name,
-				groupID: guestData.group_id,
-				groupName: guestData.group_name,
-				groupSize: guestData.party_size,
-				contact: guestData.email,
-			};
-			curGuests.push(newGuest);
-			const curSurveys = window.activeEvent.surveys ? [...window.activeEvent.surveys] : [];
-			curSurveys.push(guestData._id);
-			const tmpEvent = window.activeEvent;
-			tmpEvent.guestList = curGuests;
-			tmpEvent.surveys = curSurveys;
-			// see if we need to add tables to the event
-			const num_attend = curGuests.length;
-			const tmpSeats = window.activeEvent.tables.length * window.activeEvent.perTable;
-			if (tmpSeats < num_attend) {
-				const id = (new ObjectId()).toString();
-				const newTable: Table = {
-					id: id,
-					name: 'Table ' + (window.activeEvent.tables.length + 1).toString(),
-					guests: []
-				}
-				tmpEvent.tables.push(newTable);
-			}
-			window.setActiveEvent(tmpEvent);
-			window.setInvitees(curGuests);
-		}
-	}
-
-	return(
+	return (
 		<>
 			<section className="buttonControlGroup">
-				<button className="addButton"
+				<button className={"addButton" + (individualAddPopupState ? " activeButton" : "")}
 					id="addIndividualButton"
 					type="button"
-					onClick={	() => {
+					onClick={() => {
 						setIndividualAddPopupState(!individualAddPopupState);
 						setGroupAddPopupState(false)
 					}}>
 					Add Individual
 				</button>
-				<button className="addButton"
+				<button className={"addButton" + (groupAddPopupState ? " activeButton" : "")}
 					id="addCoupleOrGroupButton"
 					type="button"
 					onClick={() => {
@@ -566,8 +539,71 @@ export function AddGuestPopUp(props: { guestListData: any, setGuestListData: any
 				</button>
 			</section>
 
-			{ individualAddPopupState && individualPopOut() }
-			{ groupAddPopupState && groupPopOut() }
+			{individualAddPopupState && individualPopOut()}
+			{groupAddPopupState && groupPopOut()}
 		</>
 	)
+}
+
+export function addGuestToGlobalEvent(guestData: any) {
+	if (window.activeEvent != null) {
+		const curGuests = [...window.activeEvent.guestList];
+		let newGuest = {id: '', name: '', groupID: '', groupName: '', groupSize: 1, contact: ''};
+		newGuest = {
+			id: guestData._id,
+			name: guestData.first_name + ' ' + guestData.last_name,
+			groupID: guestData.group_id,
+			groupName: guestData.group_name,
+			groupSize: guestData.party_size,
+			contact: guestData.email,
+		};
+		curGuests.push(newGuest);
+		const curSurveys = window.activeEvent.surveys ? [...window.activeEvent.surveys] : [];
+		curSurveys.push(guestData._id);
+		const tmpEvent = window.activeEvent;
+		tmpEvent.guestList = curGuests;
+		tmpEvent.surveys = curSurveys;
+		// see if we need to add tables to the event
+		const num_attend = curGuests.length;
+		const tmpSeats = window.activeEvent.tables.length * window.activeEvent.perTable;
+		if (tmpSeats < num_attend) {
+			const id = (new ObjectId()).toString();
+			const newTable: Table = {
+				id: id,
+				name: 'Table ' + (window.activeEvent.tables.length + 1).toString(),
+				guests: []
+			}
+			tmpEvent.tables.push(newTable);
+		}
+		window.setActiveEvent(tmpEvent);
+		window.setInvitees(curGuests);
+	}
+}
+
+export function updateGuestToGlobalEvent(guestData: any, guestId: any) {
+	console.log({guestData})
+	if (window.activeEvent != null) {
+		const curGuests = [...window.activeEvent.guestList];
+		console.log(curGuests)
+		for (let i = 0;  i < curGuests.length;  i++){
+			if (curGuests[i].id === guestId){
+				curGuests[i] = {
+					id: guestData._id,
+					name: guestData.individualName,
+					groupID: guestData.group_id,
+					groupName: guestData.group_name,
+					groupSize: guestData.party_size,
+					contact: guestData.groupContact,
+				}
+			}
+		}
+
+		console.log(curGuests)
+
+		const tmpEvent = window.activeEvent;
+		tmpEvent.guestList = curGuests;
+		tmpEvent.surveys = window.activeEvent.surveys;
+		window.setActiveEvent(tmpEvent);
+		window.setInvitees(curGuests);
+	}
 }
