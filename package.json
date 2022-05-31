@@ -1,0 +1,19 @@
+{
+    "name": "placecard",
+    "version": "1.0.0",
+    "description": "A lightweight seating-chart application",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "python3 startScript.py"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/AlexRubino/Senior-Design.git"
+    },
+    "author": "Kaitlyn Sharo, Caleb Choy, Simon Gao, Jason Infante, Gil Austria, Alex Rubino",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/AlexRubino/Senior-Design/issues"
+    }
+}
