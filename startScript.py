@@ -1,16 +1,11 @@
 import os
 # start frontend
-os.system("cd placecardClient")
-os.system("npm i")
-os.system("npm start")
-print("started frontend")
+print("starting frontend...")
+os.system("cd placecardClient && npm i && npm start &")
+# # start backend
+print("starting backend...")
+os.system("cd placecardAPI && npm i && npm start &")
 
-# start backend
-os.system("cd ../placecardAPI")
-os.system("npm i")
-os.system("npm start")
-print("started backend")
-
-# start server
-os.system("python3 server.py")
-print("started server")
+# # start server
+print("starting server")
+os.system("cd placecardAPI && python3 server.py &")
