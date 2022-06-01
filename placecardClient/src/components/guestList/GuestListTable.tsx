@@ -13,7 +13,7 @@ import './GuestListTable.css'
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import { TextField } from '@mui/material';
-import { v4 as uuid } from 'uuid';
+import { nanoid as uuid } from "nanoid";
 
 export interface GuestListDataInterface {
 	individualName?:	string;
