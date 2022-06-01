@@ -14,6 +14,7 @@ import { nanoid as uuid } from "nanoid";
 import { FaExclamationCircle, FaSearch } from "react-icons/fa";
 import { ObjectId } from "mongodb";
 import { Modal } from '../../shared/Modal'
+import { ConstructionOutlined } from "@mui/icons-material";
 
 const unseatedID = uuid();
 let searchTerm = '';
@@ -360,7 +361,9 @@ export function SeatingDashboard() {
                     setTablesData([...tmpTables]);
                     setUnseated([...destItems]);
                     newUnseated = [...destItems];
-                    setSeated(seated - 1);
+                    if (seated > 0) {
+                        setSeated(seated - 1);
+                    }
                     newTables = [...tmpTables];
                 }
             }
@@ -655,12 +658,15 @@ export function SeatingDashboard() {
             const chartData = await seatingChart.json();
             const chartAnswer = chartData.answer;
             let tmpTables = [...window.activeEvent.tables];
+            let tmpSeated = seated;
+            console.log("OG TEMPSEATED: " +tmpSeated);
             for (let x of tmpTables) {
                 const tmpGuests = chartAnswer[x.id];
                 const newGuests: Invitee[] = [];
                 for (let guest of tmpGuests) {
                     const tmpGuest = window.activeEvent.guestList.filter((g) => {return g.id==guest})[0];
                     newGuests.push(tmpGuest);
+                    tmpSeated++;
                 }
                 x.guests = newGuests;
             }
@@ -672,11 +678,12 @@ export function SeatingDashboard() {
             setTablesData(tmpTables);
             setUnseated([]);
             setData([tmpTables, []]);
+            setSeated(tmpSeated);
         }
     }
 
     const checkResponses = () => {
-        console.log("checking responses")
+        setSeated(0);
         if (window.activeEvent !== null) {
 
             let tmpRespondendts = window.activeEvent.respondents;
