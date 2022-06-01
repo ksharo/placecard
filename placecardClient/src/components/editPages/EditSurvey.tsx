@@ -99,6 +99,7 @@ async function emailSurveys() {
                 guestIds: guestIds
             })
         };
-        return fetch('http://localhost:3001/notifications/email/', requestOptions);
+        return 0;
+        // return fetch('http://localhost:3001/notifications/email/', requestOptions);
     }
 }
