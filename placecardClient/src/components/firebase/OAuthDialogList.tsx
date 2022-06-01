@@ -3,7 +3,7 @@ import placecardLogo from "../../assets/logo.png";
 import CustomOAuthBox from "./CustomOAuthBox";
 import { PROVIDERS, authBoxConfigs } from "../../constants/mappings/authBoxConfigs";
 import { loginDescription } from "../../constants/messages";
-import { v4 as uuid } from 'uuid';
+import { nanoid as uuid } from "nanoid";
 
 const PROVIDER_NAMES: string[] = Object.values(PROVIDERS);
 

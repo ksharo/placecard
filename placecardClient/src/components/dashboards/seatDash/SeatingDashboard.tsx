@@ -10,7 +10,7 @@ import { IoIosClose, IoIosSave } from "react-icons/io";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import moment from 'moment';
 import React, { useEffect, useLayoutEffect } from "react";
-import { v4 as uuid } from 'uuid';
+import { nanoid as uuid } from "nanoid";
 import { FaExclamationCircle, FaSearch } from "react-icons/fa";
 import { ObjectId } from "mongodb";
 

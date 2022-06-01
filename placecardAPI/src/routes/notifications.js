@@ -16,7 +16,7 @@ const events = require("../data/Event");
 const guests = require("../data/Guest");
 const baseEmailConfig = require("../constants/configs");
 
-router.use("/email",async (req, res, next) => {
+router.use("/email", async(req, res, next) => {
     const requestBody = req.body;
 
     try {
@@ -41,7 +41,7 @@ router.use("/email",async (req, res, next) => {
         2. send email to all guests initially 
     
 */
-router.post("/email", async (req, res) => {
+router.post("/email", async(req, res) => {
     let { eventId, guestIds } = req.body;
     const { event_name, event_start_time, location, guest_list } = await events.getEvent(eventId);
 
@@ -63,7 +63,6 @@ router.post("/email", async (req, res) => {
             guest_response_url: url
         };
 
-        console.log(baseEmailConfig);
         let newConfig = {
             ...baseEmailConfig,
             to: guest.email,
@@ -83,14 +82,13 @@ router.post("/email", async (req, res) => {
         return newConfig;
     });
 
-    const [ invalidEmailConfigs, validEmailConfigs ] = _.partition(emailConfigs, hasError);
+    const [invalidEmailConfigs, validEmailConfigs] = _.partition(emailConfigs, hasError);
 
     // TODO: Return emails that failed to send in the response body
     try {
-        const sendResponses = await Promise.allSettled(validEmailConfigs.map(config => 
+        const sendResponses = await Promise.allSettled(validEmailConfigs.map(config =>
             sendEmailRequest(config)
         ));
-        
         return createSuccessResponse(EMAIL_SENT_SUCCESS, res);
     } catch (error) {
         return createErrorResponse(error.message, ERROR_TYPES.FAILED_EMAIL_REQUEST, STATUS_CODES.INTERNAL_SERVER, res);

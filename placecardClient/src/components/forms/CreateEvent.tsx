@@ -1,7 +1,7 @@
 import './Forms.css'
 import { useHistory } from "react-router-dom";
 import validator from 'validator';
-import {uuid} from "uuidv4";
+import { nanoid as uuid } from "nanoid";
 import { Button, TextField } from '@mui/material';
 import React from 'react';
 import { ObjectId } from 'mongodb';
