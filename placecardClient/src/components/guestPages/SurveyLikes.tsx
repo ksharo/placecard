@@ -8,6 +8,7 @@ let searchTerm = '';
 export function SurveyLikes() {
     let names: {name: string, id: string}[] = [];
     const disIds: string[] = [];
+
     // don't include disliked invitees here
     const setup = () => {
     for (let x of window.dislikedInvitees) {
@@ -15,7 +16,6 @@ export function SurveyLikes() {
             disIds.push(x.id);
         }
     }
-    
     for (let x of window.inviteesState) {
         if (!disIds.includes(x.id)) {
             if (window.curGuest != undefined  && window.curGuest.id !== x.id) {
@@ -44,15 +44,41 @@ export function SurveyLikes() {
     let startRows: GridRowsProp = makeRows();
     const [rows, setRows] = React.useState([...startRows]);
 
+    const makeDict = () => {
+        let t : {[id: string] : boolean} = {};
+        rows.map((name) => {
+            t[name.col1] = false;
+        });
+        return t;
+    };
+
+    //set the guestStatus and have it update when rows change
+    const [guestStatus, setGuestStatus] = React.useState(makeDict());
+    useEffect(() => { setGuestStatus(makeDict()) }, [rows]);
+   // console.log(guestStatus)
+    
     const columns: GridColDef[] = [
         {
             field: 'col0', headerName: 'Name', headerAlign: 'center', flex: 2,
         },
         {
             field: 'col1', headerName: 'Would sit with', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 1,
-            renderCell: (params) => { return (<Checkbox id={'checkbox' + params.value} defaultChecked={isChecked(params.value)} onClick={updateLikes}></Checkbox>) }
+            renderCell: (params) => { return (<Checkbox id={'checkbox' + params.value} value={guestStatus[params.value]} onClick={updateLikes}></Checkbox>) }
         }
     ];
+
+    // const handleClick = (e: any) => {
+    //     setCheck({value: e});
+
+
+    //     // console.log("==============")
+    //     // console.log(check)
+    //     // console.log(check.value.target.id.substring(8))
+    //     // console.log( check.value.target.checked)        
+    //     // console.log("==============")
+    //     updateLikes()
+
+    // }
     const isChecked = (id: string) => {
         for (let x of window.likedInvitees) {
             if (x.id === id) {
@@ -65,6 +91,15 @@ export function SurveyLikes() {
         // first, get the id of the party this checkbox belongs to
         const id = event.target.id.substring(8);
         const checked = event.target.checked;
+        //change the status of check/unchecked in the guestStatus useState
+        console.log("first" + JSON.stringify(guestStatus));
+
+        let tempStatus = guestStatus;
+        let currentStatus = tempStatus[id];
+        tempStatus[id] = !currentStatus;
+        console.log("BEFORE: " + JSON.stringify(guestStatus));
+        setGuestStatus(tempStatus);
+        console.log("AFTER: " + JSON.stringify(guestStatus));
         // find the size and name of the party
         let size = 1;
         let name = '';
@@ -80,13 +115,13 @@ export function SurveyLikes() {
         }
         if (checked) {
             // add the party to the list of those who are liked
-            const tmp = window.likedInvitees;
+            let tmp = window.likedInvitees;
             tmp.push({id: id, name: name, groupName: groupName, groupID: groupID});
             window.setLiked(tmp);
         }
         else {
             // remove the party from the list of those who are liked
-            const tmp = [];
+            let tmp = [];
             for (let x of window.likedInvitees) {
                 if (x.id !== id) {
                     tmp.push({id: x.id, name: x.name, groupName: x.groupName, groupID: x.groupID})
@@ -95,6 +130,10 @@ export function SurveyLikes() {
             window.setLiked(tmp);
         }
     }
+
+    // useEffect(() => {
+    //    updateLikes(check);
+    // }, ([check]));
 
     const loadingCircle = () => {
         return (
@@ -160,7 +199,7 @@ export function SurveyLikes() {
                 <div className='survey' style={{ height: 400 }}>
                     <DataGrid 
                         rows={rows} 
-                        columns={columns} 
+                        columns={columns}
                         disableColumnMenu={true} 
                         hideFooter={true} 
                         disableSelectionOnClick={true} 
