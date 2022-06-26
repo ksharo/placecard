@@ -44,7 +44,8 @@ export function SurveyLikes() {
     let startRows: GridRowsProp = makeRows();
     const [rows, setRows] = React.useState([...startRows]);
 
-    const makeDict = () => {
+    const makeStatus = () => {
+        console.log("makingDict")
         let t : {[id: string] : boolean} = {};
         rows.map((name) => {
             t[name.col1] = false;
@@ -53,9 +54,14 @@ export function SurveyLikes() {
     };
 
     //set the guestStatus and have it update when rows change
-    const [guestStatus, setGuestStatus] = React.useState(makeDict());
-    useEffect(() => { setGuestStatus(makeDict()) }, [rows]);
-   // console.log(guestStatus)
+    const [guestStatus, setGuestStatus] = React.useState(makeStatus());
+    useEffect(() => {setGuestStatus(makeStatus()) }, [rows]);
+
+    const updateStatus = (id: string, checked: boolean) => {
+        let tempStatus = guestStatus;
+        tempStatus[id] = checked;
+        setGuestStatus(tempStatus);
+    };
     
     const columns: GridColDef[] = [
         {
@@ -63,7 +69,7 @@ export function SurveyLikes() {
         },
         {
             field: 'col1', headerName: 'Would sit with', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 1,
-            renderCell: (params) => { return (<Checkbox id={'checkbox' + params.value} value={guestStatus[params.value]} onClick={updateLikes}></Checkbox>) }
+            renderCell: (params) => { return (<Checkbox id={'checkbox' + params.value} checked={guestStatus[params.value]} value={guestStatus[params.value]} onClick={updateLikes}></Checkbox>) }
         }
     ];
 
@@ -88,18 +94,12 @@ export function SurveyLikes() {
         return false;
     }
     const updateLikes = (event: any) => {
+        console.log("updatingLikes")
         // first, get the id of the party this checkbox belongs to
         const id = event.target.id.substring(8);
         const checked = event.target.checked;
         //change the status of check/unchecked in the guestStatus useState
-        console.log("first" + JSON.stringify(guestStatus));
-
-        let tempStatus = guestStatus;
-        let currentStatus = tempStatus[id];
-        tempStatus[id] = !currentStatus;
-        console.log("BEFORE: " + JSON.stringify(guestStatus));
-        setGuestStatus(tempStatus);
-        console.log("AFTER: " + JSON.stringify(guestStatus));
+        updateStatus(id, checked)
         // find the size and name of the party
         let size = 1;
         let name = '';
@@ -129,6 +129,7 @@ export function SurveyLikes() {
             }
             window.setLiked(tmp);
         }
+        console.log(guestStatus, window.likedInvitees);
     }
 
     // useEffect(() => {
