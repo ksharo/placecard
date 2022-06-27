@@ -1,4 +1,4 @@
-import { Checkbox, CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
+import { CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
 import React, { useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
@@ -44,97 +44,28 @@ export function SurveyLikes() {
     let startRows: GridRowsProp = makeRows();
     const [rows, setRows] = React.useState([...startRows]);
 
-    const makeStatus = () => {
-        console.log("makingDict")
-        let t : {[id: string] : boolean} = {};
-        rows.map((name) => {
-            t[name.col1] = false;
-        });
-        return t;
-    };
-
-    //set the guestStatus and have it update when rows change
-    const [guestStatus, setGuestStatus] = React.useState(makeStatus());
-    useEffect(() => {setGuestStatus(makeStatus()) }, [rows]);
-
-    const updateStatus = (id: string, checked: boolean) => {
-        let tempStatus = guestStatus;
-        tempStatus[id] = checked;
-        setGuestStatus(tempStatus);
-    };
-    
     const columns: GridColDef[] = [
         {
             field: 'col0', headerName: 'Name', headerAlign: 'center', flex: 2,
         },
-        {
-            field: 'col1', headerName: 'Would sit with', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 1,
-            renderCell: (params) => { return (<Checkbox id={'checkbox' + params.value} checked={guestStatus[params.value]} value={guestStatus[params.value]} onClick={updateLikes}></Checkbox>) }
-        }
     ];
-
-    // const handleClick = (e: any) => {
-    //     setCheck({value: e});
-
-
-    //     // console.log("==============")
-    //     // console.log(check)
-    //     // console.log(check.value.target.id.substring(8))
-    //     // console.log( check.value.target.checked)        
-    //     // console.log("==============")
-    //     updateLikes()
-
-    // }
-    const isChecked = (id: string) => {
-        for (let x of window.likedInvitees) {
-            if (x.id === id) {
-                return true;
-            }
-        }
-        return false;
-    }
-    const updateLikes = (event: any) => {
-        console.log("updatingLikes")
-        // first, get the id of the party this checkbox belongs to
-        const id = event.target.id.substring(8);
-        const checked = event.target.checked;
-        //change the status of check/unchecked in the guestStatus useState
-        updateStatus(id, checked)
-        // find the size and name of the party
-        let size = 1;
-        let name = '';
-        let groupName = undefined;
-        let groupID = undefined;
-        for (let x of window.inviteesState) {
-            if (x.id === id) {
-                name = x.name;
-                groupName = x.groupName;
-                groupID = x.groupID;
-                break;
-            }
-        }
-        if (checked) {
-            // add the party to the list of those who are liked
-            let tmp = window.likedInvitees;
+   
+    const updateLikes = (checkedUsers: any) => {
+        let tmp = [];
+        //iterate over the list of checkedUsers, get their information and add to tmp
+        for (let user of checkedUsers) {
+            const id = user.col1;
+            
+            const x = window.inviteesState.filter((u) => u.id == id)[0];
+            let name = x.name;
+            let groupName = x.groupName;
+            let groupID = x.groupID;
+           
             tmp.push({id: id, name: name, groupName: groupName, groupID: groupID});
-            window.setLiked(tmp);
         }
-        else {
-            // remove the party from the list of those who are liked
-            let tmp = [];
-            for (let x of window.likedInvitees) {
-                if (x.id !== id) {
-                    tmp.push({id: x.id, name: x.name, groupName: x.groupName, groupID: x.groupID})
-                }
-            }
-            window.setLiked(tmp);
-        }
-        console.log(guestStatus, window.likedInvitees);
+        //update liked state
+        window.setLiked(tmp);
     }
-
-    // useEffect(() => {
-    //    updateLikes(check);
-    // }, ([check]));
 
     const loadingCircle = () => {
         return (
@@ -207,7 +138,17 @@ export function SurveyLikes() {
                         components={{
                             NoRowsOverlay: loadingCircle,
                         }}
-                        rowHeight={80} />
+                        rowHeight={80} 
+                        checkboxSelection
+                        onSelectionModelChange={(ids) => {
+                            const selectedIDs = new Set(ids);
+                            console.log(selectedIDs);
+                            const selectedRowData = rows.filter((row) =>
+                              selectedIDs.has(row.id)
+                            );
+                            updateLikes(selectedRowData);
+                          }}
+                        />
                 </div>
     </>);
 }
