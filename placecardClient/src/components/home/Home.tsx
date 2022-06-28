@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import mainImg from '../../assets/placeholderImage.jpeg';
+import mainImg from '../../assets/homeImage.jpeg';
 import {BsFillCloudArrowUpFill} from 'react-icons/bs'
 import {RiSurveyFill} from 'react-icons/ri'
 import {FaUmbrellaBeach} from 'react-icons/fa'

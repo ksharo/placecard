@@ -49,8 +49,6 @@ router.post("/email", async(req, res) => {
         guestIds = guest_list
     }
 
-    // TODO: Replace with link to survey response
-    const url = "https://www.google.com";
     const emailRecipients = await guests.getGuests(guestIds);
 
     const emailConfigs = emailRecipients.map(guest => {
@@ -60,7 +58,7 @@ router.post("/email", async(req, res) => {
             event_location: location,
             guest_first_name: guest.first_name,
             guest_last_name: guest.last_name,
-            guest_response_url: url
+            guest_response_url: 'http://localhost:3000/' + event_name.replace(' ', '-') + '/beginSurvey?eventId=' + eventId + '&guestId=' + guest._id
         };
 
         let newConfig = {
