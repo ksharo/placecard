@@ -16,28 +16,10 @@ export function SurveyIdealTable() {
         return tmp;
     }
     const [loved, setLoved] = React.useState(makeLoved);
-    const testFunc = (params: any) => {
-       if (loved.includes(params.col2)) {
-           return true;
-       }
-       else {
-           return loved.length<perTable-1;
-       }
-    }
-
-   // !(loved.length>=perTable && !loved.includes(params.row.col2)
-    //const [ids, setIds] = React.useState(new Set());
-
-    // useEffect(() => {
-    //     setIds(selectedIDs);
-    // }, ([selectedIDs]));
 
     const perTable = window.activeEvent == undefined  ? 0 : window.activeEvent.perTable;
     let partySize = window.curGuest == undefined  ? 0 : window.curGuest.groupSize == undefined  ? 1 : window.curGuest.groupSize;
-    let curSize = 0;
-    for (let x of window.lovedInvitees) {
-        curSize += 1;
-    }
+    let curSize = window.lovedInvitees.length;
     const [sizeLeft, setSizeLeft] = React.useState(perTable - (partySize + curSize));
     let names: Invitee[] = [];
     const setup = () => {
@@ -101,7 +83,8 @@ export function SurveyIdealTable() {
             tmp.push({id: id, name: name, groupName: groupName, groupID: groupID});
         }
 
-        //update loved state
+        //update loved and sizeLeft states
+        setSizeLeft(perTable - (tmp.length + partySize + 1));
         window.setLoved(tmp);
     }
 
@@ -188,7 +171,7 @@ export function SurveyIdealTable() {
                             const selectedRowData = rows.filter((row) =>
                               selectedIDs.has(row.id)
                             );
-                            checkTableSize(selectedRowData);
+                            updateLoves(selectedRowData);
                           }}
                         />
                 </div>
