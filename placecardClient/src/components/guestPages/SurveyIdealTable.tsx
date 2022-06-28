@@ -21,6 +21,7 @@ export function SurveyIdealTable() {
     let partySize = window.curGuest == undefined  ? 0 : window.curGuest.groupSize == undefined  ? 1 : window.curGuest.groupSize;
     let curSize = window.lovedInvitees.length;
     const [sizeLeft, setSizeLeft] = React.useState(perTable - (partySize + curSize));
+    console.log("Initial Size Left: ", sizeLeft);
     let names: Invitee[] = [];
     const setup = () => {
         for (let x of window.likedInvitees) {
@@ -51,25 +52,6 @@ export function SurveyIdealTable() {
         }
     ];
     
-    const checkTableSize = (checkedUsers: any) => {
-        //console.log(ids.size>=perTable, ids.size);
-        let size = 1;
-        //check that the size is not too much
-        let curSize = 0; //why iterate?
-        for (let x of window.lovedInvitees) {
-            curSize += 1;
-        }
-        // if the loved list is > max table size, disable the rest of the checkboxes
-        if (curSize + partySize + size > perTable) {
-            console.log("table to big")
-        }
-        // if the loved list is < max table size, add all to the loved list
-        else {
-            setSizeLeft(perTable - (curSize + partySize + size));
-            updateLoves(checkedUsers);
-        }
-
-    }
     const updateLoves = (checkedUsers: any) => {
         let tmp = [];
         //iterate over the list of checkedUsers, get their information and add to tmp
@@ -84,12 +66,13 @@ export function SurveyIdealTable() {
         }
 
         //update loved and sizeLeft states
-        setSizeLeft(perTable - (tmp.length + partySize + 1));
         window.setLoved(tmp);
     }
 
     useEffect(() => {
-        setLoved(makeLoved);      
+        setLoved(makeLoved);  
+        setSizeLeft(perTable - (window.lovedInvitees.length + partySize)); //+1?
+        console.log("Updated Size Left: ", sizeLeft);
     }, ([window.lovedInvitees]));
 
 
