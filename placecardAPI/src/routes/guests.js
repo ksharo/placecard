@@ -145,6 +145,7 @@ router.put("/updateGuest", async(req, res) => {
 
 router.patch("/updateGuest", async(req, res) => {
     const updatedGuest = req.body;
+    console.log(updatedGuest)
 
     try {
         checkPrecondition(updatedGuest, _.isUndefined, GUEST_UNDEFINED_MESSAGE);
@@ -235,10 +236,10 @@ router.delete("/:guestId", async(req, res) => {
 });
 
 
-router.post("/fileUpload", upload.single("file"), async(req, res) => {
+router.post("/fileUpload/:eventId", upload.single("file"), async (req, res) => {
     try {
         let formData = req.file;
-        let eventId = req.evnetId;
+        let eventId = req.params.eventId;
         let fileType = formData.originalname.split(".").pop();
 
         if (
@@ -252,9 +253,14 @@ router.post("/fileUpload", upload.single("file"), async(req, res) => {
             });
         }
 
-        let uploadData = await guests.uploadSurveyData(formData.path, fileType, eventId);
-
-        res.status(200).json(uploadData);
+        let {returnData, createdGuests} = await guests.uploadSurveyData(formData.path, fileType);
+        console.log(eventId)
+        /* remove all guests from event */
+        await events.updateEvent(eventId, {guest_list: []}, 'PATCH');
+        for (guest of createdGuests){
+            await events.addGuest(eventId, guest._id, true)
+        }
+        res.status(200).json({returnData: returnData, addedGuests: createdGuests});
     } catch (e) {
         console.log(e);
         res.status(500).json({ error: e });

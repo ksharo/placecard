@@ -3,19 +3,20 @@ import { MdUploadFile } from 'react-icons/md';
 import '../guestList/GuestList.css';
 import template from '../../assets/Placecard_Guestlist_Template.png';
 import { AiOutlineFileExcel } from "react-icons/ai";
+import { addGuestToGlobalEvent } from "../guestList/AddGuestPopUp";
 
 export function UploadFile(props: {setTableData:Function}) {
 	const [userFile, setUserFile] = useState(undefined);
-
+    let eventId = '';
     const fileSelected = (event: any) => {
 		const selectedFile = event.target.files[0];
 		setUserFile(selectedFile)
      	// const reader = new FileReader();
 		let data = new FormData();
-            data.append('file', selectedFile);
-            if (window && window.activeEvent){
-                data.append('eventId', window.activeEvent.id)
-            }
+        data.append('file', selectedFile);
+        if (window && window.activeEvent){
+            eventId =  window.activeEvent.id;
+        }
 
 		const requestOptions = {
 			method: 'POST',
@@ -24,12 +25,23 @@ export function UploadFile(props: {setTableData:Function}) {
 			// },
             body: data
 		};
-        fetch('http://localhost:3001/guests/fileUpload', requestOptions)
+        fetch('http://localhost:3001/guests/fileUpload/'+eventId, requestOptions)
             .then(response => response.json())
-            .then(data => {console.log(data); props.setTableData(data)})
-		return fetch('http://localhost:3001/guests/fileUpload', requestOptions);
+            .then(data => handleUploadedData(data))
+		return fetch('http://localhost:3001/guests/fileUpload/'+eventId, requestOptions);
 	}
 
+    const handleUploadedData = (data: any) => {
+        console.log("file returned", data.returnData);
+        props.setTableData(data.returnData);
+        if (window.activeEvent) {
+            window.activeEvent.guestList = [];
+            window.activeEvent.surveys = [];
+            window.setInvitees([]);
+            window.activeEvent.tables = [];
+        }
+        data.addedGuests.map((guest: any) => {addGuestToGlobalEvent(guest); console.log(guest);})
+    }
     return (
         <section className='fileUploadSection'>
         <a href={template} className='downloadTemplate' download="Placecard_Guestlist_Template.xlsx">

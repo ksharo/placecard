@@ -1,4 +1,4 @@
-import { Checkbox, CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
+import { CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
 import React, { useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
@@ -8,6 +8,7 @@ let searchTerm = '';
 export function SurveyLikes() {
     let names: {name: string, id: string}[] = [];
     const disIds: string[] = [];
+
     // don't include disliked invitees here
     const setup = () => {
     for (let x of window.dislikedInvitees) {
@@ -15,7 +16,6 @@ export function SurveyLikes() {
             disIds.push(x.id);
         }
     }
-    
     for (let x of window.inviteesState) {
         if (!disIds.includes(x.id)) {
             if (window.curGuest != undefined  && window.curGuest.id !== x.id) {
@@ -48,52 +48,23 @@ export function SurveyLikes() {
         {
             field: 'col0', headerName: 'Name', headerAlign: 'center', flex: 2,
         },
-        {
-            field: 'col1', headerName: 'Would sit with', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 1,
-            renderCell: (params) => { return (<Checkbox id={'checkbox' + params.value} defaultChecked={isChecked(params.value)} onClick={updateLikes}></Checkbox>) }
-        }
     ];
-    const isChecked = (id: string) => {
-        for (let x of window.likedInvitees) {
-            if (x.id === id) {
-                return true;
-            }
-        }
-        return false;
-    }
-    const updateLikes = (event: any) => {
-        // first, get the id of the party this checkbox belongs to
-        const id = event.target.id.substring(8);
-        const checked = event.target.checked;
-        // find the size and name of the party
-        let size = 1;
-        let name = '';
-        let groupName = undefined;
-        let groupID = undefined;
-        for (let x of window.inviteesState) {
-            if (x.id === id) {
-                name = x.name;
-                groupName = x.groupName;
-                groupID = x.groupID;
-                break;
-            }
-        }
-        if (checked) {
-            // add the party to the list of those who are liked
-            const tmp = window.likedInvitees;
+   
+    const updateLikes = (checkedUsers: any) => {
+        let tmp = [];
+        //iterate over the list of checkedUsers, get their information and add to tmp
+        for (let user of checkedUsers) {
+            const id = user.col1;
+            
+            const x = window.inviteesState.filter((u) => u.id == id)[0];
+            let name = x.name;
+            let groupName = x.groupName;
+            let groupID = x.groupID;
+           
             tmp.push({id: id, name: name, groupName: groupName, groupID: groupID});
-            window.setLiked(tmp);
         }
-        else {
-            // remove the party from the list of those who are liked
-            const tmp = [];
-            for (let x of window.likedInvitees) {
-                if (x.id !== id) {
-                    tmp.push({id: x.id, name: x.name, groupName: x.groupName, groupID: x.groupID})
-                }
-            }
-            window.setLiked(tmp);
-        }
+        //update liked state
+        window.setLiked(tmp);
     }
 
     const loadingCircle = () => {
@@ -160,14 +131,24 @@ export function SurveyLikes() {
                 <div className='survey' style={{ height: 400 }}>
                     <DataGrid 
                         rows={rows} 
-                        columns={columns} 
+                        columns={columns}
                         disableColumnMenu={true} 
                         hideFooter={true} 
                         disableSelectionOnClick={true} 
                         components={{
                             NoRowsOverlay: loadingCircle,
                         }}
-                        rowHeight={80} />
+                        rowHeight={80} 
+                        checkboxSelection
+                        onSelectionModelChange={(ids) => {
+                            const selectedIDs = new Set(ids);
+                            console.log(selectedIDs);
+                            const selectedRowData = rows.filter((row) =>
+                              selectedIDs.has(row.id)
+                            );
+                            updateLikes(selectedRowData);
+                          }}
+                        />
                 </div>
     </>);
 }

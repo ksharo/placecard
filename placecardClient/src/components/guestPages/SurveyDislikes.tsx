@@ -1,4 +1,4 @@
-import { Checkbox, CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
+import { CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import React, { useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
@@ -46,55 +46,23 @@ export function SurveyDislikes() {
         {
             field: 'col0', headerName: 'Name', headerAlign: 'center', flex: 2,
         },
-        {
-            field: 'col1', headerName: 'Do not sit with', headerAlign: 'center', cellClassName: 'centeredCheck', flex: 1,
-            renderCell: (params) => { return (<Checkbox id={'checkbox' + params.value} defaultChecked={isChecked(params.value)} onClick={updateDislikes}></Checkbox>) }
-        }
     ];
 
-    const isChecked = (id: string) => {
-        for (let x of window.dislikedInvitees) {
-            if (x.id === id) {
-                return true;
-            }
+    const updateDislikes = (checkedUsers: any) => {
+        let tmp = [];
+        //iterate over the list of checkedUsers, get their information and add to tmp
+        for (let user of checkedUsers) {
+            const id = user.col1;
+            
+            const x = window.inviteesState.filter((u) => u.id == id)[0];
+            let name = x.name;
+            let groupName = x.groupName;
+            let groupID = x.groupID;
+           
+            tmp.push({id: id, name: name, groupName: groupName, groupID: groupID});
         }
-        return false;
-    }
-
-    const updateDislikes = (event: any) => {
-        // first, get the id of the party this checkbox belongs to
-        const id = event.target.id.substring(8);
-        const checked = event.target.checked;
-        // find the size and name of the party
-        let size = 1;
-        let name = '';
-        let groupID = undefined;
-        let groupName = undefined;
-        for (let x of window.inviteesState) {
-            if (x.id === id) {
-                size = 1;
-                name = x.name;
-                groupID = x.groupID;
-                groupName = x.groupName;
-                break;
-            }
-        }
-        if (checked) {
-            // add the party to the list of those who are disliked
-            const tmp = window.dislikedInvitees;
-            tmp.push({id: id, name: name, groupID: groupID, groupName: groupName});
-            window.setDisliked(tmp);
-        }
-        else {
-            // remove the party from the list of those who are disliked
-            const tmp = [];
-            for (let x of window.dislikedInvitees) {
-                if (x.id !== id) {
-                    tmp.push({id: x.id, name: x.name, groupName: x.groupName, groupID: x.groupID})
-                }
-            }
-            window.setDisliked(tmp);
-        }
+        //update disliked state
+        window.setDisliked(tmp);
     }
 
     const loadingCircle = () => {
@@ -167,7 +135,17 @@ export function SurveyDislikes() {
                         components={{
                             NoRowsOverlay: loadingCircle,
                         }}
-                        rowHeight={80} />
+                        rowHeight={80}
+                        checkboxSelection
+                        onSelectionModelChange={(ids) => {
+                            const selectedIDs = new Set(ids);
+                            console.log(selectedIDs);
+                            const selectedRowData = rows.filter((row) =>
+                              selectedIDs.has(row.id)
+                            );
+                            updateDislikes(selectedRowData);
+                          }} 
+                        />
                 </div>
     </>);
 }

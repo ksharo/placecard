@@ -10,9 +10,11 @@ import { IoIosClose, IoIosSave } from "react-icons/io";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import moment from 'moment';
 import React, { useEffect, useLayoutEffect } from "react";
-import { v4 as uuid } from 'uuid';
+import { nanoid as uuid } from "nanoid";
 import { FaExclamationCircle, FaSearch } from "react-icons/fa";
 import { ObjectId } from "mongodb";
+import { Modal } from '../../shared/Modal'
+import { ConstructionOutlined } from "@mui/icons-material";
 
 const unseatedID = uuid();
 let searchTerm = '';
@@ -359,7 +361,9 @@ export function SeatingDashboard() {
                     setTablesData([...tmpTables]);
                     setUnseated([...destItems]);
                     newUnseated = [...destItems];
-                    setSeated(seated - 1);
+                    if (seated > 0) {
+                        setSeated(seated - 1);
+                    }
                     newTables = [...tmpTables];
                 }
             }
@@ -632,18 +636,37 @@ export function SeatingDashboard() {
         }
     };
 
+    const showWarning = () => {
+        const x = document.getElementById('hiddenWarning');
+        if (x !== null) {
+            x.style.display = 'inline-block';
+            window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+        }
+    };
+
+    const hideWarning = () => {
+        const x = document.getElementById('hiddenWarning');
+        if (x !== null) {
+            x.style.display = 'none';
+        }
+    }
+
     const generatePlan = async () => {
+        hideWarning();
         if (window.activeEvent !== null) {
             const seatingChart = await fetch('http://localhost:3001/events/algorithm/'+window.activeEvent.id);
             const chartData = await seatingChart.json();
             const chartAnswer = chartData.answer;
             let tmpTables = [...window.activeEvent.tables];
+            let tmpSeated = seated;
+            console.log("OG TEMPSEATED: " +tmpSeated);
             for (let x of tmpTables) {
                 const tmpGuests = chartAnswer[x.id];
                 const newGuests: Invitee[] = [];
                 for (let guest of tmpGuests) {
                     const tmpGuest = window.activeEvent.guestList.filter((g) => {return g.id==guest})[0];
                     newGuests.push(tmpGuest);
+                    tmpSeated++;
                 }
                 x.guests = newGuests;
             }
@@ -655,8 +678,25 @@ export function SeatingDashboard() {
             setTablesData(tmpTables);
             setUnseated([]);
             setData([tmpTables, []]);
+            setSeated(tmpSeated);
         }
     }
+
+    const checkResponses = () => {
+        setSeated(0);
+        if (window.activeEvent !== null) {
+
+            let tmpRespondendts = window.activeEvent.respondents;
+            let tmpSurveys = window.activeEvent.surveys;
+
+            if (tmpRespondendts == undefined  || tmpSurveys == undefined  || tmpRespondendts.length == 0 || tmpSurveys.length == 0 || Math.floor((tmpRespondendts.length/tmpSurveys.length)*100) <= 50) {
+                showWarning();
+            }
+        } 
+        else {
+            generatePlan();
+        }
+    };
 
     const deleteTable = () => {
         if (window.activeEvent !== null) {
@@ -806,8 +846,9 @@ export function SeatingDashboard() {
                             &#160;&#160;|&#160;&#160;
                             <Button variant='text' className='whiteTxtBtn' size='small' onClick={clearAll}>Clear All</Button>
                             &#160;&#160;|&#160;&#160;
-                            <Button variant='text' className='whiteTxtBtn' size='medium' onClick={generatePlan}>Generate New Plan</Button>
+                            <Button variant='text' className='whiteTxtBtn' size='medium' onClick={checkResponses}>Generate New Plan</Button>
                             </>}/>
+                            <Modal title="Warning" text="Less than 50% responses recorded." no={hideWarning} yes={generatePlan} />       
                         {/* Body of seating chart, containing the table boxes */}
                             <Grid container spacing={{xs:1, md: 2, lg: 1}} columns={{ xs: 1, md: 2, lg: 3 }}>
                                 {Object.entries(tablesData).map(([_, table]) => {

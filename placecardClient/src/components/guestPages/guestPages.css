@@ -64,6 +64,10 @@
     margin: 0px !important;
 }
 
+.MuiDataGrid-cellCheckbox {
+    margin: 0px 10px 0px 10px;
+}
+
 .surveyPt1 .MuiDataGrid-root,
 .surveyPt1 .MuiDataGrid-cell--withRenderer {
     border: none !important;

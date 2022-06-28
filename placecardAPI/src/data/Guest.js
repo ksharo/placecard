@@ -32,6 +32,7 @@ const excelToJson = require("convert-excel-to-json");
 const csvToJson = require("convert-csv-to-json");
 const xlsx = require("xlsx");
 const { SCHEMA_TYPES } = require("../constants/schemaTypes");
+const eventFns = require("./Event")
 
 
 async function getGuest(guestId) {
@@ -82,7 +83,12 @@ async function createGuest(guestConfig) {
     }
 
     const newId = insertInfo.insertedId.toString();
-    const newGuest = await this.getGuest(newId);
+    let newGuest = ""
+    try {
+        newGuest = await this.getGuest(newId);
+    } catch {
+        newGuest = await getGuest(newId);
+    }
 
     return newGuest;
 }
@@ -137,7 +143,7 @@ async function deleteGuest(guestId) {
     return true;
 }
 
-async function uploadSurveyData(filePath, fileType, eventId) {
+async function uploadSurveyData(filePath, fileType) {
     let data;
 
     if (fileType === "xlsx" || fileType === "xls") {
@@ -162,7 +168,6 @@ async function uploadSurveyData(filePath, fileType, eventId) {
     }
 
     if (fileType === "csv") {
-
         data = csvToJson.fieldDelimiter(",").getJsonFromCsv(filePath);
     }
 
@@ -225,32 +230,64 @@ async function uploadSurveyData(filePath, fileType, eventId) {
             });
         } else {
             returnData.push({
-                groupName: members[0],
+                individualName: members[0],
                 groupContact: email,
                 groupMembers: [],
             });
         }
     }
 
+    let createdGuests = []
     for (const retGroup of returnData){
         if (retGroup.groupMembers.length > 0){
+            // this is a group
+            const groupId = (new ObjectId()).toString();
             for (const retGroupMem of retGroup.groupMembers){
+                const nameSplit = retGroupMem.split(" ");
+			    let firstName = '';
+			    let lastName = '--';
+			    if (nameSplit.length > 1) {
+                    firstName = nameSplit.slice(0, nameSplit.length - 1).join(" ");
+                    lastName = nameSplit[nameSplit.length - 1];
+			    }
+                else {
+                    firstName = nameSplit[0];
+                }
                 const createdGuest = await createGuest({
-                    first_name: retGroupMem,
+                    first_name: firstName,
+                    last_name: lastName,
                     email: retGroup.groupContact,
-                    party_size: retGroup.groupMembers.length
+                    party_size: retGroup.groupMembers.length,
+                    group_id: groupId,
+                    group_name: retGroup.groupName,
+                    associated_table_number: -1,
+                    survey_response: {disliked: [], liked: [], ideal: []}
                 })
-
-                events.addGuest(eventId, createdGuest._id, true)
+                createdGuests.push(createdGuest)
+                // let a = await eventFns.addGuest(eventId, createdGuest._id, true)
             }
         }
         else{
+            const nameSplit = retGroup.individualName.split(" ");
+            let firstName = '';
+            let lastName = '--';
+            if (nameSplit.length > 1) {
+                firstName = nameSplit.slice(0, nameSplit.length - 1).join(" ");
+                lastName = nameSplit[nameSplit.length - 1];
+            }
+            else {
+                firstName = nameSplit[0];
+            }
             const createdGuest = await createGuest({
-                first_name: retGroup.groupName,
+                first_name: firstName,
+                last_name: lastName,
                 email: retGroup.groupContact,
                 party_size: 1,
+                associated_table_number: -1,
+                survey_response: {disliked: [], liked: [], ideal: []}
             })
-            events.addGuest(eventId, createdGuest._id, true)
+            createdGuests.push(createdGuest)
+            // let a = await eventFns.addGuest(eventId, createdGuest._id, true)
 
         }
     }
@@ -301,7 +338,7 @@ async function uploadSurveyData(filePath, fileType, eventId) {
     fs.unlinkSync(filePath);
 
     // return data;
-    return returnData;
+    return {returnData: returnData, createdGuests: createdGuests};
 }
 
 async function removeFromGroup(guestId, email, groupId) {

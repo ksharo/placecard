@@ -1,7 +1,7 @@
 import { Card, CardHeader, CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
 import React, { useEffect, useLayoutEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { v4 as uuid } from 'uuid';
+import { nanoid as uuid } from "nanoid";
 import { FaSearch } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 

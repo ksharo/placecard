@@ -1,0 +1,89 @@
+
+.subgroupMember {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;;
+}
+
+.subgroupMember .MuiFormControl-root {
+    max-width: 300px;
+    margin: 0 !important;
+}
+
+.guestListTable .addButtonGroup{
+	text-align: left;
+}
+
+.guestListTable .addButtonGroup button {
+    width: 190px;
+}
+
+.guestListTable .nameCol,
+.guestListTable .contactCol {
+    width: 30%;
+    padding-left: 15px;
+    height: 56px;
+}
+
+.guestListTable .nameCol .MuiFormControl-root,
+.guestListTable .contactCol .MuiFormControl-root{
+	margin-left: -14px !important;
+}
+
+.guestListTable .firstColName,
+.guestListTable .firstColContact{
+	padding-left: 15px;
+}
+
+.guestListTable {
+	max-width: 1000px;
+	text-align: left;
+	margin: 20px auto;
+	border-radius: 8px;
+	border: 2px solid var(--secondary);
+	background-color: var(--secondary);
+}
+
+.resultTable {
+	border-collapse: collapse;
+	width: 100%;
+	border-radius: 6px;
+	overflow: hidden;
+	border: none;
+	background-color: white;
+}
+
+.subgroupMemberList {
+	list-style: none;
+	padding-left: 38px;
+}
+
+.guestListIcon {
+	box-shadow: none !important;
+}
+
+.headingRow {
+	background-color: var(--secondary);
+}
+
+thead {
+	color: white;
+   	 height: 50px;
+}
+
+.firstCol {
+	padding-left: 21px;
+}
+
+tbody .groupSummary td {
+	padding-top: 12px;
+}
+
+tbody tr:last-child.groupDropdown td {
+    	padding-bottom: 12px;
+}
+
+/* tbody tr {
+	border-left: 3px solid var(--secondary);
+	border-right: 2px solid var(--secondary);
+} */

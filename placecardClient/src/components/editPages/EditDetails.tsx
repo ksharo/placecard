@@ -1,5 +1,7 @@
 import '../forms/Forms.css'
 import './editPages.css'
+import { Modal } from '../shared/Modal'
+
 import { useHistory } from "react-router-dom";
 import validator from 'validator';
 import { Button, Card, CardActions, CardContent, CardHeader, TextField } from '@mui/material';
@@ -222,19 +224,7 @@ export function EditDetails(){
      </>
      : 
         <>
-        <section className='hiddenBoxes' id='hiddenWarning'>
-            <Card className='innerBox'>
-                <CardHeader className='innerBoxHeader' title='Notice'/>
-                <CardContent className='innerBoxContent'>
-                    <p className='subtitle'>Your changes may not be saved.</p>
-                    <p className='subtitle'>Are you sure you want to continue?</p>
-                </CardContent>
-                <CardActions className='spacedBtns'>
-                    <Button variant='contained' className='basicBtn' onClick={hideWarning}>No</Button>
-                    <Button variant='contained' className='basicBtn' onClick={toDashboard}>Yes</Button>
-                </CardActions>
-            </Card>
-        </section>
+        <Modal title="Notice" text="Your changes may not be saved." no={hideWarning} yes={toDashboard} />       
         <h1 className='title'>Edit Your Event</h1>
         <p className='subtitle pageError' id='editEventError'>Please fix the errors.</p>
         <p className='subtitle pageError' id='sendEventEditError'>Something went wrong. Please try again.</p>
