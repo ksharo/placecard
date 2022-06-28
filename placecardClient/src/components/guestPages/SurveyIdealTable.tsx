@@ -8,7 +8,6 @@ let searchTerm = '';
 let selectedIDs = new Set();
 export function SurveyIdealTable() {
     const makeLoved = () => {
-        //let tmp : {[id: string] : boolean} = {};
         let tmp = [];
         for (let x of window.lovedInvitees){
             tmp.push(x.id);
@@ -21,7 +20,6 @@ export function SurveyIdealTable() {
     let partySize = window.curGuest == undefined  ? 0 : window.curGuest.groupSize == undefined  ? 1 : window.curGuest.groupSize;
     let curSize = window.lovedInvitees.length;
     const [sizeLeft, setSizeLeft] = React.useState(perTable - (partySize + curSize));
-    console.log("Initial Size Left: ", sizeLeft);
     let names: Invitee[] = [];
     const setup = () => {
         for (let x of window.likedInvitees) {
@@ -64,15 +62,13 @@ export function SurveyIdealTable() {
             
             tmp.push({id: id, name: name, groupName: groupName, groupID: groupID});
         }
-
-        //update loved and sizeLeft states
+        //update loved state
         window.setLoved(tmp);
     }
 
     useEffect(() => {
         setLoved(makeLoved);  
-        setSizeLeft(perTable - (window.lovedInvitees.length + partySize)); //+1?
-        console.log("Updated Size Left: ", sizeLeft);
+        setSizeLeft(perTable - (window.lovedInvitees.length + partySize));
     }, ([window.lovedInvitees]));
 
 
